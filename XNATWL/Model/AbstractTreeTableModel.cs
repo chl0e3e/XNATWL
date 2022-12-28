@@ -1,6 +1,7 @@
 ﻿namespace XNATWL.Model
 {
-    public class AbstractTreeTableModel : AbstractTableColumnHeaderModel
+    public abstract class AbstractTreeTableModel : AbstractTableColumnHeaderModel, TreeTableModel
     {
+        private List<TreeTableNode> _children;
     }
 }
