@@ -10,10 +10,10 @@ namespace XNATWL.Model
     {
         public abstract int Entries { get; }
 
-        public event EventHandler<ListSubsetChangedEventArgs> EntriesInserted;
-        public event EventHandler<ListSubsetChangedEventArgs> EntriesDeleted;
-        public event EventHandler<ListSubsetChangedEventArgs> EntriesChanged;
-        public event EventHandler<ListAllChangedEventArgs> AllChanged;
+        public abstract event EventHandler<ListSubsetChangedEventArgs> EntriesInserted;
+        public abstract event EventHandler<ListSubsetChangedEventArgs> EntriesDeleted;
+        public abstract event EventHandler<ListSubsetChangedEventArgs> EntriesChanged;
+        public abstract event EventHandler<ListAllChangedEventArgs> AllChanged;
 
         public abstract T EntryAt(int index);
 

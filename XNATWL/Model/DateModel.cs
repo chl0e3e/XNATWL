@@ -6,23 +6,23 @@ using System.Threading.Tasks;
 
 namespace XNATWL.Model
 {
-    public interface BooleanModel
+    public interface DateModel
     {
-        event EventHandler<BooleanChangedEventArgs> Changed;
+        event EventHandler<DateChangedEventArgs> Changed;
 
-        bool Value
+        long Value
         {
             get;
             set;
         }
     }
 
-    public class BooleanChangedEventArgs : EventArgs
+    public class DateChangedEventArgs : EventArgs
     {
-        public bool New;
-        public bool Old;
+        public long New;
+        public long Old;
 
-        public BooleanChangedEventArgs(bool @old, bool @new)
+        public DateChangedEventArgs(long @old, long @new)
         {
             this.Old = @old;
             this.New = @new;

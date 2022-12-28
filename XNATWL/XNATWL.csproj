@@ -57,6 +57,9 @@
     <Compile Include="Color.cs" />
     <Compile Include="Model\AbstractColorSpace.cs" />
     <Compile Include="Model\AbstractListModel.cs" />
+    <Compile Include="Model\AbstractTableColumnHeaderModel.cs" />
+    <Compile Include="Model\AbstractTableSelectionModel.cs" />
+    <Compile Include="Model\AbstractTreeTableModel.cs" />
     <Compile Include="Model\AutoCompletionDataSource.cs" />
     <Compile Include="Model\AutoCompletionResult.cs" />
     <Compile Include="Model\BitFieldBooleanModel.cs" />
@@ -66,10 +69,23 @@
     <Compile Include="Model\ColorSpace.cs" />
     <Compile Include="Model\ColorSpaceHSL.cs" />
     <Compile Include="Model\CombinedListModel.cs" />
+    <Compile Include="Model\DateModel.cs" />
+    <Compile Include="Model\DefaultEditFieldModel.cs" />
+    <Compile Include="Model\DefaultTableSelectionModel.cs" />
+    <Compile Include="Model\EditFieldModel.cs" />
+    <Compile Include="Model\EnumListModel.cs" />
+    <Compile Include="Model\EnumModel.cs" />
+    <Compile Include="Model\FileSystemAutoCompletionDataSource.cs" />
+    <Compile Include="Model\FileSystemModel.cs" />
+    <Compile Include="Model\FileSystemTreeModel.cs" />
     <Compile Include="Model\IntegerModel.cs" />
     <Compile Include="Model\ListModel.cs" />
+    <Compile Include="Model\ObservableCharSequence.cs" />
     <Compile Include="Model\SimpleListModel.cs" />
+    <Compile Include="Model\TableSelectionModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utils\BitSet.cs" />
+    <Compile Include="Utils\ObjectCopier.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

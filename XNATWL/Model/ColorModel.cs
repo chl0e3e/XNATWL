@@ -13,6 +13,7 @@ namespace XNATWL.Model
         Color Value
         {
             get;
+            set;
         }
     }
 

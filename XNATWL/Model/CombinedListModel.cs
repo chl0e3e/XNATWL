@@ -5,13 +5,10 @@ namespace XNATWL.Model
 {
     public class CombinedListModel<T> : SimpleListModel<T>
     {
-        public event EventHandler<ListSubsetChangedEventArgs> EntriesInserted;
-
-        public event EventHandler<ListSubsetChangedEventArgs> EntriesDeleted;
-
-        public event EventHandler<ListSubsetChangedEventArgs> EntriesChanged;
-
-        public event EventHandler<ListAllChangedEventArgs> AllChanged;
+        public override event EventHandler<ListSubsetChangedEventArgs> EntriesInserted;
+        public override event EventHandler<ListSubsetChangedEventArgs> EntriesDeleted;
+        public override event EventHandler<ListSubsetChangedEventArgs> EntriesChanged;
+        public override event EventHandler<ListAllChangedEventArgs> AllChanged;
 
         private List<Sublist> _sublists;
         private int[] _sublistStarts;
@@ -92,7 +89,7 @@ namespace XNATWL.Model
             return -1;
         }
 
-        public void removeAllSubLists()
+        public void RemoveAllSubLists()
         {
             for (int i = 0; i < this._sublists.Count; i++)
             {
@@ -103,11 +100,11 @@ namespace XNATWL.Model
             this.AllChanged.Invoke(this, new ListAllChangedEventArgs());
             if (this._subListsModel != null)
             {
-                this._subListsModel.AllChanged.Invoke(this, new ListAllChangedEventArgs());
+                this._subListsModel.FireAllChanged(this, new ListAllChangedEventArgs());
             }
         }
 
-        public bool removeSubList(ListModel<T> model)
+        public bool RemoveSubList(ListModel<T> model)
         {
             int index = findSubList(model);
             if (index >= 0)
@@ -137,7 +134,7 @@ namespace XNATWL.Model
 
             if (this._subListsModel != null)
             {
-                this._subListsModel.EntriesDeleted.Invoke(this, new ListSubsetChangedEventArgs(index, index));
+                this._subListsModel.FireEntriesDeleted(this, new ListSubsetChangedEventArgs(index, index));
             }
 
             return sl.List;
@@ -268,6 +265,11 @@ namespace XNATWL.Model
         {
             private CombinedListModel<T> Parent;
 
+            public override event EventHandler<ListSubsetChangedEventArgs> EntriesInserted;
+            public override event EventHandler<ListSubsetChangedEventArgs> EntriesDeleted;
+            public override event EventHandler<ListSubsetChangedEventArgs> EntriesChanged;
+            public override event EventHandler<ListAllChangedEventArgs> AllChanged;
+
             public SubListsModel(CombinedListModel<T> combinedListModel)
             {
                 this.Parent = combinedListModel;
@@ -281,29 +283,29 @@ namespace XNATWL.Model
                 }
             }
 
-            public override event EventHandler<ListSubsetChangedEventArgs> EntriesInserted;
-            public override event EventHandler<ListSubsetChangedEventArgs> EntriesDeleted;
-            public override event EventHandler<ListSubsetChangedEventArgs> EntriesChanged;
-            public override event EventHandler<ListAllChangedEventArgs> AllChanged;
-
             public override ListModel<T> EntryAt(int index)
             {
                 return this.Parent._sublists[index].List;
             }
 
-            protected void FireEntriesInserted(object sender, ListSubsetChangedEventArgs e)
+            public void FireEntriesInserted(object sender, ListSubsetChangedEventArgs e)
             {
                 this.EntriesInserted.Invoke(sender, e);
             }
 
-            protected void FireEntriesDeleted(object sender, ListSubsetChangedEventArgs e)
+            public void FireEntriesDeleted(object sender, ListSubsetChangedEventArgs e)
             {
                 this.EntriesDeleted.Invoke(sender, e);
             }
 
-            protected void FireEntriesChanged(object sender, ListSubsetChangedEventArgs e)
+            public void FireEntriesChanged(object sender, ListSubsetChangedEventArgs e)
             {
                 this.EntriesChanged.Invoke(sender, e);
+            }
+
+            public void FireAllChanged(object sender, ListAllChangedEventArgs e)
+            {
+                this.AllChanged.Invoke(sender, e);
             }
         }
     }
