@@ -49,6 +49,6 @@ namespace XNATWL.Model
 
     public interface FileFilter
     {
-        bool Accept(FileSystemModel model, object file);
+        bool Accept(object file);
     }
 }

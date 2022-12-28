@@ -15,16 +15,16 @@ namespace XNATWL.Model
             }
         }
 
-        public bool ColumnHeaderStateFor(int column, int stateIdx)
-        {
-            return false;
-        }
-
         public abstract int Columns { get; }
 
         public abstract event EventHandler<ColumnsChangedEventArgs> ColumnInserted;
         public abstract event EventHandler<ColumnsChangedEventArgs> ColumnDeleted;
         public abstract event EventHandler<ColumnHeaderChangedEventArgs> ColumnHeaderChanged;
+
+        public bool ColumnHeaderStateFor(int column, int stateIdx)
+        {
+            return false;
+        }
 
         public abstract string ColumnHeaderTextFor(int column);
     }
