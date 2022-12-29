@@ -13,6 +13,6 @@ namespace XNATWL.Model
         public abstract float MinValue { get; }
         public abstract float MaxValue { get; }
 
-        public abstract event EventHandler<IntegerChangedEventArgs> Changed;
+        public abstract event EventHandler<FloatChangedEventArgs> Changed;
     }
 }

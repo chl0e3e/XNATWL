@@ -8,7 +8,7 @@ namespace XNATWL.Model
 {
     public interface FloatModel
     {
-        event EventHandler<IntegerChangedEventArgs> Changed;
+        event EventHandler<FloatChangedEventArgs> Changed;
 
         float Value
         {

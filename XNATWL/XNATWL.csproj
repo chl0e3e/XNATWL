@@ -59,6 +59,7 @@
     <Compile Include="IO\Preferences.cs" />
     <Compile Include="Model\AbstractColorSpace.cs" />
     <Compile Include="Model\AbstractEnumModel.cs" />
+    <Compile Include="Model\AbstractFloatModel.cs" />
     <Compile Include="Model\AbstractIntegerModel.cs" />
     <Compile Include="Model\AbstractListModel.cs" />
     <Compile Include="Model\AbstractTableColumnHeaderModel.cs" />
@@ -104,6 +105,12 @@
     <Compile Include="Model\PropertyList.cs" />
     <Compile Include="Model\ReorderListModel.cs" />
     <Compile Include="Model\SimpleAutoCompletionResult.cs" />
+    <Compile Include="Model\SimpleBooleanModel.cs" />
+    <Compile Include="Model\SimpleButtonModel.cs" />
+    <Compile Include="Model\SimpleChangeableListModel.cs" />
+    <Compile Include="Model\SimpleDateModel.cs" />
+    <Compile Include="Model\SimpleEnumModel.cs" />
+    <Compile Include="Model\SimpleFloatModel.cs" />
     <Compile Include="Model\SimpleListModel.cs" />
     <Compile Include="Model\SimpleMRUModel.cs" />
     <Compile Include="Model\StringModel.cs" />
