@@ -17,7 +17,7 @@ namespace XNATWL.Utils
         internal short[] programCodes;
         int programIdx;
 
-        public static StateSelectOptimizer optimize(params StateExpression[] expressions)
+        public static StateSelectOptimizer Optimize(params StateExpression[] expressions)
         {
             int numExpr = expressions.Length;
             if (numExpr == 0 || numExpr >= 255)
@@ -28,7 +28,7 @@ namespace XNATWL.Utils
             BitSet bs = new BitSet();
             foreach (StateExpression e in expressions)
             {
-                e.getUsedStateKeys(bs);
+                e.GetUsedStateKeys(bs);
             }
 
             int numKeys = bs.Cardinality();
@@ -56,7 +56,7 @@ namespace XNATWL.Utils
                 int exprIdx = 0;
                 for (; exprIdx < numExpr; exprIdx++)
                 {
-                    if (expressions[exprIdx].evaluate(animationState))
+                    if (expressions[exprIdx].Evaluate(animationState))
                     {
                         break;
                     }
@@ -65,7 +65,7 @@ namespace XNATWL.Utils
             }
 
             StateSelectOptimizer sso = new StateSelectOptimizer(keys, matrix);
-            sso.compute(0, 0);
+            sso._compute(0, 0);
             return sso;
         }
 
@@ -78,7 +78,7 @@ namespace XNATWL.Utils
             programCodes = new short[matrix.Length * 2 - 2];
         }
 
-        private int compute(int bits, int mask)
+        private int _compute(int bits, int mask)
         {
             if (mask == matrix.Length - 1)
             {
@@ -146,8 +146,8 @@ namespace XNATWL.Utils
             int idx = programIdx;
             programIdx += 2;
             programKeys[idx >> 1] = keys[best];
-            programCodes[idx + 0] = (short)compute(bits | bestMask, mask);
-            programCodes[idx + 1] = (short)compute(bits, mask);
+            programCodes[idx + 0] = (short)_compute(bits | bestMask, mask);
+            programCodes[idx + 1] = (short)_compute(bits, mask);
 
             return idx;
         }

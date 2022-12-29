@@ -146,6 +146,7 @@
     <Compile Include="Renderer\FontCache.cs" />
     <Compile Include="Renderer\FontMapper.cs" />
     <Compile Include="Renderer\Font2.cs" />
+    <Compile Include="Renderer\FontParameter.cs" />
     <Compile Include="Renderer\Image.cs" />
     <Compile Include="Renderer\Resource.cs" />
     <Compile Include="Utils\BitOperations.cs" />

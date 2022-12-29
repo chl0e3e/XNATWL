@@ -28,7 +28,7 @@ namespace XNATWL.Utils
             this.expressions = expressions;
 
             StateSelectOptimizer sso = useOptimizer
-                    ? StateSelectOptimizer.optimize(expressions)
+                    ? StateSelectOptimizer.Optimize(expressions)
                     : null;
 
             if (sso != null)
@@ -43,7 +43,7 @@ namespace XNATWL.Utils
             }
         }
 
-        public static bool isUseOptimizer()
+        public static bool IsUseOptimizer()
         {
             return useOptimizer;
         }
@@ -53,7 +53,7 @@ namespace XNATWL.Utils
          * 
          * @param useOptimizer true if the StateSelectOptimizer should be used
          */
-        public static void setUseOptimizer(bool useOptimizer)
+        public static void SetUseOptimizer(bool useOptimizer)
         {
             StateSelect.useOptimizer = useOptimizer;
         }
@@ -64,7 +64,7 @@ namespace XNATWL.Utils
          * when no expression matched.</p>
          * @return the number of expressions
          */
-        public int getNumExpressions()
+        public int Expressions()
         {
             return expressions.Length;
         }
@@ -75,7 +75,7 @@ namespace XNATWL.Utils
          * @return the expression
          * @see #getNumExpressions() 
          */
-        public StateExpression getExpression(int idx)
+        public StateExpression ExpressionAt(int idx)
         {
             return expressions[idx];
         }
@@ -87,21 +87,21 @@ namespace XNATWL.Utils
          * @return the index of the first matching expression or
          *         {@link #getNumExpressions()} when no expression matches
          */
-        public int evaluate(AnimationState animationState)
+        public int Evaluate(AnimationState animationState)
         {
             if (programKeys != null)
             {
-                return evaluateProgram(animationState);
+                return EvaluateProgram(animationState);
             }
-            return evaluateExpr(animationState);
+            return EvaluateExpr(animationState);
         }
 
-        private int evaluateExpr(AnimationState animationState)
+        private int EvaluateExpr(AnimationState animationState)
         {
             int i = 0;
             for (int n = expressions.Length; i < n; i++)
             {
-                if (expressions[i].evaluate(animationState))
+                if (expressions[i].Evaluate(animationState))
                 {
                     break;
                 }
@@ -109,7 +109,7 @@ namespace XNATWL.Utils
             return i;
         }
 
-        private int evaluateProgram(AnimationState animationState)
+        private int EvaluateProgram(AnimationState animationState)
         {
             int pos = 0;
             do

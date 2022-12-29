@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
+using XNATWL.IO;
 using XNATWL.Utils;
 
 namespace XNATWL.Renderer
@@ -23,7 +24,7 @@ namespace XNATWL.Renderer
          * @throws NullPointerException when one of the parameters is null
          * @throws IllegalArgumentException when the number of font parameters doesn't match the number of state expressions
          */
-        Font getFont(List<string> fontFamilies, int fontSize, int style, StateSelect select, params FontParameter[] fontParams);
+        Font GetFont(List<string> fontFamilies, int fontSize, int style, StateSelect select, params FontParameter[] fontParams);
 
         /**
          * Registers a font file
@@ -33,7 +34,7 @@ namespace XNATWL.Renderer
          * @param url the URL for the font file
          * @return true if the specified font could be registered
          */
-        bool registerFont(String fontFamily, int style, URL url);
+        bool RegisterFont(String fontFamily, int style, FileSystemObject file);
 
         /**
          * Registers a font file and determines the style from the font itself.
@@ -43,6 +44,6 @@ namespace XNATWL.Renderer
          * @return true if the specified font could be registered
          * @throws IOException when the font could not be parsed 
          */
-        bool registerFont(String fontFamily, URL url);
+        bool RegisterFont(String fontFamily, FileSystemObject file);
     }
 }

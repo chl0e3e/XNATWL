@@ -15,58 +15,58 @@ namespace XNATWL.Utils
         {
         }
 
-        public abstract bool evaluate(AnimationState animationState);
+        public abstract bool Evaluate(AnimationState animationState);
 
-        public abstract void getUsedStateKeys(BitSet bs);
+        public abstract void GetUsedStateKeys(BitSet bs);
 
-        internal bool negate;
+        internal bool _negate;
 
-        public static StateExpression parse(String exp, bool negate)
+        public static StateExpression Parse(String exp, bool negate)
         {
             StringIterator si = new StringIterator(exp);
-            StateExpression expr = parse(si);
-            if (si.hasMore())
+            StateExpression expr = Parse(si);
+            if (si.HasMore())
             {
-                si.unexpected();
+                si.Unexpected();
             }
-            expr.negate ^= negate;
+            expr._negate ^= negate;
             return expr;
         }
 
-        private static StateExpression parse(StringIterator si)
+        private static StateExpression Parse(StringIterator si)
         {
             List<StateExpression> children = new List<StateExpression>();
             char kind = ' ';
 
             for (; ; )
             {
-                if (!si.skipSpaces())
+                if (!si.SkipSpaces())
                 {
-                    si.unexpected();
+                    si.Unexpected();
                 }
-                char ch = si.peek();
+                char ch = si.Peek();
                 bool negate = ch == '!';
                 if (negate)
                 {
-                    si.pos++;
-                    if (!si.skipSpaces())
+                    si._pos++;
+                    if (!si.SkipSpaces())
                     {
-                        si.unexpected();
+                        si.Unexpected();
                     }
-                    ch = si.peek();
+                    ch = si.Peek();
                 }
 
                 StateExpression child = null;
                 CodeDomProvider provider = CodeDomProvider.CreateProvider("C#");
                 if (provider.IsValidIdentifier(ch.ToString()))
                 {
-                    child = new Check(StateKey.Get(si.getIdent()));
+                    child = new Check(StateKey.Get(si.GetIdent()));
                 }
                 else if (ch == '(')
                 {
-                    si.pos++;
-                    child = parse(si);
-                    si.expect(')');
+                    si._pos++;
+                    child = Parse(si);
+                    si.Expect(')');
                 }
                 else if (ch == ')')
                 {
@@ -74,18 +74,18 @@ namespace XNATWL.Utils
                 }
                 else
                 {
-                    si.unexpected();
+                    si.Unexpected();
                 }
 
-                child.negate = negate;
+                child._negate = negate;
                 children.Add(child);
 
-                if (!si.skipSpaces())
+                if (!si.SkipSpaces())
                 {
                     break;
                 }
 
-                ch = si.peek();
+                ch = si.Peek();
                 if ("|+^".IndexOf(ch) < 0)
                 {
                     break;
@@ -97,14 +97,14 @@ namespace XNATWL.Utils
                 }
                 else if (kind != ch)
                 {
-                    si.expect(kind);
+                    si.Expect(kind);
                 }
-                si.pos++;
+                si._pos++;
             }
 
             if (children.Count == 0)
             {
-                si.unexpected();
+                si.Unexpected();
             }
 
             if(!(kind != ' ' || children.Count == 1))
@@ -131,77 +131,76 @@ namespace XNATWL.Utils
 
         internal class StringIterator
         {
-            readonly string str;
-            internal int pos;
+            readonly string _str;
+            internal int _pos;
 
             internal StringIterator(String str)
             {
-                this.str = str;
+                this._str = str;
             }
 
-            internal bool hasMore()
+            internal bool HasMore()
             {
-                return pos < str.Length;
+                return _pos < _str.Length;
             }
 
-            internal char peek()
+            internal char Peek()
             {
-                return str[pos];
+                return _str[_pos];
             }
 
-            internal void expect(char what)
+            internal void Expect(char what)
             {
-                if(!hasMore() || peek() != what)
+                if(!HasMore() || Peek() != what)
                 {
-                    throw new ParseException("Expected '"+what+"' got " + describePosition(), pos);
+                    throw new ParseException("Expected '"+what+"' got " + DescribePosition(), _pos);
                 }
-                pos++;
+                _pos++;
             }
 
-            internal void unexpected()
+            internal void Unexpected()
             {
-                throw new ParseException("Unexpected " + describePosition(), pos);
+                throw new ParseException("Unexpected " + DescribePosition(), _pos);
             }
 
-            internal string describePosition()
+            internal string DescribePosition()
             {
-                if (pos >= str.Length)
+                if (_pos >= _str.Length)
                 {
                     return "end of expression";
                 }
-                return "'" + peek() + "' at " + (pos + 1);
+                return "'" + Peek() + "' at " + (_pos + 1);
             }
 
-            internal bool skipSpaces()
+            internal bool SkipSpaces()
             {
-                while (hasMore() && (peek() == " ".ToCharArray()[0]))
+                while (HasMore() && (Peek() == " ".ToCharArray()[0]))
                 {
-                    pos++;
+                    _pos++;
                 }
-                return hasMore();
+                return HasMore();
             }
 
-            internal string getIdent()
+            internal string GetIdent()
             {
-                int start = pos;
+                int start = _pos;
 
                 CodeDomProvider provider = CodeDomProvider.CreateProvider("C#");
-                while (hasMore() && provider.IsValidIdentifier(peek().ToString()))
+                while (HasMore() && provider.IsValidIdentifier(Peek().ToString()))
                 {
-                    pos++;
+                    _pos++;
                 }
 
-                return str.Substring(start, pos);
+                return _str.Substring(start, _pos);
             }
         }
     }
 
-
     public class Logic : StateExpression
     {
-        StateExpression[] children;
-        bool and;
-        bool xor;
+        StateExpression[] _children;
+        bool _and;
+        bool _xor;
         
         public Logic(char kind, params StateExpression[] children)
         {
@@ -209,22 +208,22 @@ namespace XNATWL.Utils
             {
                 throw new ArgumentOutOfRangeException("kind");
             }
-            this.children = children;
-            this.and = kind == '+';
-            this.xor = kind == '^';
+            this._children = children;
+            this._and = kind == '+';
+            this._xor = kind == '^';
         }
 
-        public override bool evaluate(AnimationState animationState)
+        public override bool Evaluate(AnimationState animationState)
         {
-            bool result = and ^ negate;
-            foreach (StateExpression e in children)
+            bool result = _and ^ _negate;
+            foreach (StateExpression e in _children)
             {
-                bool value = e.evaluate(animationState);
-                if (xor)
+                bool value = e.Evaluate(animationState);
+                if (_xor)
                 {
                     result ^= value;
                 }
-                else if (and != value)
+                else if (_and != value)
                 {
                     return result ^ true;
                 }
@@ -232,32 +231,32 @@ namespace XNATWL.Utils
             return result;
         }
 
-        public override void getUsedStateKeys(BitSet bs)
+        public override void GetUsedStateKeys(BitSet bs)
         {
-            foreach (StateExpression e in children)
+            foreach (StateExpression e in _children)
             {
-                e.getUsedStateKeys(bs);
+                e.GetUsedStateKeys(bs);
             }
         }
     }
 
     public class Check : StateExpression
     {
-        StateKey state;
+        StateKey _state;
 
         public Check(StateKey state)
         {
-            this.state = state;
+            this._state = state;
         }
 
-        public override bool evaluate(AnimationState animationState)
+        public override bool Evaluate(AnimationState animationState)
         {
-            return negate ^ (animationState != null && animationState.GetAnimationState(state));
+            return _negate ^ (animationState != null && animationState.GetAnimationState(_state));
         }
 
-        public override void getUsedStateKeys(BitSet bs)
+        public override void GetUsedStateKeys(BitSet bs)
         {
-            bs.Set(state.ID);
+            bs.Set(_state.ID);
         }
     }
 }
