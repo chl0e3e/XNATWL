@@ -9,7 +9,7 @@ namespace XNATWL.Model
     public class SimpleProperty<T> : AbstractProperty<T>
     {
         private Type _type;
-        private String _name;
+        private string _name;
         private bool _readOnly;
         private T _value;
 
@@ -73,7 +73,7 @@ namespace XNATWL.Model
                 {
                     var old = value;
                     this._value = value;
-                    this.Changed.Invoke(this, new PropertyChangedEventArgs<T>(old, value));
+                    this.Changed.Invoke(this, new PropertyChangedEventArgs<T>());
                 }
             }
         }
@@ -83,7 +83,13 @@ namespace XNATWL.Model
             return !this._value.Equals(newValue) && (this._value == null || !this._value.Equals(newValue));
         }
 
-        public override Type Type => throw new NotImplementedException();
+        public override Type Type
+        {
+            get
+            {
+                return this._type;
+            }
+        }
 
         public override event EventHandler<PropertyChangedEventArgs<T>> Changed;
     }

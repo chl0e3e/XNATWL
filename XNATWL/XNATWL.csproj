@@ -64,6 +64,7 @@
     <Compile Include="Model\AbstractListModel.cs" />
     <Compile Include="Model\AbstractProperty.cs" />
     <Compile Include="Model\AbstractTableColumnHeaderModel.cs" />
+    <Compile Include="Model\AbstractTableModel.cs" />
     <Compile Include="Model\AbstractTableSelectionModel.cs" />
     <Compile Include="Model\AbstractTreeTableModel.cs" />
     <Compile Include="Model\AutoCompletionDataSource.cs" />
@@ -121,8 +122,10 @@
     <Compile Include="Model\SimpleProperty.cs" />
     <Compile Include="Model\SimplePropertyList.cs" />
     <Compile Include="Model\SimpleStringModel.cs" />
+    <Compile Include="Model\SimpleTableModel.cs" />
     <Compile Include="Model\StringModel.cs" />
     <Compile Include="Model\TableColumnHeaderModel.cs" />
+    <Compile Include="Model\TableModel.cs" />
     <Compile Include="Model\TableSelectionModel.cs" />
     <Compile Include="Model\TreeTableModel.cs" />
     <Compile Include="Model\TreeTableNode.cs" />
