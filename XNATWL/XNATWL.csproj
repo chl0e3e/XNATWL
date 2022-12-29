@@ -111,8 +111,12 @@
     <Compile Include="Model\SimpleDateModel.cs" />
     <Compile Include="Model\SimpleEnumModel.cs" />
     <Compile Include="Model\SimpleFloatModel.cs" />
+    <Compile Include="Model\SimpleGraphLineModel.cs" />
+    <Compile Include="Model\SimpleGraphModel.cs" />
+    <Compile Include="Model\SimpleIntegerModel.cs" />
     <Compile Include="Model\SimpleListModel.cs" />
-    <Compile Include="Model\SimpleMRUModel.cs" />
+    <Compile Include="Model\SimpleListSelectionModel.cs" />
+    <Compile Include="Model\SimpleMRUListModel.cs" />
     <Compile Include="Model\StringModel.cs" />
     <Compile Include="Model\TableColumnHeaderModel.cs" />
     <Compile Include="Model\TableSelectionModel.cs" />

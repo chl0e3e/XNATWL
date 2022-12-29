@@ -7,7 +7,7 @@ using XNATWL.IO;
 
 namespace XNATWL.Model
 {
-    public class PersistentMRUListModel<T> : SimpleMRUModel<T>
+    public class PersistentMRUListModel<T> : SimpleMRUListModel<T>
     {
         private Preferences _preferences;
         private string _preferenceKey;

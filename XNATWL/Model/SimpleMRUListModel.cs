@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace XNATWL.Model
 {
-    public class SimpleMRUModel<T> : MRUListModel<T>
+    public class SimpleMRUListModel<T> : MRUListModel<T>
     {
         public int MaxEntries
         {
@@ -96,7 +96,7 @@ namespace XNATWL.Model
         protected int _maxEntries;
         protected List<T> _entries;
 
-        public SimpleMRUModel(int maxEntries)
+        public SimpleMRUListModel(int maxEntries)
         {
             this._entries = new List<T>();
             this._maxEntries = maxEntries;

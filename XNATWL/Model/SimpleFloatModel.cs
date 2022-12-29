@@ -33,7 +33,7 @@ namespace XNATWL.Model
 
             set
             {
-                float limitedValue = Math.Max(this._minValue, Math.Min(this._maxValue, value);
+                float limitedValue = Math.Max(this._minValue, Math.Min(this._maxValue, value));
                 float old = this._value;
                 if (value != old)
                 {
@@ -59,6 +59,6 @@ namespace XNATWL.Model
             }
         }
 
-        public override event EventHandler<IntegerChangedEventArgs> Changed;
+        public override event EventHandler<FloatChangedEventArgs> Changed;
     }
 }
