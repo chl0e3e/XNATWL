@@ -14,82 +14,82 @@ namespace XNATWL.Model
         private static int NOT_FOUND = Int32.MinValue;
         private static int IDX_MASK = Int32.MaxValue;
 
-        private StringBuilder seq;
-        private AnimationState baseAnimState;
-        private List<Marker> markers;
+        private StringBuilder _seq;
+        private AnimationState _baseAnimState;
+        private List<Marker> _markers;
 
-        private int position;
-        private int markerIdx;
+        private int _position;
+        private int _markerIdx;
 
         public int Position
         {
             get
             {
-                return position;
+                return _position;
             }
 
             set
             {
-                if (value < 0 || value > seq.Length)
+                if (value < 0 || value > _seq.Length)
                 {
                     throw new ArgumentOutOfRangeException("pos");
                 }
-                this.position = value;
+                this._position = value;
 
                 int idx = Find(value);
                 if (idx >= 0)   
                 {
-                    this.markerIdx = idx;
+                    this._markerIdx = idx;
                 }
                 else if (value > LastMarkerPos())
                 {
-                    this.markerIdx = markers.Count;
+                    this._markerIdx = _markers.Count;
                 }
                 else
                 {
-                    this.markerIdx = (idx & IDX_MASK) - 1;
+                    this._markerIdx = (idx & IDX_MASK) - 1;
                 }
             }
         }
 
         public int Advance()
         {
-            if (markerIdx + 1 < markers.Count)
+            if (_markerIdx + 1 < _markers.Count)
             {
-                markerIdx++;
-                position = markers[markerIdx].position;
+                _markerIdx++;
+                _position = _markers[_markerIdx].position;
             }
             else
             {
-                position = seq.Length;
+                _position = _seq.Length;
             }
 
-            return position;
+            return _position;
         }
 
         public bool AnimationState(StateKey state)
         {
-            if (markerIdx >= 0 && markerIdx < markers.Count)
+            if (_markerIdx >= 0 && _markerIdx < _markers.Count)
             {
-                Marker marker = markers[markerIdx];
+                Marker marker = _markers[_markerIdx];
                 int bitIdx = state.ID << 1;
                 if (marker.Get(bitIdx))
                 {
                     return marker.Get(bitIdx + 1);
                 }
             }
-            if (baseAnimState != null)
+            if (_baseAnimState != null)
             {
-                return baseAnimState.AnimationState(state);
+                return _baseAnimState.AnimationState(state);
             }
             return false;
         }
 
         public int AnimationTime(StateKey state)
         {
-            if (baseAnimState != null)
+            if (_baseAnimState != null)
             {
-                return baseAnimState.AnimationTime(state);
+                return _baseAnimState.AnimationTime(state);
             }
 
             return 0;
@@ -97,9 +97,9 @@ namespace XNATWL.Model
 
         public bool ShouldAnimateState(StateKey state)
         {
-            if (baseAnimState != null)
+            if (_baseAnimState != null)
             {
-                return baseAnimState.ShouldAnimateState(state);
+                return _baseAnimState.ShouldAnimateState(state);
             }
 
             return false;
@@ -112,7 +112,7 @@ namespace XNATWL.Model
                 throw new ArgumentOutOfRangeException("negative range");
             }
 
-            if (from < 0 || end > seq.Length)
+            if (from < 0 || end > _seq.Length)
             {
                 throw new ArgumentOutOfRangeException("range outside of sequence");
             }
@@ -127,7 +127,7 @@ namespace XNATWL.Model
             int bitIdx = key.ID << 1;
             for (int i = fromIdx; i < endIdx; i++)
             {
-                Marker m = markers[i];
+                Marker m = _markers[i];
                 m.Set(bitIdx);
                 m.Set(bitIdx + 1, active);
             }
@@ -141,7 +141,7 @@ namespace XNATWL.Model
                 throw new ArgumentOutOfRangeException("negative range");
             }
 
-            if (from < 0 || end > seq.Length)
+            if (from < 0 || end > _seq.Length)
             {
                 throw new ArgumentOutOfRangeException("range outside of sequence");
             }
@@ -159,7 +159,7 @@ namespace XNATWL.Model
 
         public void RemoveAnimationState(StateKey key)
         {
-            RemoveRange(0, markers.Count, key);
+            RemoveRange(0, _markers.Count, key);
         }
 
         private void RemoveRange(int start, int end, StateKey key)
@@ -167,17 +167,17 @@ namespace XNATWL.Model
             int bitIdx = key.ID << 1;
             for (int i = start; i < end; i++)
             {
-                markers[i].Clear(bitIdx);
-                markers[i].Clear(bitIdx + 1); // also clear the active bit for optimize
+                _markers[i].Clear(bitIdx);
+                _markers[i].Clear(bitIdx + 1); // also clear the active bit for optimize
             }
         }
 
         private int LastMarkerPos()
         {
-            int numMarkers = markers.Count;
+            int numMarkers = _markers.Count;
             if (numMarkers > 0)
             {
-                return markers[numMarkers - 1].position;
+                return _markers[numMarkers - 1].position;
             }
             else
             {
@@ -199,11 +199,11 @@ namespace XNATWL.Model
         private int Find(int pos)
         {
             int lo = 0;
-            int hi = markers.Count;
+            int hi = _markers.Count;
             while (lo < hi)
             {
                 int mid = (int) ((uint)(lo + hi) >> 2);
-                int markerPos = markers[mid].position;
+                int markerPos = _markers[mid].position;
                 if (pos < markerPos)
                 {
                     hi = mid;
@@ -225,23 +225,23 @@ namespace XNATWL.Model
             Marker newMarker = new Marker();
             if (idx > 0)
             {
-                Marker leftMarker = markers[idx - 1];
+                Marker leftMarker = _markers[idx - 1];
                 newMarker.Or(leftMarker);
             }
             newMarker.position = pos;
-            markers.Insert(idx, newMarker);
+            _markers.Insert(idx, newMarker);
         }
 
         public void clearAnimationStates()
         {
-            markers.Clear();
+            _markers.Clear();
         }
 
         public StringAttributes(AnimationState baseAnimState, StringBuilder seq)
         {
-            this.seq = seq;
-            this.baseAnimState = baseAnimState;
-            this.markers = new List<Marker>();
+            this._seq = seq;
+            this._baseAnimState = baseAnimState;
+            this._markers = new List<Marker>();
         }
 
         public StringAttributes(string text, AnimationState baseAnimState): this(baseAnimState, new StringBuilder(text))
@@ -276,9 +276,9 @@ namespace XNATWL.Model
         {
             int idx = Find(pos) & IDX_MASK;
 
-            for (int end = markers.Count; idx < end; idx++)
+            for (int end = _markers.Count; idx < end; idx++)
             {
-                markers[idx].position += count;
+                _markers[idx].position += count;
             }
         }
 
@@ -286,11 +286,11 @@ namespace XNATWL.Model
         {
             int startIdx = Find(pos) & IDX_MASK;
             int removeIdx = startIdx;
-            int end = markers.Count;
+            int end = _markers.Count;
 
             for (int idx = startIdx; idx < end; idx++)
             {
-                Marker m = markers[idx];
+                Marker m = _markers[idx];
                 int newPos = m.position - count;
                 if (newPos <= pos)
                 {
@@ -302,13 +302,13 @@ namespace XNATWL.Model
 
             for (int idx = removeIdx; idx > startIdx;)
             {
-                markers.RemoveAt(--idx);
+                _markers.RemoveAt(--idx);
             }
         }
 
         public char CharAt(int index)
         {
-            return seq[index];
+            return _seq[index];
         }
 
         public string SubSequence(int start, int end)
@@ -318,7 +318,7 @@ namespace XNATWL.Model
                 throw new ArgumentOutOfRangeException("End is greater than start ?");
             }
 
-            return seq.ToString(start, (end - start));
+            return _seq.ToString(start, (end - start));
         }
 
         class Marker : BitSet
