@@ -67,7 +67,7 @@ namespace XNATWL.Model
             return _position;
         }
 
-        public bool AnimationState(StateKey state)
+        public bool GetAnimationState(StateKey state)
         {
             if (_markerIdx >= 0 && _markerIdx < _markers.Count)
             {
@@ -80,16 +80,16 @@ namespace XNATWL.Model
             }
             if (_baseAnimState != null)
             {
-                return _baseAnimState.AnimationState(state);
+                return _baseAnimState.GetAnimationState(state);
             }
             return false;
         }
 
-        public int AnimationTime(StateKey state)
+        public int GetAnimationTime(StateKey state)
         {
             if (_baseAnimState != null)
             {
-                return _baseAnimState.AnimationTime(state);
+                return _baseAnimState.GetAnimationTime(state);
             }
 
             return 0;

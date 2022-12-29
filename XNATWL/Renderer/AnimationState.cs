@@ -17,7 +17,7 @@ namespace XNATWL.Renderer
          * @param state the state key.
          * @return time since last state change is ms.
          */
-        int AnimationTime(StateKey state);
+        int GetAnimationTime(StateKey state);
 
         /**
          * Checks if the given state is active.
@@ -25,7 +25,7 @@ namespace XNATWL.Renderer
          * @param state the state key.
          * @return true if the state is set
          */
-        bool AnimationState(StateKey state);
+        bool GetAnimationState(StateKey state);
 
         /**
          * Checks if this state was changed based on user interaction or not.
