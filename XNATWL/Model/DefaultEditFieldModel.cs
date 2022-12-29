@@ -25,6 +25,14 @@ namespace XNATWL.Model
             }
         }
 
+        public string Value
+        {
+            get
+            {
+                return stringBuilder.ToString();
+            }
+        }
+
         public char CharAt(int index)
         {
             return stringBuilder[index];
@@ -91,6 +99,11 @@ namespace XNATWL.Model
         public override string ToString()
         {
             return this.stringBuilder.ToString();
+        }
+
+        public StringBuilder AsStringBuilder()
+        {
+            return this.stringBuilder;
         }
     }
 }

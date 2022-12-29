@@ -123,6 +123,8 @@
     <Compile Include="Model\SimplePropertyList.cs" />
     <Compile Include="Model\SimpleStringModel.cs" />
     <Compile Include="Model\SimpleTableModel.cs" />
+    <Compile Include="Model\SortOrder.cs" />
+    <Compile Include="Model\StringAttributes.cs" />
     <Compile Include="Model\StringModel.cs" />
     <Compile Include="Model\TableColumnHeaderModel.cs" />
     <Compile Include="Model\TableModel.cs" />
@@ -131,7 +133,9 @@
     <Compile Include="Model\TreeTableNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Renderer\AnimationState.cs" />
+    <Compile Include="Renderer\AttributedString.cs" />
     <Compile Include="Utils\BitSet.cs" />
+    <Compile Include="Utils\CharSequence.cs" />
     <Compile Include="Utils\ObjectCopier.cs" />
   </ItemGroup>
   <ItemGroup>

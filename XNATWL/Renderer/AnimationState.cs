@@ -52,7 +52,7 @@ namespace XNATWL.Renderer
             this._id = id;
         }
 
-        string Name
+        public string Name
         {
             get
             {
@@ -61,7 +61,7 @@ namespace XNATWL.Renderer
         }
 
 
-        int ID
+        public int ID
         {
             get
             {

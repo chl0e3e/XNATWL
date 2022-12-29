@@ -8,7 +8,12 @@ namespace XNATWL.Model
 {
     public interface ObservableCharSequence
     {
-        event EventHandler<CharSequenceChangedEventArgs> CharSequenceChanged; 
+        event EventHandler<CharSequenceChangedEventArgs> CharSequenceChanged;
+
+        string Value
+        {
+            get;
+        }
     }
 
     public class CharSequenceChangedEventArgs : EventArgs
