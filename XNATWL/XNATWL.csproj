@@ -129,6 +129,7 @@
     <Compile Include="Model\TableColumnHeaderModel.cs" />
     <Compile Include="Model\TableModel.cs" />
     <Compile Include="Model\TableSelectionModel.cs" />
+    <Compile Include="Model\TableSingleSelectionModel.cs" />
     <Compile Include="Model\TreeTableModel.cs" />
     <Compile Include="Model\TreeTableNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
