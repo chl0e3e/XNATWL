@@ -36,7 +36,7 @@ namespace XNATWL.Model
                 }
                 this.position = value;
 
-                int idx = find(value);
+                int idx = Find(value);
                 if (idx >= 0)   
                 {
                     this.markerIdx = idx;
@@ -187,16 +187,16 @@ namespace XNATWL.Model
 
         private int MarkerIndexAt(int pos)
         {
-            int idx = find(pos);
+            int idx = Find(pos);
             if (idx < 0)
             {
                 idx &= IDX_MASK;
-                insertMarker(idx, pos);
+                InsertMarker(idx, pos);
             }
             return idx;
         }
 
-        private int find(int pos)
+        private int Find(int pos)
         {
             int lo = 0;
             int hi = markers.Count;
@@ -220,7 +220,7 @@ namespace XNATWL.Model
             return lo | NOT_FOUND;
         }
 
-        private void insertMarker(int idx, int pos)
+        private void InsertMarker(int idx, int pos)
         {
             Marker newMarker = new Marker();
             if (idx > 0)
@@ -274,7 +274,7 @@ namespace XNATWL.Model
 
         void Insert(int pos, int count)
         {
-            int idx = find(pos) & IDX_MASK;
+            int idx = Find(pos) & IDX_MASK;
 
             for (int end = markers.Count; idx < end; idx++)
             {
@@ -284,7 +284,7 @@ namespace XNATWL.Model
 
         void Delete(int pos, int count)
         {
-            int startIdx = find(pos) & IDX_MASK;
+            int startIdx = Find(pos) & IDX_MASK;
             int removeIdx = startIdx;
             int end = markers.Count;
 
