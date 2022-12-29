@@ -94,6 +94,7 @@
     <Compile Include="Model\ObservableCharSequence.cs" />
     <Compile Include="Model\OptionBooleanModel.cs" />
     <Compile Include="Model\OptionEnumModel.cs" />
+    <Compile Include="Model\PersistentStringModel.cs" />
     <Compile Include="Model\PersistentBooleanModel.cs" />
     <Compile Include="Model\PersistentColorModel.cs" />
     <Compile Include="Model\PersistentEnumModel.cs" />
@@ -101,6 +102,7 @@
     <Compile Include="Model\PersistentMRUListModel.cs" />
     <Compile Include="Model\SimpleListModel.cs" />
     <Compile Include="Model\SimpleMRUModel.cs" />
+    <Compile Include="Model\StringModel.cs" />
     <Compile Include="Model\TableColumnHeaderModel.cs" />
     <Compile Include="Model\TableSelectionModel.cs" />
     <Compile Include="Model\TreeTableModel.cs" />

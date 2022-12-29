@@ -93,8 +93,8 @@ namespace XNATWL.Model
         {
         }
 
-        private int _maxEntries;
-        private List<T> _entries;
+        protected int _maxEntries;
+        protected List<T> _entries;
 
         public SimpleMRUModel(int maxEntries)
         {

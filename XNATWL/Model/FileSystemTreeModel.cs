@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using XNATWL.IO;
 
 namespace XNATWL.Model
 {
@@ -256,9 +257,9 @@ namespace XNATWL.Model
     {
         public static FolderFilter Instance = new FolderFilter();
 
-        public bool Accept(FileSystemModel model, Object file)
+        public bool Accept(Object file)
         {
-            return model.IsFolder(file);
+            return ((FileSystemObject)file).IsFolder;
         }
     }
 }

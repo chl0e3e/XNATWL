@@ -8,7 +8,7 @@ namespace XNATWL.Model
 {
     public class FileSystemAutoCompletionDataSource : AutoCompletionDataSource
     {
-        FileSystemModel _fileSystemModel;
+        internal FileSystemModel _fileSystemModel;
         FileFilter _fileFilter;
 
         public FileSystemAutoCompletionDataSource(FileSystemModel fileSystemModel, FileFilter fileFilter)
@@ -84,15 +84,15 @@ namespace XNATWL.Model
                 this._nameFilter = text.Substring(prefixLength).ToUpper();
             }
 
-            public bool Accept(FileSystemModel fsm, Object file)
+            public bool Accept(Object file)
             {
                 FileFilter ff = this._source._fileFilter;
-                if (ff == null || ff.Accept(fsm, file))
+                if (ff == null || ff.Accept(file))
                 {
-                    int idx = MatchIndex(fsm.NameOf(file));
+                    int idx = MatchIndex(this._source._fileSystemModel.NameOf(file));
                     if (idx >= 0)
                     {
-                        AddName(fsm.PathOf(file), idx);
+                        AddName(this._source._fileSystemModel.PathOf(file), idx);
                     }
                 }
 
