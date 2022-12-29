@@ -53,7 +53,7 @@ namespace XNATWL.Model
 
             if (count > 0 || replacementLength > 0)
             {
-                this.stringBuilder.Replace(this.stringBuilder.ToString(start, start + count), replacement, start, 1));
+                this.stringBuilder.Replace(this.stringBuilder.ToString(start, start + count), replacement, start, 1);
                 this.CharSequenceChanged.Invoke(this, new CharSequenceChangedEventArgs(start, count, replacementLength));
             }
 

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using XNATWL.Model;
 using static System.Net.WebRequestMethods;
 
-namespace XNATWL
+namespace XNATWL.IO
 {
     public class FileSystemObject
     {

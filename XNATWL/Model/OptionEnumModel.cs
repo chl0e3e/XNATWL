@@ -37,7 +37,7 @@ namespace XNATWL.Model
         {
             ((EnumModel<T>)this._optionState).Changed += (sender, e) =>
             {
-                this.Changed.Invoke(this, new EnumChangedEventArgs<T>(e.Old.Equals(this._optionCode), e.New.Equals(this._optionCode)));
+                this.Changed.Invoke(this, new BooleanChangedEventArgs(e.Old.Equals(this._optionCode), e.New.Equals(this._optionCode)));
             };
         }
     }

@@ -19,7 +19,7 @@ namespace XNATWL.Model
             get;
         }
 
-        event EventHandler<EnumChangedEventArgs> Changed;
+        event EventHandler<EnumChangedEventArgs<T>> Changed;
     }
 
     public class EnumChangedEventArgs<T> : EventArgs where T : struct, IConvertible
