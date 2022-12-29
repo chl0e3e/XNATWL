@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace XNATWL.Model
 {
-    public interface MRUModel<T> : ListModel<T>
+    public interface MRUListModel<T> : ListModel<T>
     {
         int MaxEntries
         {
             get;
         }
 
-        int Entries
+        int MRUEntries
         {
             get;
         }
