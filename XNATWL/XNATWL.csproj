@@ -62,6 +62,7 @@
     <Compile Include="Model\AbstractFloatModel.cs" />
     <Compile Include="Model\AbstractIntegerModel.cs" />
     <Compile Include="Model\AbstractListModel.cs" />
+    <Compile Include="Model\AbstractProperty.cs" />
     <Compile Include="Model\AbstractTableColumnHeaderModel.cs" />
     <Compile Include="Model\AbstractTableSelectionModel.cs" />
     <Compile Include="Model\AbstractTreeTableModel.cs" />
@@ -117,6 +118,8 @@
     <Compile Include="Model\SimpleListModel.cs" />
     <Compile Include="Model\SimpleListSelectionModel.cs" />
     <Compile Include="Model\SimpleMRUListModel.cs" />
+    <Compile Include="Model\SimpleProperty.cs" />
+    <Compile Include="Model\SimplePropertyList.cs" />
     <Compile Include="Model\StringModel.cs" />
     <Compile Include="Model\TableColumnHeaderModel.cs" />
     <Compile Include="Model\TableSelectionModel.cs" />

@@ -39,13 +39,8 @@ namespace XNATWL.Model
 
     public class PropertyChangedEventArgs<T> : EventArgs
     {
-        public T Old;
-        public T New;
-        
-        public PropertyChangedEventArgs(T @old, T @new)
+        public PropertyChangedEventArgs()
         {
-            this.Old = @old;
-            this.New = @new;
         }
     }
 }
