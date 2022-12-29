@@ -39,8 +39,16 @@ namespace XNATWL.Model
             set;
         }
 
-        event EventHandler<ActionEventArgs> Action;
+        event EventHandler<ButtonActionEventArgs> Action;
         event EventHandler<ButtonStateChangedEventArgs> State;
+    }
+
+    public class ButtonActionEventArgs : EventArgs
+    {
+        public ButtonActionEventArgs()
+        {
+
+        }
     }
 
     public class ButtonStateChangedEventArgs : EventArgs
