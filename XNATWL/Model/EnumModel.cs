@@ -18,5 +18,19 @@ namespace XNATWL.Model
         {
             get;
         }
+
+        event EventHandler<EnumChangedEventArgs> Changed;
+    }
+
+    public class EnumChangedEventArgs<T> : EventArgs where T : struct, IConvertible
+    {
+        public T New;
+        public T Old;
+
+        public EnumChangedEventArgs(T @new, T @old)
+        {
+            New = @new;
+            Old = @old;
+        }
     }
 }

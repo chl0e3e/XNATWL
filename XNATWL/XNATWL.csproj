@@ -84,6 +84,7 @@
     <Compile Include="Model\GraphLineModel.cs" />
     <Compile Include="Model\GraphModel.cs" />
     <Compile Include="Model\IntegerModel.cs" />
+    <Compile Include="Model\AbstractOptionModel.cs" />
     <Compile Include="Model\ListModel.cs" />
     <Compile Include="Model\ListSelectionModel.cs" />
     <Compile Include="Model\MRUModel.cs" />
@@ -107,8 +108,6 @@
       <Name>FNA</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="NewFolder1\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

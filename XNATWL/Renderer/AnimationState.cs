@@ -17,7 +17,7 @@ namespace XNATWL.Renderer
          * @param state the state key.
          * @return time since last state change is ms.
          */
-        int getAnimationTime(StateKey state);
+        int AnimationTime(StateKey state);
 
         /**
          * Checks if the given state is active.
@@ -25,7 +25,7 @@ namespace XNATWL.Renderer
          * @param state the state key.
          * @return true if the state is set
          */
-        bool getAnimationState(StateKey state);
+        bool AnimationState(StateKey state);
 
         /**
          * Checks if this state was changed based on user interaction or not.
@@ -35,7 +35,7 @@ namespace XNATWL.Renderer
          * @param state the state key.
          * @return true if single shot animations should run or not.
          */
-        bool getShouldAnimateState(StateKey state);
+        bool ShouldAnimateState(StateKey state);
     }
 
     public class StateKey
@@ -43,10 +43,8 @@ namespace XNATWL.Renderer
         private String _name;
         private int _id;
 
-        private static Dictionary<String, StateKey> keys =
-                new Dictionary<String, StateKey>();
-        private static List<StateKey> keysByID =
-                new List<StateKey>();
+        private static Dictionary<String, StateKey> KEYS = new Dictionary<String, StateKey>();
+        private static List<StateKey> KEYS_BY_ID = new List<StateKey>();
 
         private StateKey(String name, int id)
         {
@@ -92,26 +90,26 @@ namespace XNATWL.Renderer
             {
                 throw new ArgumentOutOfRangeException("name");
             }
-            StateKey key = keys[name];
+            StateKey key = KEYS[name];
             if (key == null)
             {
-                key = new StateKey(name, keys.Count);
-                keys.Add(name, key);
-                keysByID.Add(key);
+                key = new StateKey(name, KEYS.Count);
+                KEYS.Add(name, key);
+                KEYS_BY_ID.Add(key);
             }
             return key;
         }
 
         public static StateKey Get(int id)
         {
-            return keysByID[id];
+            return KEYS_BY_ID[id];
         }
 
         public static int StateKeys
         {
             get
             {
-                return keys.Count;
+                return KEYS.Count;
             }
         }
     }
