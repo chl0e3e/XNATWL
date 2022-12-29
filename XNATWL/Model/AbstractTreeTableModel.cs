@@ -95,17 +95,17 @@ namespace XNATWL.Model
             }
         }
 
-        protected void FireNodesAdded(TreeTableNode parent, int idx, int count)
+        internal void FireNodesAdded(TreeTableNode parent, int idx, int count)
         {
             this.NodesAdded.Invoke(this, new TreeNodesChangedEventArgs(parent, idx, count));
         }
 
-        protected void FireNodesRemoved(TreeTableNode parent, int idx, int count)
+        internal void FireNodesRemoved(TreeTableNode parent, int idx, int count)
         {
             this.NodesRemoved.Invoke(this, new TreeNodesChangedEventArgs(parent, idx, count));
         }
 
-        protected void FireNodesChanged(TreeTableNode parent, int idx, int count)
+        internal void FireNodesChanged(TreeTableNode parent, int idx, int count)
         {
             this.NodesChanged.Invoke(this, new TreeNodesChangedEventArgs(parent, idx, count));
         }

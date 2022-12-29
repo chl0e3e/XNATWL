@@ -67,6 +67,7 @@
     <Compile Include="Model\AbstractTableModel.cs" />
     <Compile Include="Model\AbstractTableSelectionModel.cs" />
     <Compile Include="Model\AbstractTreeTableModel.cs" />
+    <Compile Include="Model\AbstractTreeTableNode.cs" />
     <Compile Include="Model\AutoCompletionDataSource.cs" />
     <Compile Include="Model\AutoCompletionResult.cs" />
     <Compile Include="Model\BitFieldBooleanModel.cs" />
