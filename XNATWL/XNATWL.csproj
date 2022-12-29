@@ -100,6 +100,8 @@
     <Compile Include="Model\PersistentEnumModel.cs" />
     <Compile Include="Model\PersistentIntegerModel.cs" />
     <Compile Include="Model\PersistentMRUListModel.cs" />
+    <Compile Include="Model\Property.cs" />
+    <Compile Include="Model\PropertyList.cs" />
     <Compile Include="Model\SimpleListModel.cs" />
     <Compile Include="Model\SimpleMRUModel.cs" />
     <Compile Include="Model\StringModel.cs" />

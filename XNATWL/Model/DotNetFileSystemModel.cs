@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using XNATWL.IO;
 using static System.Net.WebRequestMethods;
 
 namespace XNATWL.Model
