@@ -9,4 +9,10 @@ namespace XNATWL.Renderer
     public interface MouseCursor
     {
     }
+
+
+    public class DefaultMouseCursor : MouseCursor
+    {
+        public static DefaultMouseCursor OS_DEFAULT = new DefaultMouseCursor();
+    }
 }

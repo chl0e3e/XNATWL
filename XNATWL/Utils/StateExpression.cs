@@ -15,7 +15,7 @@ namespace XNATWL.Utils
         {
         }
 
-        public abstract bool Evaluate(AnimationState animationState);
+        public abstract bool Evaluate(Renderer.AnimationState animationState);
 
         public abstract void GetUsedStateKeys(BitSet bs);
 
@@ -120,15 +120,6 @@ namespace XNATWL.Utils
             return new Logic(kind, children.ToArray());
         }
 
-
-        internal class ParseException : Exception
-        {
-            public ParseException(string message, int position)
-            {
-
-            }
-        }
-
         internal class StringIterator
         {
             readonly string _str;
@@ -185,8 +176,7 @@ namespace XNATWL.Utils
             {
                 int start = _pos;
 
-                CodeDomProvider provider = CodeDomProvider.CreateProvider("C#");
-                while (HasMore() && provider.IsValidIdentifier(Peek().ToString()))
+                while (HasMore() && CharUtil.IsCSharpIdentifier(Peek()))
                 {
                     _pos++;
                 }
@@ -213,7 +203,7 @@ namespace XNATWL.Utils
             this._xor = kind == '^';
         }
 
-        public override bool Evaluate(AnimationState animationState)
+        public override bool Evaluate(Renderer.AnimationState animationState)
         {
             bool result = _and ^ _negate;
             foreach (StateExpression e in _children)
@@ -249,7 +239,7 @@ namespace XNATWL.Utils
             this._state = state;
         }
 
-        public override bool Evaluate(AnimationState animationState)
+        public override bool Evaluate(Renderer.AnimationState animationState)
         {
             return _negate ^ (animationState != null && animationState.GetAnimationState(_state));
         }

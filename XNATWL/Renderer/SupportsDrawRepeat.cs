@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace XNATWL.Renderer
 {
-    public interface SupportDrawRepeat
+    public interface SupportsDrawRepeat
     {
         void Draw(AnimationState animationState, int x, int y, int width, int height,
                 int repeatCountX, int repeatCountY);

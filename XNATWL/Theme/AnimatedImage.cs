@@ -9,7 +9,7 @@ namespace XNATWL.Theme
 {
     public class AnimatedImage : Image, HasBorder
     {
-        abstract class Element
+        public abstract class Element
         {
             internal int duration;
 
@@ -20,9 +20,9 @@ namespace XNATWL.Theme
                     int width, int height, AnimatedImage ai, Renderer.AnimationState animationState);
         }
 
-        class Img : Element
+        public class Img : Element
         {
-            Image image;
+            public Image image;
             float r;
             float g;
             float b;
@@ -32,7 +32,7 @@ namespace XNATWL.Theme
             float zoomCenterX;
             float zoomCenterY;
 
-            Img(int duration, Image image, Color tintColor, float zoomX, float zoomY, float zoomCenterX, float zoomCenterY)
+            public Img(int duration, Image image, Color tintColor, float zoomX, float zoomY, float zoomCenterX, float zoomCenterY)
             {
                 if (duration < 0)
                 {
@@ -103,13 +103,13 @@ namespace XNATWL.Theme
             }
         }
 
-        class Repeat : Element
+        public class Repeat : Element
         {
-            Element[] children;
-            int repeatCount;
-            int singleDuration;
+            public Element[] children;
+            public int repeatCount;
+            public int singleDuration;
 
-            Repeat(Element[] children, int repeatCount)
+            public Repeat(Element[] children, int repeatCount)
             {
                 this.children = children;
                 this.repeatCount = repeatCount;
@@ -222,7 +222,7 @@ namespace XNATWL.Theme
         int height;
         int frozenTime;
 
-        AnimatedImage (Renderer.Renderer renderer, Element root, String timeSource, Border border, Color tintColor, int frozenTime)
+        public AnimatedImage(Renderer.Renderer renderer, Element root, String timeSource, Border border, Color tintColor, int frozenTime)
         {
             this.renderer = renderer;
             this.root = root;
@@ -237,7 +237,7 @@ namespace XNATWL.Theme
             this.frozenTime = frozenTime;
         }
 
-        AnimatedImage (AnimatedImage src, Color tintColor)
+        public AnimatedImage(AnimatedImage src, Color tintColor)
         {
             this.renderer = src.renderer;
             this.root = src.root;

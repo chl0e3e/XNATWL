@@ -87,7 +87,7 @@ namespace XNATWL.Utils
          * @return the index of the first matching expression or
          *         {@link #getNumExpressions()} when no expression matches
          */
-        public int Evaluate(AnimationState animationState)
+        public int Evaluate(Renderer.AnimationState animationState)
         {
             if (programKeys != null)
             {
@@ -96,7 +96,7 @@ namespace XNATWL.Utils
             return EvaluateExpr(animationState);
         }
 
-        private int EvaluateExpr(AnimationState animationState)
+        private int EvaluateExpr(Renderer.AnimationState animationState)
         {
             int i = 0;
             for (int n = expressions.Length; i < n; i++)
@@ -109,7 +109,7 @@ namespace XNATWL.Utils
             return i;
         }
 
-        private int EvaluateProgram(AnimationState animationState)
+        private int EvaluateProgram(Renderer.AnimationState animationState)
         {
             int pos = 0;
             do

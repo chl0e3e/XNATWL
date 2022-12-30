@@ -316,5 +316,10 @@ namespace XNATWL.IO
             this._type = type;
             this._path = path;
         }
+
+        public FileSystemObject(FileSystemObject parentDirectory, string fileName) : this(FileSystemObjectType.FILE, System.IO.Path.Combine(parentDirectory.Path, fileName))
+        {
+
+        }
     }
 }

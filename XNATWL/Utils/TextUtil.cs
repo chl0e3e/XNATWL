@@ -115,6 +115,53 @@ namespace XNATWL.Utils
             return trim(s, start, s.Length);
         }
 
+        public static int countElements(String str)
+        {
+            int count = 0;
+            for (int pos = 0; pos < str.Length;)
+            {
+                count++;
+                pos = indexOf(str, ',', pos) + 1;
+            }
+            return count;
+        }
+
+        public static int[] parseIntArray(String str)
+        {
+            int count = countElements(str);
+            int[] result = new int[count];
+            for (int idx = 0, pos = 0; idx < count; idx++)
+            {
+                int comma = indexOf(str, ',', pos);
+                result[idx] = Int32.Parse(str.Substring(pos, comma));
+                pos = comma + 1;
+            }
+            return result;
+        }
+
+        public static bool isInteger(String str)
+        {
+            int idx = 0;
+            int len = str.Length;
+            if (len > 0 && str[0] == '-')
+            {
+                idx++;
+            }
+            if (idx == len)
+            {
+                return false;
+            }
+            do
+            {
+                char ch = str[idx++];
+                if (ch < '0' || ch > '9')
+                {
+                    return false;
+                }
+            } while (idx < len);
+            return true;
+        }
+
         /**
          * Returns a whitespace trimmed substring.
          * 
