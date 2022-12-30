@@ -61,11 +61,10 @@ namespace XNATWL.Renderer
                 Object raw = values[param._ordinal];
                 if (raw != null)
                 {
-                    //                    return param.dataClass.cast(raw);
-                    return (T) Convert.ChangeType(raw, param._dataClass);
+                    return (T) raw;
                 }
             }
-            return param._defaultValue;
+            return param.getDefaultValue();
         }
 
         /**
@@ -157,14 +156,14 @@ namespace XNATWL.Renderer
             return (a == b) || (a != null && a.Equals(b));
         }
 
-        public class Parameter<T>
+        public class Parameter
         {
             internal String _name;
             internal Type _dataClass;
-            internal T _defaultValue;
+            internal object _defaultValue;
             internal int _ordinal;
 
-            internal Parameter(String name, Type dataClass, T defaultValue, int ordinal)
+            internal Parameter(String name, Type dataClass, object defaultValue, int ordinal)
             {
                 this._name = name;
                 this._dataClass = dataClass;
@@ -182,7 +181,7 @@ namespace XNATWL.Renderer
                 return _dataClass;
             }
 
-            public T getDefaultValue()
+            public object getDefaultValue()
             {
                 return _defaultValue;
             }
@@ -190,6 +189,19 @@ namespace XNATWL.Renderer
             public override String ToString()
             {
                 return _ordinal + ":" + _name + ":" + _dataClass.Name;
+            }
+        }
+
+        public class Parameter<T> : Parameter
+        {
+            internal Parameter(String name, Type dataClass, T defaultValue, int ordinal) : base(name, dataClass, defaultValue, ordinal)
+            {
+
+            }
+
+            public new T getDefaultValue()
+            {
+                return (T) _defaultValue;
             }
         }
     }

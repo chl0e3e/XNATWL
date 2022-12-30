@@ -26,16 +26,10 @@ namespace XNATWL.Renderer
             get;
         }
 
-
         Image GetImage(int x, int y, int width, int height, Color tintColor, bool tiled, TextureRotation rotation);
 
         MouseCursor CreateCursor(int x, int y, int width, int height, int hotSpotX, int hotSpotY, Image imageRef);
 
-        /**
-         * After calling this function getImage() and createCursor() may fail to work
-         */
         void ThemeLoadingDone();
-
-
     }
 }
