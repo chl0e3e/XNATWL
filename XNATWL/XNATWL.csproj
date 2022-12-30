@@ -164,6 +164,7 @@
     <Compile Include="TextArea\BoxAttribute.cs" />
     <Compile Include="TextArea\CSSStyle.cs" />
     <Compile Include="TextArea\OrderedListType.cs" />
+    <Compile Include="TextArea\SimpleTextAreaModel.cs" />
     <Compile Include="TextArea\Style.cs" />
     <Compile Include="TextArea\StyleAttribute.cs" />
     <Compile Include="TextArea\StyleSheetKey.cs" />
