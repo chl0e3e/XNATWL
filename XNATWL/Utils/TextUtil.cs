@@ -10,7 +10,7 @@ namespace XNATWL.Utils
     {
         public static int MAX_ROMAN_INTEGER = 39999;
         private static String ROMAN_NUMBERS = "ↂMↂↁMↁMCMDCDCXCLXLXIXVIVI";
-        private static String ROMAN_VALUES = "\u2710\u2328\u1388\u0FA0\u03E8\u0384\u01F4\u0190\144\132\62\50\12\11\5\4\1";
+        private static String ROMAN_VALUES = "\u2710\u2328\u1388\u0FA0\u03E8\u0384\u01F4\u0190\x64\x5A\x32\x28\x0A\x09\x05\x04\x01";
 
         public static string ToCharListNumber(int value, string list)
         {
