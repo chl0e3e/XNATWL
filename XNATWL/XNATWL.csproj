@@ -161,6 +161,8 @@
     <Compile Include="Renderer\Resource.cs" />
     <Compile Include="Renderer\SupportDrawRepeat.cs" />
     <Compile Include="Renderer\Texture.cs" />
+    <Compile Include="TextArea\BoxAttribute.cs" />
+    <Compile Include="TextArea\CSSStyle.cs" />
     <Compile Include="TextArea\OrderedListType.cs" />
     <Compile Include="TextArea\Style.cs" />
     <Compile Include="TextArea\StyleAttribute.cs" />
@@ -173,6 +175,7 @@
     <Compile Include="Utils\BitSet.cs" />
     <Compile Include="Utils\CharSequence.cs" />
     <Compile Include="Utils\ObjectCopier.cs" />
+    <Compile Include="Utils\ParameterStringParser.cs" />
     <Compile Include="Utils\StateExpression.cs" />
     <Compile Include="Utils\StateSelect.cs" />
     <Compile Include="Utils\StateSelectOptimizer.cs" />

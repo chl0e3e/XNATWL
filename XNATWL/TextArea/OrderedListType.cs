@@ -23,7 +23,7 @@ namespace XNATWL.TextArea
             this.characterList = characterList;
         }
 
-        public string Format(int nr)
+        public virtual string Format(int nr)
         {
             if (nr >= 1 && characterList != null)
             {
