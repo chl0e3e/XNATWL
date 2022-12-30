@@ -9,7 +9,7 @@ using XNATWL.Utils;
 
 namespace XNATWL.Renderer
 {
-    internal interface FontMapper
+    public interface FontMapper
     {
         /**
          * Retrive the cloest font for the given parameters
