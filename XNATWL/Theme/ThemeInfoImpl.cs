@@ -3,26 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using XNATWL.Utils;
 
 namespace XNATWL.Theme
 {
     public class ThemeInfoImpl : ParameterMapImpl, ThemeInfo
     {
         private String name;
-        private Dictionary<String, ThemeInfoImpl> children;
+        private CascadedHashMap<string, ThemeInfoImpl> children;
         internal bool maybeUsedFromWildcard;
         internal String wildcardImportPath;
 
-        public ThemeInfoImpl(ThemeManager manager, String name, ThemeInfoImpl parent) : base(manager, parent)
+        public ThemeInfoImpl(ThemeManager manager, string name, ThemeInfoImpl parent) : base(manager, parent)
         {
             this.name = name;
-            this.children = new Dictionary<String, ThemeInfoImpl>();
+            this.children = new CascadedHashMap<string, ThemeInfoImpl>();
         }
 
         void copy(ThemeInfoImpl src)
         {
             base.copy(src);
-            children.collapseAndSetFallback(src.children);
+            children.CollapseAndSetFallback(src.children);
             wildcardImportPath = src.wildcardImportPath;
         }
 
@@ -38,7 +39,7 @@ namespace XNATWL.Theme
 
         public ThemeInfo getChildThemeImpl(String theme, bool useFallback)
         {
-            ThemeInfo info = children[theme];
+            ThemeInfo info = (ThemeInfo) children.CascadingEntry(theme);
             if (info == null)
             {
                 if (wildcardImportPath != null)
@@ -55,7 +56,7 @@ namespace XNATWL.Theme
 
         public ThemeInfoImpl getTheme(String name)
         {
-            return children[name];
+            return (ThemeInfoImpl) children.CascadingEntry(name);
         }
 
         public void putTheme(String name, ThemeInfoImpl child)

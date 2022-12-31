@@ -5,21 +5,22 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using XNATWL.Renderer;
+using XNATWL.Utils;
 
 namespace XNATWL.Theme
 {
     public class ParameterMapImpl : ThemeChildImpl, ParameterMap
     {
-        private Dictionary<String, Object> parameters;
+        internal CascadedHashMap<String, Object> parameters;
 
         public ParameterMapImpl(ThemeManager manager, ThemeInfoImpl parent) : base(manager, parent)
         {
-            this.parameters = new Dictionary<String, Object>();
+            this.parameters = new CascadedHashMap<String, Object>();
         }
 
         public void copy(ParameterMapImpl src)
         {
-            parameters.collapseAndSetFallback(src.parameters);
+            parameters.CollapseAndSetFallback(src.parameters);
         }
 
         public Font getFont(String name)
@@ -129,9 +130,9 @@ namespace XNATWL.Theme
             return defaultValue;
         }
 
-        public Object getParameterValue(String name, bool warnIfNotPresent)
+        public object getParameterValue(String name, bool warnIfNotPresent)
         {
-            Object value = parameters[name];
+            object value = this.parameters.CascadingEntry(name);
             if (value == null && warnIfNotPresent)
             {
                 missingParameter(name, null);
@@ -146,7 +147,7 @@ namespace XNATWL.Theme
 
         public object getParameterValue(String name, bool warnIfNotPresent, Type type, object defaultValue)
         {
-            object value = parameters[name];
+            object value = this.parameters.CascadingEntry(name);
 
             if (value == null && warnIfNotPresent)
             {
@@ -167,7 +168,7 @@ namespace XNATWL.Theme
 
         public T getParameterValue<T>(String name, bool warnIfNotPresent, Type type, T defaultValue)
         {
-            T value = (T) parameters[name];
+            T value = (T) this.parameters.CascadingEntry(name);
 
             if (value == null && warnIfNotPresent)
             {
@@ -204,10 +205,10 @@ namespace XNATWL.Theme
 
         public object getParam(String name)
         {
-            return parameters[name];
+            return this.parameters[name];
         }
 
-        public void put(Dictionary<String, object> parameters)
+        public void put(Dictionary<string, object> parameters)
         {
             foreach (string key in parameters.Keys)
             {
@@ -215,10 +216,10 @@ namespace XNATWL.Theme
             }
         }
 
-        public void put(String paramName, Object value)
+        public void put(string paramName, object value)
         {
-            Object old = this.parameters[paramName];
-            this.parameters[paramName] = value;
+            object old = this.parameters.PutCascadingEntry(paramName, value);
+
             if (old != null && value != null)
             {
                 Type oldType = old.GetType();
