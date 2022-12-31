@@ -54,6 +54,8 @@ namespace XNATWL
          */
         ParameterList getParameterList(string name);
 
+        object getParameter(string name, object defaultValue);
+
         bool getParameter(string name, bool defaultValue);
 
         int getParameter(string name, int defaultValue);

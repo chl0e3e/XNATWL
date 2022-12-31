@@ -107,7 +107,7 @@ namespace XNATWL
          * @param iterations the number of iterations required to solve layout
          * @param loop the widgets involved in a layout loop if the layout could not be solved - is null if layout was solved
          */
-        public void guiLayoutValidated(int iterations, Collection<Widget> loop)
+        public void guiLayoutValidated(int iterations, ICollection<Widget> loop)
         {
             if (loop != null)
             {

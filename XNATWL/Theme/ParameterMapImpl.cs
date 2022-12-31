@@ -69,6 +69,16 @@ namespace XNATWL.Theme
             return value;
         }
 
+        public object getParameter(String name, object defaultValue)
+        {
+            Object value = getParameterValue(name, true, typeof(object));
+            if (value != null)
+            {
+                return (object)value;
+            }
+            return defaultValue;
+        }
+
         public bool getParameter(String name, bool defaultValue)
         {
             Object value = getParameterValue(name, true, typeof(bool));

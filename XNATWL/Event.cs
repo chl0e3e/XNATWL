@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization.Formatters;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -286,20 +287,20 @@ namespace XNATWL
         public const int KEY_POWER = 0xDE;
         public const int KEY_SLEEP = 0xDF;
 
-        EventType type;
-        int mouseX;
-        int mouseY;
-        int mouseWheelDelta;
-        int mouseButton;
-        int mouseClickCount;
-        bool dragEvent;
-        bool keyRepeated;
-        char keyChar;
-        int keyCode;
-        int modifier;
+        internal EventType type;
+        internal int mouseX;
+        internal int mouseY;
+        internal int mouseWheelDelta;
+        internal int mouseButton;
+        internal int mouseClickCount;
+        internal bool dragEvent;
+        internal bool keyRepeated;
+        internal char keyChar;
+        internal int keyCode;
+        internal int modifier;
         private Event subEvent;
 
-        Event()
+        internal Event()
         {
         }
 
@@ -479,7 +480,7 @@ namespace XNATWL
             return modifier;
         }
 
-        Event createSubEvent(EventType newEventType)
+        internal Event createSubEvent(EventType newEventType)
         {
             if (subEvent == null)
             {
@@ -499,7 +500,7 @@ namespace XNATWL
             return subEvent;
         }
 
-        Event createSubEvent(int x, int y)
+        internal Event createSubEvent(int x, int y)
         {
             Event e = createSubEvent(type);
             e.mouseX = x;
@@ -507,7 +508,7 @@ namespace XNATWL
             return e;
         }
 
-        void setModifier(int mask, bool pressed)
+        internal void setModifier(int mask, bool pressed)
         {
             if (pressed)
             {
@@ -519,7 +520,7 @@ namespace XNATWL
             }
         }
 
-        void setModifiers(bool pressed)
+        internal void setModifiers(bool pressed)
         {
             int mask;
             switch (keyCode)

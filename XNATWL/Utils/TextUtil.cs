@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -124,6 +125,18 @@ namespace XNATWL.Utils
                 pos = indexOf(str, ',', pos) + 1;
             }
             return count;
+        }
+
+        public static string toPrintableString(char ch)
+        {
+            if (Char.IsControl(ch))
+            {
+                return "\\x" + Convert.ToByte(ch).ToString("x2"); // https://stackoverflow.com/a/12527716
+            }
+            else
+            {
+                return Char.ToString(ch);
+            }
         }
 
         public static int[] parseIntArray(String str)
