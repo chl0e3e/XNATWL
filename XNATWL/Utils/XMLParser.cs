@@ -433,6 +433,11 @@ namespace XNATWL.Utils
             return parseEnum<E>(enumClazz, nextText());
         }
 
+        public object parseEnumFromText(Type enumClazz)
+        {
+            return parseEnum(enumClazz, nextText());
+        }
+
         public Dictionary<string, string> getUnusedAttributes()
         {
             if (unusedAttributes.IsEmpty())
@@ -494,6 +499,25 @@ namespace XNATWL.Utils
 
             throw new XmlPullParserException("Unknown enum value \"" + value + "\" for enum class " + enumClazz, xpp, null);
         }
+
+        protected Object parseEnum(Type enumClazz, string value)
+        {
+            if (!enumClazz.IsEnum)
+            {
+                throw error("enum class provided reflects that it is not an enum");
+            }
+
+            foreach (object e in Enum.GetValues(enumClazz))
+            {
+                if (e.ToString().ToLower() == value.ToLower())
+                {
+                    return e;
+                }
+            }
+
+            throw new XmlPullParserException("Unknown enum value \"" + value + "\" for enum class " + enumClazz, xpp, null);
+        }
+
 
         public bool parseBool(string value)
         {
@@ -569,6 +593,8 @@ namespace XNATWL.Utils
     public class XmlPullParserException : Exception
     {
         public object Parser;
+        public int LineNumber = -1;
+        public int LinePosition = -1;
 
         public XmlPullParserException(string message) : base(message)
         {
@@ -578,6 +604,8 @@ namespace XNATWL.Utils
         public XmlPullParserException(string message, object parser, Exception chain) : base(message, chain)
         {
             this.Parser = parser;
+            this.LineNumber = ((XMLParser)parser).getLineNumber();
+            this.LinePosition = ((XMLParser)parser).getColumnNumber();
         }
     }
 

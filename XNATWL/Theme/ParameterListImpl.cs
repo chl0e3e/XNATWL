@@ -9,7 +9,7 @@ namespace XNATWL.Theme
 {
     public class ParameterListImpl : ThemeChildImpl, ParameterList
     {
-        List<object> parameters;
+        internal List<object> parameters;
 
         public ParameterListImpl(ThemeManager manager, ThemeInfoImpl parent) : base(manager, parent)
         {

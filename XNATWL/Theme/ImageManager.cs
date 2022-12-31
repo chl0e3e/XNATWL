@@ -22,10 +22,10 @@ namespace XNATWL.Theme
 
         private Texture currentTexture;
 
-        static EmptyImage NONE = new EmptyImage(0, 0);
+        internal static EmptyImage NONE = new EmptyImage(0, 0);
         private static MouseCursor INHERIT_CURSOR = DefaultMouseCursor.OS_DEFAULT;// new MouseCursor() { };
 
-        ImageManager(ParameterMapImpl constants, Renderer.Renderer renderer)
+        public ImageManager(ParameterMapImpl constants, Renderer.Renderer renderer)
         {
             this.constants = constants;
             this.renderer = renderer;
@@ -38,18 +38,18 @@ namespace XNATWL.Theme
             cursors.Add("inherit", INHERIT_CURSOR);
         }
 
-        Image getImage(String name)
+        public Image getImage(String name)
         {
             return images[name];
         }
 
-        Image getReferencedImage(XMLParser xmlp)
+        public Image getReferencedImage(XMLParser xmlp)
         {
             String reference = xmlp.getAttributeNotNull("ref");
             return getReferencedImage(xmlp, reference);
         }
 
-        Image getReferencedImage(XMLParser xmlp, String reference)
+        public Image getReferencedImage(XMLParser xmlp, String reference)
         {
             if (reference.EndsWith(".*"))
             {
@@ -63,7 +63,7 @@ namespace XNATWL.Theme
             return img;
         }
 
-        MouseCursor getReferencedCursor(XMLParser xmlp, String reference)
+        public MouseCursor getReferencedCursor(XMLParser xmlp, String reference)
         {
             MouseCursor cursor = cursors[reference];
             if (cursor == null)
@@ -73,7 +73,7 @@ namespace XNATWL.Theme
             return unwrapCursor(cursor);
         }
 
-        Dictionary<String, Image> getImages(String reference, String name)
+        public Dictionary<String, Image> getImages(String reference, String name)
         {
             return ParserUtil.resolve(images, reference, name, null);
         }
@@ -83,12 +83,12 @@ namespace XNATWL.Theme
             return unwrapCursor(cursors[name]);
         }
 
-        Dictionary<String, MouseCursor> getCursors(String reference, String name)
+        public Dictionary<String, MouseCursor> getCursors(String reference, String name)
         {
             return ParserUtil.resolve(cursors, reference, name, INHERIT_CURSOR);
         }
 
-        void parseImages(XMLParser xmlp, FileSystemObject baseFolder)
+        public void parseImages(XMLParser xmlp, FileSystemObject baseFolder)
         {
             xmlp.require(XmlPullParser.START_TAG, null, null);
 

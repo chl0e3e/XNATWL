@@ -46,4 +46,12 @@ namespace XNATWL.Renderer
          */
         bool RegisterFont(String fontFamily, FileSystemObject file);
     }
+
+
+    public class FontMapperStatics
+    {
+        public static int STYLE_NORMAL = 0;
+        public static int STYLE_BOLD = 1;
+        public static int STYLE_ITALIC = 2;
+    }
 }

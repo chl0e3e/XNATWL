@@ -10,8 +10,8 @@ namespace XNATWL.Theme
     {
         private String name;
         private Dictionary<String, ThemeInfoImpl> children;
-        bool maybeUsedFromWildcard;
-        String wildcardImportPath;
+        internal bool maybeUsedFromWildcard;
+        internal String wildcardImportPath;
 
         public ThemeInfoImpl(ThemeManager manager, String name, ThemeInfoImpl parent) : base(manager, parent)
         {
@@ -36,7 +36,7 @@ namespace XNATWL.Theme
             return getChildThemeImpl(theme, true);
         }
 
-        ThemeInfo getChildThemeImpl(String theme, bool useFallback)
+        public ThemeInfo getChildThemeImpl(String theme, bool useFallback)
         {
             ThemeInfo info = children[theme];
             if (info == null)
@@ -53,12 +53,12 @@ namespace XNATWL.Theme
             return info;
         }
 
-        ThemeInfoImpl getTheme(String name)
+        public ThemeInfoImpl getTheme(String name)
         {
             return children[name];
         }
 
-        void putTheme(String name, ThemeInfoImpl child)
+        public void putTheme(String name, ThemeInfoImpl child)
         {
             children.Add(name, child);
         }

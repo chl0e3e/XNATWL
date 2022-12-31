@@ -207,7 +207,7 @@ namespace XNATWL.Theme
             return parameters[name];
         }
 
-        void put(Dictionary<String, object> parameters)
+        public void put(Dictionary<String, object> parameters)
         {
             foreach (string key in parameters.Keys)
             {
@@ -215,7 +215,7 @@ namespace XNATWL.Theme
             }
         }
 
-        void put(String paramName, Object value)
+        public void put(String paramName, Object value)
         {
             Object old = this.parameters[paramName];
             this.parameters[paramName] = value;
