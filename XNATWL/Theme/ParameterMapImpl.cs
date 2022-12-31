@@ -20,7 +20,7 @@ namespace XNATWL.Theme
 
         public void copy(ParameterMapImpl src)
         {
-            parameters.CollapseAndSetFallback(src.parameters);
+            this.parameters.CollapseAndSetFallback(src.parameters);
         }
 
         public Font getFont(String name)

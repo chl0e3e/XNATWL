@@ -157,13 +157,30 @@ namespace XNATWL.Theme
                 throw xmlp.error("Unable to parse", ex);
             }
         }
-        
-        /*
+
         public static SortedDictionary<String, V> find<V>(SortedDictionary<String, V> map, String baseName)
         {
-            return map.subMap(baseName, baseName.Concat("\uFFFF"));
+            SortedDictionary<string, V> subMap = new SortedDictionary<string, V>();
+            bool adding = false;
+            foreach(string key in map.Keys)
+            {
+                if (key == baseName)
+                {
+                    adding = true;
+                    subMap[key] = map[key];
+                }
+                else if (key == baseName.Concat("\uFFFF").ToString())
+                {
+                    subMap[key] = map[key];
+                    break;
+                }
+                else if(adding)
+                {
+                    subMap[key] = map[key];
+                }
+            }
+            return subMap;
         }
-        */
 
         public static Dictionary<String, V> resolve<V>(SortedDictionary<String, V> map, String reference, String name, V mapToNull)
         {
