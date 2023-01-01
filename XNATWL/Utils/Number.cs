@@ -8,7 +8,7 @@ namespace XNATWL.Utils
 {
     public class Number
     {
-        private BigRational _number;
+        internal BigRational _number;
 
         public Number(float n)
         {
@@ -23,6 +23,11 @@ namespace XNATWL.Utils
         public Number(long n)
         {
             this._number = n;
+        }
+
+        internal Number(BigRational number)
+        {
+            this._number = number;
         }
 
         public bool IsRational()
@@ -56,5 +61,20 @@ namespace XNATWL.Utils
         {
             return ((double)_number);
         }
+
+        public static Number operator +(Number a) => a;
+        public static Number operator -(Number a) => new Number(-a._number);
+
+        public static Number operator +(Number a, Number b)
+            => new Number(a._number + b._number);
+
+        public static Number operator -(Number a, Number b)
+            => new Number(a._number - b._number);
+
+        public static Number operator *(Number a, Number b)
+            => new Number(a._number * b._number);
+
+        public static Number operator /(Number a, Number b)
+            => new Number(a._number / b._number);
     }
 }

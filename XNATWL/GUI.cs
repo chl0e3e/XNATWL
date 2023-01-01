@@ -59,7 +59,7 @@ namespace XNATWL
         private Renderer.Renderer renderer;
         private Input.Input input;
 
-        long curTime;
+        internal long curTime;
         private int deltaTime;
 
         private Widget rootPane;
@@ -598,7 +598,7 @@ namespace XNATWL
             updateTimers();
             invokeRunables();
             validateLayout();
-            draw();
+            //draw();
             setCursor();
         }
 

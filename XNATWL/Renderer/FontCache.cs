@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace XNATWL.Renderer
 {
-    public interface FontCache
+    public interface FontCache : Resource
     {
         int Width
         {

@@ -53,6 +53,32 @@ namespace XNATWL.Utils
             return sb.ToString();
         }
 
+        public static String notNull(String str)
+        {
+            if (str == null)
+            {
+                return "";
+            }
+            return str;
+        }
+
+        public static int countNumLines(string str)
+        {
+            int n = str.Length;
+            int count = 0;
+            if (n > 0)
+            {
+                count++;
+                for (int i = 0; i < n; i++)
+                {
+                    if (str[i] == '\n')
+                    {
+                        count++;
+                    }
+                }
+            }
+            return count;
+        }
 
         /**
          * Searches for a specific character.
@@ -143,12 +169,19 @@ namespace XNATWL.Utils
         {
             int count = countElements(str);
             int[] result = new int[count];
+            int i = 0;
+            foreach(string numStr in str.Split(','))
+            {
+                result[i++] = int.Parse(numStr);
+            }
+            /*int[] result = new int[count];
             for (int idx = 0, pos = 0; idx < count; idx++)
             {
                 int comma = indexOf(str, ',', pos);
+                System.Diagnostics.Debug.WriteLine("Parsing intArray: " + str.Substring(pos, comma));
                 result[idx] = Int32.Parse(str.Substring(pos, comma));
                 pos = comma + 1;
-            }
+            }*/
             return result;
         }
 

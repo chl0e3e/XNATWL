@@ -61,7 +61,7 @@ namespace XNATWL.Theme
 
         public void putTheme(String name, ThemeInfoImpl child)
         {
-            children.Add(name, child);
+            children.PutCascadingEntry(name, child);
         }
 
         public String getThemePath()

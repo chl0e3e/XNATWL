@@ -147,64 +147,56 @@ namespace XNATWL
             bool typed = false;
             bool end = false;
 
-            while (idx < stroke.Length)
+            System.Diagnostics.Debug.WriteLine("idx : " + idx);
+
+            foreach(string strokePart in stroke.Split(' '))
             {
-                int endIdx = TextUtil.indexOf(stroke, ' ', idx);
-                String part = stroke.Substring(idx, endIdx);
-
-                if (end)
-                {
-                    throw new ArgumentOutOfRangeException("Unexpected: " + part);
-                }
-
                 if (typed)
                 {
-                    if (part.Length != 1)
+                    if (strokePart.Length != 1)
                     {
                         throw new ArgumentOutOfRangeException("Expected single character after 'typed'");
                     }
-                    keyChar = part[0];
+                    keyChar = strokePart[0];
                     if (keyChar == Event.CHAR_NONE)
                     {
-                        throw new ArgumentOutOfRangeException("Unknown character: " + part);
+                        throw new ArgumentOutOfRangeException("Unknown character: " + strokePart);
                     }
                     end = true;
                 }
-                else if ("ctrl".Equals(part.ToLower()) || "control".Equals(part.ToLower()))
+                else if ("ctrl".Equals(strokePart.ToLower()) || "control".Equals(strokePart.ToLower()))
                 {
                     modifers |= CTRL;
                 }
-                else if ("shift".Equals(part.ToLower()))
+                else if ("shift".Equals(strokePart.ToLower()))
                 {
                     modifers |= SHIFT;
                 }
-                else if ("meta".Equals(part.ToLower()))
+                else if ("meta".Equals(strokePart.ToLower()))
                 {
                     modifers |= META;
                 }
-                else if ("cmd".Equals(part.ToLower()))
+                else if ("cmd".Equals(strokePart.ToLower()))
                 {
                     modifers |= CMD;
                 }
-                else if ("alt".Equals(part.ToLower()))
+                else if ("alt".Equals(strokePart.ToLower()))
                 {
                     modifers |= ALT;
                 }
-                else if ("typed".Equals(part.ToLower()))
+                else if ("typed".Equals(strokePart.ToLower()))
                 {
                     typed = true;
                 }
                 else
                 {
-                    keyCode = Event.getKeyCodeForName(part.ToUpper());
+                    keyCode = Event.getKeyCodeForName(strokePart.ToUpper());
                     if (keyCode == Event.KEY_NONE)
                     {
-                        throw new ArgumentOutOfRangeException("Unknown key: " + part);
+                        throw new ArgumentOutOfRangeException("Unknown key: " + strokePart);
                     }
                     end = true;
                 }
-
-                idx = TextUtil.skipSpaces(stroke, endIdx + 1);
             }
 
             if (!end)

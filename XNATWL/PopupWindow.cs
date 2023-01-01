@@ -231,7 +231,7 @@ namespace XNATWL
          * @param evt the event
          * @return always returns true
          */
-        internal override bool handleEvent(Event evt)
+        public override bool handleEvent(Event evt)
         {
             if (handleEventPopup(evt))
             {

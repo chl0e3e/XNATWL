@@ -23,6 +23,14 @@ namespace XNATWL
             this.right = all;
         }
 
+        public Border(Utils.Number all)
+        {
+            this.top = all.intValue();
+            this.left = all.intValue();
+            this.bottom = all.intValue();
+            this.right = all.intValue();
+        }
+
         public Border(int horz, int vert)
         {
             this.top = vert;

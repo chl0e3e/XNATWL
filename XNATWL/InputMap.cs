@@ -258,6 +258,7 @@ namespace XNATWL
                 String key = xmlp.nextText();
                 try
                 {
+                    System.Diagnostics.Debug.WriteLine("KeyStroke parse: " + name + "///" + key);
                     KeyStroke ks = KeyStroke.parse(key, name);
                     if (!newStrokes.Add(ks))
                     {

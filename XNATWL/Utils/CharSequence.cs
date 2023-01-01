@@ -11,5 +11,10 @@ namespace XNATWL.Utils
         char CharAt(int index);
 
         string SubSequence(int start, int end);
+
+        string Value
+        {
+            get;
+        }
     }
 }

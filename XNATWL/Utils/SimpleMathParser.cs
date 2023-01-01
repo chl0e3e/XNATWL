@@ -242,11 +242,11 @@ namespace XNATWL.Utils
                 {
                     unexpected(-1);
                 }
-                n = new Number(float.Parse(str.Substring(start, pos)));
+                n = new Number(float.Parse(str.Substring(start, pos - start)));
             }
             else
             {
-                n = new Number(int.Parse(str.Substring(start, pos)));
+                n = new Number(int.Parse(str.Substring(start, pos - start)));
             }
             interpreter.loadConst(n);
         }
@@ -267,7 +267,7 @@ namespace XNATWL.Utils
             {
                 unexpected((pos < len) ? str[pos] : -1);
             }
-            interpreter.loadConst(new Number(long.Parse(str.Substring(start, pos), System.Globalization.NumberStyles.HexNumber)));
+            interpreter.loadConst(new Number(long.Parse(str.Substring(start, pos - start), System.Globalization.NumberStyles.HexNumber)));
         }
 
         private bool skipSpaces()
@@ -297,20 +297,31 @@ namespace XNATWL.Utils
 
         private string parseIdent()
         {
+            System.Diagnostics.Debug.WriteLine("pos: " + pos);
+            System.Diagnostics.Debug.WriteLine("str: " + str);
             if (str[pos] == '\'')
             {
                 int istart = ++pos;
                 pos = TextUtil.indexOf(str, '\'', pos);
-                string ident = str.Substring(istart, pos);
+                string ident = str.Substring(istart, pos - istart);
                 expect('\'');
                 return ident;
             }
             int start = pos;
+            System.Diagnostics.Debug.WriteLine("loop2");
+            System.Diagnostics.Debug.WriteLine("start2: " + start);
+            System.Diagnostics.Debug.WriteLine("str2: " + str);
             while (pos < str.Length && CharUtil.IsCSharpIdentifier(str[pos]))
             {
                 pos++;
             }
-            return str.Substring(start, pos);
+            if (pos > str.Length)
+            {
+                pos = str.Length;
+            }
+            System.Diagnostics.Debug.WriteLine("pos2: " + pos);
+            System.Diagnostics.Debug.WriteLine("str2: " + str);
+            return str.Substring(start, pos - start);
         }
 
         private void expect(int what)

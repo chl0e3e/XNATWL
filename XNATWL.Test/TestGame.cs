@@ -6,6 +6,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using XNATWL.Renderer;
+using XNATWL.Renderer.XNA;
+using XNATWL.TextArea;
+using XNATWL.Theme;
 
 namespace XNATWL.Test
 {
@@ -40,6 +44,9 @@ namespace XNATWL.Test
         // (Objects should be scaled to be between 0.1 and 10 meters in size)
         private const float MeterInPixels = 64f;
 
+        private GUI twlGui;
+        private XNARenderer twlRenderer;
+
         public TestGame()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -68,6 +75,12 @@ namespace XNATWL.Test
             // Load sprites
             //_circleSprite = Content.Load<Texture2D>("circleSprite"); //  96px x 96px => 1.5m x 1.5m
             //_groundSprite = Content.Load<Texture2D>("groundSprite"); // 512px x 64px =>   8m x 1m
+
+            this.twlRenderer = new XNARenderer(_graphics.GraphicsDevice);
+            this.twlGui = new GUI(new ChatDemo(), this.twlRenderer);
+
+            ThemeManager theme = ThemeManager.createThemeManager(new IO.FileSystemObject(IO.FileSystemObject.FileSystemObjectType.FILE, "D:\\FortressCraft\\XNATWL\\XNATWL\\XNATWL.Test\\Theme\\chat.xml"), this.twlRenderer);
+            this.twlGui.applyTheme(theme);
         }
 
         /// <summary>
@@ -81,6 +94,8 @@ namespace XNATWL.Test
             HandleKeyboard();
 
             base.Update(gameTime);
+
+            this.twlGui.update();
         }
 
         private void HandleGamePad()
@@ -141,7 +156,7 @@ namespace XNATWL.Test
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Microsoft.Xna.Framework.Color.CornflowerBlue);
+            //GraphicsDevice.Clear(Microsoft.Xna.Framework.Color.CornflowerBlue);
 
             /*_batch.Begin();
 
@@ -152,6 +167,41 @@ namespace XNATWL.Test
             _batch.End();*/
 
             base.Draw(gameTime);
+            this.twlGui.draw();
+        }
+    }
+
+    class ChatDemo : DesktopArea
+    {
+        private ChatFrame chatFrame;
+
+        public ChatDemo()
+        {
+            chatFrame = new ChatFrame();
+            add(chatFrame);
+
+            chatFrame.setSize(400, 200);
+            //chatFrame.setPosition(10, 350);
+        }
+
+        protected override void layout()
+        {
+            base.layout();
+        }
+
+        class ChatFrame : ResizableFrame
+        {
+            public ChatFrame()
+            {
+                setTitle("Chat");
+
+                Label label = new Label("Test");
+                DialogLayout l = new DialogLayout();
+                l.setTheme("content");
+                l.setHorizontalGroup(l.createParallelGroup(label));
+                l.setVerticalGroup(l.createSequentialGroup(label));
+                add(l);
+            }
         }
     }
 }

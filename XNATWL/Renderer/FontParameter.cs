@@ -86,6 +86,10 @@ namespace XNATWL.Renderer
         public static object ParameterByName(String name)
         {
             lock(parameterMap) {
+                if (!parameterMap.ContainsKey(name))
+                {
+                    return null;
+                }
                 return parameterMap[name];
             }
         }
@@ -128,7 +132,7 @@ namespace XNATWL.Renderer
         {
             lock(parameterMap)
             {
-                object existing = parameterMap[name];
+                object existing = ParameterByName(name);
                 if (existing != null)
                 {
                     var existingsType = existing.GetType();

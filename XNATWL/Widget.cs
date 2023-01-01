@@ -9,6 +9,7 @@ using XNATWL.Renderer;
 using XNATWL.Theme;
 using XNATWL.Utils;
 using System.Collections.ObjectModel;
+using XNATWL.Property;
 
 namespace XNATWL
 {
@@ -18,6 +19,8 @@ namespace XNATWL
         public static StateKey STATE_HAS_OPEN_POPUPS = StateKey.Get("hasOpenPopups");
         public static StateKey STATE_HAS_FOCUSED_CHILD = StateKey.Get("hasFocusedChild");
         public static StateKey STATE_DISABLED = StateKey.Get("disabled");
+
+        public static bool DEBUG_LAYOUT_GROUPS = true;
 
         private static int LAYOUT_INVALID_LOCAL = 1;
         private static int LAYOUT_INVALID_GLOBAL = 3;
@@ -917,7 +920,7 @@ namespace XNATWL
          *
          * @return the maximum width
          */
-        public int getMaxWidth()
+        public virtual int getMaxWidth()
         {
             return maxWidth;
         }
@@ -932,7 +935,7 @@ namespace XNATWL
          *
          * @return the maximum height
          */
-        public int getMaxHeight()
+        public virtual int getMaxHeight()
         {
             return maxHeight;
         }
@@ -1007,7 +1010,7 @@ namespace XNATWL
          * @see #invalidateLayoutLocally()
          * @see #borderChanged()
          */
-        public void invalidateLayout()
+        public virtual void invalidateLayout()
         {
             if (layoutInvalid < LAYOUT_INVALID_GLOBAL)
             {
@@ -1223,12 +1226,12 @@ namespace XNATWL
          * @param evt only {@link Event#getMouseX() }, {@link Event#getMouseY() } and {@link Event#getModifiers() } are valid.
          * @return the mouse cursor or null when no mouse cursor is defined for this widget
          */
-        public MouseCursor getMouseCursor(Event evt)
+        public virtual MouseCursor getMouseCursor(Event evt)
         {
             return getMouseCursor();
         }
 
-        public MouseCursor getMouseCursor()
+        public virtual MouseCursor getMouseCursor()
         {
             return mouseCursor;
         }
@@ -1447,7 +1450,7 @@ namespace XNATWL
         /**
          * Clean up GL resources. When overwritten then super method must be called.
          */
-        public void destroy()
+        public virtual void destroy()
         {
             if (children != null)
             {
@@ -1626,7 +1629,7 @@ namespace XNATWL
          * Returns the currently set tooltip content.
          * @return the currently set tooltip content. Can be null.
          */
-        public Object getTooltipContent()
+        public virtual Object getTooltipContent()
         {
             return tooltipContent;
         }
@@ -1731,6 +1734,7 @@ namespace XNATWL
          */
         protected virtual void applyTheme(ThemeInfo themeInfo)
         {
+            System.Diagnostics.Debug.WriteLine("Widget@applyTheme with ThemeInfo : " + this.GetType().FullName + " - '" + this.theme + "'");
             applyThemeBackground(themeInfo);
             applyThemeOverlay(themeInfo);
             applyThemeBorder(themeInfo);
@@ -1928,7 +1932,7 @@ namespace XNATWL
          * @see #handleKeyStrokeAction(java.lang.String, de.matthiasmann.twl.Event)
          * @see #setInputMap(de.matthiasmann.twl.InputMap)
          */
-        internal virtual bool handleEvent(Event evt)
+        public virtual bool handleEvent(Event evt)
         {
             if (evt.isKeyEvent())
             {
@@ -2533,7 +2537,7 @@ namespace XNATWL
          * Can be overridden to do additional things like hide the widget
          * after the end of the animation.
          */
-        protected void updateTintAnimation()
+        protected virtual void updateTintAnimation()
         {
             tintAnimator.update();
         }
@@ -2783,7 +2787,7 @@ namespace XNATWL
                 {
                     for (int i = children.Count; i-- > 0;)
                     {
-                        Widget child = children.get(i);
+                        Widget child = children[i];
                         child.recursivelyEnabledChanged(gui, enabled);
                     }
                 }
@@ -3019,6 +3023,7 @@ namespace XNATWL
             this.themeManager = themeManager;
 
             String themePath = getThemePath();
+            System.Diagnostics.Debug.WriteLine("Widget@applyTheme with ThemeManager : " + this.GetType().FullName + " '" + themePath + "'");
             if (themePath.Length == 0)
             {
                 if (children != null)
@@ -3072,6 +3077,7 @@ namespace XNATWL
 
         private void applyThemeImpl(ThemeManager themeManager, ThemeInfo themeInfo, DebugHook hook)
         {
+            System.Diagnostics.Debug.WriteLine("Widget@applyThemeImpl with ThemeManager : " + this.GetType().FullName + " '" + this.theme + "'");
             this.themeManager = themeManager;
             if (theme.Length > 0)
             {
@@ -3108,6 +3114,7 @@ namespace XNATWL
 
         private void applyThemeToChildren(ThemeManager themeManager, ThemeInfo themeInfo, DebugHook hook)
         {
+            System.Diagnostics.Debug.WriteLine("Widget@applyThemeToChildren with ThemeManager : " + this.theme);
             if (children != null && themeInfo != null)
             {
                 for (int i = 0, n = children.Count; i < n; i++)

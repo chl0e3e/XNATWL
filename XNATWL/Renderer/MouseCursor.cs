@@ -10,6 +10,10 @@ namespace XNATWL.Renderer
     {
     }
 
+    public class InheritedMouseCursor : MouseCursor
+    {
+        public static InheritedMouseCursor INHERITED_DEFAULT = new InheritedMouseCursor();
+    }
 
     public class DefaultMouseCursor : MouseCursor
     {

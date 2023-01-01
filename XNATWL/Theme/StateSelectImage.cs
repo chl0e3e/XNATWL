@@ -19,7 +19,7 @@ namespace XNATWL.Theme
             {
                 throw new Exception("Assert exception");
             }
-            if (!(images.Length <= select.Expressions() + 1))
+            if (!(ximages.Length <= select.Expressions() + 1))
             {
                 throw new Exception("Assert exception");
             }

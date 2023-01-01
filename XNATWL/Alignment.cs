@@ -40,6 +40,33 @@ namespace XNATWL
             return fontHAlignment;
         }
 
+        public static Alignment ByName(string name)
+        {
+            switch(name)
+            {
+                case "LEFT":
+                    return Alignment.LEFT;
+                case "CENTER":
+                    return Alignment.CENTER;
+                case "RIGHT":
+                    return Alignment.RIGHT;
+                case "TOP":
+                    return Alignment.TOP;
+                case "BOTTOM":
+                    return Alignment.BOTTOM;
+                case "TOPLEFT":
+                    return Alignment.TOPLEFT;
+                case "TOPRIGHT":
+                    return Alignment.TOPRIGHT;
+                case "BOTTOMLEFT":
+                    return Alignment.BOTTOMLEFT;
+                case "FILL":
+                    return Alignment.FILL;
+            }
+
+            return Alignment.FILL;
+        }
+
         /**
          * Returns the horizontal position for this alignment.
          * @return 0 for left, 1 for center and 2 for right

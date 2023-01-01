@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using XNATWL.Utils;
 
 namespace XNATWL
 {
@@ -17,6 +18,12 @@ namespace XNATWL
         {
             this.x = x;
             this.y = y;
+        }
+
+        public Dimension(Number x, Number y)
+        {
+            this.x = x.intValue();
+            this.y = y.intValue();
         }
 
         public int X

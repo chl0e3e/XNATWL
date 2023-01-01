@@ -20,6 +20,14 @@ namespace XNATWL.Model
 
         private int _position;
         private int _markerIdx;
+        
+        public string Value
+        {
+            get
+            {
+                return this._seq.ToString();
+            }
+        }
 
         public int Position
         {

@@ -80,16 +80,21 @@ namespace XNATWL.Utils
                 return (T)stack[0];
             }
 
+            System.Diagnostics.Debug.WriteLine("executeCreateObject - " + str + " - " + type);
             foreach (ConstructorInfo c in type.GetConstructors())
             {
+                System.Diagnostics.Debug.WriteLine(c.ToString());
                 ParameterInfo[] parameters = c.GetParameters();
                 if (parameters.Length == count)
                 {
+                    System.Diagnostics.Debug.WriteLine("countMatch");
                     bool match = true;
                     for (int i = 0; i < count; i++)
                     {
+                        System.Diagnostics.Debug.WriteLine(parameters[i].ParameterType.FullName + " - " + stack[i].GetType().FullName);
                         if (!ClassUtils.isParamCompatible(parameters[i], stack[i]))
                         {
+                            System.Diagnostics.Debug.WriteLine("parameters Incompatible");
                             match = false;
                             break;
                         }
@@ -114,6 +119,11 @@ namespace XNATWL.Utils
 
         protected void push(Object obj)
         {
+            if (obj.GetType() == typeof(Single))
+            {
+                System.Diagnostics.Debug.WriteLine("objPush: " + obj.GetType().FullName);
+            }
+
             stack.Add(obj);
         }
 
@@ -139,6 +149,7 @@ namespace XNATWL.Utils
                 return (Number)obj;
             }
 
+            System.Diagnostics.Debug.WriteLine(obj);
             throw new InvalidOperationException("expected number on stack - found: " +
                     ((obj != null) ? obj.GetType().Name : "null"));
         }
@@ -153,14 +164,7 @@ namespace XNATWL.Utils
             Number b = popNumber();
             Number a = popNumber();
             bool oIsFloat = isFloat(a) || isFloat(b);
-            if (oIsFloat)
-            {
-                push(a.floatValue() + b.floatValue());
-            }
-            else
-            {
-                push(a.intValue() + b.intValue());
-            }
+            push(a + b);
         }
 
         public void sub()
@@ -168,14 +172,7 @@ namespace XNATWL.Utils
             Number b = popNumber();
             Number a = popNumber();
             bool oIsFloat = isFloat(a) || isFloat(b);
-            if (oIsFloat)
-            {
-                push(a.floatValue() - b.floatValue());
-            }
-            else
-            {
-                push(a.intValue() - b.intValue());
-            }
+            push(a - b);
         }
 
         public void mul()
@@ -183,14 +180,7 @@ namespace XNATWL.Utils
             Number b = popNumber();
             Number a = popNumber();
             bool oIsFloat = isFloat(a) || isFloat(b);
-            if (oIsFloat)
-            {
-                push(a.floatValue() * b.floatValue());
-            }
-            else
-            {
-                push(a.intValue() * b.intValue());
-            }
+            push(a * b);
         }
 
         public void div()
@@ -198,35 +188,13 @@ namespace XNATWL.Utils
             Number b = popNumber();
             Number a = popNumber();
             bool oIsFloat = isFloat(a) || isFloat(b);
-            if (oIsFloat)
-            {
-                if (Math.Abs(b.floatValue()) == 0)
-                {
-                    throw new InvalidOperationException("division by zero");
-                }
-                push(a.floatValue() / b.floatValue());
-            }
-            else
-            {
-                if (b.intValue() == 0)
-                {
-                    throw new InvalidOperationException("division by zero");
-                }
-                push(a.intValue() / b.intValue());
-            }
+            push(a / b);
         }
 
         public void negate()
         {
             Number a = popNumber();
-            if (isFloat(a))
-            {
-                push(-a.floatValue());
-            }
-            else
-            {
-                push(-a.intValue());
-            }
+            push(-a);
         }
 
         public void accessArray()

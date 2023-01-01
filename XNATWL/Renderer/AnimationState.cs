@@ -90,14 +90,14 @@ namespace XNATWL.Renderer
             {
                 throw new ArgumentOutOfRangeException("name");
             }
-            StateKey key = KEYS[name];
-            if (key == null)
+
+            if (!KEYS.ContainsKey(name))
             {
-                key = new StateKey(name, KEYS.Count);
+                StateKey key = new StateKey(name, KEYS.Count);
                 KEYS.Add(name, key);
                 KEYS_BY_ID.Add(key);
             }
-            return key;
+            return KEYS[name];
         }
 
         public static StateKey Get(int id)

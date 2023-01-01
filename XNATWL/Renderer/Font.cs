@@ -54,6 +54,8 @@ namespace XNATWL.Renderer
 
         int DrawMultiLineText(AnimationState animState, int x, int y, string str, int width, HAlignment alignment);
 
+        int DrawText(AnimationState animState, int x, int y, string str);
+
         int DrawText(AnimationState animState, int x, int y, string str, int start, int end);
 
         FontCache CacheMultiLineText(FontCache prevCache, string str, int width, HAlignment alignment);

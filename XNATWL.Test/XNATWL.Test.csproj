@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Theme\font.fnt" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FNA\FNA.csproj">
@@ -73,6 +74,22 @@
     <Content Include="SDL2.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Theme\chaos_sphere_blue_800x600.png" />
+    <Content Include="Theme\chat.png" />
+    <Content Include="Theme\chat.xml" />
+    <Content Include="Theme\cursors.png" />
+    <Content Include="Theme\cursors.xml" />
+    <Content Include="Theme\Eforen.png" />
+    <Content Include="Theme\Eforen.xml" />
+    <Content Include="Theme\EforenArrows.png" />
+    <Content Include="Theme\font_00.png" />
+    <Content Include="Theme\gui.png" />
+    <Content Include="Theme\gui.xml" />
+    <Content Include="Theme\guiTheme.xml" />
+    <Content Include="Theme\simple.png" />
+    <Content Include="Theme\simple.xml" />
+    <Content Include="Theme\simpleGameMenu.xml" />
+    <Content Include="Theme\simple_demo.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -18,7 +18,7 @@ namespace XNATWL.Theme
             this.parameters = new CascadedHashMap<String, Object>();
         }
 
-        public void copy(ParameterMapImpl src)
+        public virtual void copy(ParameterMapImpl src)
         {
             this.parameters.CollapseAndSetFallback(src.parameters);
         }
@@ -215,7 +215,7 @@ namespace XNATWL.Theme
 
         public object getParam(String name)
         {
-            return this.parameters[name];
+            return this.parameters.CascadingEntry(name);
         }
 
         public void put(Dictionary<string, object> parameters)
