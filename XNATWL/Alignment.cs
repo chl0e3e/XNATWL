@@ -42,7 +42,7 @@ namespace XNATWL
 
         public static Alignment ByName(string name)
         {
-            switch(name)
+            switch(name.ToUpper())
             {
                 case "LEFT":
                     return Alignment.LEFT;

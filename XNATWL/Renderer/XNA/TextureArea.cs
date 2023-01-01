@@ -14,7 +14,7 @@ namespace XNATWL.Renderer.XNA
         protected Color tintColor;
         protected int repeatCacheID = -1;
 
-        public TextureArea(XNATexture texture, int x, int y, int width, int height, Color tintColor) : base(texture, x, y, width, height, texture.Width, texture.Height)
+        public TextureArea(XNATexture texture, int x, int y, int width, int height, Color tintColor) : base(texture, x, y, width, height)
         {
             this.tintColor = (tintColor == null) ? Color.WHITE : tintColor;
         }

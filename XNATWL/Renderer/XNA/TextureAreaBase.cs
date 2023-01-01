@@ -17,7 +17,7 @@ namespace XNATWL.Renderer.XNA
         protected int height;
         private XNATexture _texture;
 
-        public TextureAreaBase(XNATexture texture, int x, int y, int width, int height, float texWidth, float texHeight)
+        public TextureAreaBase(XNATexture texture, int x, int y, int width, int height)
         {
             if (texture == null)
             {

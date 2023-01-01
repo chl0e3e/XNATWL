@@ -633,7 +633,7 @@ namespace XNATWL.Theme
                     ThemeInfoImpl tiPrev = parent.getTheme(themeName);
                     if (tiPrev != null)
                     {
-                        ti.copy(tiPrev);
+                        ti.themeInfoImplCopy(tiPrev);
                     }
                 }
                 string reference = xmlp.getAttributeValue(null, "ref");
@@ -652,7 +652,7 @@ namespace XNATWL.Theme
                     {
                         throw xmlp.error("referenced theme info not found: " + reference);
                     }
-                    ti.copy(tiRef);
+                    ti.themeInfoImplCopy(tiRef);
                 }
                 ti.maybeUsedFromWildcard = xmlp.parseBoolFromAttribute("allowWildcard", true);
                 xmlp.nextTag();

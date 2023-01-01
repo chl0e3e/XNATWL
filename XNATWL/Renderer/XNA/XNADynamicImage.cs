@@ -10,7 +10,7 @@ namespace XNATWL.Renderer.XNA
     {
         private XNARenderer _renderer;
 
-        public XNADynamicImage(XNARenderer renderer, int x, int y, int width, int height, int texWidth, int texHeight, Color tintColor) : base(null, x, y, width, height, texWidth, texHeight)
+        public XNADynamicImage(XNARenderer renderer, int x, int y, int width, int height, Color tintColor) : base(null, x, y, width, height)
         {
             this._renderer = renderer;
         }

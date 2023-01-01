@@ -2147,6 +2147,7 @@ namespace XNATWL
          */
         protected virtual void childAdded(Widget child)
         {
+            System.Diagnostics.Debug.WriteLine("Child added !!! " + child.GetType().FullName + " - " + child.getThemePath());
             invalidateLayout();
         }
 

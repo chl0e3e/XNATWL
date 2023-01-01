@@ -146,7 +146,7 @@ namespace XNATWL
         protected void applyThemeTextWidget(ThemeInfo themeInfo)
         {
             setFont(themeInfo.getFont("font"));
-            setAlignment((Alignment)themeInfo.getParameter("textAlignment", Alignment.TOPLEFT));
+            setAlignment(themeInfo.getParameterValue<Alignment>("textAlignment", false, typeof(Alignment), Alignment.TOPLEFT));
         }
 
         //@Override

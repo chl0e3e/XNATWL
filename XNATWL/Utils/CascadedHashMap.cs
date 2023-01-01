@@ -30,18 +30,15 @@ namespace XNATWL.Utils
         {
             do
             {
-                if (map.Count != 0)
+                K[] mapKeys = map.Keys.ToArray();
+                for (int i = 0, n = mapKeys.Count(); i < n; i++)
                 {
-                    K[] mapKeys = map.Keys.ToArray();
-                    for (int i = 0, n = mapKeys.Count(); i < n; i++)
+                    object mapEntry = map[mapKeys[i]];
+                    if (mapEntry != null)
                     {
-                        object mapEntry = map[mapKeys[i]];
-                        if (mapEntry != null)
+                        if (!this.ContainsKey(mapKeys[i]))
                         {
-                            if (!this.ContainsKey(mapKeys[i]))
-                            {
-                                this[mapKeys[i]] = mapEntry;
-                            }
+                            this[mapKeys[i]] = mapEntry;
                         }
                     }
                 }

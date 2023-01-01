@@ -196,10 +196,11 @@ namespace XNATWL.Test
                 setTitle("Chat");
 
                 Label label = new Label("Test");
+                Label labelh = new Label("hello");
                 DialogLayout l = new DialogLayout();
                 l.setTheme("content");
-                l.setHorizontalGroup(l.createParallelGroup(label));
-                l.setVerticalGroup(l.createSequentialGroup(label));
+                l.setHorizontalGroup(l.createParallelGroup(label, labelh));
+                l.setVerticalGroup(l.createSequentialGroup(label, labelh));
                 add(l);
             }
         }

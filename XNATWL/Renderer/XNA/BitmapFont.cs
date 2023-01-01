@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using XNATWL.IO;
 using XNATWL.Utils;
+using static XNATWL.Renderer.XNA.BitmapFont;
 
 namespace XNATWL.Renderer.XNA
 {
@@ -20,8 +22,9 @@ namespace XNATWL.Renderer.XNA
             internal short xadvance;
             internal byte[][] kerning;
 
-            public Glyph(XNATexture texture, int x, int y, int width, int height, int texWidth, int texHeight) : base(texture, x, y, (height <= 0) ? 0 : width, height, texWidth, texHeight) {
-                
+            public Glyph(XNATexture texture, int x, int y, int width, int height) : base(texture, x, y, (height <= 0) ? 0 : width, height)
+            {
+
             }
 
             internal void draw(int x, int y)
@@ -116,6 +119,8 @@ namespace XNATWL.Renderer.XNA
             bool prop = true;
 
             glyphs = new Glyph[PAGES][];
+            //Microsoft.Xna.Framework.Color[] textureColorData = new Microsoft.Xna.Framework.Color[this.texture.Width * this.texture.Height];
+            //this.texture.Texture2D.GetData<Microsoft.Xna.Framework.Color>(textureColorData, 0, textureColorData.Length);
             while (!xmlp.isEndTag())
             {
                 xmlp.require(XmlPullParser.START_TAG, null, "char");
@@ -129,19 +134,36 @@ namespace XNATWL.Renderer.XNA
                     throw xmlp.error("Multiple pages not supported");
                 }
                 int chnl = xmlp.parseIntFromAttribute("chnl", 0);
-                Glyph glyph = new Glyph(this.texture, x, y, w, h, texture.Width, texture.Height);
-                glyph.xoffset = short.Parse(xmlp.getAttributeNotNull("xoffset"));
-                glyph.yoffset = short.Parse(xmlp.getAttributeNotNull("yoffset"));
-                glyph.xadvance = short.Parse(xmlp.getAttributeNotNull("xadvance"));
-                addGlyph(idx, glyph);
+                short xadvance = short.Parse(xmlp.getAttributeNotNull("xadvance"));
+                if (w > 0 && h > 0)
+                {
+                    Microsoft.Xna.Framework.Color[] textureData = new Microsoft.Xna.Framework.Color[w * h];
+                    this.texture.Texture2D.GetData<Microsoft.Xna.Framework.Color>(0, new Microsoft.Xna.Framework.Rectangle(x, y, w, h), textureData, 0, w * h);
+
+                    for (int i = 0; i < textureData.Length; i++)
+                    {
+                        if (textureData[i] == Microsoft.Xna.Framework.Color.Black)
+                        {
+                            textureData[i] = Microsoft.Xna.Framework.Color.Transparent; 
+                        }
+                    }
+                    Texture2D xnaGlyph = new Texture2D(this.texture.Renderer.GraphicsDevice, w, h);
+                    xnaGlyph.SetData(textureData);
+                    Glyph glyph = new Glyph(new XNATexture(this.texture.Renderer, w, h, xnaGlyph), 0, 0, w, h);
+                    glyph.xoffset = short.Parse(xmlp.getAttributeNotNull("xoffset"));
+                    glyph.yoffset = short.Parse(xmlp.getAttributeNotNull("yoffset"));
+                    glyph.xadvance = xadvance;
+                    addGlyph(idx, glyph);
+                }
                 xmlp.nextTag();
                 xmlp.require(XmlPullParser.END_TAG, null, "char");
                 xmlp.nextTag();
-                if (glyph.xadvance != firstXAdvance && glyph.xadvance > 0)
+
+                if (xadvance != firstXAdvance && xadvance > 0)
                 {
                     if (firstXAdvance == Int32.MaxValue)
                     {
-                        firstXAdvance = glyph.xadvance;
+                        firstXAdvance = xadvance;
                     }
                     else
                     {
@@ -418,32 +440,38 @@ namespace XNATWL.Renderer.XNA
             System.Diagnostics.Debug.WriteLine("draw: " + str);
             int startX = x;
             Glyph lastGlyph = null;
-            while (start < end)
+            /*while (start < end)
             {
                 lastGlyph = getGlyph(str[start++]);
                 if (lastGlyph != null)
                 {
+                    System.Diagnostics.Debug.WriteLine("b0:" + x);
                     if (lastGlyph.getWidth() > 0)
                     {
                         lastGlyph.draw(x, y);
                     }
                     x += lastGlyph.xadvance;
+                    System.Diagnostics.Debug.WriteLine("b1:" + x);
                     break;
                 }
-            }
+            }*/
             while (start < end)
             {
                 char ch = str[start++];
                 Glyph g = getGlyph(ch);
                 if (g != null)
                 {
-                    x += lastGlyph.getKerning(ch);
+                    //System.Diagnostics.Debug.WriteLine("x0:" + x);
+                    //x += lastGlyph.getKerning(ch);
+                    //System.Diagnostics.Debug.WriteLine("x1:" + x);
                     lastGlyph = g;
                     if (g.getWidth() > 0)
                     {
                         g.draw(x, y);
                     }
-                    x += g.xadvance;
+                    //System.Diagnostics.Debug.WriteLine("x2:" + x);
+                    x += g.xadvance; // + g.getKerning(ch);
+                    //System.Diagnostics.Debug.WriteLine("x3:" + x);
                 }
             }
             return x - startX;

@@ -20,7 +20,7 @@ namespace XNATWL.Theme
             this.children = new CascadedHashMap<string, ThemeInfoImpl>();
         }
 
-        void copy(ThemeInfoImpl src)
+        public void themeInfoImplCopy(ThemeInfoImpl src)
         {
             base.copy(src);
             children.CollapseAndSetFallback(src.children);

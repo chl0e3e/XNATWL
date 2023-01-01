@@ -99,7 +99,7 @@ namespace XNATWL.Renderer.XNA
 
         public FontCache CacheText(FontCache prevCache, string str)
         {
-            System.Diagnostics.Debug.WriteLine("CacheText@1");
+            System.Diagnostics.Debug.WriteLine("CacheText@1 " + str);
             return new XNAFontCache(this, str);
         }
 
