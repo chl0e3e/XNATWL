@@ -52,7 +52,7 @@ namespace XNATWL
         /**
          * Called after the info window has been closed
          */
-        internal void infoWindowClosed() {
+        protected internal virtual void infoWindowClosed() {
         }
 
         private static bool isParentInfoWindow(Widget w) {

@@ -99,25 +99,25 @@ namespace XNATWL.Renderer.XNA
 
         public FontCache CacheText(FontCache prevCache, string str)
         {
-            System.Diagnostics.Debug.WriteLine("CacheText@1 " + str);
+            //System.Diagnostics.Debug.WriteLine("CacheText@1 " + str);
             return new XNAFontCache(this, str);
         }
 
         public FontCache CacheText(FontCache prevCache, string str, int start, int end)
         {
-            System.Diagnostics.Debug.WriteLine("CacheText@2");
+            //System.Diagnostics.Debug.WriteLine("CacheText@2");
             return new XNAFontCache(this, str.Substring(start, end - start));
         }
 
         public AttributedStringFontCache CacheText(AttributedStringFontCache prevCache, AttributedString attributedString)
         {
-            System.Diagnostics.Debug.WriteLine("CacheText@3");
+            //System.Diagnostics.Debug.WriteLine("CacheText@3");
             return new XNAASFontCache(this, attributedString);
         }
 
         public AttributedStringFontCache CacheText(AttributedStringFontCache prevCache, AttributedString attributedString, int start, int end)
         {
-            System.Diagnostics.Debug.WriteLine("CacheText@4");
+            //System.Diagnostics.Debug.WriteLine("CacheText@4");
             return new XNAASFontCache(this, attributedString, start, end);
         }
 

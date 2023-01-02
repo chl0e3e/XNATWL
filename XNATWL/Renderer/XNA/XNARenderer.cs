@@ -246,11 +246,11 @@ namespace XNATWL.Renderer.XNA
 
         public void EndRendering()
         {
-            System.Diagnostics.Debug.WriteLine(this._mouseCursor == null);
+            //System.Diagnostics.Debug.WriteLine(this._mouseCursor == null);
             XNACursor cursor = this._mouseCursor == null ? this._defaultCursor : ((XNACursor)this._mouseCursor);
             MouseState ms = Mouse.GetState();
             cursor.drawQuad(ms.X, ms.Y, cursor.getWidth(), cursor.getHeight());
-            System.Diagnostics.Debug.WriteLine("x: " + ms.X + ", y: " + ms.Y);
+            //System.Diagnostics.Debug.WriteLine("x: " + ms.X + ", y: " + ms.Y);
             //throw new NotImplementedException();
         }
 

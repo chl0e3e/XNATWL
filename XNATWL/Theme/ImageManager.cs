@@ -65,7 +65,6 @@ namespace XNATWL.Theme
 
         public MouseCursor getReferencedCursor(XMLParser xmlp, String reference)
         {
-            System.Diagnostics.Debug.WriteLine("referenced Cursor: " + reference);
             MouseCursor cursor = cursors[reference];
             if (cursor == null)
             {
@@ -118,22 +117,16 @@ namespace XNATWL.Theme
 
             this.currentTexture = texture;
 
-            System.Diagnostics.Debug.WriteLine("Parsing image: " + fileName);
-            System.Diagnostics.Debug.WriteLine("Parsing image NAME: " + xmlp.xpp.Name);
-            System.Diagnostics.Debug.WriteLine("Parsing image TYPE: " + xmlp.xpp.NodeType);
-
             try
             {
                 xmlp.nextTag();
                 while (!xmlp.isEndTag())
                 {
-                    System.Diagnostics.Debug.WriteLine("NAME: " + xmlp.xpp.Name);
-                    System.Diagnostics.Debug.WriteLine("TYPE: " + xmlp.xpp.NodeType);
-
                     bool emptyElement = xmlp.isEmptyElement();
                     String tagName = xmlp.getName();
                     String name = xmlp.getAttributeNotNull("name");
                     checkImageName(name, xmlp);
+
                     if ("cursor".Equals(xmlp.getName()))
                     {
                         parseCursor(xmlp, name);
@@ -144,12 +137,12 @@ namespace XNATWL.Theme
                         Image image = parseImage(xmlp, tagName);
                         images.Add(name, image);
                     }
-                    System.Diagnostics.Debug.WriteLine("AFTER NAME: " + xmlp.xpp.Name);
-                    System.Diagnostics.Debug.WriteLine("AFTER TYPE: " + xmlp.xpp.NodeType);
+
                     if (!emptyElement)
                     {
                         xmlp.require(XmlPullParser.END_TAG, null, tagName);
                     }
+
                     xmlp.nextTag();
                 }
             }
@@ -223,22 +216,15 @@ namespace XNATWL.Theme
 
         private Image parseImage(XMLParser xmlp, String tagName)
         {
-            System.Diagnostics.Debug.WriteLine("parseImage - " + tagName);
             ImageParams parameters = new ImageParams();
-            System.Diagnostics.Debug.WriteLine("parseStateSelect: h1@" + xmlp.xpp.Name + " - " + xmlp.xpp.NodeType);
             parameters.condition = ParserUtil.parseCondition(xmlp);
-            System.Diagnostics.Debug.WriteLine("parseStateSelect: h2@" + xmlp.xpp.Name + " - " + xmlp.xpp.NodeType);
             return parseImageNoCond(xmlp, tagName, parameters);
         }
 
         private Image parseImageNoCond(XMLParser xmlp, String tagName, ImageParams parameters)
         {
-            System.Diagnostics.Debug.WriteLine("parseImageNoCond - " + tagName);
-            System.Diagnostics.Debug.WriteLine("parseStateSelect: j1@" + xmlp.xpp.Name + " - " + xmlp.xpp.NodeType);
             parseStdAttributes(xmlp, parameters);
-            System.Diagnostics.Debug.WriteLine("parseStateSelect: j2@" + xmlp.xpp.Name + " - " + xmlp.xpp.NodeType);
             Image image = parseImageDelegate(xmlp, tagName, parameters);
-            System.Diagnostics.Debug.WriteLine("parseStateSelect: j3@" + xmlp.xpp.Name + " - " + xmlp.xpp.NodeType);
             return adjustImage(image, parameters);
         }
 
@@ -340,15 +326,10 @@ namespace XNATWL.Theme
                 xmlp.require(XmlPullParser.START_TAG, null, null);
                 StateExpression cond = ParserUtil.parseCondition(xmlp);
                 String tagName = xmlp.getName();
-                System.Diagnostics.Debug.WriteLine("parseStateSelect: " + tagName);
-                System.Diagnostics.Debug.WriteLine("parseStateSelect: x@" + xmlp.xpp.Name + " - " + xmlp.xpp.NodeType);
                 Image ximage = parseImageNoCond(xmlp, tagName, new ImageParams());
-                System.Diagnostics.Debug.WriteLine("parseStateSelect: g@" + xmlp.xpp.Name + " - " + xmlp.xpp.NodeType);
                 parameters.border = getBorder(ximage, parameters.border);
-                System.Diagnostics.Debug.WriteLine("parseStateSelect: b@" + xmlp.xpp.Name + " - " + xmlp.xpp.NodeType);
                 xmlp.require(XmlPullParser.END_TAG, null, tagName);
                 xmlp.nextTag();
-                System.Diagnostics.Debug.WriteLine("parseStateSelect: c@" + xmlp.xpp.Name + " - " + xmlp.xpp.NodeType);
                 last = cond == null;
 
                 if (ximage is ImageAdjustments)
@@ -431,17 +412,11 @@ namespace XNATWL.Theme
 
         private Image parseArea(XMLParser xmlp, ImageParams parameters)
         {
-            System.Diagnostics.Debug.WriteLine("parseStateSelect: k1@" + xmlp.xpp.Name + " - " + xmlp.xpp.NodeType);
             parseRectFromAttribute(xmlp, parameters);
-            System.Diagnostics.Debug.WriteLine("parseStateSelect: k2@" + xmlp.xpp.Name + " - " + xmlp.xpp.NodeType);
             parseRotationFromAttribute(xmlp, parameters);
-            System.Diagnostics.Debug.WriteLine("parseStateSelect: k3@" + xmlp.xpp.Name + " - " + xmlp.xpp.NodeType);
             bool tiled = xmlp.parseBoolFromAttribute("tiled", false);
-            System.Diagnostics.Debug.WriteLine("parseStateSelect: k4@" + xmlp.xpp.Name + " - " + xmlp.xpp.NodeType);
             int[] splitx = parseSplit2(xmlp, "splitx", Math.Abs(parameters.w));
-            System.Diagnostics.Debug.WriteLine("parseStateSelect: k5@" + xmlp.xpp.Name + " - " + xmlp.xpp.NodeType);
             int[] splity = parseSplit2(xmlp, "splity", Math.Abs(parameters.h));
-            System.Diagnostics.Debug.WriteLine("parseStateSelect: k6@" + xmlp.xpp.Name + " - " + xmlp.xpp.NodeType);
             Image image;
             if (splitx != null || splity != null)
             {
@@ -527,9 +502,7 @@ namespace XNATWL.Theme
             {
                 image = createImage(xmlp, parameters.x, parameters.y, parameters.w, parameters.h, parameters.tintColor, tiled, parameters.rot);
             }
-            System.Diagnostics.Debug.WriteLine("about to nextTag() - " + xmlp.xpp.Name + " - ");
             int tagToken = xmlp.nextTag();
-            System.Diagnostics.Debug.WriteLine("nextTag() - " + xmlp.xpp.Name + " - " + tagToken);
             parameters.tintColor = null;
             if (tiled)
             {
@@ -945,22 +918,14 @@ namespace XNATWL.Theme
 
         private void parseStdAttributes(XMLParser xmlp, ImageParams parameters)
         {
-            System.Diagnostics.Debug.WriteLine("parseStateSelect: fn1@" + xmlp.xpp.Name + " - " + xmlp.xpp.NodeType);
             parameters.tintColor = ParserUtil.parseColorFromAttribute(xmlp, "tint", constants, null);
-            System.Diagnostics.Debug.WriteLine("parseStateSelect: fn2@" + xmlp.xpp.Name + " - " + xmlp.xpp.NodeType);
             parameters.border = ParserUtil.parseBorderFromAttribute(xmlp, "border");
-            System.Diagnostics.Debug.WriteLine("parseStateSelect: fn3@" + xmlp.xpp.Name + " - " + xmlp.xpp.NodeType);
             parameters.inset = ParserUtil.parseBorderFromAttribute(xmlp, "inset");
-            System.Diagnostics.Debug.WriteLine("parseStateSelect: fn4@" + xmlp.xpp.Name + " - " + xmlp.xpp.NodeType);
             parameters.repeatX = xmlp.parseBoolFromAttribute("repeatX", false);
-            System.Diagnostics.Debug.WriteLine("parseStateSelect: fn5@" + xmlp.xpp.Name + " - " + xmlp.xpp.NodeType);
             parameters.repeatY = xmlp.parseBoolFromAttribute("repeatY", false);
             parameters.sizeOverwriteH = ParserUtil.parseIntExpressionFromAttribute(xmlp, "sizeOverwriteH", -1, mathInterpreter);
-            System.Diagnostics.Debug.WriteLine("parseStateSelect: fn6@" + xmlp.xpp.Name + " - " + xmlp.xpp.NodeType);
             parameters.sizeOverwriteV = ParserUtil.parseIntExpressionFromAttribute(xmlp, "sizeOverwriteV", -1, mathInterpreter);
-            System.Diagnostics.Debug.WriteLine("parseStateSelect: fn7@" + xmlp.xpp.Name + " - " + xmlp.xpp.NodeType);
             parameters.center = xmlp.parseBoolFromAttribute("center", false);
-            System.Diagnostics.Debug.WriteLine("parseStateSelect: fn8@" + xmlp.xpp.Name + " - " + xmlp.xpp.NodeType);
         }
 
         public class ImageParams

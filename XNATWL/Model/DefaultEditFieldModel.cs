@@ -61,8 +61,12 @@ namespace XNATWL.Model
 
             if (count > 0 || replacementLength > 0)
             {
-                this.stringBuilder.Replace(this.stringBuilder.ToString(start, start + count), replacement, start, 1);
-                this.CharSequenceChanged.Invoke(this, new CharSequenceChangedEventArgs(start, count, replacementLength));
+                this.stringBuilder.Remove(start, count);
+                this.stringBuilder.Insert(start, replacement);
+                if (this.CharSequenceChanged != null)
+                {
+                    this.CharSequenceChanged.Invoke(this, new CharSequenceChangedEventArgs(start, count, replacementLength));
+                }
             }
 
             return replacementLength;
@@ -82,7 +86,10 @@ namespace XNATWL.Model
                 this.stringBuilder.Insert(start, replacement);
             }
 
-            this.CharSequenceChanged.Invoke(this, new CharSequenceChangedEventArgs(start, count, 1));
+            if (this.CharSequenceChanged != null)
+            {
+                this.CharSequenceChanged.Invoke(this, new CharSequenceChangedEventArgs(start, count, 1));
+            }
             return true;
         }
 

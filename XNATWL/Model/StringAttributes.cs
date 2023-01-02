@@ -60,6 +60,35 @@ namespace XNATWL.Model
             }
         }
 
+        public int Length
+        {
+            get
+            {
+                return this._seq.Length;
+            }
+        }
+
+        public void Optimize()
+        {
+            if (this._markers.Count > 1)
+            {
+                Marker prev = this._markers[0];
+                for (int i = 1; i < this._markers.Count;)
+                {
+                    Marker cur = this._markers[i];
+                    if (prev.Equals(cur))
+                    {
+                        this._markers.RemoveAt(i);
+                    }
+                    else
+                    {
+                        prev = cur;
+                        i++;
+                    }
+                }
+            }
+        }
+
         public int Advance()
         {
             if (_markerIdx + 1 < _markers.Count)

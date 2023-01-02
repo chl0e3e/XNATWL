@@ -13,9 +13,9 @@ namespace XNATWL.Model
         protected static int STATE_MASK_ARMED = 4;
         protected static int STATE_MASK_DISABLED = 8;
 
-        private int _state;
+        protected internal int _state;
 
-        public bool Selected {
+        public virtual bool Selected {
             get
             {
                 return false;
@@ -110,6 +110,16 @@ namespace XNATWL.Model
             {
                 this._state &= ~mask;
             }
+        }
+
+        protected virtual void FireAction()
+        {
+            this.Action.Invoke(this, new ButtonActionEventArgs());
+        }
+
+        protected virtual void FireState()
+        {
+            this.State.Invoke(this, new ButtonStateChangedEventArgs());
         }
 
         public event EventHandler<ButtonActionEventArgs> Action;

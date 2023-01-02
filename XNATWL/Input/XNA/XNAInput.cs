@@ -18,6 +18,15 @@ namespace XNATWL.Input.XNA
             MouseState ms = Mouse.GetState();
 
             gui.handleMouse(ms.X, ms.Y, (ms.LeftButton == ButtonState.Pressed || ms.LeftButton == ButtonState.Released) ? Event.MOUSE_LBUTTON : 0, ms.LeftButton == ButtonState.Pressed ? true : false);
+            foreach (Keys key in ks.GetPressedKeys())
+            {
+                switch(key)
+                {
+                    case Keys.A:
+                        gui.handleKey(Event.KEY_A, 'A', true);
+                        break;
+                }
+            }
             /*if (Keyboard.GetState)
             {
                 while (Keyboard.next())

@@ -147,8 +147,6 @@ namespace XNATWL
             bool typed = false;
             bool end = false;
 
-            System.Diagnostics.Debug.WriteLine("idx : " + idx);
-
             foreach(string strokePart in stroke.Split(' '))
             {
                 if (typed)

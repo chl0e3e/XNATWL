@@ -1711,7 +1711,7 @@ namespace XNATWL
          * @param y the y coordinate
          * @return the widget at that location.
          */
-        public Widget getWidgetAt(int x, int y)
+        public virtual Widget getWidgetAt(int x, int y)
         {
             Widget child = getChildAt(x, y);
             if (child != null)
@@ -1734,7 +1734,6 @@ namespace XNATWL
          */
         protected virtual void applyTheme(ThemeInfo themeInfo)
         {
-            System.Diagnostics.Debug.WriteLine("Widget@applyTheme with ThemeInfo : " + this.GetType().FullName + " - '" + this.theme + "'");
             applyThemeBackground(themeInfo);
             applyThemeOverlay(themeInfo);
             applyThemeBorder(themeInfo);
@@ -2292,7 +2291,7 @@ namespace XNATWL
          * @param gui the GUI object
          * @see #paint(de.matthiasmann.twl.GUI) 
          */
-        protected void paintOverlay(GUI gui)
+        protected virtual void paintOverlay(GUI gui)
         {
             Image ovImage = getOverlay();
             if (ovImage != null)
@@ -2376,7 +2375,7 @@ namespace XNATWL
          *
          * @param child A child widget
          */
-        protected void layoutChildFullInnerArea(Widget child)
+        protected internal void layoutChildFullInnerArea(Widget child)
         {
             if (child.parent != this)
             {

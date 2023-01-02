@@ -161,13 +161,10 @@ namespace XNATWL
         {
             name = name.ToUpper();
 
-            System.Diagnostics.Debug.WriteLine("Searching for " + name);
-
             foreach (FieldInfo fieldInfo in typeof(Color).GetFields())
             {
                 if (fieldInfo.FieldType == typeof(Color) && fieldInfo.IsStatic && name == fieldInfo.Name)
                 {
-                    System.Diagnostics.Debug.WriteLine("Found color: " + name);
                     return (Color) fieldInfo.GetValue(null);
                 }
             }

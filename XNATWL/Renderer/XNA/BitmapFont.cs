@@ -155,10 +155,10 @@ namespace XNATWL.Renderer.XNA
                     glyph.xadvance = xadvance;
                     addGlyph(idx, glyph);
                 }
-                else
-                {
-                    System.Diagnostics.Debug.WriteLine("Glyph skipped " + idx + " - " + w + "," + h);
-                }
+                //else
+                //{
+                //    System.Diagnostics.Debug.WriteLine("Glyph skipped " + idx + " - " + w + "," + h);
+                //}
                 xmlp.nextTag();
                 xmlp.require(XmlPullParser.END_TAG, null, "char");
                 xmlp.nextTag();
@@ -379,7 +379,7 @@ namespace XNATWL.Renderer.XNA
         {
             int width = 0;
             Glyph lastGlyph = null;
-            while (start < end)
+            /*while (start < end)
             {
                 lastGlyph = getGlyph(str[start++]);
                 if (lastGlyph != null)
@@ -387,15 +387,15 @@ namespace XNATWL.Renderer.XNA
                     width = lastGlyph.xadvance;
                     break;
                 }
-            }
+            }*/
             while (start < end)
             {
                 char ch = str[start++];
                 Glyph g = getGlyph(ch);
                 if (g != null)
                 {
-                    width += lastGlyph.getKerning(ch);
-                    lastGlyph = g;
+                    //width += lastGlyph.getKerning(ch);
+                    //lastGlyph = g;
                     width += g.xadvance;
                 }
                 else if (ch == ' ')
@@ -410,18 +410,18 @@ namespace XNATWL.Renderer.XNA
         {
             int index = start;
             int width = 0;
-            Glyph lastGlyph = null;
+            //Glyph lastGlyph = null;
             for (; index < end; index++)
             {
                 char ch = str[index];
                 Glyph g = getGlyph(ch);
                 if (g != null)
                 {
-                    if (lastGlyph != null)
+                    /*if (lastGlyph != null)
                     {
                         width += lastGlyph.getKerning(ch);
                     }
-                    lastGlyph = g;
+                    lastGlyph = g;*/
                     if (proportional)
                     {
                         width += g.xadvance;

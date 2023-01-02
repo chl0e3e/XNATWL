@@ -53,6 +53,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActionCallback.cs" />
     <Compile Include="ActionEventArgs.cs" />
     <Compile Include="ActionMap.cs" />
     <Compile Include="Alignment.cs" />
@@ -60,6 +61,7 @@
     <Compile Include="Border.cs" />
     <Compile Include="BoxLayout.cs" />
     <Compile Include="Button.cs" />
+    <Compile Include="Clipboard.cs" />
     <Compile Include="Color.cs" />
     <Compile Include="Container.cs" />
     <Compile Include="DebugHook.cs" />
@@ -67,6 +69,8 @@
     <Compile Include="DialogLayout.cs" />
     <Compile Include="Dimension.cs" />
     <Compile Include="DraggableButton.cs" />
+    <Compile Include="EditField.cs" />
+    <Compile Include="EditFieldAutoCompletionWindow.cs" />
     <Compile Include="Event.cs" />
     <Compile Include="FocusGainedCause.cs" />
     <Compile Include="GUI.cs" />
@@ -79,6 +83,14 @@
     <Compile Include="IO\Preferences.cs" />
     <Compile Include="KeyStroke.cs" />
     <Compile Include="Label.cs" />
+    <Compile Include="ListBox.cs" />
+    <Compile Include="ListBoxDisplay.cs" />
+    <Compile Include="Menu.cs" />
+    <Compile Include="MenuAction.cs" />
+    <Compile Include="MenuCheckBox.cs" />
+    <Compile Include="MenuElement.cs" />
+    <Compile Include="MenuManager.cs" />
+    <Compile Include="MenuSpacer.cs" />
     <Compile Include="Model\AbstractColorSpace.cs" />
     <Compile Include="Model\AbstractEnumModel.cs" />
     <Compile Include="Model\AbstractFloatModel.cs" />
@@ -153,6 +165,7 @@
     <Compile Include="Model\TableModel.cs" />
     <Compile Include="Model\TableSelectionModel.cs" />
     <Compile Include="Model\TableSingleSelectionModel.cs" />
+    <Compile Include="Model\ToggleButtonModel.cs" />
     <Compile Include="Model\TreeTableModel.cs" />
     <Compile Include="Model\TreeTableNode.cs" />
     <Compile Include="MouseSensitiveRectangle.cs" />
@@ -256,6 +269,7 @@
     <Compile Include="Utils\StateSelectOptimizer.cs" />
     <Compile Include="Utils\TextUtil.cs" />
     <Compile Include="Utils\TintAnimator.cs" />
+    <Compile Include="Utils\TypeMapping.cs" />
     <Compile Include="Utils\XMLParser.cs" />
     <Compile Include="VAlignment.cs" />
     <Compile Include="Widget.cs" />

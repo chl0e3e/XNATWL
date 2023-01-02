@@ -1258,7 +1258,7 @@ namespace XNATWL
             }
         }
 
-        void resendLastMouseMove()
+        protected internal void resendLastMouseMove()
         {
             if (!dragActive)
             {

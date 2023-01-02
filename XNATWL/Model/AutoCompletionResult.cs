@@ -25,5 +25,15 @@ namespace XNATWL.Model
         }
 
         public abstract string ResultAt(int index);
+
+        public virtual int getCursorPosForResult(int idx)
+        {
+            return DEFAULT_CURSOR_POS;
+        }
+
+        public virtual AutoCompletionResult refine(String text, int cursorPos)
+        {
+            return null;
+        }
     }
 }

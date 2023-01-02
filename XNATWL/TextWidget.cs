@@ -167,7 +167,7 @@ namespace XNATWL
             base.destroy();
         }
 
-        protected int computeTextX()
+        protected virtual int computeTextX()
         {
             int x = getInnerX();
             int pos = alignment.getHPosition();
@@ -178,7 +178,7 @@ namespace XNATWL
             return x;
         }
 
-        protected int computeTextY()
+        protected virtual internal int computeTextY()
         {
             int y = getInnerY();
             int pos = alignment.getVPosition();

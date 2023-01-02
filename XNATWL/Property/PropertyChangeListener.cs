@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace XNATWL.Property
 {
-    public class PropertyChangeListener
+    public interface PropertyChangeListener
     {
-
+        void propertyChange(PropertyChangeEvent e);
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace XNATWL.Model
 {
-    public interface ObservableCharSequence
+    public interface ObservableCharSequence : XNATWL.Utils.CharSequence
     {
         event EventHandler<CharSequenceChangedEventArgs> CharSequenceChanged;
 

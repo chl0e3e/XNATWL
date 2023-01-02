@@ -157,7 +157,7 @@ namespace XNATWL
         /**
          * Closes this pop-up window. Keyboard focus is transfered to it's owner.
          */
-        public void closePopup()
+        public virtual void closePopup()
         {
             GUI gui = getGUI();
             if (gui != null)
@@ -260,7 +260,7 @@ namespace XNATWL
          * @param evt the event
          * @return true if the event has been handled, false otherwise.
          */
-        protected bool handleEventPopup(Event evt)
+        protected virtual bool handleEventPopup(Event evt)
         {
             return base.handleEvent(evt);
         }

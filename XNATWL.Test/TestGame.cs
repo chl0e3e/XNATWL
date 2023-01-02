@@ -194,6 +194,7 @@ namespace XNATWL.Test
             private HTMLTextAreaModel textAreaModel;
             private TextAreaW textArea;
             private ScrollPane scrollPane;
+            private EditField editField;
 
             public ChatFrame()
             {
@@ -201,7 +202,8 @@ namespace XNATWL.Test
 
                 this.textAreaModel = new HTMLTextAreaModel();
                 this.textArea = new TextAreaW(this.textAreaModel);
-
+                this.editField = new EditField();
+                this.editField.setText("Test");
 
                 this.scrollPane = new ScrollPane(this.textArea);
                 this.scrollPane.setFixed(ScrollPane.Fixed.HORIZONTAL);
@@ -209,8 +211,8 @@ namespace XNATWL.Test
                 DialogLayout l = new DialogLayout();
                 l.setClip(true);
                 l.setTheme("content");
-                l.setHorizontalGroup(l.createParallelGroup(this.scrollPane));
-                l.setVerticalGroup(l.createSequentialGroup(this.scrollPane));
+                l.setHorizontalGroup(l.createParallelGroup(scrollPane, editField));
+                l.setVerticalGroup(l.createSequentialGroup(scrollPane, editField));
                 add(l);
 
                 textAreaModel.setHtml("<html><body><div style=\"word-wrap: break-word; font-family: default;\">Test</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div></body></html>");

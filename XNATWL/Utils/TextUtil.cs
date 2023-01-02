@@ -185,6 +185,44 @@ namespace XNATWL.Utils
             return result;
         }
 
+        public static String createString(char ch, int len)
+        {
+            char[] buf = new char[len];
+            for (int i = 0; i < len; i++)
+            {
+                buf[i] = ch;
+            }
+            return new String(buf);
+        }
+
+        public static String stripNewLines(String str)
+        {
+            int idx = str.LastIndexOf('\n');
+            if (idx < 0)
+            {
+                // don't waste time when no newline is present
+                return str;
+            }
+            StringBuilder sb = new StringBuilder(str);
+            do
+            {
+                if (sb[idx] == '\n')
+                {
+                    sb.Remove(idx, 1);
+                }
+            } while (--idx >= 0);
+            return sb.ToString();
+        }
+
+        public static String limitStringLength(String str, int length)
+        {
+            if (str.Length > length)
+            {
+                return str.Substring(0, length);
+            }
+            return str;
+        }
+
         public static bool isInteger(String str)
         {
             int idx = 0;

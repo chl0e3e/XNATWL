@@ -281,7 +281,6 @@ namespace XNATWL.Theme
                     xmlp.require(XmlPullParser.XML_DECLARATION, null, null);
                     while(xmlp.next() == XmlPullParser.IGNORABLE_WHITESPACE)
                     {
-                        System.Diagnostics.Debug.WriteLine("Skipping whitespace");
                     }
                     parseThemeFile(xmlp, fso.Parent);
                 }
@@ -431,7 +430,6 @@ namespace XNATWL.Theme
 
         private Font parseFont(XMLParser xmlp, FileSystemObject baseFso)
         {
-            System.Diagnostics.Debug.WriteLine("pf " + xmlp.xpp.Name + " - " + xmlp.xpp.NodeType);
             FileSystemObject fso;
             string fileName = xmlp.getAttributeValue(null, "filename");
             if (fileName != null)
@@ -442,7 +440,6 @@ namespace XNATWL.Theme
             {
                 fso = baseFso;
             }
-            System.Diagnostics.Debug.WriteLine("pf2 " + xmlp.xpp.Name + " - " + xmlp.xpp.NodeType);
 
             List<string> fontFamilies = parseList(xmlp, "families");
             int fontSize = 0;
@@ -463,21 +460,16 @@ namespace XNATWL.Theme
                     }
                 }
             }
-            System.Diagnostics.Debug.WriteLine("pf3 " + xmlp.xpp.Name + " - " + xmlp.xpp.NodeType);
 
             FontParameter baseParams = new FontParameter();
             parseFontParameter(xmlp, baseParams);
             List<FontParameter> fontParams = new List<FontParameter>();
             List<StateExpression> stateExpr = new List<StateExpression>();
 
-            System.Diagnostics.Debug.WriteLine("xxD1 " + xmlp.xpp.Name + " - " + xmlp.xpp.NodeType);
             xmlp.nextTag();
-            System.Diagnostics.Debug.WriteLine("xxD2 " + xmlp.xpp.Name + " - " + xmlp.xpp.NodeType);
             while (!xmlp.isEndTag())
             {
-                System.Diagnostics.Debug.WriteLine("xxD3 " + xmlp.xpp.Name + " - " + xmlp.xpp.NodeType);
                 xmlp.require(XmlPullParser.START_TAG, null, "fontParam");
-                System.Diagnostics.Debug.WriteLine("xxD4 " + xmlp.xpp.Name + " - " + xmlp.xpp.NodeType);
 
                 StateExpression cond = ParserUtil.parseCondition(xmlp);
                 if (cond == null)
@@ -704,8 +696,6 @@ namespace XNATWL.Theme
                 xmlp.require(XmlPullParser.END_TAG, null, valueTagName);
                 xmlp.nextTag();
                 xmlp.require(XmlPullParser.END_TAG, null, tagName);
-                System.Diagnostics.Debug.WriteLine("Value: " + value.ToString());
-                System.Diagnostics.Debug.WriteLine("ValueType: " + value.GetType().FullName);
                 if (value is IDictionary<string, Renderer.Image>)
                 {
                     IDictionary<string, Renderer.Image> map = (IDictionary<string, Renderer.Image>)value;
@@ -942,7 +932,6 @@ namespace XNATWL.Theme
         {
             try
             {
-                System.Diagnostics.Debug.WriteLine("Parsing math: " + str);
                 return mathInterpreter.execute(str);
             }
             catch (ParseException ex)
@@ -1009,26 +998,22 @@ namespace XNATWL.Theme
 
             public override void accessVariable(string name)
             {
-                System.Diagnostics.Debug.WriteLine("accessVariable: " + name);
-                System.Diagnostics.Debug.WriteLine("env: " + env.getName());
                 for (ThemeInfoImpl e = env; e != null; e = e.parent)
                 {
                     Object objx = e.getParam(name);
                     if (objx != null)
                     {
-                        System.Diagnostics.Debug.WriteLine("winner env: " + e.getName());
                         push(objx);
                         return;
                     }
                     objx = e.getChildThemeImpl(name, false);
                     if (objx != null)
                     {
-                        System.Diagnostics.Debug.WriteLine("winner env!: " + e.getName());
                         push(objx);
                         return;
                     }
                 }
-                System.Diagnostics.Debug.WriteLine("noenv: " + env.getName());
+
                 Object obj = this.themeManager.constants.getParam(name);
                 if (obj != null)
                 {

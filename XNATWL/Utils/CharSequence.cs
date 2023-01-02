@@ -16,5 +16,10 @@ namespace XNATWL.Utils
         {
             get;
         }
+
+        int Length
+        {
+            get;
+        }
     }
 }

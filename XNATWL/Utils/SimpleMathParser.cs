@@ -297,8 +297,6 @@ namespace XNATWL.Utils
 
         private string parseIdent()
         {
-            System.Diagnostics.Debug.WriteLine("pos: " + pos);
-            System.Diagnostics.Debug.WriteLine("str: " + str);
             if (str[pos] == '\'')
             {
                 int istart = ++pos;
@@ -308,9 +306,6 @@ namespace XNATWL.Utils
                 return ident;
             }
             int start = pos;
-            System.Diagnostics.Debug.WriteLine("loop2");
-            System.Diagnostics.Debug.WriteLine("start2: " + start);
-            System.Diagnostics.Debug.WriteLine("str2: " + str);
             while (pos < str.Length && CharUtil.IsCSharpIdentifier(str[pos]))
             {
                 pos++;
@@ -319,8 +314,6 @@ namespace XNATWL.Utils
             {
                 pos = str.Length;
             }
-            System.Diagnostics.Debug.WriteLine("pos2: " + pos);
-            System.Diagnostics.Debug.WriteLine("str2: " + str);
             return str.Substring(start, pos - start);
         }
 
