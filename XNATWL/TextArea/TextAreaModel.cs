@@ -199,13 +199,30 @@ namespace XNATWL.TextArea
     {
         protected List<Element> children;
 
-        public int Count => throw new NotImplementedException();
+        public int Count
+        {
+            get
+            {
+                return this.children.Count;
+            }
+        }
 
-        public bool IsReadOnly => throw new NotImplementedException();
+        public bool IsReadOnly
+        {
+            get
+            {
+                return false;
+            }
+        }
 
         public ContainerElement(Style style) : base(style)
         {
             this.children = new List<Element>();
+        }
+
+        public Element ElementAt(int idx)
+        {
+            return this.children[idx];
         }
 
         public void Add(Element item)

@@ -354,7 +354,7 @@ namespace XNATWL
          * @see #isEnabled()
          * @see #isLocallyEnabled()
          */
-        public void setEnabled(bool enabled)
+        public virtual void setEnabled(bool enabled)
         {
             if (this.locallyEnabled != enabled)
             {
@@ -807,7 +807,7 @@ namespace XNATWL
          * @see #getMinHeight()
          * @throws ArgumentOutOfRangeException when width or height is negative
          */
-        public void setMinSize(int width, int height)
+        public virtual void setMinSize(int width, int height)
         {
             if (width < 0 || height < 0)
             {
@@ -952,7 +952,7 @@ namespace XNATWL
          * @see #getMaxHeight()
          * @throws ArgumentOutOfRangeException when width or height is negative
          */
-        public void setMaxSize(int width, int height)
+        public virtual void setMaxSize(int width, int height)
         {
             if (width < 0 || height < 0)
             {

@@ -9,7 +9,7 @@ namespace XNATWL.TextArea
 {
     public class CSSStyle : Style
     {
-        protected CSSStyle()
+        internal CSSStyle()
         {
         }
 
@@ -36,7 +36,7 @@ namespace XNATWL.TextArea
             }
         }
 
-        protected void parseCSSAttribute(string key, string value)
+        internal void parseCSSAttribute(string key, string value)
         {
             if(key.StartsWith("margin")) {
                 parseBox(key.Substring(6), value, StyleAttribute.MARGIN);
@@ -297,7 +297,7 @@ namespace XNATWL.TextArea
             return TextUtil.trim(value, start, value.Length - end);
         }
     
-        static string stripURL(string value) {
+        public static string stripURL(string value) {
             if(value.StartsWith("url(") && value.EndsWith(")")) {
                 value = stripQuotes(stripTrim(value, 4, 1));
             }
@@ -363,7 +363,7 @@ namespace XNATWL.TextArea
             Put(attribute, parseList(value, 0));
         }
     
-        static List<String> parseList(string value, int idx) {
+        public static List<String> parseList(string value, int idx) {
             idx = TextUtil.skipSpaces(value, idx);
             if(idx >= value.Length) {
                 return null;
@@ -386,7 +386,15 @@ namespace XNATWL.TextArea
                 part = TextUtil.trim(value, idx, end);
             }
 
-            return new List<string> { part, parseList(value, end + 1)[0] };
+            List<string> result = parseList(value, end + 1);
+            if (result == null)
+            {
+                return new List<string> { part };
+            }
+            else
+            {
+                return new List<string> { part, result[0] };
+            }
         }
     
         static Dictionary<string, Boolean> PRE = new Dictionary<string, Boolean>();

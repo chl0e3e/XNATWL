@@ -714,6 +714,14 @@ namespace XNATWL.Theme
                         target.put(key, map[key]);
                     }
                 }
+                else if (value is IDictionary<string, Renderer.MouseCursor>)
+                {
+                    IDictionary<string, Renderer.MouseCursor> map = (IDictionary<string, Renderer.MouseCursor>)value;
+                    foreach (string key in map.Keys)
+                    {
+                        target.put(key, map[key]);
+                    }
+                }
                 else if (value is IDictionary<string, object>)
                 { //TODO
                     //target.put((Dictionary<string, object>)value);
@@ -973,7 +981,7 @@ namespace XNATWL.Theme
             {
                 throw new Exception("Assertion exception");
             }
-            string fullPath = baseStr.Concat(name).ToString();
+            string fullPath = baseStr + name;
             ThemeInfo info = findThemeInfo(fullPath, false, useFallback);
             if (info != null && ((ThemeInfoImpl)info).maybeUsedFromWildcard)
             {

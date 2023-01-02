@@ -14,6 +14,10 @@ namespace XNATWL.Input.XNA
 
         public bool PollInput(GUI gui)
         {
+            KeyboardState ks = Keyboard.GetState();
+            MouseState ms = Mouse.GetState();
+
+            gui.handleMouse(ms.X, ms.Y, (ms.LeftButton == ButtonState.Pressed || ms.LeftButton == ButtonState.Released) ? Event.MOUSE_LBUTTON : 0, ms.LeftButton == ButtonState.Pressed ? true : false);
             /*if (Keyboard.GetState)
             {
                 while (Keyboard.next())

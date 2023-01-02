@@ -67,7 +67,7 @@ namespace XNATWL.Renderer.XNA
 
         public MouseCursor CreateCursor(int x, int y, int width, int height, int hotSpotX, int hotSpotY, Image imageRef)
         {
-            return DefaultMouseCursor.OS_DEFAULT;
+            return new XNACursor(this, x, y, width, height, Color.WHITE);
             //throw new NotImplementedException();
         }
 

@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.IO;
 using XNATWL.Input.XNA;
+using System.Net.Http;
 
 namespace XNATWL.Renderer.XNA
 {
@@ -63,7 +64,13 @@ namespace XNATWL.Renderer.XNA
 
         public OffscreenRenderer OffscreenRenderer => throw new NotImplementedException();
 
-        public FontMapper FontMapper => throw new NotImplementedException();
+        public FontMapper FontMapper
+        {
+            get
+            {
+                return null;
+            }
+        }
 
         private GameTime _gameTime;
         private List<TextureArea> textureAreas;
@@ -72,6 +79,12 @@ namespace XNATWL.Renderer.XNA
         private GraphicsDevice _graphicsDevice;
         private XNATWL.Renderer.CacheContext _cacheContext;
         private TintStack _tintStack;
+        private ClipStack _clipStack;
+        private MouseCursor _mouseCursor;
+        private XNACursor _defaultCursor;
+        protected Rect clipRectTemp;
+        private bool hasScissor;
+        private Rectangle? _defaultScissor = null;
 
         public GraphicsDevice GraphicsDevice
         {
@@ -94,27 +107,68 @@ namespace XNATWL.Renderer.XNA
             this._gameTime = new GameTime();
             this._graphicsDevice = graphicsDevice;
             this._tintStack = new TintStack();
+            this._clipStack = new ClipStack();
+            this.clipRectTemp = new Rect();
+
+            var bytes = Convert.FromBase64String("iVBORw0KGgoAAAANSUhEUgAAABEAAAAZCAMAAADg4DWlAAAAmVBMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD///8jo0yHAAAAMXRSTlMAAQUPA0IfMgInFzlGCwwpGQcJEiIIP04vGDoqDgYbNVFDGjFBMEgWIElFEyw4PjRLq1RDbAAAALhJREFUeF5V0NlygzAMBVDbKK1tgtlJSgrZ93RR/v/jgjwTC/R45o6kuUJIDVqK0SDkSaHGhBhlNhoTPtGkH0QsT4w/iVgGmjGRMAVhCsLEwsTCRDKhsIemTW2hvQyKm8Xp989kCZAgyeL/cKxslFMG11uia7OySQdSIO72Mcl8tvyq/fX6bNKLp7j6Bnqxo34mId+h5tC7Z5Jbs7qrUJxEfLQ/pmQR4HpjegcsUrmydNQHEygFA7wAtBchFf1cSBMAAAAASUVORK5CYII=");
+            var contents = new MemoryStream(bytes);
+            Texture2D texture = Texture2D.FromStream(this._graphicsDevice, contents);
+            contents.Close();
+
+            this._defaultCursor = new XNACursor(new XNATexture(this, 17, 25, texture), 0, 0, 17, 25, Color.WHITE);
+        }
+
+        protected void setClipRect()
+        {
+            Rect rect = clipRectTemp;
+            if (_clipStack.getClipRect(rect))
+            {
+                if (!hasScissor)
+                {
+                    this._defaultScissor = this._graphicsDevice.ScissorRectangle;
+                    this._graphicsDevice.RasterizerState.ScissorTestEnable = true;
+                    hasScissor = true;
+                }
+                Rectangle scissor = new Rectangle(rect.X, rect.Y, rect.Width, rect.Height);
+                this._graphicsDevice.ScissorRectangle = scissor;
+               /* SpriteBatch spriteBatch = new SpriteBatch(GraphicsDevice);
+                Texture2D dummyTexture = new Texture2D(GraphicsDevice, 1, 1);
+                dummyTexture.SetData(new Microsoft.Xna.Framework.Color[] { Microsoft.Xna.Framework.Color.White });
+
+                spriteBatch.Begin();
+                spriteBatch.Draw(dummyTexture, scissor, Microsoft.Xna.Framework.Color.Red);
+                spriteBatch.End();*/
+            }
+            else if (hasScissor)
+            {
+                this._graphicsDevice.ScissorRectangle = (Rectangle) this._defaultScissor;
+                this._graphicsDevice.RasterizerState.ScissorTestEnable = false;
+                hasScissor = false;
+            }
         }
 
         public void ClipEnter(int x, int y, int w, int h)
         {
-            //throw new NotImplementedException();
+            this._clipStack.push(x, y, w, h);
+            setClipRect();
         }
 
         public void ClipEnter(Rect rect)
         {
-            //throw new NotImplementedException();
+            this._clipStack.push(rect);
+            setClipRect();
         }
 
         public bool ClipIsEmpty()
         {
-            return true;
+            return this._clipStack.isClipEmpty();
             //throw new NotImplementedException();
         }
 
         public void ClipLeave()
         {
-            //throw new NotImplementedException();
+            this._clipStack.pop();
+            setClipRect();
         }
 
         public DynamicImage CreateDynamicImage(int width, int height)
@@ -170,7 +224,7 @@ namespace XNATWL.Renderer.XNA
 
         public void SetCursor(MouseCursor cursor)
         {
-            //throw new NotImplementedException();
+            this._mouseCursor = cursor;
         }
 
         public void SetMouseButton(int button, bool state)
@@ -185,12 +239,18 @@ namespace XNATWL.Renderer.XNA
 
         public bool StartRendering()
         {
+            this._clipStack.clearStack();
             return true;
             //throw new NotImplementedException();
         }
 
         public void EndRendering()
         {
+            System.Diagnostics.Debug.WriteLine(this._mouseCursor == null);
+            XNACursor cursor = this._mouseCursor == null ? this._defaultCursor : ((XNACursor)this._mouseCursor);
+            MouseState ms = Mouse.GetState();
+            cursor.drawQuad(ms.X, ms.Y, cursor.getWidth(), cursor.getHeight());
+            System.Diagnostics.Debug.WriteLine("x: " + ms.X + ", y: " + ms.Y);
             //throw new NotImplementedException();
         }
 

@@ -155,6 +155,10 @@ namespace XNATWL.Renderer.XNA
                     glyph.xadvance = xadvance;
                     addGlyph(idx, glyph);
                 }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine("Glyph skipped " + idx + " - " + w + "," + h);
+                }
                 xmlp.nextTag();
                 xmlp.require(XmlPullParser.END_TAG, null, "char");
                 xmlp.nextTag();
@@ -196,7 +200,7 @@ namespace XNATWL.Renderer.XNA
             xmlp.require(XmlPullParser.END_TAG, null, "font");
 
             Glyph g = getGlyph(' ');
-            spaceWidth = (g != null) ? g.xadvance + g.getWidth() : 1;
+            spaceWidth = (g != null) ? g.xadvance + g.getWidth() : 5;
 
             Glyph gx = getGlyph('x');
             ex = (gx != null) ? gx.getHeight() : 1;
@@ -394,6 +398,10 @@ namespace XNATWL.Renderer.XNA
                     lastGlyph = g;
                     width += g.xadvance;
                 }
+                else if (ch == ' ')
+                {
+                    width += this.spaceWidth;
+                }
             }
             return width;
         }
@@ -431,13 +439,16 @@ namespace XNATWL.Renderer.XNA
                         width += g.xadvance;
                     }
                 }
+                else if (ch == ' ')
+                {
+                    width += this.spaceWidth;
+                }
             }
             return index - start;
         }
 
         public int drawText(int x, int y, string str, int start, int end)
         {
-            System.Diagnostics.Debug.WriteLine("draw: " + str);
             int startX = x;
             Glyph lastGlyph = null;
             /*while (start < end)
@@ -472,6 +483,10 @@ namespace XNATWL.Renderer.XNA
                     //System.Diagnostics.Debug.WriteLine("x2:" + x);
                     x += g.xadvance; // + g.getKerning(ch);
                     //System.Diagnostics.Debug.WriteLine("x3:" + x);
+                }
+                else if (ch == ' ')
+                {
+                    x += this.spaceWidth;
                 }
             }
             return x - startX;

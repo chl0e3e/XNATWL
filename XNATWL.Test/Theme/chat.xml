@@ -181,12 +181,12 @@
                 <param name="mediumGap"><dimension>10,10</dimension></param>
                 <param name="largeGap"><dimension>15,15</dimension></param>
                 <param name="namedGaps"><map/></param>
-
+				
                 <theme name="scrollpane" ref="scrollpane">
                     <param name="background"><image>innerframe.background</image></param>
                     <param name="border"><border>background.border</border></param>
 
-                    <theme name="textarea" ref="-defaults">
+                    <theme name="textareaw" ref="-defaults">
                         <param name="fonts"><map>
                             <param name="default"><font>black</font></param>
                             <param name="color0"><font>red</font></param>

@@ -52,6 +52,23 @@ namespace XNATWL.TextArea
             return hash;
         }
 
+        public bool Matches(StyleSheetKey what)
+        {
+            if (this._element != null && !this._element.Equals(what.Element))
+            {
+                return false;
+            }
+            if (this.ClassName != null && !this.ClassName.Equals(what.ClassName))
+            {
+                return false;
+            }
+            if (this.ID != null && !this.ID.Equals(what.ID))
+            {
+                return false;
+            }
+            return true;
+        }
+
         public override bool Equals(object other)
         {
             if (other is StyleSheetKey)

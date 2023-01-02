@@ -21,7 +21,6 @@ namespace XNATWL
             BOTH
         }
 
-
         private enum DragMode
         {
             NONE,//("mouseCursor"),
@@ -34,6 +33,69 @@ namespace XNATWL
             CORNER_BR,//("mouseCursor.bottom-right"),
             CORNER_BL,//("mouseCursor.bottom-left"),
             POSITION//("mouseCursor.all");
+        }
+
+        private static string DragModeName(DragMode dragMode)
+        {
+            switch(dragMode)
+            {
+                case DragMode.NONE:
+                    return "mouseCursor";
+                case DragMode.EDGE_LEFT:
+                    return "mouseCursor.left";
+                case DragMode.EDGE_TOP:
+                    return "mouseCursor.top";
+                case DragMode.EDGE_RIGHT:
+                    return "mouseCursor.right";
+                case DragMode.EDGE_BOTTOM:
+                    return "mouseCursor.bottom";
+                case DragMode.CORNER_TL:
+                    return "mouseCursor.top-left";
+                case DragMode.CORNER_TR:
+                    return "mouseCursor.top-right";
+                case DragMode.CORNER_BR:
+                    return "mouseCursor.bottom-right";
+                case DragMode.CORNER_BL:
+                    return "mouseCursor.bottom-left";
+                case DragMode.POSITION:
+                    return "mouseCursor.all";
+            }
+
+            return "mouseCursor";
+        }
+
+        private static bool ResizableAxisAllowX(ResizableAxis rsAxis)
+        {
+            switch(rsAxis)
+            {
+                case ResizableAxis.NONE:
+                    return false;
+                case ResizableAxis.BOTH:
+                    return true;
+                case ResizableAxis.HORIZONTAL:
+                    return true;
+                case ResizableAxis.VERTICAL:
+                    return false;
+            }
+
+            return false;
+        }
+
+        private static bool ResizableAxisAllowY(ResizableAxis rsAxis)
+        {
+            switch (rsAxis)
+            {
+                case ResizableAxis.NONE:
+                    return false;
+                case ResizableAxis.BOTH:
+                    return true;
+                case ResizableAxis.HORIZONTAL:
+                    return false;
+                case ResizableAxis.VERTICAL:
+                    return true;
+            }
+
+            return false;
         }
 
         private String title;
@@ -63,7 +125,7 @@ namespace XNATWL
         private int titleAreaBottom;
 
         private bool hasCloseButton;
-        //private Button closeButton;
+        private Button closeButton;
         private int closeButtonX;
         private int closeButtonY;
 
@@ -151,27 +213,40 @@ namespace XNATWL
             return titleWidget != null && titleWidget.getParent() == this;
         }
 
-        public void addCloseCallback(Runnable cb)
+        public event EventHandler<FrameClosedEventArgs> Closed;
+
+        public void toggleCloseButton(bool use)
         {
-            //if (closeButton == null)
+            if (use)
             {
-                /*closeButton = new Button();
-                closeButton.setTheme("closeButton");
-                closeButton.setCanAcceptKeyboardFocus(false);
-                add(closeButton);
-                layoutCloseButton();*/
+                if (closeButton == null)
+                {
+                    closeButton = new Button();
+                    closeButton.setTheme("closeButton");
+                    closeButton.setCanAcceptKeyboardFocus(false);
+                    add(closeButton);
+                    layoutCloseButton();
+                }
+                closeButton.setVisible(hasCloseButton);
+                closeButton.Action += CloseButton_Action;
             }
-            //closeButton.setVisible(hasCloseButton);
-            //closeButton.addCallback(cb);
+            else
+            {
+                if (closeButton != null)
+                {
+                    closeButton.Action -= CloseButton_Action;
+                    closeButton.setVisible(closeButton.hasCallbacks());
+                }
+            }
+        }
+
+        private void CloseButton_Action(object sender, Model.ButtonActionEventArgs e)
+        {
+            this.Closed.Invoke(this, new FrameClosedEventArgs());
         }
 
         public void removeCloseCallback(Runnable cb)
         {
-            //if (closeButton != null)
-            {
-                //closeButton.removeCallback(cb);
-                //closeButton.setVisible(closeButton.hasCallbacks());
-            }
         }
 
         public int getFadeDurationActivate()
@@ -223,10 +298,12 @@ namespace XNATWL
 
         protected void applyThemeResizableFrame(ThemeInfo themeInfo)
         {
-            /**for (DragMode m in DragMode.values())
+            int i = 0;
+            foreach (DragMode m in Enum.GetValues(typeof(DragMode)))
             {
-                cursors[m.ordinal()] = themeInfo.getMouseCursor(m.cursorName);
-            }*/ // TODO: Cursors
+                cursors[i] = themeInfo.getMouseCursor(DragModeName(m));
+                i++;
+            } // TODO: Cursors
             titleAreaTop = themeInfo.getParameter("titleAreaTop", 0);
             titleAreaLeft = themeInfo.getParameter("titleAreaLeft", 0);
             titleAreaRight = themeInfo.getParameter("titleAreaRight", 0);
@@ -379,14 +456,14 @@ namespace XNATWL
 
         protected void layoutCloseButton()
         {
-            /*if (closeButton != null)
+            if (closeButton != null)
             {
                 closeButton.adjustSize();
                 closeButton.setPosition(
                         getTitleX(closeButtonX),
                         getTitleY(closeButtonY));
                 closeButton.setVisible(closeButton.hasCallbacks() && hasCloseButton);
-            }*/
+            }
         }
 
         protected void layoutResizeHandle()
@@ -636,8 +713,7 @@ namespace XNATWL
         //@Override
         public override MouseCursor getMouseCursor(Event evt)
         {
-            return DefaultMouseCursor.OS_DEFAULT;
-            /*DragMode cursorMode = dragMode;
+            DragMode cursorMode = dragMode;
             if (cursorMode == DragMode.NONE)
             {
                 cursorMode = getDragMode(evt.getMouseX(), evt.getMouseY());
@@ -647,7 +723,15 @@ namespace XNATWL
                 }
             }
 
-            return cursors[cursorMode.ordinal()];*/
+            DragMode[] dragModes = (DragMode[]) Enum.GetValues(typeof(DragMode));
+            for (int i = 0; i < dragModes.Length; i++)
+            {
+                if (dragModes[i] == cursorMode)
+                {
+                    return cursors[i];
+                }
+            }
+            return DefaultMouseCursor.OS_DEFAULT;
         }
 
         private DragMode getDragMode(int mx, int my)
@@ -674,10 +758,10 @@ namespace XNATWL
                 top = my < titleWidget.getY();
             }
 
-            /*if (closeButton != null && closeButton.isVisible() && closeButton.isInside(mx, my))
+            if (closeButton != null && closeButton.isVisible() && closeButton.isInside(mx, my))
             {
                 return DragMode.NONE;
-            }*/
+            }
 
             if (resizableAxis == ResizableAxis.NONE)
             {
@@ -693,16 +777,16 @@ namespace XNATWL
                 return resizeHandleDragMode;
             }
 
-            /*if (!resizableAxis.allowX)
+            if (!ResizableAxisAllowX(resizableAxis))
             {
                 left = false;
                 right = false;
             }
-            if (!resizableAxis.allowY)
+            if (!ResizableAxisAllowY(resizableAxis))
             {
                 top = false;
                 bot = false;  // TODO Resizablity
-            }*/
+            }
 
             if (left)
             {
@@ -876,5 +960,9 @@ namespace XNATWL
             setSize(Math.Max(getMinWidth(), right - left),
                     Math.Max(getMinHeight(), bottom - top));
         }
+    }
+
+    public class FrameClosedEventArgs
+    {
     }
 }

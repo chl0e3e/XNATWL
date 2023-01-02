@@ -228,19 +228,19 @@ namespace XNATWL.Renderer.XNA
 
         public int DrawText(AnimationState animState, int x, int y, string str)
         {
-            System.Diagnostics.Debug.WriteLine("DrawText@1");
+            //System.Diagnostics.Debug.WriteLine("DrawText@1");
             return this._bitmapFont.drawText(x, y, str, 0, str.Length);
         }
 
         public int DrawText(AnimationState animState, int x, int y, string str, int start, int end)
         {
-            System.Diagnostics.Debug.WriteLine("DrawText@start,end");
+            //System.Diagnostics.Debug.WriteLine("DrawText@start,end");
             return this._bitmapFont.drawText(x, y, str, start, end);
         }
 
         public int DrawText(int x, int y, AttributedString attributedString)
         {
-            System.Diagnostics.Debug.WriteLine("DrawText@AttributedString");
+            //System.Diagnostics.Debug.WriteLine("DrawText@AttributedString");
             // throw new NotImplementedException();
             string str = attributedString.Value;
             return this._bitmapFont.drawText(x, y, str, 0, str.Length);
@@ -248,7 +248,7 @@ namespace XNATWL.Renderer.XNA
 
         public int DrawText(int x, int y, AttributedString attributedString, int start, int end)
         {
-            System.Diagnostics.Debug.WriteLine("DrawText@AttributedString<start,end>");
+            //System.Diagnostics.Debug.WriteLine("DrawText@AttributedString<start,end>");
             string str = attributedString.Value;
             return this._bitmapFont.drawText(x, y, str, start, end);
         }

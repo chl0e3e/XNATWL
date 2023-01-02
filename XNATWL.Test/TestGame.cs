@@ -191,17 +191,32 @@ namespace XNATWL.Test
 
         class ChatFrame : ResizableFrame
         {
+            private HTMLTextAreaModel textAreaModel;
+            private TextAreaW textArea;
+            private ScrollPane scrollPane;
+
             public ChatFrame()
             {
                 setTitle("Chat");
 
-                Label label = new Label("Test");
-                Label labelh = new Label("hello");
+                this.textAreaModel = new HTMLTextAreaModel();
+                this.textArea = new TextAreaW(this.textAreaModel);
+
+
+                this.scrollPane = new ScrollPane(this.textArea);
+                this.scrollPane.setFixed(ScrollPane.Fixed.HORIZONTAL);
+
                 DialogLayout l = new DialogLayout();
+                l.setClip(true);
                 l.setTheme("content");
-                l.setHorizontalGroup(l.createParallelGroup(label, labelh));
-                l.setVerticalGroup(l.createSequentialGroup(label, labelh));
+                l.setHorizontalGroup(l.createParallelGroup(this.scrollPane));
+                l.setVerticalGroup(l.createSequentialGroup(this.scrollPane));
                 add(l);
+
+                textAreaModel.setHtml("<html><body><div style=\"word-wrap: break-word; font-family: default;\">Test</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div></body></html>");
+
+                scrollPane.validateLayout();
+                scrollPane.setScrollPositionY(scrollPane.getMaxScrollPosY());
             }
         }
     }

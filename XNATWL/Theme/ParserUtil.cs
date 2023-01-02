@@ -108,7 +108,7 @@ namespace XNATWL.Theme
             int len = name.Length;
             if (len > 0 && name[len - 1] != '.')
             {
-                name = name.Concat(".").ToString();
+                name = name + ".";
             }
             return name;
         }
@@ -164,18 +164,9 @@ namespace XNATWL.Theme
             bool adding = false;
             foreach(string key in map.Keys)
             {
-                if (key == baseName)
+                if (key.StartsWith(baseName))
                 {
                     adding = true;
-                    subMap[key] = map[key];
-                }
-                else if (key == baseName.Concat("\uFFFF").ToString())
-                {
-                    subMap[key] = map[key];
-                    break;
-                }
-                else if(adding)
-                {
                     subMap[key] = map[key];
                 }
             }
@@ -206,7 +197,8 @@ namespace XNATWL.Theme
                 {
                     value = null;
                 }
-                result.Add(name.Concat(texEntryKey.Substring(refLen)).ToString(), (V)value);
+                var key = name + texEntryKey.Substring(refLen);
+                result.Add(key, (V)value);
             }
 
             return result;

@@ -31,7 +31,7 @@ namespace XNATWL.TextArea
             }
         }
 
-        protected Style(Style src)
+        internal Style(Style src)
         {
             this.parent = src.parent;
             this.styleSheetKey = src.styleSheetKey;
@@ -88,6 +88,30 @@ namespace XNATWL.TextArea
             return (V) value;
         }
 
+        public object GetNoResolve(StyleAttribute attribute, StyleSheetResolver resolver)
+        {
+            Object value = this.RawGet(attribute.Ordinal);
+
+            if (value == null)
+            {
+                if (resolver != null && styleSheetKey != null)
+                {
+                    Style styleSheetStyle = resolver.Resolve(this);
+                    if (styleSheetStyle != null)
+                    {
+                        value = styleSheetStyle.RawGet(attribute.Ordinal);
+                    }
+                }
+
+                if (value == null)
+                {
+                    return attribute.DefaultValue;
+                }
+            }
+
+            return value;
+        }
+
         private static Style DoResolve(Style style, int ord, StyleSheetResolver resolver)
         {
             for (; ; )
@@ -135,7 +159,7 @@ namespace XNATWL.TextArea
             }
         }
 
-        protected void Put(StyleAttribute attribute, Object value)
+        internal void Put(StyleAttribute attribute, Object value)
         {
             if (attribute == null)
             {
@@ -167,13 +191,24 @@ namespace XNATWL.TextArea
             return this.Resolve(attribute, resolver).GetNoResolve(attribute, resolver);
         }
 
+        public object GetAsObject(StyleAttribute attribute, StyleSheetResolver resolver)
+        {
+            return this.Resolve(attribute, resolver).GetNoResolve(attribute, resolver);
+        }
+
         public V GetRaw<V>(StyleAttribute<V> attribute)
         {
             object value = this.RawGet(attribute.Ordinal);
             return (V) value;
         }
 
-        protected void PutAll(Dictionary<StyleAttribute, object> values)
+        public object GetRawAsObject(StyleAttribute attribute)
+        {
+            object value = this.RawGet(attribute.Ordinal);
+            return this.RawGet(attribute.Ordinal);
+        }
+
+        internal void PutAll(Dictionary<StyleAttribute, object> values)
         {
             foreach (StyleAttribute key in values.Keys)
             {
@@ -181,7 +216,7 @@ namespace XNATWL.TextArea
             }
         }
 
-        protected void PutAll(Style src)
+        internal void PutAll(Style src)
         {
             if (src.values != null)
             {

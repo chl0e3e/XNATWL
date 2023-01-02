@@ -28,6 +28,22 @@ namespace XNATWL.TextArea
             this._unit = unit;
         }
 
+        public float FloatValue
+        {
+            get
+            {
+                return this._value;
+            }
+        }
+
+        public Unit UnitOfValue
+        {
+            get
+            {
+                return this._unit;
+            }
+        }
+
         public override string ToString()
         {
             if (this._unit == Unit.AUTO)

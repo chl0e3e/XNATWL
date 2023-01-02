@@ -72,6 +72,10 @@ namespace XNATWL.TextArea
          */
         public void setHtml(string html)
         {
+            if (!isXHTML(html))
+            {
+                html = "<html><body>" + html + "</body></html>";
+            }
             parseXHTML(new MemoryStream(Encoding.UTF8.GetBytes(html)));
         }
 
@@ -159,10 +163,6 @@ namespace XNATWL.TextArea
                 XmlReader xpp = XmlReader.Create(stream);
                 //xpp.setInput(reader);
                 //xpp.defineEntityReplacementText("nbsp", "\u00A0");
-                if (xpp.NodeType != XmlNodeType.Document && xpp.NodeType != XmlNodeType.DocumentType)
-                {
-                    throw new Exception("HTML does not start with a document");
-                }
 
                 while (xpp.NodeType != XmlNodeType.Element && xpp.Read())
                 {
