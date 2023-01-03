@@ -75,6 +75,8 @@
     <Compile Include="EditFieldAutoCompletionWindow.cs" />
     <Compile Include="Event.cs" />
     <Compile Include="FocusGainedCause.cs" />
+    <Compile Include="FPSCounter.cs" />
+    <Compile Include="Graph.cs" />
     <Compile Include="GUI.cs" />
     <Compile Include="HAlignment.cs" />
     <Compile Include="InfoWindow.cs" />
@@ -214,6 +216,7 @@
     <Compile Include="ResizableFrame.cs" />
     <Compile Include="Scrollbar.cs" />
     <Compile Include="ScrollPane.cs" />
+    <Compile Include="SimpleDialog.cs" />
     <Compile Include="TextArea.cs" />
     <Compile Include="TextArea\BoxAttribute.cs" />
     <Compile Include="TextArea\CSSStyle.cs" />
@@ -248,6 +251,7 @@
     <Compile Include="Theme\ThemeInfoImpl.cs" />
     <Compile Include="Theme\ThemeManager.cs" />
     <Compile Include="Timer.cs" />
+    <Compile Include="ToggleButton.cs" />
     <Compile Include="Utils\AbstractMathInterpreter.cs" />
     <Compile Include="Utils\BigRational.cs" />
     <Compile Include="Utils\BitOperations.cs" />
@@ -285,6 +289,8 @@
       <Name>FNA</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Compile Include="ProgressBar.cs" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

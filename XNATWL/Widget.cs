@@ -552,7 +552,7 @@ namespace XNATWL
          * @see #sizeChanged()
          * @see #layout()
          */
-        public bool setSize(int width, int height)
+        public virtual bool setSize(int width, int height)
         {
             if (width < 0 || height < 0)
             {
