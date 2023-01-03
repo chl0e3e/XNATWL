@@ -287,6 +287,14 @@ namespace XNATWL
                 this.OnRelease = onRelease;
                 this.OnRepeat = onRepeat;
             }
+
+            public Action()
+            {
+                this.Name = "";
+                this.OnPressed = true;
+                this.OnRelease = false;
+                this.OnRepeat = true;
+            }
         }
 
 

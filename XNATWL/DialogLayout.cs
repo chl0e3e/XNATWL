@@ -72,8 +72,8 @@ namespace XNATWL
         public static int LARGE_GAP = -3;
 
 
-        static int AXIS_X = 0;
-        static int AXIS_Y = 1;
+        public static int AXIS_X = 0;
+        public static int AXIS_Y = 1;
 
 
         /**
@@ -721,11 +721,11 @@ namespace XNATWL
             internal abstract int getMaxSize(int axis);
             internal abstract void setSize(int axis, int pos, int size);
 
-            internal DialogLayout _dialogLayout;
+            //internal DialogLayout _dialogLayout;
 
-            internal Spring(DialogLayout dialogLayout)
+            internal Spring()
             {
-                this._dialogLayout = dialogLayout;
+                //this._dialogLayout = dialogLayout;
             }
 
             void collectAllSprings(HashSet<Spring> result)
@@ -754,9 +754,11 @@ namespace XNATWL
             int prefWidth;
             int prefHeight;
             int flags;
+            private DialogLayout _dialogLayout;
 
-            internal WidgetSpring(DialogLayout dialogLayout, Widget w) : base(dialogLayout)
+            internal WidgetSpring(DialogLayout dialogLayout, Widget w)
             {
+                this._dialogLayout = dialogLayout;
                 this.w = w;
                 this.alignment = Alignment.FILL;
             }
@@ -894,9 +896,11 @@ namespace XNATWL
             int pref;
             int max;
             internal bool isDefault;
+            private DialogLayout _dialogLayout;
 
-            internal GapSpring(DialogLayout dialogLayout, int min, int pref, int max, bool isDefault) : base(dialogLayout)
+            internal GapSpring(DialogLayout dialogLayout, int min, int pref, int max, bool isDefault)
             {
+                this._dialogLayout = dialogLayout;
                 convertConstant(AXIS_X, min);
                 convertConstant(AXIS_X, pref);
                 convertConstant(AXIS_X, max);
@@ -977,9 +981,11 @@ namespace XNATWL
         private class NamedGapSpring : Spring
         {
             String name;
+            private DialogLayout _dialogLayout;
 
-            public NamedGapSpring(DialogLayout dialogLayout, String name) : base(dialogLayout)
+            public NamedGapSpring(DialogLayout dialogLayout, String name)
             {
+                this._dialogLayout = dialogLayout;
                 this.name = name;
             }
 
@@ -1020,10 +1026,11 @@ namespace XNATWL
         {
             internal List<Spring> springs = new List<Spring>();
             bool alreadyAdded;
+            internal DialogLayout _dialogLayout;
 
-            public Group(DialogLayout _dialogLayout) : base(_dialogLayout)
+            public Group(DialogLayout dialogLayout)
             {
-
+                this._dialogLayout = dialogLayout;
             }
 
             internal void checkGroup(DialogLayout owner)
@@ -1327,7 +1334,7 @@ namespace XNATWL
                 this._dialogLayout.layoutGroupsChanged();
             }
 
-            void addSpring(Spring s)
+            internal void addSpring(Spring s)
             {
                 springs.Add(s);
                 this._dialogLayout.layoutGroupsChanged();
@@ -1387,6 +1394,8 @@ namespace XNATWL
 
         public class SequentialGroup : Group
         {
+            private DialogLayout _dialogLayout;
+
             public SequentialGroup(DialogLayout dialogLayout) : base(dialogLayout)
             {
             }

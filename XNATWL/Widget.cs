@@ -1642,7 +1642,7 @@ namespace XNATWL
          * @see #updateTooltip()
          * @see #getTooltipContent()
          */
-        public void setTooltipContent(Object tooltipContent)
+        public virtual void setTooltipContent(Object tooltipContent)
         {
             this.tooltipContent = tooltipContent;
             updateTooltip();
@@ -1780,7 +1780,7 @@ namespace XNATWL
                     themeInfo.getParameter("maxHeight", short.MaxValue));
         }
 
-        protected void applyThemeMouseCursor(ThemeInfo themeInfo)
+        protected virtual void applyThemeMouseCursor(ThemeInfo themeInfo)
         {
             setMouseCursor(themeInfo.getMouseCursor("mouseCursor"));
         }
@@ -1948,7 +1948,7 @@ namespace XNATWL
          * @return true if the action was handled
          * @see #setInputMap(de.matthiasmann.twl.InputMap) 
          */
-        protected bool handleKeyStrokeAction(String action, Event evt)
+        protected virtual bool handleKeyStrokeAction(String action, Event evt)
         {
             if (actionMap != null)
             {

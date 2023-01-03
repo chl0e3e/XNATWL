@@ -11,4 +11,17 @@ namespace XNATWL.Model
         ASCENDING,
         DESCENDING
     }
+
+    public class SortOrderStatics
+    {
+        public static SortOrder SortOrder_Invert(SortOrder order)
+        {
+            if (order == SortOrder.ASCENDING)
+            {
+                return SortOrder.DESCENDING;
+            }
+
+            return SortOrder.ASCENDING;
+        }
+    }
 }

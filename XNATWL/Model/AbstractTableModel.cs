@@ -31,7 +31,7 @@ namespace XNATWL.Model
 
         public override abstract string ColumnHeaderTextFor(int column);
 
-        public object TooltipAt(int row, int column)
+        public virtual object TooltipAt(int row, int column)
         {
             return null;
         }

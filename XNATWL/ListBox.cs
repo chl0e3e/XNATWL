@@ -692,14 +692,14 @@ namespace XNATWL
             {
                 int cellOffset = i;
                 ListBoxDisplay lbd = createDisplay();
-                /*lbd.addListBoxCallback(new CallbackWithReason<CallbackReason>() {
-                    public void callback(CallbackReason reason) {
-                        int cell = getFirstVisible() + cellOffset;
-                        if(cell < getNumEntries()) {
-                            setSelected(cell, false, reason);
-                        }
+                lbd.Callback += (sender, e) =>
+                {
+                    int cell = getFirstVisible() + cellOffset;
+                    if (cell < getNumEntries())
+                    {
+                        setSelected(cell, false, e.Reason);
                     }
-                });*/
+                };
                 base.insertChild(lbd.getWidget(), 1 + i);
                 labels[i] = lbd;
             }
@@ -746,12 +746,12 @@ namespace XNATWL
             }
         }
 
-        protected ListBoxDisplay createDisplay()
+        protected virtual ListBoxDisplay createDisplay()
         {
             return new ListBoxLabel();
         }
 
-        protected class ListBoxLabel : TextWidget, ListBoxDisplay
+        protected internal class ListBoxLabel : TextWidget, ListBoxDisplay
         {
             public static StateKey STATE_SELECTED = StateKey.Get("selected");
             public static StateKey STATE_EMPTY = StateKey.Get("empty");
@@ -807,7 +807,7 @@ namespace XNATWL
                 this.Callback.Invoke(this, new ListBoxEventArgs(reason));
             }
 
-            protected bool handleListBoxEvent(Event evt)
+            protected virtual bool handleListBoxEvent(Event evt)
             {
                 if (evt.getEventType() == Event.EventType.MOUSE_BTNDOWN)
                 {
@@ -923,24 +923,6 @@ namespace XNATWL
             {
                 setSelected(selectionModel.Value);
             }
-        }
-    }
-
-    public class ListBoxEventArgs : EventArgs
-    {
-        private ListBoxCallbackReason _callbackReason;
-
-        public ListBoxCallbackReason Reason
-        {
-            get
-            {
-                return this._callbackReason;
-            }
-        }
-
-        public ListBoxEventArgs(ListBoxCallbackReason callbackReason)
-        {
-            this._callbackReason = callbackReason;
         }
     }
 }

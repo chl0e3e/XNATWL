@@ -12,7 +12,7 @@ namespace XNATWL.Model
         private FileSystemModel fsm;
         private bool includeLastModified;
 
-        internal Comparer<object> sorter;
+        internal IComparer<object> sorter;
 
         public override int Columns
         {
@@ -32,6 +32,15 @@ namespace XNATWL.Model
             this.includeLastModified = includeLastModified;
 
             InsertRoots();
+        }
+
+        public FileSystemTreeModel(FileSystemModel fsm) : this(fsm, false)
+        {
+        }
+
+        public void SetSorter(IComparer<object> sorter)
+        {
+            this.sorter = sorter;
         }
 
         public void InsertRoots()
@@ -215,7 +224,7 @@ namespace XNATWL.Model
 
                 if (subFolder != null && subFolder.Length > 0)
                 {
-                    Comparer<object> sorter = TreeModel.sorter;
+                    IComparer<object> sorter = TreeModel.sorter;
 
                     if (sorter != null)
                     {

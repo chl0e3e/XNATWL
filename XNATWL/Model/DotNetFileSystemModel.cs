@@ -11,6 +11,15 @@ namespace XNATWL.Model
 {
     public class DotNetFileSystemModel : FileSystemModel
     {
+        public static string USERPROFILE_FOLDER = "UserProfile";
+
+        private static DotNetFileSystemModel INSTANCE = new DotNetFileSystemModel();
+
+        public static DotNetFileSystemModel getInstance()
+        {
+            return INSTANCE;
+        }
+
         public string Separator
         {
             get

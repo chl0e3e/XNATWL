@@ -27,12 +27,12 @@ namespace XNATWL
             ((ToggleButtonModel)getModel()).setModel(model);
         }
 
-        public boolean isActive()
+        public bool isActive()
         {
             return getModel().Selected;
         }
 
-        public void setActive(boolean active)
+        public void setActive(bool active)
         {
             getModel().Selected = active;
         }

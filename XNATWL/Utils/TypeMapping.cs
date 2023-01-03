@@ -41,6 +41,19 @@ namespace XNATWL.Utils
             return null;
         }
 
+        public HashSet<Object> getUniqueValues()
+        {
+            HashSet<Object> result = new HashSet<Object>();
+            foreach (object e in this.Types.Values)
+            {
+                if (!result.Contains(e))
+                {
+                    result.Add(e);
+                }
+            }
+            return result;
+        }
+
         public void SetByType(Type type, object value)
         {
             this.Types.Add(type, value);

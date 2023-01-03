@@ -65,6 +65,9 @@
     <Compile Include="Button.cs" />
     <Compile Include="Clipboard.cs" />
     <Compile Include="Color.cs" />
+    <Compile Include="ColumnLayout.cs" />
+    <Compile Include="ComboBox.cs" />
+    <Compile Include="ComboBoxBase.cs" />
     <Compile Include="Container.cs" />
     <Compile Include="DebugHook.cs" />
     <Compile Include="DesktopArea.cs" />
@@ -74,7 +77,10 @@
     <Compile Include="EditField.cs" />
     <Compile Include="EditFieldAutoCompletionWindow.cs" />
     <Compile Include="Event.cs" />
+    <Compile Include="FileSelector.cs" />
+    <Compile Include="FileTable.cs" />
     <Compile Include="FocusGainedCause.cs" />
+    <Compile Include="FolderBrowser.cs" />
     <Compile Include="FPSCounter.cs" />
     <Compile Include="Graph.cs" />
     <Compile Include="GUI.cs" />
@@ -172,6 +178,7 @@
     <Compile Include="Model\ToggleButtonModel.cs" />
     <Compile Include="Model\TreeTableModel.cs" />
     <Compile Include="Model\TreeTableNode.cs" />
+    <Compile Include="Model\ValueAdjuster.cs" />
     <Compile Include="MouseSensitiveRectangle.cs" />
     <Compile Include="ParameterList.cs" />
     <Compile Include="ParameterMap.cs" />
@@ -217,6 +224,11 @@
     <Compile Include="Scrollbar.cs" />
     <Compile Include="ScrollPane.cs" />
     <Compile Include="SimpleDialog.cs" />
+    <Compile Include="Table.cs" />
+    <Compile Include="TableBase.cs" />
+    <Compile Include="TableRowSelectionManager.cs" />
+    <Compile Include="TableSearchWindow.cs" />
+    <Compile Include="TableSelectionManager.cs" />
     <Compile Include="TextArea.cs" />
     <Compile Include="TextArea\BoxAttribute.cs" />
     <Compile Include="TextArea\CSSStyle.cs" />
@@ -252,6 +264,9 @@
     <Compile Include="Theme\ThemeManager.cs" />
     <Compile Include="Timer.cs" />
     <Compile Include="ToggleButton.cs" />
+    <Compile Include="TreeComboBox.cs" />
+    <Compile Include="TreePathDisplay.cs" />
+    <Compile Include="TreeTable.cs" />
     <Compile Include="Utils\AbstractMathInterpreter.cs" />
     <Compile Include="Utils\BigRational.cs" />
     <Compile Include="Utils\BitOperations.cs" />
@@ -270,6 +285,8 @@
     <Compile Include="Utils\ParseException.cs" />
     <Compile Include="Utils\Runnable.cs" />
     <Compile Include="Utils\SimpleMathParser.cs" />
+    <Compile Include="Utils\SizeSequence.cs" />
+    <Compile Include="Utils\SparseGrid.cs" />
     <Compile Include="Utils\StateExpression.cs" />
     <Compile Include="Utils\StateSelect.cs" />
     <Compile Include="Utils\StateSelectOptimizer.cs" />
@@ -278,6 +295,8 @@
     <Compile Include="Utils\TypeMapping.cs" />
     <Compile Include="Utils\XMLParser.cs" />
     <Compile Include="VAlignment.cs" />
+    <Compile Include="ValueAdjusterFloat.cs" />
+    <Compile Include="ValueAdjusterInt.cs" />
     <Compile Include="Widget.cs" />
   </ItemGroup>
   <ItemGroup>

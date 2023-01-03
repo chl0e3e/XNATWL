@@ -23,10 +23,24 @@ namespace XNATWL
 
         Widget getWidget();
 
-        //void addListBoxCallback(CallbackWithReason<ListBox.CallbackReason> cb);
-
-        //void removeListBoxCallback(CallbackWithReason<ListBox.CallbackReason> cb);
-
+        event EventHandler<ListBoxEventArgs> Callback;
     }
 
+    public class ListBoxEventArgs : EventArgs
+    {
+        private ListBoxCallbackReason _callbackReason;
+
+        public ListBoxCallbackReason Reason
+        {
+            get
+            {
+                return this._callbackReason;
+            }
+        }
+
+        public ListBoxEventArgs(ListBoxCallbackReason callbackReason)
+        {
+            this._callbackReason = callbackReason;
+        }
+    }
 }

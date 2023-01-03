@@ -16,20 +16,6 @@ namespace XNATWL
         public static StateKey STATE_HOVER = StateKey.Get("hover");
         public static StateKey STATE_CURSOR_MOVED = StateKey.Get("cursorMoved");
 
-        public interface Callback
-        {
-            /**
-             * Gets called for any change in the edit field, or when ESCAPE or RETURN was pressed
-             *
-             * @param key One of KEY_NONE, KEY_ESCAPE, KEY_RETURN, KEY_DELETE
-             * @see Event#KEY_NONE
-             * @see Event#KEY_ESCAPE
-             * @see Event#KEY_RETURN
-             * @see Event#KEY_DELETE
-             */
-            void callback(int key);
-        }
-
         EditFieldModel editBuffer;
         private TextRenderer textRenderer;
         private PasswordMasker passwordMasking;
@@ -54,7 +40,6 @@ namespace XNATWL
         private char passwordChar;
         private Object errorMsg;
         private bool errorMsgFromModel;
-        private Callback[] callbacks;
         private Menu popupMenu;
         private bool textLongerThenWidget;
         private bool forwardUnhandledKeysToCallback;
@@ -66,6 +51,8 @@ namespace XNATWL
 
         private InfoWindow errorInfoWindow;
         private Label errorInfoLabel;
+
+        public event EventHandler<EditFieldCallbackEventArgs> Callback;
 
         /**
          * Creates a new EditField with an optional parent animation state.
@@ -168,14 +155,11 @@ namespace XNATWL
             this.scrollToCursorOnSizeChange = scrollToCursorOnSizeChange;
         }
 
-        protected void doCallback(int key)
+        protected virtual void doCallback(int key)
         {
-            if (callbacks != null)
+            if (this.Callback != null)
             {
-                foreach (Callback cb in callbacks)
-                {
-                    cb.callback(key);
-                }
+                this.Callback.Invoke(this, new EditFieldCallbackEventArgs(key));
             }
         }
 
@@ -1012,7 +996,7 @@ namespace XNATWL
             }
         }
 
-        protected void setCursorPos(int pos, bool select)
+        protected internal void setCursorPos(int pos, bool select)
         {
             pos = Math.Max(0, Math.Min(editBuffer.Length, pos));
             if (!select)
@@ -1668,6 +1652,16 @@ namespace XNATWL
             {
                 return this.baseSeq.SubSequence(start, end);
             }
+        }
+    }
+
+    public class EditFieldCallbackEventArgs : EventArgs
+    {
+        public int Key;
+
+        public EditFieldCallbackEventArgs(int key)
+        {
+            this.Key = key;
         }
     }
 }

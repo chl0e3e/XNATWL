@@ -319,7 +319,7 @@ namespace XNATWL
          * @param evt The click event
          * @see #setCloseOnEscape(bool)
          */
-        protected void escapePressed(Event evt)
+        protected virtual void escapePressed(Event evt)
         {
             if (closeOnEscape)
             {

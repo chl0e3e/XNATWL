@@ -2,7 +2,7 @@
 
 namespace XNATWL.Model
 {
-    public interface TableModel
+    public interface TableModel : TableColumnHeaderModel
     {
         event EventHandler<TableRowModificationEventArgs> RowsInserted;
         event EventHandler<TableRowModificationEventArgs> RowsDeleted;
