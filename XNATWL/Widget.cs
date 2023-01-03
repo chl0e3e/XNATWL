@@ -1279,7 +1279,7 @@ namespace XNATWL
          * @see #insertChild(de.matthiasmann.twl.Widget, int)
          * @see #getNumChildren()
          */
-        public void add(Widget child)
+        public virtual void add(Widget child)
         {
             insertChild(child, getNumChildren());
         }

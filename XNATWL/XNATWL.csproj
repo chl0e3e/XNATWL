@@ -57,8 +57,10 @@
     <Compile Include="ActionEventArgs.cs" />
     <Compile Include="ActionMap.cs" />
     <Compile Include="Alignment.cs" />
+    <Compile Include="AnimatedWindow.cs" />
     <Compile Include="AnimationState.cs" />
     <Compile Include="Border.cs" />
+    <Compile Include="BorderLayout.cs" />
     <Compile Include="BoxLayout.cs" />
     <Compile Include="Button.cs" />
     <Compile Include="Clipboard.cs" />
