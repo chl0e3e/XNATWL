@@ -714,17 +714,18 @@ namespace XNATWL
             {
                 popup.setInnerSize(getInnerWidth() * 2 / 3, getInnerHeight() * 2 / 3);
                 popup.setPosition(btnFolderMRU.getX() - popup.getWidth(), btnFolderMRU.getY());
-                /*listBox.addCallback(new CallbackWithReason<ListBox.CallbackReason>() {
-                    public void callback(CallbackReason reason) {
-                        if(reason.actionRequested()) {
-                            popup.closePopup();
-                            int idx = listBox.getSelected();
-                            if(idx >= 0) {
-                                gotoFolderFromMRU(idx);
-                            }
+                listBox.Callback += (sender, e) =>
+                {
+                    if (ListBox<String>.CallbackReason_ActionRequested(e.Reason))
+                    {
+                        popup.closePopup();
+                        int idx = listBox.getSelected();
+                        if (idx >= 0)
+                        {
+                            gotoFolderFromMRU(idx);
                         }
                     }
-                });*/
+                };
             }
         }
 
@@ -755,35 +756,53 @@ namespace XNATWL
                 popup.setInnerSize(getInnerWidth() * 2 / 3, getInnerHeight() * 2 / 3);
                 popup.setPosition(getInnerX() + (getInnerWidth() - popup.getWidth()) / 2, btnFilesMRU.getY() - popup.getHeight());
 
-                /*Runnable okCB = new Runnable() {
-                    public void run() {
+                popupBtnOk.Action += (sender, e) =>
+                {
+                    int idx = listBox.getSelected();
+                    if (idx >= 0)
+                    {
+                        Object obj = fsm.FileByPath(filesMRU.EntryAt(idx));
+                        if (obj != null)
+                        {
+                            popup.closePopup();
+                            fireAcceptCallback(new FileTable.Entry[] {
+                                    new FileTable.Entry(fsm, obj, fsm.Parent(obj) == null)
+                                });
+                        }
+                        else
+                        {
+                            filesMRU.RemoveAt(idx);
+                        }
+                    }
+                };
+
+                popupBtnCancel.Action += (sender, e) =>
+                {
+                    popup.closePopup();
+                };
+
+                listBox.Callback += (sender, e) =>
+                {
+                    if (ListBox<String>.CallbackReason_ActionRequested(e.Reason))
+                    {
                         int idx = listBox.getSelected();
-                        if(idx >= 0) {
-                            Object obj = fsm.getFile(filesMRU.getEntry(idx));
-                            if(obj != null) {
+                        if (idx >= 0)
+                        {
+                            Object obj = fsm.FileByPath(filesMRU.EntryAt(idx));
+                            if (obj != null)
+                            {
                                 popup.closePopup();
                                 fireAcceptCallback(new FileTable.Entry[] {
-                                    new FileTable.Entry(fsm, obj, fsm.getParent(obj) == null)
+                                    new FileTable.Entry(fsm, obj, fsm.Parent(obj) == null)
                                 });
-                            } else {
-                                filesMRU.removeEntry(idx);
+                            }
+                            else
+                            {
+                                filesMRU.RemoveAt(idx);
                             }
                         }
                     }
                 };
-                popupBtnOk.addCallback(okCB);
-                popupBtnCancel.addCallback(new Runnable() {
-                    public void run() {
-                        popup.closePopup();
-                    }
-                });
-                listBox.addCallback(new CallbackWithReason<ListBox.CallbackReason>() {
-                    public void callback(CallbackReason reason) {
-                        if(reason.actionRequested()) {
-                            okCB.run();
-                        }
-                    }
-                });*/
             }
         }
 
