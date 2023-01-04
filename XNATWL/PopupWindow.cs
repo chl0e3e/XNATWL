@@ -96,7 +96,7 @@ namespace XNATWL
          * @see #getOwner() 
          * @see #getGUI()
          */
-        public bool openPopup()
+        public virtual bool openPopup()
         {
             GUI gui = owner.getGUI();
             if (gui != null)

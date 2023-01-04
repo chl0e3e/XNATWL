@@ -501,7 +501,7 @@ namespace XNATWL
          * @param y the Y coordinate to test
          * @return true if it was inside
          */
-        public bool isInside(int x, int y)
+        public virtual bool isInside(int x, int y)
         {
             return (x >= posX) && (y >= posY) && (x < posX + width) && (y < posY + height);
         }

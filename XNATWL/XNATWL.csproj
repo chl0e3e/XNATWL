@@ -69,6 +69,7 @@
     <Compile Include="ComboBox.cs" />
     <Compile Include="ComboBoxBase.cs" />
     <Compile Include="Container.cs" />
+    <Compile Include="DatePicker.cs" />
     <Compile Include="DebugHook.cs" />
     <Compile Include="DesktopArea.cs" />
     <Compile Include="DialogLayout.cs" />
@@ -188,6 +189,7 @@
     <Compile Include="Property\PropertyChangeEvent.cs" />
     <Compile Include="Property\PropertyChangeListener.cs" />
     <Compile Include="Property\PropertyChangeSupport.cs" />
+    <Compile Include="RadialPopupMenu.cs" />
     <Compile Include="Rect.cs" />
     <Compile Include="Renderer\AnimationState.cs" />
     <Compile Include="Renderer\AttributedString.cs" />
