@@ -1614,7 +1614,12 @@ namespace XNATWL
             {
                 get
                 {
-                    return baseSeq.Value;
+                    string outputValue = "";
+                    for (int i = 0; i < this.Length; i++)
+                    {
+                        outputValue[i] = this.CharAt(i);
+                    }
+                    return outputValue;
                 }
             }
 
