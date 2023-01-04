@@ -176,7 +176,7 @@ namespace XNATWL.Theme
                 }
                 else if (value is Int32 && type == typeof(Char))
                 {
-                    return Char.ConvertFromUtf32((int)value);
+                    return (Char) ((int)value);
                 }
             }
 
