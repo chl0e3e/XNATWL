@@ -15,7 +15,7 @@ namespace XNATWL.Renderer.XNA
         protected int th;
         protected int width;
         protected int height;
-        private XNATexture _texture;
+        protected XNATexture _texture;
 
         public TextureAreaBase(XNATexture texture, int x, int y, int width, int height)
         {

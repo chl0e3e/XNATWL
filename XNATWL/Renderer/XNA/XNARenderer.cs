@@ -173,7 +173,7 @@ namespace XNATWL.Renderer.XNA
 
         public DynamicImage CreateDynamicImage(int width, int height)
         {
-            XNADynamicImage image = new XNADynamicImage(this, 0, 0, width, height, Color.WHITE);
+            XNADynamicImage image = new XNADynamicImage(this, width, height, Color.WHITE);
             dynamicImages.Add(image);
             return image;
         }

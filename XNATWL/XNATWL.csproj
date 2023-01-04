@@ -65,6 +65,7 @@
     <Compile Include="Button.cs" />
     <Compile Include="Clipboard.cs" />
     <Compile Include="Color.cs" />
+    <Compile Include="ColorSelector.cs" />
     <Compile Include="ColumnLayout.cs" />
     <Compile Include="ComboBox.cs" />
     <Compile Include="ComboBoxBase.cs" />

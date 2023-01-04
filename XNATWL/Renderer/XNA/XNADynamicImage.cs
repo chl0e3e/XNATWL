@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,14 +11,26 @@ namespace XNATWL.Renderer.XNA
     {
         private XNARenderer _renderer;
 
-        public XNADynamicImage(XNARenderer renderer, int x, int y, int width, int height, Color tintColor) : base(null, x, y, width, height)
+        public XNADynamicImage(XNARenderer renderer, int width, int height, Color tintColor) : base(null, 0, 0, width, height)
         {
             this._renderer = renderer;
         }
 
-        public int Width => throw new NotImplementedException();
+        public int Width
+        {
+            get
+            {
+                return this.width;
+            }
+        }
 
-        public int Height => throw new NotImplementedException();
+        public int Height
+        {
+            get
+            {
+                return this.height;
+            }
+        }
 
         public Image CreateTintedVersion(Color color)
         {
@@ -32,32 +45,24 @@ namespace XNATWL.Renderer.XNA
 
         public void Draw(AnimationState state, int x, int y)
         {
-            //throw new NotImplementedException();
+            this.drawQuad(x, y, this.width, this.height);
         }
 
         public void Draw(AnimationState state, int x, int y, int width, int height)
         {
-            //throw new NotImplementedException();
+            this.drawQuad(x, y, width, height);
         }
 
-        public void Update(byte[] data, DynamicImageFormat format)
+        public void Update(Microsoft.Xna.Framework.Color[] data)
         {
-            //throw new NotImplementedException();
-        }
+            if (this._texture != null)
+            {
+                this._texture.Dispose();
+            }
 
-        public void Update(byte[] data, int stride, DynamicImageFormat format)
-        {
-            //throw new NotImplementedException();
-        }
-
-        public void Update(int xoffset, int yoffset, int width, int height, byte[] data, DynamicImageFormat format)
-        {
-            //throw new NotImplementedException();
-        }
-
-        public void Update(int xoffset, int yoffset, int width, int height, byte[] data, int stride, DynamicImageFormat format)
-        {
-            //throw new NotImplementedException();
+            Texture2D texture2D = new Texture2D(this._renderer.GraphicsDevice, this.width, this.height);
+            texture2D.SetData(data);
+            this._texture = new XNATexture(this._renderer, this.width, this.height, texture2D);
         }
     }
 }

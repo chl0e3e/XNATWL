@@ -141,12 +141,17 @@ namespace XNATWL
          * 
          * @param argb the color value as integer
          */
-        public Color(uint argb)
+        public Color(int argb)
         {
             this.A = (byte)(argb >> 24);
             this.R = (byte)(argb >> 16);
             this.G = (byte)(argb >> 8);
             this.B = (byte)(argb);
+        }
+
+        public Color(uint argb) : this((int)argb)
+        {
+           
         }
 
         public void WriteToFloatArray(float[] dst, int off)
