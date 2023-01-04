@@ -19,7 +19,6 @@ namespace XNATWL
         EditFieldModel editBuffer;
         private TextRenderer textRenderer;
         private PasswordMasker passwordMasking;
-        private Runnable modelChangeListener;
         private StringModel model;
         private bool readOnly;
         StringAttributes attributes;
@@ -1633,11 +1632,6 @@ namespace XNATWL
                 this.maskingChar = maskingChar;
             }
 
-            public char charAt(int index)
-            {
-                return maskingChar;
-            }
-
             public CharSequence subSequence(int start, int end)
             {
                 throw new InvalidOperationException("Not supported.");
@@ -1645,12 +1639,12 @@ namespace XNATWL
 
             public char CharAt(int index)
             {
-                return this.baseSeq.CharAt(index);
+                return maskingChar;
             }
 
             public string SubSequence(int start, int end)
             {
-                return this.baseSeq.SubSequence(start, end);
+                throw new NotImplementedException();
             }
         }
     }
