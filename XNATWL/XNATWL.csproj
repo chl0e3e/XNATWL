@@ -227,6 +227,7 @@
     <Compile Include="Scrollbar.cs" />
     <Compile Include="ScrollPane.cs" />
     <Compile Include="SimpleDialog.cs" />
+    <Compile Include="TabbedPane.cs" />
     <Compile Include="Table.cs" />
     <Compile Include="TableBase.cs" />
     <Compile Include="TableRowSelectionManager.cs" />
