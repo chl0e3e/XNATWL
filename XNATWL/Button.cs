@@ -65,7 +65,6 @@ namespace XNATWL
          */
         public Button(AnimationState animState, ButtonModel model) : this(animState, false, model)
         {
-            ;
         }
 
         /**

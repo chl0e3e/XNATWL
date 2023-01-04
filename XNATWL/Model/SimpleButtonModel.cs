@@ -43,7 +43,7 @@ namespace XNATWL.Model
                     this.State.Invoke(this, new ButtonStateChangedEventArgs());
                     if (fireAction)
                     {
-                        this.Action.Invoke(this, new ButtonActionEventArgs());
+                        this.FireAction();
                     }
                 }
             }

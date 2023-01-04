@@ -181,7 +181,10 @@ namespace XNATWL
 
         private void doCallback(ListBoxCallbackReason reason)
         {
-            this.Callback.Invoke(this, new ListBoxEventArgs(reason));
+            if (this.Callback != null)
+            {
+                this.Callback.Invoke(this, new ListBoxEventArgs(reason));
+            }
         }
 
         public int getCellHeight()

@@ -14,9 +14,8 @@ namespace XNATWL.Model
         protected static int STATE_MASK_SELECTED = 256;
 
         private BooleanModel model;
-        private Runnable modelCallback;
         private bool invertModelState;
-        private bool isConnected;
+        private bool isConnected = true;
 
         public ToggleButtonModel()
         {
@@ -75,6 +74,7 @@ namespace XNATWL.Model
                 removeModelCallback();
                 this.model = model;
                 addModelCallback();
+                //isConnected = true;
             }
             if (model != null)
             {

@@ -199,7 +199,10 @@ namespace XNATWL
 
         protected void handleClick(bool doubleClick)
         {
-            this.Clicked.Invoke(this, new LabelClickEventArgs(doubleClick ? ClickType.DOUBLE_CLICK : ClickType.CLICK));
+            if (this.Clicked != null)
+            {
+                this.Clicked.Invoke(this, new LabelClickEventArgs(doubleClick ? ClickType.DOUBLE_CLICK : ClickType.CLICK));
+            }
         }
     }
 
