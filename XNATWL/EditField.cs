@@ -1551,11 +1551,11 @@ namespace XNATWL
                     cacheDirty = false;
                     if (this.editField.multiLine)
                     {
-                        cache = font.CacheMultiLineText(cache, this.editField.attributes);
+                        cache = font.CacheMultiLineText(Color.BLACK, cache, this.editField.attributes);
                     }
                     else
                     {
-                        cache = font.CacheText(cache, this.editField.attributes);
+                        cache = font.CacheText(Color.BLACK, cache, this.editField.attributes);
                     }
                 }
                 int y = computeTextY();
@@ -1565,11 +1565,11 @@ namespace XNATWL
                 }
                 else if (this.editField.multiLine)
                 {
-                    font.DrawMultiLineText(lastTextX, y, this.editField.attributes);
+                    font.DrawMultiLineText(Color.BLACK, lastTextX, y, this.editField.attributes);
                 }
                 else
                 {
-                    font.DrawText(lastTextX, y, this.editField.attributes);
+                    font.DrawText(Color.BLACK, lastTextX, y, this.editField.attributes);
                 }
             }
 

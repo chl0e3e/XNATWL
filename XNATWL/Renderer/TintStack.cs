@@ -63,12 +63,9 @@ namespace XNATWL.Renderer
                     color.AlphaF) ;
         }
 
-        public Microsoft.Xna.Framework.Color XNAColor
+        public Microsoft.Xna.Framework.Color TintColorForXNA(Color color)
         {
-            get
-            {
-                return new Microsoft.Xna.Framework.Color(this.r, this.g, this.b, this.a);
-            }
+            return new Microsoft.Xna.Framework.Color(this.r * color.RedF, this.g * color.GreenF, this.b * color.BlueF, this.a * color.AlphaF);
         }
 
         public TintStack pop()

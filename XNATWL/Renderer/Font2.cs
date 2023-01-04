@@ -8,20 +8,20 @@ namespace XNATWL.Renderer
 {
     public interface Font2 : Font
     {
-        int DrawText(int x, int y, AttributedString attributedString);
+        int DrawText(Color color, int x, int y, AttributedString attributedString);
 
-        int DrawText(int x, int y, AttributedString attributedString, int start, int end);
+        int DrawText(Color color, int x, int y, AttributedString attributedString, int start, int end);
 
-        void DrawMultiLineText(int x, int y, AttributedString attributedString);
+        void DrawMultiLineText(Color color, int x, int y, AttributedString attributedString);
 
-        void DrawMultiLineText(int x, int y, AttributedString attributedString, int start, int end);
+        void DrawMultiLineText(Color color, int x, int y, AttributedString attributedString, int start, int end);
 
-        AttributedStringFontCache CacheText(AttributedStringFontCache prevCache, AttributedString attributedString);
+        AttributedStringFontCache CacheText(Color color, AttributedStringFontCache prevCache, AttributedString attributedString);
 
-        AttributedStringFontCache CacheText(AttributedStringFontCache prevCache, AttributedString attributedString, int start, int end);
+        AttributedStringFontCache CacheText(Color color, AttributedStringFontCache prevCache, AttributedString attributedString, int start, int end);
 
-        AttributedStringFontCache CacheMultiLineText(AttributedStringFontCache prevCache, AttributedString attributedString);
+        AttributedStringFontCache CacheMultiLineText(Color color, AttributedStringFontCache prevCache, AttributedString attributedString);
 
-        AttributedStringFontCache CacheMultiLineText(AttributedStringFontCache prevCache, AttributedString attributedString, int start, int end);
+        AttributedStringFontCache CacheMultiLineText(Color color, AttributedStringFontCache prevCache, AttributedString attributedString, int start, int end);
     }
 }

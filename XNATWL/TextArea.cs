@@ -2709,7 +2709,8 @@ namespace XNATWL
                 this.text = text;
                 this.start = start;
                 this.end = end;
-                this.cache = doCache ? font.CacheText(null, text, start, end) : null;
+                Color c = fontData.getColor(isHover);
+                this.cache = doCache ? font.CacheText(c != null ? c : Color.BLACK, null, text, start, end) : null;
                 this.height = font.LineHeight;
 
                 if (cache != null)
@@ -2732,18 +2733,16 @@ namespace XNATWL
                 }
                 else
                 {
-                    drawText(ri);
+                    drawText(Color.BLACK, ri);
                 }
             }
 
             private void drawTextWithColor(RenderInfo ri, Color c)
             {
-                ri.renderer.PushGlobalTintColor(c.RedF, c.GreenF, c.BlueF, c.AlphaF);
-                drawText(ri);
-                ri.renderer.PopGlobalTintColor();
+                drawText(c, ri);
             }
 
-            private void drawText(RenderInfo ri)
+            private void drawText(Color c, RenderInfo ri)
             {
                 AnimationState animationState = ri.getAnimationState(isHover);
                 if (cache != null)
@@ -2752,7 +2751,7 @@ namespace XNATWL
                 }
                 else
                 {
-                    fontData.font.DrawText(animationState, x + ri.offsetX, y + ri.offsetY, text, start, end);
+                    fontData.font.DrawText(c, animationState, x + ri.offsetX, y + ri.offsetY, text, start, end);
                 }
             }
 

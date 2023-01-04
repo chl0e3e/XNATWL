@@ -1394,8 +1394,6 @@ namespace XNATWL
 
         public class SequentialGroup : Group
         {
-            private DialogLayout _dialogLayout;
-
             public SequentialGroup(DialogLayout dialogLayout) : base(dialogLayout)
             {
             }

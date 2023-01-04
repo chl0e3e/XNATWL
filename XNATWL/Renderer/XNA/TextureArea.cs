@@ -100,7 +100,7 @@ namespace XNATWL.Renderer.XNA
 
         public void Draw(AnimationState animationState, int x, int y, int w, int h)
         {
-            drawQuad(x, y, w, h);
+            drawQuad(this.tintColor, x, y, w, h);
         }
 
         public void Draw(AnimationState animationState, int x, int y, int width, int height, int repeatCountX, int repeatCountY)
@@ -131,7 +131,7 @@ namespace XNATWL.Renderer.XNA
                 for (int xi = 0; xi < repeatCountX;)
                 {
                     int nx = ++xi * width / repeatCountX;
-                    drawQuad(x + cx, y, nx - cx, rowHeight);
+                    drawQuad(this.tintColor, x + cx, y, nx - cx, rowHeight);
                     cx = nx;
                 }
 
@@ -153,7 +153,7 @@ namespace XNATWL.Renderer.XNA
                 int cntX = repeatCountX;
                 while (cntX-- > 0)
                 {
-                    drawQuad(curX, y, w, h);
+                    drawQuad(this.tintColor, curX, y, w, h);
                     curX += w;
                 }
                 y += h;

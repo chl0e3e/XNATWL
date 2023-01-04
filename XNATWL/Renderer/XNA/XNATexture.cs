@@ -73,7 +73,7 @@ namespace XNATWL.Renderer.XNA
 
         public Image GetImage(int x, int y, int width, int height, Color tintColor, bool tiled, TextureRotation rotation)
         {
-            return new TextureArea(this, x, y, width, height, Color.WHITE);
+            return new TextureArea(this, x, y, width, height, tintColor);
         }
 
         public int PixelValueAt(int x, int y)

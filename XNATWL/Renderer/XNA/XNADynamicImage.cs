@@ -10,9 +10,11 @@ namespace XNATWL.Renderer.XNA
     public class XNADynamicImage : TextureAreaBase, DynamicImage
     {
         private XNARenderer _renderer;
+        private Color tintColor;
 
         public XNADynamicImage(XNARenderer renderer, int width, int height, Color tintColor) : base(null, 0, 0, width, height)
         {
+            this.tintColor = tintColor;
             this._renderer = renderer;
         }
 
@@ -45,12 +47,12 @@ namespace XNATWL.Renderer.XNA
 
         public void Draw(AnimationState state, int x, int y)
         {
-            this.drawQuad(x, y, this.width, this.height);
+            this.drawQuad(this.tintColor, x, y, this.width, this.height);
         }
 
         public void Draw(AnimationState state, int x, int y, int width, int height)
         {
-            this.drawQuad(x, y, width, height);
+            this.drawQuad(this.tintColor, x, y, width, height);
         }
 
         public void Update(Microsoft.Xna.Framework.Color[] data)

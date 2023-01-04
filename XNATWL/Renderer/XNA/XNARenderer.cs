@@ -131,13 +131,6 @@ namespace XNATWL.Renderer.XNA
                 }
                 Rectangle scissor = new Rectangle(rect.X, rect.Y, rect.Width, rect.Height);
                 this._graphicsDevice.ScissorRectangle = scissor;
-               /* SpriteBatch spriteBatch = new SpriteBatch(GraphicsDevice);
-                Texture2D dummyTexture = new Texture2D(GraphicsDevice, 1, 1);
-                dummyTexture.SetData(new Microsoft.Xna.Framework.Color[] { Microsoft.Xna.Framework.Color.White });
-
-                spriteBatch.Begin();
-                spriteBatch.Draw(dummyTexture, scissor, Microsoft.Xna.Framework.Color.Red);
-                spriteBatch.End();*/
             }
             else if (hasScissor)
             {
@@ -249,7 +242,7 @@ namespace XNATWL.Renderer.XNA
             //System.Diagnostics.Debug.WriteLine(this._mouseCursor == null);
             XNACursor cursor = this._mouseCursor == null ? this._defaultCursor : ((XNACursor)this._mouseCursor);
             MouseState ms = Mouse.GetState();
-            cursor.drawQuad(ms.X, ms.Y, cursor.getWidth(), cursor.getHeight());
+            cursor.drawQuad(Color.WHITE, ms.X, ms.Y, cursor.getWidth(), cursor.getHeight());
             //System.Diagnostics.Debug.WriteLine("x: " + ms.X + ", y: " + ms.Y);
             //throw new NotImplementedException();
         }

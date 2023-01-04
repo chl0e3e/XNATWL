@@ -27,9 +27,9 @@ namespace XNATWL.Renderer.XNA
 
             }
 
-            internal void draw(int x, int y)
+            internal void draw(Color color, int x, int y)
             {
-                drawQuad(x + xoffset, y + yoffset, tw, th);
+                drawQuad(color, x + xoffset, y + yoffset, tw, th);
             }
 
             internal int getKerning(char ch)
@@ -447,7 +447,7 @@ namespace XNATWL.Renderer.XNA
             return index - start;
         }
 
-        public int drawText(int x, int y, string str, int start, int end)
+        public int drawText(Color color, int x, int y, string str, int start, int end)
         {
             int startX = x;
             Glyph lastGlyph = null;
@@ -478,7 +478,7 @@ namespace XNATWL.Renderer.XNA
                     lastGlyph = g;
                     if (g.getWidth() > 0)
                     {
-                        g.draw(x, y);
+                        g.draw(color, x, y);
                     }
                     //System.Diagnostics.Debug.WriteLine("x2:" + x);
                     x += g.xadvance; // + g.getKerning(ch);
@@ -492,7 +492,7 @@ namespace XNATWL.Renderer.XNA
             return x - startX;
         }
 
-        public int drawMultiLineText(int x, int y, string str, int width, HAlignment align)
+        public int drawMultiLineText(Color color, int x, int y, string str, int width, HAlignment align)
         {
             int start = 0;
             int numLines = 0;
@@ -509,7 +509,7 @@ namespace XNATWL.Renderer.XNA
                         xoff /= 2;
                     }
                 }
-                drawText(x + xoff, y, str, start, lineEnd);
+                drawText(color, x + xoff, y, str, start, lineEnd);
                 start = lineEnd + 1;
                 y += lineHeight;
                 numLines++;
