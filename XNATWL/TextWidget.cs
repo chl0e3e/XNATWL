@@ -365,7 +365,7 @@ namespace XNATWL
             }
         }
 
-        protected void handleMouseHover(Event evt)
+        protected virtual void handleMouseHover(Event evt)
         {
             if (evt.isMouseEvent() && !hasSharedAnimationState())
             {

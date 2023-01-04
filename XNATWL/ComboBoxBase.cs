@@ -78,7 +78,7 @@ namespace XNATWL
             return Math.Max(base.getMinHeight(), minInnerHeight + getBorderVertical());
         }
 
-        protected void setPopupSize()
+        protected virtual void setPopupSize()
         {
             int minHeight = popup.getMinHeight();
             int popupHeight = computeSize(minHeight,

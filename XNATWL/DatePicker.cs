@@ -75,6 +75,11 @@ namespace XNATWL
             return model;
         }
 
+        public CultureInfo getLocale()
+        {
+            return this.locale;
+        }
+
         public void setModel(DateModel model)
         {
             if (this.model != model)
