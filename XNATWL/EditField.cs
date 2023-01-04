@@ -1617,7 +1617,7 @@ namespace XNATWL
                     string outputValue = "";
                     for (int i = 0; i < this.Length; i++)
                     {
-                        outputValue[i] = this.CharAt(i);
+                        outputValue += this.CharAt(i);
                     }
                     return outputValue;
                 }
