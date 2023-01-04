@@ -2710,7 +2710,7 @@ namespace XNATWL
                 this.start = start;
                 this.end = end;
                 Color c = fontData.getColor(isHover);
-                this.cache = doCache ? font.CacheText(c != null ? c : Color.BLACK, null, text, start, end) : null;
+                this.cache = doCache ? font.CacheText(null, text, start, end) : null;
                 this.height = font.LineHeight;
 
                 if (cache != null)
@@ -2751,7 +2751,7 @@ namespace XNATWL
                 }
                 else
                 {
-                    fontData.font.DrawText(c, animationState, x + ri.offsetX, y + ri.offsetY, text, start, end);
+                    fontData.font.DrawText(animationState, x + ri.offsetX, y + ri.offsetY, text, start, end);
                 }
             }
 

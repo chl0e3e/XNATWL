@@ -56,13 +56,18 @@ namespace XNATWL.Renderer.XNA
             }
         }
 
-        public XNATexture(XNARenderer renderer, int width, int height, Texture2D texture)
+        public XNATexture(XNARenderer renderer, SpriteBatch spriteBatch, int width, int height, Texture2D texture)
         {
             this._texture = texture;
             this._width = width;
             this._height = height;
-            this._batch = new SpriteBatch(renderer.GraphicsDevice);
+            this._batch = spriteBatch;
             this._renderer = renderer;
+        }
+
+        public XNATexture(XNARenderer renderer, int width, int height, Texture2D texture) : this(renderer, new SpriteBatch(renderer.GraphicsDevice), width, height, texture)
+        {
+
         }
 
         public MouseCursor CreateCursor(int x, int y, int width, int height, int hotSpotX, int hotSpotY, Image imageRef)

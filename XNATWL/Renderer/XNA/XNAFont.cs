@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using XNATWL.IO;
 using XNATWL.Utils;
+using static XNATWL.Renderer.XNA.XNAFont;
 
 namespace XNATWL.Renderer.XNA
 {
@@ -83,43 +85,51 @@ namespace XNATWL.Renderer.XNA
             }
         }
 
-        public FontCache CacheMultiLineText(Color color, FontCache prevCache, string str, int width, HAlignment alignment)
+        public FontCache CacheMultiLineText(FontCache prevCache, string str, int width, HAlignment alignment)
         {
-            return new XNAFontCache(this, color, str);
+            return new XNAFontCache(this, str);
         }
 
-        public AttributedStringFontCache CacheMultiLineText(Color color, AttributedStringFontCache prevCache, AttributedString attributedString)
-        {
-            throw new NotImplementedException();
-        }
-
-        public AttributedStringFontCache CacheMultiLineText(Color color, AttributedStringFontCache prevCache, AttributedString attributedString, int start, int end)
+        public AttributedStringFontCache CacheMultiLineText(AttributedStringFontCache prevCache, AttributedString attributedString)
         {
             throw new NotImplementedException();
         }
 
-        public FontCache CacheText(Color color, FontCache prevCache, string str)
+        public AttributedStringFontCache CacheMultiLineText(AttributedStringFontCache prevCache, AttributedString attributedString, int start, int end)
+        {
+            throw new NotImplementedException();
+        }
+
+        public FontCache CacheText(FontCache prevCache, string str)
         {
             //System.Diagnostics.Debug.WriteLine("CacheText@1 " + str);
-            return new XNAFontCache(this, color, str);
+            if (prevCache != null && !(((XNAFontCache)prevCache).ShouldRedraw(str)))
+            {
+                return prevCache;
+            }
+            return new XNAFontCache(this, str);
         }
 
-        public FontCache CacheText(Color color, FontCache prevCache, string str, int start, int end)
+        public FontCache CacheText(FontCache prevCache, string str, int start, int end)
         {
+            if (prevCache != null && !(((XNAFontCache)prevCache).ShouldRedraw(str, start, end)))
+            {
+                return prevCache;
+            }
             //System.Diagnostics.Debug.WriteLine("CacheText@2");
-            return new XNAFontCache(this, color, str.Substring(start, end - start));
+            return new XNAFontCache(this, str.Substring(start, end - start));
         }
 
-        public AttributedStringFontCache CacheText(Color color, AttributedStringFontCache prevCache, AttributedString attributedString)
+        public AttributedStringFontCache CacheText(AttributedStringFontCache prevCache, AttributedString attributedString)
         {
             //System.Diagnostics.Debug.WriteLine("CacheText@3");
-            return new XNAASFontCache(this, color, attributedString);
+            return new XNAASFontCache(this, attributedString);
         }
 
-        public AttributedStringFontCache CacheText(Color color, AttributedStringFontCache prevCache, AttributedString attributedString, int start, int end)
+        public AttributedStringFontCache CacheText(AttributedStringFontCache prevCache, AttributedString attributedString, int start, int end)
         {
             //System.Diagnostics.Debug.WriteLine("CacheText@4");
-            return new XNAASFontCache(this, color, attributedString, start, end);
+            return new XNAASFontCache(this, attributedString, start, end);
         }
 
         public int ComputeMultiLineTextWidth(string str)
@@ -146,21 +156,20 @@ namespace XNATWL.Renderer.XNA
         {
         }
 
-        public int DrawMultiLineText(Color color, AnimationState animState, int x, int y, string str, int width, HAlignment alignment)
+        public int DrawMultiLineText(AnimationState animState, int x, int y, string str, int width, HAlignment alignment)
         {
             FontState fontState = evalFontState(animState);
             x += fontState.offsetX;
             y += fontState.offsetY;
-            System.Diagnostics.Debug.WriteLine("DrawMultiLineText");
             return this._bitmapFont.drawMultiLineText(fontState.color, x, y, str, 100, HAlignment.CENTER);
         }
 
-        public void DrawMultiLineText(Color color, int x, int y, AttributedString attributedString)
+        public void DrawMultiLineText(int x, int y, AttributedString attributedString)
         {
             throw new NotImplementedException();
         }
 
-        public void DrawMultiLineText(Color color, int x, int y, AttributedString attributedString, int start, int end)
+        public void DrawMultiLineText(int x, int y, AttributedString attributedString, int start, int end)
         {
             throw new NotImplementedException();
         }
@@ -230,7 +239,7 @@ namespace XNATWL.Renderer.XNA
             return fontStates[stateSelect.Evaluate(animationState)];
         }
 
-        public int DrawText(Color color, AnimationState animState, int x, int y, string str)
+        public int DrawText(AnimationState animState, int x, int y, string str)
         {
             FontState fontState = evalFontState(animState);
             x += fontState.offsetX;
@@ -239,7 +248,7 @@ namespace XNATWL.Renderer.XNA
             return this._bitmapFont.drawText(fontState.color, x, y, str, 0, str.Length);
         }
 
-        public int DrawText(Color color, AnimationState animState, int x, int y, string str, int start, int end)
+        public int DrawText(AnimationState animState, int x, int y, string str, int start, int end)
         {
             FontState fontState = evalFontState(animState);
             x += fontState.offsetX;
@@ -248,19 +257,25 @@ namespace XNATWL.Renderer.XNA
             return this._bitmapFont.drawText(fontState.color, x, y, str, start, end);
         }
 
-        public int DrawText(Color color, int x, int y, AttributedString attributedString)
+        public int DrawText(int x, int y, AttributedString attributedString)
         {
             //System.Diagnostics.Debug.WriteLine("DrawText@AttributedString");
             // throw new NotImplementedException();
+            FontState fontState = evalFontState(attributedString);
+            x += fontState.offsetX;
+            y += fontState.offsetY;
             string str = attributedString.Value;
-            return this._bitmapFont.drawText(color, x, y, str, 0, str.Length);
+            return this._bitmapFont.drawText(fontState.color, x, y, str, 0, str.Length);
         }
 
-        public int DrawText(Color color, int x, int y, AttributedString attributedString, int start, int end)
+        public int DrawText(int x, int y, AttributedString attributedString, int start, int end)
         {
             //System.Diagnostics.Debug.WriteLine("DrawText@AttributedString<start,end>");
+            FontState fontState = evalFontState(attributedString);
+            x += fontState.offsetX;
+            y += fontState.offsetY;
             string str = attributedString.Value;
-            return this._bitmapFont.drawText(color, x, y, str, start, end);
+            return this._bitmapFont.drawText(fontState.color, x, y, str, start, end);
         }
 
         public class FontState
@@ -294,54 +309,47 @@ namespace XNATWL.Renderer.XNA
         class XNAASFontCache : AttributedStringFontCache
         {
             private XNAFont _font;
-            private string _str;
+            private AttributedString _str;
+            private RenderTarget2D _cachedRenderTarget;
+            private XNATexture _cachedXNATexture;
+            private TextureAreaBase _cachedImage;
+            private FontState _fontState;
 
             private int _start;
             private int _end;
 
-            private Color _color;
+            private int _width;
+            private int _height;
 
-            public XNAASFontCache(XNAFont font, Color color, string str)
-            {
-                this._str = str;
-                this._font = font;
-                this._start = 0;
-                this._end = this._str.Length;
-                this._color = color;
-            }
-
-            public XNAASFontCache(XNAFont font, Color color, string str, int start, int end)
+            public XNAASFontCache(XNAFont font, AttributedString str, int start, int end)
             {
                 this._str = str;
                 this._font = font;
                 this._start = start;
                 this._end = end;
-                this._color = color;
+                this._width = this._font.ComputeTextWidth(this._str.Value);
+                this._height = this._font.LineHeight;
+                this._fontState = this._font.evalFontState(this._str);
+
+                this._cachedRenderTarget = new RenderTarget2D(this._font.renderer.GraphicsDevice, this._width, this._height);
+
+                this.CacheDraw();
             }
 
-            public XNAASFontCache(XNAFont font, Color color, AttributedString str)
+            public XNAASFontCache(XNAFont font, AttributedString str) : this(font, str, 0, str.Length)
             {
-                this._str = str.Value;
-                this._font = font;
-                this._start = 0;
-                this._end = this._str.Length;
-                this._color = color;
             }
 
-            public XNAASFontCache(XNAFont font, Color color, AttributedString str, int start, int end)
+            public bool ShouldRedraw(string str)
             {
-                this._str = str.Value;
-                this._font = font;
-                this._start = start;
-                this._end = end;
-                this._color = color;
+                return this._str.Value == str;
             }
 
             public int Width
             {
                 get
                 {
-                    return this._font.ComputeTextWidth(this._str);
+                    return this._width;
                 }
             }
 
@@ -349,103 +357,104 @@ namespace XNATWL.Renderer.XNA
             {
                 get
                 {
-                    return this._font.LineHeight;
+                    return this._height;
                 }
+            }
+
+            public void CacheDraw()
+            {
+                this._font.renderer.GraphicsDevice.SetRenderTarget(this._cachedRenderTarget);
+                this._font.renderer.GraphicsDevice.Clear(Microsoft.Xna.Framework.Color.Transparent);
+                this._font._bitmapFont.drawText(Color.BLACK, 0, 0, this._str.Value, this._start, this._end);
+                this._font.renderer.GraphicsDevice.SetRenderTarget(null);
+                this._cachedXNATexture = new XNATexture(this._font.renderer, this._width, this._height, this._cachedRenderTarget);
+
+                this._cachedImage = (TextureAreaBase) this._cachedXNATexture.GetImage(0, 0, this._width, this._height, Color.BLACK, false, TextureRotation.NONE);
             }
 
             public void Dispose()
             {
-
-            }
-
-            public void Draw(AnimationState animationState, int x, int y)
-            {
-                this._font.DrawText(this._color, animationState,  x, y, this._str.Substring(this._start, this._end));
+                this._cachedXNATexture.Dispose();
+                this._cachedRenderTarget.Dispose();
             }
 
             public void Draw(int x, int y)
             {
-                this._font.DrawText(this._color, new XNATWL.AnimationState(), x, y, this._str.Substring(this._start, this._end));
+                x += this._fontState.offsetX;
+                y += this._fontState.offsetY;
+                this._cachedImage.drawQuad(this._fontState.color, x, y, this._width, this._height);
             }
         }
 
         class XNAFontCache : FontCache
         {
             private XNAFont _font;
+            private RenderTarget2D _cachedRenderTarget;
+            private XNATexture _cachedXNATexture;
+            private TextureAreaBase _cachedImage = null;
             private string _str;
 
-            private Color _color;
-
-            public XNAFontCache(XNAFont font, Color color, string str)
-            {
-                this._str = str;
-                this._font = font;
-                this._color = color;
-            }
-
-            public XNAFontCache(XNAFont font, Color color, AttributedString str)
-            {
-                this._str = str.Value;
-                this._font = font;
-                this._color = color;
-            }
-
-            public int Width
-            {
-                get
-                {
-                    return this._font.ComputeTextWidth(this._str);
-                }
-            }
-
-            public int Height
-            {
-                get
-                {
-                    return this._font.LineHeight;
-                }
-            }
-
-            public void Dispose()
-            {
-
-            }
-
-            public void Draw(AnimationState animationState, int x, int y)
-            {
-                this._font.DrawText(this._color, animationState, x, y, this._str);
-            }
-        }
-
-        class XNAMLFontCache : FontCache
-        {
-            private XNAFont _font;
-            private string _str;
             private int _width;
+            private int _height;
 
-            private Color _color;
+            private int _start;
+            private int _end;
 
-            public XNAMLFontCache(XNAFont font, Color color, string str, int width)
+            private BitmapFont.TexOutput _texOutput;
+
+            public XNAFontCache(XNAFont font, string str, int start, int end)
             {
                 this._str = str;
                 this._font = font;
-                this._color = color;
-                this._width = width;
+                this._width = this._font.ComputeTextWidth(str);
+                this._height = this._font.LineHeight;
+
+                this._start = start;
+                this._end = end;
+
+                this._cachedRenderTarget = new RenderTarget2D(this._font.renderer.GraphicsDevice, this._width, this._height, true, SurfaceFormat.Color, DepthFormat.None);
+
+                this.CacheDraw();
             }
 
-            public XNAMLFontCache(XNAFont font, Color color, AttributedString str, int width)
+            public XNAFontCache(XNAFont font, string str) : this(font, str, 0, str.Length)
             {
-                this._str = str.Value;
-                this._font = font;
-                this._color = color;
-                this._width = width;
+                
+            }
+
+            public void CacheDraw()
+            {
+                //BasicEffect effect = new BasicEffect(this._font.renderer.GraphicsDevice);
+                //effect.Begin
+                /*this._font.renderer.GraphicsDevice.SetRenderTarget(this._cachedRenderTarget);
+                this._font.renderer.GraphicsDevice.Clear(Microsoft.Xna.Framework.Color.Transparent);
+                this._font._bitmapFont.drawText(Color.BLACK, 0, 0, this._str, this._start, this._end);
+                this._font.renderer.GraphicsDevice.SetRenderTarget(null);
+                this._cachedXNATexture = new XNATexture(this._font.renderer, this._width, this._height, this._cachedRenderTarget);
+
+                this._cachedImage = (TextureAreaBase) this._cachedXNATexture.GetImage(0, 0, this._width, this._height, Color.BLACK, false, TextureRotation.NONE);*/
+                this._texOutput = this._font._bitmapFont.cacheBDrawText(Color.BLACK, 0, 0, this._str, this._start, this._end);
+                Texture2D cachedTexture = new Texture2D(this._font.renderer.GraphicsDevice, this._width, this._height);
+                cachedTexture.SetData(this._texOutput.lineColors);
+                this._cachedXNATexture = new XNATexture(this._font.renderer, this._width, this._height, cachedTexture);
+                this._cachedImage = (TextureAreaBase)this._cachedXNATexture.GetImage(0, 0, this._width, this._height, Color.BLACK, false, TextureRotation.NONE);
+            }
+
+            public bool ShouldRedraw(string str)
+            {
+                return this._str != str;
+            }
+
+            public bool ShouldRedraw(string str, int start, int end)
+            {
+                return this._str != str && this._start != start && this._end != end;  
             }
 
             public int Width
             {
                 get
                 {
-                    return this._font.ComputeTextWidth(this._str);
+                    return this._width;
                 }
             }
 
@@ -453,18 +462,23 @@ namespace XNATWL.Renderer.XNA
             {
                 get
                 {
-                    return this._font.LineHeight;
+                    return this._height;
                 }
             }
 
             public void Dispose()
             {
-
+                this._cachedXNATexture.Dispose();
+                //this._cachedRenderTarget.Dispose();
             }
 
             public void Draw(AnimationState animationState, int x, int y)
             {
-                this._font.DrawMultiLineText(this._color, animationState, x, y, this._str, 100, HAlignment.LEFT);
+                FontState fontState = this._font.evalFontState(animationState);
+                x += fontState.offsetX;
+                y += fontState.offsetY;
+
+                this._cachedImage.drawQuad(fontState.color, x, y, this._width, this._height);
             }
         }
     }

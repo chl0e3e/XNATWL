@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,27 +10,28 @@ using System.Text;
 using System.Threading.Tasks;
 using XNATWL.IO;
 using XNATWL.Utils;
+using static XNATWL.AnimationState;
 using static XNATWL.Renderer.XNA.BitmapFont;
 
 namespace XNATWL.Renderer.XNA
 {
     public class BitmapFont
     {
-        internal class Glyph : TextureAreaBase
+        internal class GlyphTex : TextureAreaBase
         {
             internal short xoffset;
             internal short yoffset;
             internal short xadvance;
             internal byte[][] kerning;
 
-            public Glyph(XNATexture texture, int x, int y, int width, int height) : base(texture, x, y, (height <= 0) ? 0 : width, height)
+            public GlyphTex(XNATexture texture, int x, int y, int width, int height) : base(texture, x, y, (height <= 0) ? 0 : width, height)
             {
 
             }
 
-            internal void draw(Color color, int x, int y)
+            internal void draw(Color color, bool newDraw, int x, int y)
             {
-                drawQuad(color, x + xoffset, y + yoffset, tw, th);
+                drawQuad(color, newDraw, x + xoffset, y + yoffset, tw, th);
             }
 
             internal int getKerning(char ch)
@@ -60,12 +62,83 @@ namespace XNATWL.Renderer.XNA
             }
         }
 
+        internal class Glyph// : TextureAreaBase
+        {
+            internal short xoffset;
+            internal short yoffset;
+            internal short xadvance;
+            internal byte[][] kerning;
+            public Microsoft.Xna.Framework.Color[] colorData;
+            private int _width;
+            private int _height;
+
+            public Glyph(Microsoft.Xna.Framework.Color[] colorData, int width, int height)//XNATexture texture, int x, int y, int width, int height) : base(texture, x, y, (height <= 0) ? 0 : width, height)
+            {
+                this.colorData = colorData;
+                this._width = width;
+                this._height = height;
+            }
+
+            public int getWidth()
+            {
+                return this._width;
+            }
+
+            public int getHeight()
+            {
+                return this._height;
+            }
+
+            public short getXOffset()
+            {
+                return this.xoffset;
+            }
+
+            public short getYOffset()
+            {
+                return this.yoffset;
+            }
+
+            /*internal void draw(Color color, bool newDraw, int x, int y)
+            {
+                drawQuad(color, newDraw, x + xoffset, y + yoffset, tw, th);
+            }*/
+
+            /*internal int getKerning(char ch)
+            {
+                if (kerning != null)
+                {
+                    byte[] page = kerning[BitOperations.RightMove(ch, LOG2_PAGE_SIZE)];
+                    if (page != null)
+                    {
+                        return page[ch & (PAGE_SIZE - 1)];
+                    }
+                }
+                return 0;
+            }
+
+            internal void setKerning(int ch, int value)
+            {
+                if (kerning == null)
+                {
+                    kerning = new byte[PAGES][];
+                }
+                byte[] page = kerning[BitOperations.RightMove(ch, LOG2_PAGE_SIZE)];
+                if (page == null)
+                {
+                    kerning[BitOperations.RightMove(ch, LOG2_PAGE_SIZE)] = page = new byte[PAGE_SIZE];
+                }
+                page[ch & (PAGE_SIZE - 1)] = (byte)value;
+            }*/
+        }
+
         private static int LOG2_PAGE_SIZE = 9;
         private static int PAGE_SIZE = 1 << LOG2_PAGE_SIZE;
         private static int PAGES = 0x10000 / PAGE_SIZE;
 
         private XNATexture texture;
         private Glyph[][] glyphs;
+        private GlyphTex[][] glyphsTex;
         private int lineHeight;
         private int baseLine;
         private int spaceWidth;
@@ -119,8 +192,10 @@ namespace XNATWL.Renderer.XNA
             bool prop = true;
 
             glyphs = new Glyph[PAGES][];
+            glyphsTex = new GlyphTex[PAGES][];
             //Microsoft.Xna.Framework.Color[] textureColorData = new Microsoft.Xna.Framework.Color[this.texture.Width * this.texture.Height];
             //this.texture.Texture2D.GetData<Microsoft.Xna.Framework.Color>(textureColorData, 0, textureColorData.Length);
+            SpriteBatch spriteBatch = this.texture.SpriteBatch;
             while (!xmlp.isEndTag())
             {
                 xmlp.require(XmlPullParser.START_TAG, null, "char");
@@ -149,7 +224,12 @@ namespace XNATWL.Renderer.XNA
                     }
                     Texture2D xnaGlyph = new Texture2D(this.texture.Renderer.GraphicsDevice, w, h);
                     xnaGlyph.SetData(textureData);
-                    Glyph glyph = new Glyph(new XNATexture(this.texture.Renderer, w, h, xnaGlyph), 0, 0, w, h);
+                    Glyph glyph = new Glyph(textureData, w, h);//new XNATexture(this.texture.Renderer, spriteBatch, w, h, xnaGlyph), 0, 0, w, h);
+                    GlyphTex glyphTex = new GlyphTex(new XNATexture(this.texture.Renderer, spriteBatch, w, h, xnaGlyph), 0, 0, w, h);
+                    glyphTex.xoffset = short.Parse(xmlp.getAttributeNotNull("xoffset"));
+                    glyphTex.yoffset = short.Parse(xmlp.getAttributeNotNull("yoffset"));
+                    glyphTex.xadvance = xadvance;
+                    addGlyphTex(idx, glyphTex);
                     glyph.xoffset = short.Parse(xmlp.getAttributeNotNull("xoffset"));
                     glyph.yoffset = short.Parse(xmlp.getAttributeNotNull("yoffset"));
                     glyph.xadvance = xadvance;
@@ -338,6 +418,19 @@ namespace XNATWL.Renderer.XNA
             texture.Dispose();
         }
 
+        private void addGlyphTex(int idx, GlyphTex g)
+        {
+            if (idx <= Char.MaxValue)
+            {
+                GlyphTex[] page = glyphsTex[idx >> LOG2_PAGE_SIZE];
+                if (page == null)
+                {
+                    glyphsTex[idx >> LOG2_PAGE_SIZE] = page = new GlyphTex[PAGE_SIZE];
+                }
+                page[idx & (PAGE_SIZE - 1)] = g;
+            }
+        }
+
         private void addGlyph(int idx, Glyph g)
         {
             if (idx <= Char.MaxValue)
@@ -359,9 +452,20 @@ namespace XNATWL.Renderer.XNA
                 Glyph g = getGlyph((char)first);
                 if (g != null)
                 {
-                    g.setKerning(second, amount);
+                    //g.setKerning(second, amount);
                 }
             }
+        }
+
+        internal GlyphTex getGlyphTex(char ch)
+        {
+            GlyphTex[] page = glyphsTex[ch >> LOG2_PAGE_SIZE];
+            if (page != null)
+            {
+                int idx = ch & (PAGE_SIZE - 1);
+                return page[idx];
+            }
+            return null;
         }
 
         internal Glyph getGlyph(char ch)
@@ -447,7 +551,45 @@ namespace XNATWL.Renderer.XNA
             return index - start;
         }
 
+        public struct TexOutput
+        {
+            public int xOffset;
+            public Microsoft.Xna.Framework.Color[] lineColors;
+        }
+
         public int drawText(Color color, int x, int y, string str, int start, int end)
+        {
+            int startX = x;
+
+            GlyphTex lastGlyph = null;
+            this.texture.SpriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend);
+            while (start < end)
+            {
+                char ch = str[start++];
+                GlyphTex g = getGlyphTex(ch);
+                if (g != null)
+                {
+                    //System.Diagnostics.Debug.WriteLine("x0:" + x);
+                    //x += lastGlyph.getKerning(ch);
+                    //System.Diagnostics.Debug.WriteLine("x1:" + x);
+                    //lastGlyph = g;
+                    if (g.getWidth() > 0)
+                    {
+                        g.draw(color, false, x, y);
+                    }
+                    //System.Diagnostics.Debug.WriteLine("x2:" + x);
+                    x += g.xadvance; // + g.getKerning(ch);
+                    //System.Diagnostics.Debug.WriteLine("x3:" + x);
+                }
+                else if (ch == ' ')
+                {
+                    x += this.spaceWidth;
+                }
+            }
+            this.texture.SpriteBatch.End();
+            return x - startX;
+        }
+        public TexOutput cacheBDrawText(Color color, int x, int y, string str, int start, int end)
         {
             int startX = x;
             Glyph lastGlyph = null;
@@ -466,6 +608,48 @@ namespace XNATWL.Renderer.XNA
                     break;
                 }
             }*/
+            //this.texture.SpriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend);
+
+            int width = computeTextWidth(str, start, end);
+            int height = this.getLineHeight();
+
+            Point[] positions = new Point[(end - start)];
+            int tx = 0;
+            int theight = this.lineHeight;
+            for (int c = start; c < end; c++)
+            {
+                Glyph g = getGlyph(str[c]);
+                positions[c] = new Point(g == null ? tx : (tx + g.getXOffset()), g == null ? y : (y + g.getYOffset()));
+                tx += g == null ? this.getSpaceWidth() : g.xadvance;
+                if (g != null)
+                    theight = Math.Max(theight, g.getHeight() + g.getYOffset());
+            }
+            theight += 1;
+            Microsoft.Xna.Framework.Color[] lineColors = new Microsoft.Xna.Framework.Color[width * theight];
+
+            for (int c = start; c < end; c++)
+            {
+                Glyph g = getGlyph(str[c]);
+                if (g == null)
+                {
+                    continue;
+                }
+                for (int j = 0; j < g.getHeight(); j++)
+                {
+                    for (int i = 0; i < g.getWidth(); i++)
+                    {
+                        var srcOfs = i + j * g.getWidth();
+                        var destOfs = (positions[c].X + i) + (positions[c].Y + j) * width;
+                        lineColors[destOfs] = g.colorData[srcOfs];
+                    }
+                }
+            }
+
+            TexOutput output = new TexOutput();
+            output.xOffset = x - startX;
+            output.lineColors = lineColors;
+            return output;
+            /*
             while (start < end)
             {
                 char ch = str[start++];
@@ -478,7 +662,19 @@ namespace XNATWL.Renderer.XNA
                     lastGlyph = g;
                     if (g.getWidth() > 0)
                     {
-                        g.draw(color, x, y);
+                        int tx = 0, ty = 0;
+                        int gPtrX = 0;
+                        while (ty < g.getHeight())
+                        {
+                            while (tx < g.getWidth())
+                            {
+                                lineColors[lineColorPtrX + tx] = 
+                                tx++;
+                            }
+                            ty++;
+                        }
+                        lineColorPtrX += tx;
+                        //g.draw(color, false, x, y);
                     }
                     //System.Diagnostics.Debug.WriteLine("x2:" + x);
                     x += g.xadvance; // + g.getKerning(ch);
@@ -489,7 +685,11 @@ namespace XNATWL.Renderer.XNA
                     x += this.spaceWidth;
                 }
             }
-            return x - startX;
+            //this.texture.SpriteBatch.End();
+            TexOutput output = new TexOutput();
+            output.xOffset = x - startX;
+            output.lineColors = lineColors;
+            return output;*/
         }
 
         public int drawMultiLineText(Color color, int x, int y, string str, int width, HAlignment align)

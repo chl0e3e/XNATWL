@@ -218,11 +218,11 @@ namespace XNATWL
             }
             else if (numTextLines > 1)
             {
-                font.DrawMultiLineText(Color.BLACK, animState, x, y, text, computeTextWidth(), alignment.getFontHAlignment());
+                font.DrawMultiLineText(animState, x, y, text, computeTextWidth(), alignment.getFontHAlignment());
             }
             else
             {
-                font.DrawText(Color.BLACK, (Renderer.AnimationState)animState, x, y, text);
+                font.DrawText((Renderer.AnimationState)animState, x, y, text);
             }
         }
 
@@ -246,17 +246,17 @@ namespace XNATWL
 
                 if (start > lineStart)
                 {
-                    x += font.DrawText(Color.BLACK, animState, x, y, text, lineStart, start);
+                    x += font.DrawText(animState, x, y, text, lineStart, start);
                 }
                 if (end > start)
                 {
                     animState.setAnimationState(STATE_TEXT_SELECTION, true);
-                    x += font.DrawText(Color.BLACK, animState, x, y, text, start, end);
+                    x += font.DrawText(animState, x, y, text, start, end);
                     animState.setAnimationState(STATE_TEXT_SELECTION, false);
                 }
                 if (end < lineEnd)
                 {
-                    font.DrawText(Color.BLACK, animState, x, y, text, end, lineEnd);
+                    font.DrawText(animState, x, y, text, end, lineEnd);
                 }
             }
         }
@@ -346,13 +346,13 @@ namespace XNATWL
             {
                 if (numTextLines > 1)
                 {
-                    cache = font.CacheMultiLineText(Color.BLACK, cache, text,
+                    cache = font.CacheMultiLineText(cache, text,
                             font.ComputeMultiLineTextWidth(text),
                             alignment.getFontHAlignment());
                 }
                 else
                 {
-                    cache = font.CacheText(Color.BLACK, cache, text);
+                    cache = font.CacheText(cache, text);
                 }
                 if (cache != null)
                 {

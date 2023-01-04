@@ -164,6 +164,22 @@ namespace XNATWL.Theme
                 missingParameter(name, type);
             }
 
+            if (type.IsPrimitive && value != null)
+            {
+                if (value is Int16 && type == typeof(Int32))
+                {
+                    return (int) ((short) value);
+                }
+                else if (value is Int32 && type == typeof(Int16))
+                {
+                    return (short) ((int) (value));
+                }
+                else if (value is Int32 && type == typeof(Char))
+                {
+                    return Char.ConvertFromUtf32((int)value);
+                }
+            }
+
             if (!type.IsInstanceOfType(value))
             {
                 if (value != null)

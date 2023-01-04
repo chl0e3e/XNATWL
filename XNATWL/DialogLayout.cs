@@ -659,7 +659,7 @@ namespace XNATWL
         }
 
         //@Override
-        protected void childVisibilityChanged(Widget child)
+        protected override void childVisibilityChanged(Widget child)
         {
             if (!bIncludeInvisibleWidgets)
             {

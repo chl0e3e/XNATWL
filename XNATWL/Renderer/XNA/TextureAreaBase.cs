@@ -16,18 +16,13 @@ namespace XNATWL.Renderer.XNA
         protected int width;
         protected int height;
         protected XNATexture _texture;
+        protected bool beginDraw = false;
 
         public TextureAreaBase(XNATexture texture, int x, int y, int width, int height)
         {
             if (texture == null)
             {
                 throw new ArgumentNullException("No texture!");
-            }
-
-            if (height == 17)
-            {
-                //throw new Exception("Test");
-                System.Diagnostics.Debug.WriteLine("Test");
             }
 
             this.tx0 = x;
@@ -62,9 +57,19 @@ namespace XNATWL.Renderer.XNA
 
         internal virtual void drawQuad(Color color, int x, int y, int w, int h)
         {
-            this._texture.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+            this.drawQuad(color, true, x, y, w, h);
+        }
+        internal virtual void drawQuad(Color color, bool newDraw, int x, int y, int w, int h)
+        {
+            if (newDraw)
+            {
+                this._texture.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+            }
             this._texture.SpriteBatch.Draw(this._texture.Texture2D, new Microsoft.Xna.Framework.Rectangle(x, y, w, h), new Microsoft.Xna.Framework.Rectangle(this.tx0, this.ty0, this.tw, this.th), this._texture.Renderer.TintStack.TintColorForXNA(color));
-            this._texture.SpriteBatch.End();
+            if (newDraw)
+            {
+                this._texture.SpriteBatch.End();
+            }
         }
     }
 }
