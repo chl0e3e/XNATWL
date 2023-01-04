@@ -59,9 +59,15 @@ namespace XNATWL.Utils
             this.Types.Add(type, value);
         }
 
-        public void RemoveByType(Type type)
+        public bool RemoveByType(Type type)
         {
-            this.Types.Remove(type);
+            if (GetByType(type) != null)
+            {
+                this.Types.Remove(type);
+                return true;
+            }
+
+            return false;
         }
     }
 }

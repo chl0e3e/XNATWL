@@ -300,6 +300,7 @@
     <Compile Include="VAlignment.cs" />
     <Compile Include="ValueAdjusterFloat.cs" />
     <Compile Include="ValueAdjusterInt.cs" />
+    <Compile Include="WheelWidget.cs" />
     <Compile Include="Widget.cs" />
   </ItemGroup>
   <ItemGroup>
