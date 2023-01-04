@@ -60,7 +60,7 @@ namespace XNATWL.Model
             return null;
         }
 
-        protected void InsertChildAt(TreeTableNode node, int idx)
+        public void InsertChildAt(TreeTableNode node, int idx)
         {
             if (this.ChildIndexOf(node) >= 0)
             {
@@ -77,14 +77,14 @@ namespace XNATWL.Model
             FireNodesAdded(this, idx, 1);
         }
 
-        protected void RemoveChildAt(int idx)
+        public void RemoveChildAt(int idx)
         {
             this._children.RemoveAt(idx);
 
             FireNodesRemoved(this, idx, 1);
         }
 
-        protected void RemoveAllChildren()
+        public virtual void RemoveAllChildren()
         {
             int count = this._children.Count;
             if (count > 0)

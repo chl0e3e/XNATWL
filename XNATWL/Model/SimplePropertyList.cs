@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace XNATWL.Model
 {
-    public class SimplePropertyList : AbstractProperty<PropertyList<object>>, PropertyList<object>
+    public class SimplePropertyList<T> : AbstractProperty<PropertyList<T>>, PropertyList<T>
     {
         public int Count
         {
@@ -40,7 +40,7 @@ namespace XNATWL.Model
             }
         }
 
-        public override PropertyList<object> Value
+        public override PropertyList<T> Value
         {
             get
             {
@@ -60,47 +60,47 @@ namespace XNATWL.Model
             }
         }
 
-        public override event EventHandler<PropertyChangedEventArgs<PropertyList<object>>> Changed;
+        public override event EventHandler<PropertyChangedEventArgs<PropertyList<T>>> Changed;
 
-        public Property<object> PropertyAt(int index)
+        public Property<T> PropertyAt(int index)
         {
             return this._properties[index];
         }
 
-        public void AddProperty(Property<object> property)
+        public void AddProperty(Property<T> property)
         {
             this._properties.Add(property);
-            this.Changed.Invoke(this, new PropertyChangedEventArgs<PropertyList<object>>());
+            this.Changed.Invoke(this, new PropertyChangedEventArgs<PropertyList<T>>());
         }
 
-        public void AddProperty(int idx, Property<object> property)
+        public void AddProperty(int idx, Property<T> property)
         {
             this._properties.Insert(idx, property);
-            this.Changed.Invoke(this, new PropertyChangedEventArgs<PropertyList<object>>());
+            this.Changed.Invoke(this, new PropertyChangedEventArgs<PropertyList<T>>());
         }
 
         public void RemoveProperty(int idx)
         {
             this._properties.RemoveAt(idx);
-            this.Changed.Invoke(this, new PropertyChangedEventArgs<PropertyList<object>>());
+            this.Changed.Invoke(this, new PropertyChangedEventArgs<PropertyList<T>>());
         }
 
         public void RemoveAllProperties()
         {
             this._properties.Clear();
-            this.Changed.Invoke(this, new PropertyChangedEventArgs<PropertyList<object>>());
+            this.Changed.Invoke(this, new PropertyChangedEventArgs<PropertyList<T>>());
         }
 
         private string _name;
-        private List<Property<object>> _properties;
+        private List<Property<T>> _properties;
 
         public SimplePropertyList(string name)
         {
-            this._properties = new List<Property<object>>();
+            this._properties = new List<Property<T>>();
             this._name = name;
         }
 
-        public SimplePropertyList(string name, params Property<object>[] properties) : this(name)
+        public SimplePropertyList(string name, params Property<T>[] properties) : this(name)
         {
             this._properties.AddRange(properties);
         }

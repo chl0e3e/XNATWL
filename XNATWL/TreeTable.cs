@@ -38,7 +38,7 @@ namespace XNATWL
             setModel(model);
         }
 
-        public void setModel(TreeTableModel model)
+        public virtual void setModel(TreeTableModel model)
         {
             if (this.model != null)
             {
@@ -526,7 +526,7 @@ namespace XNATWL
             }
         }
 
-        protected class NodeState : BooleanModel
+        public class NodeState : BooleanModel
         {
             protected internal NodeState parent;
             protected internal bool expanded;
@@ -610,7 +610,7 @@ namespace XNATWL
             return level;
         }
 
-        class TreeLeafCellRenderer : CellRenderer, CellWidgetCreator
+        public class TreeLeafCellRenderer : CellRenderer, CellWidgetCreator
         {
             protected int treeIndent;
             protected int level;
@@ -651,7 +651,7 @@ namespace XNATWL
                 return level * treeIndent + treeButtonSize.X;
             }
 
-            protected void setSubRenderer(int row, int column, Object colData)
+            protected virtual void setSubRenderer(int row, int column, Object colData)
             {
                 subRenderer = this.treeTable.getCellRenderer(colData, column);
                 if (subRenderer != null)
@@ -660,7 +660,7 @@ namespace XNATWL
                 }
             }
 
-            public int getColumnSpan()
+            public virtual int getColumnSpan()
             {
                 return (subRenderer != null) ? subRenderer.getColumnSpan() : 1;
             }
@@ -674,7 +674,7 @@ namespace XNATWL
                 return treeButtonSize.Y;
             }
 
-            public Widget getCellRenderWidget(int x, int y, int width, int height, bool isSelected)
+            public virtual Widget getCellRenderWidget(int x, int y, int width, int height, bool isSelected)
             {
                 if (subRenderer != null)
                 {
@@ -737,7 +737,7 @@ namespace XNATWL
             }
         }
 
-        class TreeNodeCellRenderer : TreeLeafCellRenderer
+        public class TreeNodeCellRenderer : TreeLeafCellRenderer
         {
             private NodeState nodeState;
 
@@ -811,7 +811,7 @@ namespace XNATWL
                 }
             }
 
-            public void setCellData(int row, int column, Object data, NodeState nodeState)
+            public virtual void setCellData(int row, int column, Object data, NodeState nodeState)
             {
                 System.Diagnostics.Debug.Assert(nodeState != null);
                 this.nodeState = nodeState;

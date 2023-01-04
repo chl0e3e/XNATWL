@@ -187,6 +187,7 @@
     <Compile Include="PopupWindow.cs" />
     <Compile Include="PositionAnimatedPanel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PropertySheet.cs" />
     <Compile Include="Property\PropertyChangeEvent.cs" />
     <Compile Include="Property\PropertyChangeListener.cs" />
     <Compile Include="Property\PropertyChangeSupport.cs" />

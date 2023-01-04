@@ -82,7 +82,7 @@ namespace XNATWL.Model
             this.Model.FireNodesRemoved(this, idx, 1);
         }
 
-        protected void RemoveAllChildren()
+        public virtual void RemoveAllChildren()
         {
             if (_children != null)
             {
