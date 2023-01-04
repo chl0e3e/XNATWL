@@ -373,7 +373,7 @@ namespace XNATWL
             if (selected >= 0)
             {
                 EditField editField = getEditField();
-                String text = listModel.getEntry(selected);
+                String text = listModel.EntryAt(selected);
                 int pos = listModel.getCursorPosForEntry(selected);
 
                 editField.setText(text);
@@ -430,11 +430,6 @@ namespace XNATWL
                 this.AllChanged.Invoke(this, new ListAllChangedEventArgs());
             }
 
-            public String getEntry(int index)
-            {
-                return result.ResultAt(index);
-            }
-
             public int getCursorPosForEntry(int index)
             {
                 return result.getCursorPosForResult(index);
@@ -442,7 +437,7 @@ namespace XNATWL
 
             public override string EntryAt(int index)
             {
-                throw new NotImplementedException();
+                return result.ResultAt(index);
             }
         }
 

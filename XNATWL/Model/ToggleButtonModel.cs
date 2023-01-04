@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static XNATWL.AnimationState;
 using XNATWL.Utils;
-using static XNATWL.TextArea.StyleSheet;
+using static XNATWL.TextAreaModel.StyleSheet;
 
 namespace XNATWL.Model
 {

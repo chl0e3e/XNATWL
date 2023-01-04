@@ -113,7 +113,7 @@ namespace XNATWL.Utils
 
             bool read = xpp.Read();
 
-            while (xpp.NodeType == XmlNodeType.Attribute && xpp.Read())
+            while ((xpp.NodeType == XmlNodeType.Attribute || xpp.NodeType == XmlNodeType.Comment || xpp.NodeType == XmlNodeType.Whitespace) && xpp.Read())
             {
             }
 
@@ -706,6 +706,7 @@ namespace XNATWL.Utils
         public static int COMMENT = 9;
         public static int DODECL = 10;
         public static int XML_DECLARATION = 11;
+        public static int END_COMMENT = 12;
 
         public static int NodeTypeToToken(XmlNodeType nodeType)
         {

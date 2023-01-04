@@ -40,6 +40,10 @@ namespace XNATWL.Theme
 
         public Image getImage(String name)
         {
+            if (!images.ContainsKey(name))
+            {
+                return null;
+            }
             return images[name];
         }
 

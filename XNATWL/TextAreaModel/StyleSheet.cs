@@ -13,7 +13,7 @@ using XNATWL.Utils;
 using System.Collections;
 using XNATWL.IO;
 
-namespace XNATWL.TextArea
+namespace XNATWL.TextAreaModel
 {
     public class StyleSheet : StyleSheetResolver
     {

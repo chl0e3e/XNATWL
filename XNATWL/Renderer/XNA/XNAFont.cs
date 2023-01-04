@@ -85,7 +85,7 @@ namespace XNATWL.Renderer.XNA
 
         public FontCache CacheMultiLineText(Color color, FontCache prevCache, string str, int width, HAlignment alignment)
         {
-            throw new NotImplementedException();
+            return new XNAFontCache(this, color, str);
         }
 
         public AttributedStringFontCache CacheMultiLineText(Color color, AttributedStringFontCache prevCache, AttributedString attributedString)

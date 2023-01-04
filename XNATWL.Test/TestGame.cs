@@ -1,15 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using XNATWL.Renderer;
-using XNATWL.Renderer.XNA;
-using XNATWL.TextArea;
-using XNATWL.Theme;
 
 namespace XNATWL.Test
 {
@@ -29,23 +20,14 @@ namespace XNATWL.Test
         private Vector2 _cameraPosition;
         private Vector2 _screenCenter;
 
-
-#if !XBOX360
-        const string Text = "Press A or D to rotate the ball\n" +
-                            "Press Space to jump\n" +
-                            "Press Shift + W/S/A/D to move the camera";
-#else
-                const string Text = "Use left stick to move\n" +
-                                    "Use right stick to move camera\n" +
-                                    "Press A to jump\n";
-#endif
         // Farseer expects objects to be scaled to MKS (meters, kilos, seconds)
         // 1 meters equals 64 pixels here
         // (Objects should be scaled to be between 0.1 and 10 meters in size)
         private const float MeterInPixels = 64f;
 
-        private GUI twlGui;
-        private XNARenderer twlRenderer;
+        //private GUI twlGui;
+        //private XNARenderer twlRenderer;
+        private SimpleTest simpleTest;
 
         public TestGame()
         {
@@ -76,11 +58,12 @@ namespace XNATWL.Test
             //_circleSprite = Content.Load<Texture2D>("circleSprite"); //  96px x 96px => 1.5m x 1.5m
             //_groundSprite = Content.Load<Texture2D>("groundSprite"); // 512px x 64px =>   8m x 1m
 
-            this.twlRenderer = new XNARenderer(_graphics.GraphicsDevice);
+            /*this.twlRenderer = new XNARenderer(_graphics.GraphicsDevice);
             this.twlGui = new GUI(new ChatDemo(), this.twlRenderer);
 
             ThemeManager theme = ThemeManager.createThemeManager(new IO.FileSystemObject(IO.FileSystemObject.FileSystemObjectType.FILE, "D:\\FortressCraft\\XNATWL\\XNATWL\\XNATWL.Test\\Theme\\chat.xml"), this.twlRenderer);
-            this.twlGui.applyTheme(theme);
+            this.twlGui.applyTheme(theme);*/
+            this.simpleTest = new SimpleTest(_graphics.GraphicsDevice);
         }
 
         /// <summary>
@@ -95,7 +78,7 @@ namespace XNATWL.Test
 
             base.Update(gameTime);
 
-            this.twlGui.update();
+            this.simpleTest.update();
         }
 
         private void HandleGamePad()
@@ -167,59 +150,7 @@ namespace XNATWL.Test
             _batch.End();*/
 
             base.Draw(gameTime);
-            this.twlGui.draw();
-        }
-    }
-
-    class ChatDemo : DesktopArea
-    {
-        private ChatFrame chatFrame;
-
-        public ChatDemo()
-        {
-            chatFrame = new ChatFrame();
-            add(chatFrame);
-
-            chatFrame.setSize(400, 200);
-            //chatFrame.setPosition(10, 350);
-        }
-
-        protected override void layout()
-        {
-            base.layout();
-        }
-
-        class ChatFrame : ResizableFrame
-        {
-            private HTMLTextAreaModel textAreaModel;
-            private TextAreaW textArea;
-            private ScrollPane scrollPane;
-            private EditField editField;
-
-            public ChatFrame()
-            {
-                setTitle("Chat");
-
-                this.textAreaModel = new HTMLTextAreaModel();
-                this.textArea = new TextAreaW(this.textAreaModel);
-                this.editField = new EditField();
-                this.editField.setText("Test");
-
-                this.scrollPane = new ScrollPane(this.textArea);
-                this.scrollPane.setFixed(ScrollPane.Fixed.HORIZONTAL);
-
-                DialogLayout l = new DialogLayout();
-                l.setClip(true);
-                l.setTheme("content");
-                l.setHorizontalGroup(l.createParallelGroup(scrollPane, editField));
-                l.setVerticalGroup(l.createSequentialGroup(scrollPane, editField));
-                add(l);
-
-                textAreaModel.setHtml("<html><body><div style=\"word-wrap: break-word; font-family: default;\">Test</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div><div style=\"word-wrap: break-word; font-family: default; \">The quick brown fox jumped over the lazy white dog.</div></body></html>");
-
-                scrollPane.validateLayout();
-                scrollPane.setScrollPositionY(scrollPane.getMaxScrollPosY());
-            }
+            this.simpleTest.draw();
         }
     }
 }

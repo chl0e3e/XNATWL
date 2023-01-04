@@ -186,7 +186,7 @@
                     <param name="background"><image>innerframe.background</image></param>
                     <param name="border"><border>background.border</border></param>
 
-                    <theme name="textareaw" ref="-defaults">
+                    <theme name="textarea" ref="-defaults">
                         <param name="fonts"><map>
                             <param name="default"><font>black</font></param>
                             <param name="color0"><font>red</font></param>

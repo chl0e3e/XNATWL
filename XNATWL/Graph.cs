@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using XNATWL.Model;
 using XNATWL.Renderer;
-using XNATWL.TextArea;
+using XNATWL.TextAreaModel;
 using XNATWL.Utils;
 
 namespace XNATWL

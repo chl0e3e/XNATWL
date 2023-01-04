@@ -256,6 +256,14 @@ namespace XNATWL.Utils
                     }
                     if (m != null)
                     {
+                        if (m.ReturnType == typeof(Int32))
+                        {
+                            return new Number((Int32)m.Invoke(obj, new object[0]));
+                        }
+                        else if (m.ReturnType == typeof(float))
+                        {
+                            return new Number((float)m.Invoke(obj, new object[0]));
+                        }
                         return m.Invoke(obj, new object[0]);
                     }
                 }
@@ -277,7 +285,7 @@ namespace XNATWL.Utils
                         m.ReturnType != typeof(void) &&
                         m.IsPublic &&
                         m.GetParameters().Length == 0 &&
-                        (cmpName(m, field, "get") || cmpName(m, field, "is")))
+                        (cmpName(m, field, "get") || cmpName(m, field, "get_") || cmpName(m, field, "is")))
                 {
                     return m;
                 }
@@ -287,13 +295,7 @@ namespace XNATWL.Utils
 
         private static bool cmpName(MethodInfo m, String fieldName, String prefix)
         {
-            String methodName = m.Name;
-            int prefixLength = prefix.Length;
-            int fieldNameLength = fieldName.Length;
-            return methodName.Length == (prefixLength + fieldNameLength) &&
-                    methodName.StartsWith(prefix) &&
-                    methodName[prefixLength] == fieldName.ToUpper()[0] &&
-                    methodName.Substring(0, prefixLength + 1) == fieldName.Substring(1, fieldNameLength - 1);
+            return (prefix + fieldName).ToLower() == m.Name.ToLower();
         }
 
         public void callFunction(String name, int args)

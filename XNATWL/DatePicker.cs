@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static XNATWL.TextAreaW;
+using static XNATWL.TextArea;
 using XNATWL.Model;
 using XNATWL.Renderer;
 using XNATWL.Utils;

@@ -135,6 +135,11 @@ namespace XNATWL
             do
             {
                 theme = clazz.Name.ToLower();
+                int genericIDStart = theme.IndexOf('`');
+                if (genericIDStart != -1)
+                {
+                    theme = theme.Substring(0, genericIDStart);
+                }
                 clazz = clazz.GetType().BaseType;
             } while (theme.Length == 0 && clazz != null);
 

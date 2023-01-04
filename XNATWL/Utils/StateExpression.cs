@@ -181,7 +181,7 @@ namespace XNATWL.Utils
                     _pos++;
                 }
 
-                return _str.Substring(start, _pos);
+                return _str.Substring(start, _pos - start);
             }
         }
     }

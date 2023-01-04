@@ -39,12 +39,28 @@ namespace XNATWL
             this.right = horz;
         }
 
+        public Border(Utils.Number horz, Utils.Number vert)
+        {
+            this.top = vert.intValue();
+            this.left = horz.intValue();
+            this.bottom = vert.intValue();
+            this.right = horz.intValue();
+        }
+
         public Border(int top, int left, int bottom, int right)
         {
             this.top = top;
             this.left = left;
             this.bottom = bottom;
             this.right = right;
+        }
+
+        public Border(Utils.Number top, Utils.Number left, Utils.Number bottom, Utils.Number right)
+        {
+            this.top = top.intValue();
+            this.left = left.intValue();
+            this.bottom = bottom.intValue();
+            this.right = right.intValue();
         }
 
         public int BorderBottom

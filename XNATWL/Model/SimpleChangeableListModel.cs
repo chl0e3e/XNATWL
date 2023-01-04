@@ -8,7 +8,7 @@ using System.Xml.Linq;
 
 namespace XNATWL.Model
 {
-    internal class SimpleChangeableListModel<T> : SimpleListModel<T>
+    public class SimpleChangeableListModel<T> : SimpleListModel<T>
     {
         private List<T> _content;
 

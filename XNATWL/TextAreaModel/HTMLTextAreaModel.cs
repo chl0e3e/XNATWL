@@ -12,7 +12,7 @@ using XNATWL.IO;
 using System.Collections;
 using System.Xml;
 
-namespace XNATWL.TextArea
+namespace XNATWL.TextAreaModel
 {
     public class HTMLTextAreaModel : TextAreaModel
     {

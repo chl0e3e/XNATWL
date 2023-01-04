@@ -260,7 +260,7 @@ namespace XNATWL.Theme
 
         private void insertDefaultConstants()
         {
-            //constants.put("SINGLE_COLUMN", ListBox.SINGLE_COLUMN); // TODO
+            constants.put("SINGLE_COLUMN", -1);
             constants.put("MAX", short.MaxValue);
         }
 
@@ -279,9 +279,7 @@ namespace XNATWL.Theme
                     xmlp.setLoggerName(typeof(ThemeManager).Name);
                     xmlp.next();
                     xmlp.require(XmlPullParser.XML_DECLARATION, null, null);
-                    while(xmlp.next() == XmlPullParser.IGNORABLE_WHITESPACE)
-                    {
-                    }
+                    xmlp.next();
                     parseThemeFile(xmlp, fso.Parent);
                 }
                 finally

@@ -5,12 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using XNATWL.Renderer;
 using XNATWL.Utils;
-using XNATWL.TextArea;
+using XNATWL.TextAreaModel;
 using System.Runtime.Serialization.Formatters;
 
 namespace XNATWL
 {
-    public class TextAreaW : Widget
+    public class TextArea : Widget
     {
         public interface WidgetResolver
         {
@@ -48,7 +48,7 @@ namespace XNATWL
              * @see Event.Type#MOUSE_BTNUP
              * @see Event.Type#MOUSE_CLICKED
              */
-            void handleMouseButton(Event evt, TextArea.Element element);
+            void handleMouseButton(Event evt, TextAreaModel.Element element);
         }
 
         public static StateKey STATE_HOVER = StateKey.Get("hover");
@@ -60,9 +60,9 @@ namespace XNATWL
         private Dictionary<String, Image> userImages;
         private List<ImageResolver> imageResolvers;
 
-        TextArea.StyleSheetResolver styleClassResolver;
+        TextAreaModel.StyleSheetResolver styleClassResolver;
         private Runnable modelCB;
-        private TextArea.TextAreaModel model;
+        private TextAreaModel.TextAreaModel model;
         private ParameterMap fonts;
         private ParameterMap images;
         private Font defaultFont;
@@ -90,7 +90,7 @@ namespace XNATWL
 
         public event EventHandler<TextAreaChangedEventArgs> Changed;
 
-        public TextAreaW()
+        public TextArea()
         {
             this.widgets = new Dictionary<String, Widget>();
             this.widgetResolvers = new Dictionary<String, WidgetResolver>();
@@ -107,17 +107,17 @@ namespace XNATWL
             //};
         }
 
-        public TextAreaW(TextArea.TextAreaModel model) : this()
+        public TextArea(TextAreaModel.TextAreaModel model) : this()
         {
             setModel(model);
         }
 
-        public TextArea.TextAreaModel getModel()
+        public TextAreaModel.TextAreaModel getModel()
         {
             return model;
         }
 
-        public void setModel(TextArea.TextAreaModel model)
+        public void setModel(TextAreaModel.TextAreaModel model)
         {
             if (this.model != null)
             {
@@ -249,12 +249,12 @@ namespace XNATWL
             this.dragListener = dragListener;
         }
 
-        public TextArea.StyleSheetResolver getStyleClassResolver()
+        public TextAreaModel.StyleSheetResolver getStyleClassResolver()
         {
             return styleClassResolver;
         }
 
-        public void setStyleClassResolver(TextArea.StyleSheetResolver styleClassResolver)
+        public void setStyleClassResolver(TextAreaModel.StyleSheetResolver styleClassResolver)
         {
             this.styleClassResolver = styleClassResolver;
             forceRelayout();
@@ -279,7 +279,7 @@ namespace XNATWL
             }
             catch (Exception ex)
             {
-                Logger.GetLogger(typeof(TextAreaW)).log(Logger.Level.SEVERE,
+                Logger.GetLogger(typeof(TextArea)).log(Logger.Level.SEVERE,
                         "Can't create default style sheet", ex);
             }
         }
@@ -795,7 +795,7 @@ namespace XNATWL
                 }
                 else
                 {
-                    Logger.GetLogger(typeof(TextAreaW)).log(Logger.Level.SEVERE, "Unknown Element subclass: {0}" + e.GetType().FullName);
+                    Logger.GetLogger(typeof(TextArea)).log(Logger.Level.SEVERE, "Unknown Element subclass: {0}" + e.GetType().FullName);
                 }
             }
         }
@@ -831,7 +831,7 @@ namespace XNATWL
 
             if (widget.getParent() != null)
             {
-                Logger.GetLogger(typeof(TextAreaW)).log(Logger.Level.SEVERE, "Widget already added: " + widget.getThemePath());
+                Logger.GetLogger(typeof(TextArea)).log(Logger.Level.SEVERE, "Widget already added: " + widget.getThemePath());
                 return;
             }
 
@@ -922,12 +922,12 @@ namespace XNATWL
             {
                 switch (e.getStyle().Get(StyleAttribute.HORIZONTAL_ALIGNMENT, styleClassResolver))
                 {
-                    case TextArea.HAlignment.CENTER:
-                    case TextArea.HAlignment.JUSTIFY:
+                    case TextAreaModel.HAlignment.CENTER:
+                    case TextAreaModel.HAlignment.JUSTIFY:
                         le.x = box.lineStartX + (box.lineWidth - le.width) / 2;
                         break;
 
-                    case TextArea.HAlignment.RIGHT:
+                    case TextAreaModel.HAlignment.RIGHT:
                         le.x = box.computeRightPadding(le.marginRight) - le.width;
                         break;
 
@@ -1212,9 +1212,9 @@ namespace XNATWL
 
             layoutElements(box, pe);
 
-            if (box.textAlignment == TextArea.HAlignment.JUSTIFY)
+            if (box.textAlignment == TextAreaModel.HAlignment.JUSTIFY)
             {
-                box.textAlignment = TextArea.HAlignment.LEFT;
+                box.textAlignment = TextAreaModel.HAlignment.LEFT;
             }
             box.nextLine(false);
             box.inParagraph = false;
@@ -1311,7 +1311,7 @@ namespace XNATWL
 
                 int end = idx;
                 int visibleEnd = idx;
-                if (box.textAlignment != TextArea.HAlignment.JUSTIFY)
+                if (box.textAlignment != TextAreaModel.HAlignment.JUSTIFY)
                 {
                     end = idx + font.ComputeVisibleGlyphs(text, idx, textEnd, box.getRemaining());
                     visibleEnd = end;
@@ -1352,7 +1352,7 @@ namespace XNATWL
                 if (end == idx)
                 {
                     // we may need a new line
-                    if (box.textAlignment != TextArea.HAlignment.JUSTIFY && box.nextLine(false))
+                    if (box.textAlignment != TextAreaModel.HAlignment.JUSTIFY && box.nextLine(false))
                     {
                         continue;
                     }
@@ -1395,7 +1395,7 @@ namespace XNATWL
                     {
                         box.advancePastFloaters(lt.width, box.marginLeft, box.marginRight);
                     }
-                    if (box.textAlignment == TextArea.HAlignment.JUSTIFY && box.getRemaining() < lt.width)
+                    if (box.textAlignment == TextAreaModel.HAlignment.JUSTIFY && box.getRemaining() < lt.width)
                     {
                         box.nextLine(false);
                     }
@@ -1635,12 +1635,12 @@ namespace XNATWL
             if (boxHeight > contentHeight)
             {
                 int amount = 0;
-                TextArea.VAlignment vAlign = style.Get(StyleAttribute.VERTICAL_ALIGNMENT, styleClassResolver);
-                if (vAlign == TextArea.VAlignment.BOTTOM)
+                TextAreaModel.VAlignment vAlign = style.Get(StyleAttribute.VERTICAL_ALIGNMENT, styleClassResolver);
+                if (vAlign == TextAreaModel.VAlignment.BOTTOM)
                 {
                     amount = boxHeight - contentHeight;
                 }
-                else if (vAlign == TextArea.VAlignment.FILL || vAlign == TextArea.VAlignment.MIDDLE)
+                else if (vAlign == TextAreaModel.VAlignment.FILL || vAlign == TextAreaModel.VAlignment.MIDDLE)
                 {
                     amount = (boxHeight - contentHeight) / 2;
                 }
@@ -1970,7 +1970,7 @@ namespace XNATWL
 
             LImage tableBGImage = createBGImage(box, te);
 
-            box.textAlignment = TextArea.HAlignment.LEFT;
+            box.textAlignment = TextAreaModel.HAlignment.LEFT;
             box.curY += Math.Max(cellSpacing, convertToPX0(tableStyle, StyleAttribute.PADDING_TOP, box.boxWidth));
 
             LImage[] bgImages = new LImage[numColumns];
@@ -2176,12 +2176,12 @@ namespace XNATWL
             internal bool inParagraph;
             internal bool wasAutoBreak;
             internal bool wasPreformatted;
-            internal TextArea.HAlignment textAlignment;
+            internal TextAreaModel.HAlignment textAlignment;
             internal String href;
-            internal TextArea.Style style;
-            internal TextAreaW textAreaW;
+            internal TextAreaModel.Style style;
+            internal TextArea textAreaW;
 
-            internal Box(TextAreaW textAreaW, LClip clip, int paddingLeft, int paddingRight, int paddingTop, bool doCacheText)
+            internal Box(TextArea textAreaW, LClip clip, int paddingLeft, int paddingRight, int paddingTop, bool doCacheText)
             {
                 this.textAreaW = textAreaW;
                 this.clip = clip;
@@ -2196,7 +2196,7 @@ namespace XNATWL
                 this.lineStartX = paddingLeft;
                 this.lineWidth = boxWidth;
                 this.minRemainingWidth = boxWidth;
-                this.textAlignment = TextArea.HAlignment.LEFT;
+                this.textAlignment = TextAreaModel.HAlignment.LEFT;
                 System.Diagnostics.Debug.Assert(layout.Count == 0);
             }
 
@@ -2412,7 +2412,7 @@ namespace XNATWL
 
                     switch (textAlignment)
                     {
-                        case TextArea.HAlignment.RIGHT:
+                        case TextAreaModel.HAlignment.RIGHT:
                             {
                                 for (int idx = lineStartIdx; idx < layout.Count; idx++)
                                 {
@@ -2421,7 +2421,7 @@ namespace XNATWL
                                 }
                                 break;
                             }
-                        case TextArea.HAlignment.CENTER:
+                        case TextAreaModel.HAlignment.CENTER:
                             {
                                 int offset = remaining / 2;
                                 for (int idx = lineStartIdx; idx < layout.Count; idx++)
@@ -2431,7 +2431,7 @@ namespace XNATWL
                                 }
                                 break;
                             }
-                        case TextArea.HAlignment.JUSTIFY:
+                        case TextAreaModel.HAlignment.JUSTIFY:
                             if (remaining < lineWidth / 4)
                             {
                                 int num = layout.Count - lineStartIdx;
@@ -2450,16 +2450,16 @@ namespace XNATWL
                         LElement le = layout[idx];
                         switch (le.element.getStyle().Get(StyleAttribute.VERTICAL_ALIGNMENT, textAreaW.styleClassResolver))
                         {
-                            case TextArea.VAlignment.BOTTOM:
+                            case TextAreaModel.VAlignment.BOTTOM:
                                 le.y = lineHeight - le.height;
                                 break;
-                            case TextArea.VAlignment.TOP:
+                            case TextAreaModel.VAlignment.TOP:
                                 le.y = 0;
                                 break;
-                            case TextArea.VAlignment.MIDDLE:
+                            case TextAreaModel.VAlignment.MIDDLE:
                                 le.y = (lineHeight - le.height) / 2;
                                 break;
-                            case TextArea.VAlignment.FILL:
+                            case TextAreaModel.VAlignment.FILL:
                                 le.y = 0;
                                 le.height = lineHeight;
                                 break;

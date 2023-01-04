@@ -113,6 +113,8 @@ namespace XNATWL
                     this.model.EntriesDeleted += Model_EntriesDeleted;
                     this.model.EntriesInserted += Model_EntriesInserted;
                 }
+
+                this.allChanged();
             }
         }
 

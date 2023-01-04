@@ -688,9 +688,21 @@ namespace XNATWL
             }
             public Gap(int size) : this(size, size, size)
             {
-                
+
+            }
+            public Gap(Utils.Number size) : this(size.intValue(), size.intValue(), size.intValue())
+            {
+
             }
             public Gap(int min, int preferred) : this(min, preferred, 32767)
+            {
+
+            }
+            public Gap(Utils.Number min, Utils.Number preferred) : this(min.intValue(), preferred.intValue(), 32767)
+            {
+
+            }
+            public Gap(Utils.Number min, Utils.Number preferred, Utils.Number max) : this(min.intValue(), preferred.intValue(), max.intValue())
             {
 
             }

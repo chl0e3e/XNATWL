@@ -1,12 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static XNATWL.TextAreaW;
 using XNATWL.IO;
 using XNATWL.Model;
-using static XNATWL.Utils.SparseGrid;
 
 namespace XNATWL
 {

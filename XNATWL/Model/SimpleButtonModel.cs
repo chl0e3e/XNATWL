@@ -114,12 +114,18 @@ namespace XNATWL.Model
 
         protected virtual void FireAction()
         {
-            this.Action.Invoke(this, new ButtonActionEventArgs());
+            if (this.Action != null)
+            {
+                this.Action.Invoke(this, new ButtonActionEventArgs());
+            }
         }
 
         protected virtual void FireState()
         {
-            this.State.Invoke(this, new ButtonStateChangedEventArgs());
+            if (this.State != null)
+            {
+                this.State.Invoke(this, new ButtonStateChangedEventArgs());
+            }
         }
 
         public event EventHandler<ButtonActionEventArgs> Action;
