@@ -48,11 +48,13 @@ namespace XNATWL.Test
         protected PersistentIntegerModel curThemeIdx;
         protected Preferences preferences;
         private GraphicsDevice graphicsDevice;
+        private FileSystemObject themeRootFso;
 
         public SimpleTest(GraphicsDevice graphicsDevice)
         {
             this.graphicsDevice = graphicsDevice;
             this.preferences = new Preferences("");
+            this.themeRootFso = new IO.FileSystemObject(IO.FileSystemObject.FileSystemObjectType.DIRECTORY, "D:\\FortressCraft\\XNATWL\\XNATWL\\XNATWL.Test\\Theme\\");
             curThemeIdx = new PersistentIntegerModel(
                     this.preferences,
                     "currentThemeIndex", 0, THEME_FILES.Length, 0);
@@ -70,7 +72,7 @@ namespace XNATWL.Test
             // This allows easy reloading of a theme for development.
             // If you want fast theme switching without reloading then use the existing
             // cache context for loading the new theme and don't destroy the old theme.
-            ThemeManager newTheme = ThemeManager.createThemeManager(new IO.FileSystemObject(IO.FileSystemObject.FileSystemObjectType.FILE, "D:\\FortressCraft\\XNATWL\\XNATWL\\XNATWL.Test\\Theme\\" + THEME_FILES[curThemeIdx.Value]), renderer);
+            ThemeManager newTheme = ThemeManager.createThemeManager(new IO.FileSystemObject(this.themeRootFso, THEME_FILES[curThemeIdx.Value]), renderer);
             long duration = DateTime.Now.Ticks - startTime;
             Console.WriteLine("Loaded theme in " + (duration / 1000) + " us");
 
@@ -100,6 +102,11 @@ namespace XNATWL.Test
             dlg1.adjustSize();
             dlg1.center(0.35f, 0.5f);
 
+            TextAreaDemoDialog1 fInfo = new TextAreaDemoDialog1(new FileSystemObject(this.themeRootFso, "license.html"));
+            root.desk.add(fInfo);
+            fInfo.setSize(gui.getWidth() * 2 / 3, gui.getHeight() * 2 / 3);
+            fInfo.center(0.5f, 0.5f);
+            fInfo.addCloseCallback();
             /*GraphDemoDialog1 fMS = new GraphDemoDialog1();
             root.desk.add(fMS);
             fMS.adjustSize();
@@ -125,11 +132,6 @@ namespace XNATWL.Test
             fPropertySheet.center(0f, 0.25f);
             fPropertySheet.addCloseCallback();
 
-            TextAreaDemoDialog1 fInfo = new TextAreaDemoDialog1();
-            root.desk.add(fInfo);
-            fInfo.setSize(gui.getWidth() * 2 / 3, gui.getHeight() * 2 / 3);
-            fInfo.center(0.5f, 0.5f);
-            fInfo.addCloseCallback();
 
             TextAreaDemoDialog2 fTextAreaTest = new TextAreaDemoDialog2();
             fTextAreaTest.setHardVisible(false);
@@ -163,7 +165,7 @@ namespace XNATWL.Test
             root.addButton("Exit", () => {
                 closeRequested = true;
             });
-            /*root.addButton("Info", "Shows TWL license", () => {
+            root.addButton("Info", "Shows TWL license", () => {
                 if (fInfo.isVisible())
                 {
                     fInfo.hide();
@@ -172,8 +174,8 @@ namespace XNATWL.Test
                 {
                     fInfo.show();
                 }
-            })).setTooltipContent(makeComplexTooltip());
-            root.addButton("TA", "Shows a text area test", () => {
+            }).setTooltipContent(makeComplexTooltip());
+            /*root.addButton("TA", "Shows a text area test", () => {
                 if (fTextAreaTest.isVisible())
                 {
                     fTextAreaTest.hide();
