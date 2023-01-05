@@ -187,7 +187,7 @@ namespace XNATWL.TextAreaModel
 
                 while (xpp.Read() && xpp.NodeType != XmlNodeType.EndElement)
                 {
-                    if ("head".Equals(xpp.Name))
+                    if ("head".Equals(xpp.Name) && !xpp.IsEmptyElement)
                     {
                         parseHead(xpp);
                     }
@@ -210,7 +210,10 @@ namespace XNATWL.TextAreaModel
             finally
             {
                 // data was modified
-                this.Changed.Invoke(this, new TextAreaChangedEventArgs());
+                if (this.Changed != null)
+                {
+                    this.Changed.Invoke(this, new TextAreaChangedEventArgs());
+                }
             }
         }
 

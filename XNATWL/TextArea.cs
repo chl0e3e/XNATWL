@@ -1181,7 +1181,11 @@ namespace XNATWL
 
         private Image selectImage(String name)
         {
-            Image image = userImages[name];
+            Image image = null;
+            if (userImages.ContainsKey(name))
+            {
+                image = userImages[name];
+            }
             if (image != null)
             {
                 return image;
