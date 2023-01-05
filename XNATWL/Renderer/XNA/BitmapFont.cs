@@ -604,7 +604,9 @@ namespace XNATWL.Renderer.XNA
                 positions[c] = new Point(g == null ? tx : (tx + g.getXOffset()), g == null ? y : (y + g.getYOffset()));
                 tx += g == null ? this.getSpaceWidth() : g.xadvance;
                 if (g != null)
+                {
                     theight = Math.Max(theight, g.getHeight() + g.getYOffset());
+                }
             }
             theight += 1;
             Microsoft.Xna.Framework.Color[] lineColors = new Microsoft.Xna.Framework.Color[width * theight];
@@ -713,7 +715,9 @@ namespace XNATWL.Renderer.XNA
                     glyphPoints[currentPoint] = new GlyphPoint(point, g);
                     tx += g == null ? this.getSpaceWidth() : g.xadvance;
                     if (g != null)
+                    {
                         theight = Math.Max(theight, g.getHeight() + g.getYOffset());
+                    }
                     currentPoint++;
                 }
                 currentY += theight;
