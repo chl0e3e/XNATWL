@@ -87,7 +87,7 @@ namespace XNATWL.Renderer.XNA
 
         public FontCache CacheMultiLineText(FontCache prevCache, string str, int width, HAlignment alignment)
         {
-            return new XNAFontCache(this, str);
+            return new XNAFontCache(this, str, 0, str.Length, width);
         }
 
         public AttributedStringFontCache CacheMultiLineText(AttributedStringFontCache prevCache, AttributedString attributedString)
@@ -397,27 +397,31 @@ namespace XNATWL.Renderer.XNA
             private int _width;
             private int _height;
 
+            private int _multiLineWidth;
+
             private int _start;
             private int _end;
 
-            private BitmapFont.TexOutput _texOutput;
-
-            public XNAFontCache(XNAFont font, string str, int start, int end)
+            public XNAFontCache(XNAFont font, string str, int start, int end, int multiLineWidth)
             {
                 this._str = str;
                 this._font = font;
-                this._width = this._font.ComputeTextWidth(str);
-                this._height = this._font.LineHeight;
 
                 this._start = start;
                 this._end = end;
 
-                this._cachedRenderTarget = new RenderTarget2D(this._font.renderer.GraphicsDevice, this._width, this._height, true, SurfaceFormat.Color, DepthFormat.None);
+                this._multiLineWidth = multiLineWidth;
 
+                //this._cachedRenderTarget = new RenderTarget2D(this._font.renderer.GraphicsDevice, this._width, this._height, true, SurfaceFormat.Color, DepthFormat.None);
                 this.CacheDraw();
             }
 
-            public XNAFontCache(XNAFont font, string str) : this(font, str, 0, str.Length)
+            public XNAFontCache(XNAFont font, string str, int start, int end) : this(font, str, start, end, -1)
+            {
+
+            }
+
+            public XNAFontCache(XNAFont font, string str) : this(font, str, 0, str.Length, -1)
             {
                 
             }
@@ -433,11 +437,27 @@ namespace XNATWL.Renderer.XNA
                 this._cachedXNATexture = new XNATexture(this._font.renderer, this._width, this._height, this._cachedRenderTarget);
 
                 this._cachedImage = (TextureAreaBase) this._cachedXNATexture.GetImage(0, 0, this._width, this._height, Color.BLACK, false, TextureRotation.NONE);*/
-                this._texOutput = this._font._bitmapFont.cacheBDrawText(Color.BLACK, 0, 0, this._str, this._start, this._end);
-                Texture2D cachedTexture = new Texture2D(this._font.renderer.GraphicsDevice, this._width, this._height);
-                cachedTexture.SetData(this._texOutput.lineColors);
-                this._cachedXNATexture = new XNATexture(this._font.renderer, this._width, this._height, cachedTexture);
-                this._cachedImage = (TextureAreaBase)this._cachedXNATexture.GetImage(0, 0, this._width, this._height, Color.BLACK, false, TextureRotation.NONE);
+                if (this._multiLineWidth > 0)
+                {
+                    BitmapFont.TexMultiLineOutput _texOutput = this._font._bitmapFont.cacheBDrawMultiLineText(Color.BLACK, 0, 0, this._str, this._start, this._end, this._multiLineWidth);
+                    this._width = _texOutput.width;
+                    this._height = _texOutput.height;
+                    Texture2D cachedTexture = new Texture2D(this._font.renderer.GraphicsDevice, this._width, this._height);
+                    cachedTexture.SetData(_texOutput.lineColors);
+                    this._cachedXNATexture = new XNATexture(this._font.renderer, this._width, this._height, cachedTexture);
+                    this._cachedImage = (TextureAreaBase)this._cachedXNATexture.GetImage(0, 0, this._width, this._height, Color.BLACK, false, TextureRotation.NONE);
+                }
+                else
+                {
+                    this._width = this._font.ComputeTextWidth(this._str);
+                    this._height = this._font.LineHeight;
+
+                    BitmapFont.TexOutput _texOutput = this._font._bitmapFont.cacheBDrawText(Color.BLACK, 0, 0, this._str, this._start, this._end);
+                    Texture2D cachedTexture = new Texture2D(this._font.renderer.GraphicsDevice, this._width, this._height);
+                    cachedTexture.SetData(_texOutput.lineColors);
+                    this._cachedXNATexture = new XNATexture(this._font.renderer, this._width, this._height, cachedTexture);
+                    this._cachedImage = (TextureAreaBase)this._cachedXNATexture.GetImage(0, 0, this._width, this._height, Color.BLACK, false, TextureRotation.NONE);
+                }
             }
 
             public bool ShouldRedraw(string str)

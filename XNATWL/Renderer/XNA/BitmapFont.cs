@@ -589,27 +589,9 @@ namespace XNATWL.Renderer.XNA
             this.texture.SpriteBatch.End();
             return x - startX;
         }
+
         public TexOutput cacheBDrawText(Color color, int x, int y, string str, int start, int end)
         {
-            int startX = x;
-            Glyph lastGlyph = null;
-            /*while (start < end)
-            {
-                lastGlyph = getGlyph(str[start++]);
-                if (lastGlyph != null)
-                {
-                    System.Diagnostics.Debug.WriteLine("b0:" + x);
-                    if (lastGlyph.getWidth() > 0)
-                    {
-                        lastGlyph.draw(x, y);
-                    }
-                    x += lastGlyph.xadvance;
-                    System.Diagnostics.Debug.WriteLine("b1:" + x);
-                    break;
-                }
-            }*/
-            //this.texture.SpriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend);
-
             int width = computeTextWidth(str, start, end);
             int height = this.getLineHeight();
 
@@ -646,50 +628,125 @@ namespace XNATWL.Renderer.XNA
             }
 
             TexOutput output = new TexOutput();
-            output.xOffset = x - startX;
+            output.xOffset = tx - x;
             output.lineColors = lineColors;
             return output;
-            /*
-            while (start < end)
+        }
+
+        struct GlyphPoint
+        {
+            public Point point;
+            public Glyph glyph;
+
+            public GlyphPoint(Point point, Glyph glyph)
             {
-                char ch = str[start++];
-                Glyph g = getGlyph(ch);
-                if (g != null)
+                this.point = point;
+                this.glyph = glyph;
+            }
+        }
+
+        public struct TexMultiLineOutput
+        {
+            public int numLines;
+            public int width;
+            public int height;
+            public Microsoft.Xna.Framework.Color[] lineColors;
+        }
+
+        public TexMultiLineOutput cacheBDrawMultiLineText(Color color, int x, int y, string str, int start, int end, int lineWidth)
+        {
+            List<string> linesToRender = new List<string>();
+            string strWithinBounds = str.Substring(start, end - start);
+            string line = "";
+            int glyphPointsCount = 0;
+            while (strWithinBounds.Length > 0)
+            {
+                if (strWithinBounds[0] == '\r') // we do not support carriage returns
                 {
-                    //System.Diagnostics.Debug.WriteLine("x0:" + x);
-                    //x += lastGlyph.getKerning(ch);
-                    //System.Diagnostics.Debug.WriteLine("x1:" + x);
-                    lastGlyph = g;
-                    if (g.getWidth() > 0)
-                    {
-                        int tx = 0, ty = 0;
-                        int gPtrX = 0;
-                        while (ty < g.getHeight())
-                        {
-                            while (tx < g.getWidth())
-                            {
-                                lineColors[lineColorPtrX + tx] = 
-                                tx++;
-                            }
-                            ty++;
-                        }
-                        lineColorPtrX += tx;
-                        //g.draw(color, false, x, y);
-                    }
-                    //System.Diagnostics.Debug.WriteLine("x2:" + x);
-                    x += g.xadvance; // + g.getKerning(ch);
-                    //System.Diagnostics.Debug.WriteLine("x3:" + x);
+                    strWithinBounds = strWithinBounds.Substring(1);
+                    continue;
                 }
-                else if (ch == ' ')
+                bool isNewLine = strWithinBounds[0] == '\n';
+                int newLineWidth = computeTextWidth(line + strWithinBounds[0], 0, line.Length + 1);
+                if (newLineWidth > lineWidth || isNewLine)
                 {
-                    x += this.spaceWidth;
+                    linesToRender.Add(line);
+                    if (isNewLine)
+                    {
+                        strWithinBounds = strWithinBounds.Substring(1);
+                    }
+                    line = "";
+                    continue;
+                }
+                else
+                {
+                    line += strWithinBounds[0];
+                    glyphPointsCount++;
+                    strWithinBounds = strWithinBounds.Substring(1);
+                    continue;
                 }
             }
-            //this.texture.SpriteBatch.End();
-            TexOutput output = new TexOutput();
-            output.xOffset = x - startX;
+
+            if (line.Length != 0)
+            {
+                linesToRender.Add(line);
+                line = "";
+            }
+
+            GlyphPoint[] glyphPoints = new GlyphPoint[glyphPointsCount];
+            int currentPoint = 0;
+            int currentY = 0;
+            int longestLine = 0;
+            foreach (string lineToPlot in linesToRender)
+            {
+                int width = computeTextWidth(lineToPlot, 0, lineToPlot.Length);
+                longestLine = Math.Max(width, longestLine);
+                int height = this.getLineHeight();
+
+                Point[] positions = new Point[lineToPlot.Length];
+                int tx = 0;
+                int theight = this.lineHeight;
+                for (int c = 0; c < lineToPlot.Length; c++)
+                {
+                    Glyph g = getGlyph(lineToPlot[c]);
+                    Point point = new Point(g == null ? tx : (tx + g.getXOffset()), g == null ? currentY : (currentY + g.getYOffset()));
+                    glyphPoints[currentPoint] = new GlyphPoint(point, g);
+                    tx += g == null ? this.getSpaceWidth() : g.xadvance;
+                    if (g != null)
+                        theight = Math.Max(theight, g.getHeight() + g.getYOffset());
+                    currentPoint++;
+                }
+                currentY += theight;
+            }
+            currentY += 1;
+
+            Microsoft.Xna.Framework.Color[] lineColors = new Microsoft.Xna.Framework.Color[currentY * longestLine];
+
+            for (int a = 0; a < glyphPoints.Length; a++)
+            {
+                GlyphPoint g = glyphPoints[a];
+                if (g.glyph == null)
+                {
+                    continue;
+                }
+
+                for (int j = 0; j < g.glyph.getHeight(); j++)
+                {
+                    for (int i = 0; i < g.glyph.getWidth(); i++)
+                    {
+                        var srcOfs = i + j * g.glyph.getWidth();
+                        var destOfs = (g.point.X + i) + (g.point.Y + j) * longestLine;
+                        lineColors[destOfs] = g.glyph.colorData[srcOfs];
+                    }
+                }
+            }
+
+            TexMultiLineOutput output = new TexMultiLineOutput();
+            output.numLines = linesToRender.Count;
             output.lineColors = lineColors;
-            return output;*/
+            output.width = longestLine;
+            output.height = currentY;
+            return output;
         }
 
         public int drawMultiLineText(Color color, int x, int y, string str, int width, HAlignment align)
@@ -709,9 +766,40 @@ namespace XNATWL.Renderer.XNA
                         xoff /= 2;
                     }
                 }
-                drawText(color, x + xoff, y, str, start, lineEnd);
+                int theight = lineHeight;
+                {
+                    int startX = x;
+
+                    this.texture.SpriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend);
+                    while (start < lineEnd)
+                    {
+                        char ch = str[start++];
+                        GlyphTex g = getGlyphTex(ch);
+                        if (g != null)
+                        {
+                            //System.Diagnostics.Debug.WriteLine("x0:" + x);
+                            //x += lastGlyph.getKerning(ch);
+                            //System.Diagnostics.Debug.WriteLine("x1:" + x);
+                            //lastGlyph = g;
+                            if (g.getWidth() > 0)
+                            {
+                                g.draw(color, false, x, y);
+                            }
+                            //System.Diagnostics.Debug.WriteLine("x2:" + x);
+                            x += g.xadvance; // + g.getKerning(ch);
+                                             //System.Diagnostics.Debug.WriteLine("x3:" + x);
+                        }
+                        else if (ch == ' ')
+                        {
+                            x += this.spaceWidth;
+                        }
+
+                        //theight = Math.Max(theight, g.getHeight() + g.yoffset);
+                    }
+                    this.texture.SpriteBatch.End();
+                }
                 start = lineEnd + 1;
-                y += lineHeight;
+                y += theight;
                 numLines++;
             }
             return numLines;
