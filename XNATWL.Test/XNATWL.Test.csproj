@@ -50,6 +50,7 @@
     <Compile Include="SimpleTest.cs" />
     <Compile Include="StyleItem.cs" />
     <Compile Include="TestGame.cs" />
+    <Compile Include="TextAreaDemoDialog1.cs" />
     <Compile Include="WidgetsDemoDialog1.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -91,6 +92,7 @@
     <Content Include="Theme\gui.png" />
     <Content Include="Theme\gui.xml" />
     <Content Include="Theme\guiTheme.xml" />
+    <Content Include="Theme\license.html" />
     <Content Include="Theme\simple.png" />
     <Content Include="Theme\simple.xml" />
     <Content Include="Theme\simpleGameMenu.xml" />
