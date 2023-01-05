@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using XNATWL.Renderer;
 using XNATWL.Utils;
 using XNATWL.TextAreaModel;
-using System.Runtime.Serialization.Formatters;
 
 namespace XNATWL
 {
@@ -454,6 +453,7 @@ namespace XNATWL
             // only recompute the layout when it has changed
             if (layoutRoot.width != targetWidth || bForceRelayout)
             {
+                var old = layoutRoot.width;
                 layoutRoot.width = targetWidth;
                 inLayoutCode = true;
                 bForceRelayout = false;
@@ -482,8 +482,6 @@ namespace XNATWL
                     inLayoutCode = false;
                     endLayout();
                 }
-
-                //System.out.println("layoutRoot.height="+layoutRoot.height+"  box.curY="+box.curY+"  remaining="+box.minRemainingWidth);
 
                 if (layoutRoot.height != requiredHeight)
                 {

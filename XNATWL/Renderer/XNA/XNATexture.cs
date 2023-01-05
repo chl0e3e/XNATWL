@@ -1,10 +1,4 @@
-﻿using Microsoft.SqlServer.Server;
-using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Xna.Framework.Graphics;
 
 namespace XNATWL.Renderer.XNA
 {
@@ -65,9 +59,8 @@ namespace XNATWL.Renderer.XNA
             this._renderer = renderer;
         }
 
-        public XNATexture(XNARenderer renderer, int width, int height, Texture2D texture) : this(renderer, new SpriteBatch(renderer.GraphicsDevice), width, height, texture)
+        public XNATexture(XNARenderer renderer, int width, int height, Texture2D texture) : this(renderer, renderer.SpriteBatch, width, height, texture)
         {
-
         }
 
         public MouseCursor CreateCursor(int x, int y, int width, int height, int hotSpotX, int hotSpotY, Image imageRef)
@@ -93,7 +86,7 @@ namespace XNATWL.Renderer.XNA
 
         public void Dispose()
         {
-            this._batch.Dispose();
+            //this._batch.Dispose();
             this._texture.Dispose();
             //throw new NotImplementedException();
         }

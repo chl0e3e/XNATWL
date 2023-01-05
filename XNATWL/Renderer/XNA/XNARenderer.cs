@@ -13,6 +13,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System.IO;
 using XNATWL.Input.XNA;
 using System.Net.Http;
+using System.Diagnostics;
 
 namespace XNATWL.Renderer.XNA
 {
@@ -72,19 +73,30 @@ namespace XNATWL.Renderer.XNA
             }
         }
 
+        public DeferredDisposer Disposer
+        {
+            get
+            {
+                return this._disposer;
+            }
+        }
+
         private GameTime _gameTime;
         private List<TextureArea> textureAreas;
         //private List<TextureAreaRotated> rotatedTextureAreas;
         private List<XNADynamicImage> dynamicImages;
         private GraphicsDevice _graphicsDevice;
+        private SpriteBatch _spriteBatch;
         private XNATWL.Renderer.CacheContext _cacheContext;
         private TintStack _tintStack;
         private ClipStack _clipStack;
         private MouseCursor _mouseCursor;
         private XNACursor _defaultCursor;
+        private DeferredDisposer _disposer;
         protected Rect clipRectTemp;
         private bool hasScissor;
         private Rectangle? _defaultScissor = null;
+        public bool rendering = false;
 
         public GraphicsDevice GraphicsDevice
         {
@@ -102,13 +114,24 @@ namespace XNATWL.Renderer.XNA
             }
         }
 
+        private StackTrace lastCall = null;
+        public SpriteBatch SpriteBatch
+        {
+            get
+            {
+                return this._spriteBatch;
+            }
+        }
+
         public XNARenderer(GraphicsDevice graphicsDevice)
         {
             this._gameTime = new GameTime();
             this._graphicsDevice = graphicsDevice;
             this._tintStack = new TintStack();
             this._clipStack = new ClipStack();
+            this._spriteBatch = new SpriteBatch(this._graphicsDevice);
             this.clipRectTemp = new Rect();
+            this._disposer = new DeferredDisposer(this);
 
             var bytes = Convert.FromBase64String("iVBORw0KGgoAAAANSUhEUgAAABEAAAAZCAMAAADg4DWlAAAAmVBMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD///8jo0yHAAAAMXRSTlMAAQUPA0IfMgInFzlGCwwpGQcJEiIIP04vGDoqDgYbNVFDGjFBMEgWIElFEyw4PjRLq1RDbAAAALhJREFUeF5V0NlygzAMBVDbKK1tgtlJSgrZ93RR/v/jgjwTC/R45o6kuUJIDVqK0SDkSaHGhBhlNhoTPtGkH0QsT4w/iVgGmjGRMAVhCsLEwsTCRDKhsIemTW2hvQyKm8Xp989kCZAgyeL/cKxslFMG11uia7OySQdSIO72Mcl8tvyq/fX6bNKLp7j6Bnqxo34mId+h5tC7Z5Jbs7qrUJxEfLQ/pmQR4HpjegcsUrmydNQHEygFA7wAtBchFf1cSBMAAAAASUVORK5CYII=");
             var contents = new MemoryStream(bytes);
@@ -232,7 +255,14 @@ namespace XNATWL.Renderer.XNA
 
         public bool StartRendering()
         {
+            RasterizerState rasterizerState = new RasterizerState()
+            {
+                ScissorTestEnable = true
+            };
+            this._spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, rasterizerState);
             this._clipStack.clearStack();
+            rendering = true;
+            //this.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
             return true;
             //throw new NotImplementedException();
         }
@@ -243,6 +273,9 @@ namespace XNATWL.Renderer.XNA
             XNACursor cursor = this._mouseCursor == null ? this._defaultCursor : ((XNACursor)this._mouseCursor);
             MouseState ms = Mouse.GetState();
             cursor.drawQuad(Color.WHITE, ms.X, ms.Y, cursor.getWidth(), cursor.getHeight());
+            rendering = false;
+            this.Disposer.Update();
+            this._spriteBatch.End();
             //System.Diagnostics.Debug.WriteLine("x: " + ms.X + ", y: " + ms.Y);
             //throw new NotImplementedException();
         }

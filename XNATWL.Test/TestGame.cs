@@ -32,8 +32,8 @@ namespace XNATWL.Test
         public TestGame()
         {
             _graphics = new GraphicsDeviceManager(this);
-            _graphics.PreferredBackBufferWidth = 800;
-            _graphics.PreferredBackBufferHeight = 480;
+            _graphics.PreferredBackBufferWidth = 1800;
+            _graphics.PreferredBackBufferHeight = 1000;
 
             Content.RootDirectory = "Content";
         }
@@ -139,7 +139,7 @@ namespace XNATWL.Test
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            //GraphicsDevice.Clear(Microsoft.Xna.Framework.Color.CornflowerBlue);
+            //
 
             /*_batch.Begin();
 
@@ -150,6 +150,7 @@ namespace XNATWL.Test
             _batch.End();*/
 
             base.Draw(gameTime);
+            GraphicsDevice.Clear(Microsoft.Xna.Framework.Color.Black);
             this.simpleTest.draw();
         }
     }

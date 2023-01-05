@@ -12,9 +12,6 @@ namespace XNATWL.Test
     public class SimpleTest
     {
 
-        private static int WIDTH = 800;
-        private static int HEIGHT = 600;
-
         public static String WITH_TITLE = "resizableframe-title";
         public static String WITHOUT_TITLE = "resizableframe";
 

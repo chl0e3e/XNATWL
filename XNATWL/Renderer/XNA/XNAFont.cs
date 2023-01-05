@@ -1,15 +1,8 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization.Formatters;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
 using XNATWL.IO;
 using XNATWL.Utils;
-using static XNATWL.Renderer.XNA.XNAFont;
 
 namespace XNATWL.Renderer.XNA
 {
@@ -389,9 +382,9 @@ namespace XNATWL.Renderer.XNA
         class XNAFontCache : FontCache
         {
             private XNAFont _font;
-            private RenderTarget2D _cachedRenderTarget;
             private XNATexture _cachedXNATexture;
             private TextureAreaBase _cachedImage = null;
+            //private RenderTarget2D _cachedRenderTarget = null;
             private string _str;
 
             private int _width;
@@ -411,8 +404,6 @@ namespace XNATWL.Renderer.XNA
                 this._end = end;
 
                 this._multiLineWidth = multiLineWidth;
-
-                //this._cachedRenderTarget = new RenderTarget2D(this._font.renderer.GraphicsDevice, this._width, this._height, true, SurfaceFormat.Color, DepthFormat.None);
                 this.CacheDraw();
             }
 
@@ -428,15 +419,41 @@ namespace XNATWL.Renderer.XNA
 
             public void CacheDraw()
             {
+                if (this._str.Trim() == "")
+                {
+                    this._cachedImage = null;
+                    return;
+                }
+
+                /*System.Diagnostics.StackTrace t = new System.Diagnostics.StackTrace();
+                bool has = false;
+                foreach (StackFrame sf in t.GetFrames())
+                {
+                    if (sf.GetMethod().Name.Contains("Update") || sf.GetMethod().Name.Contains("setup"))
+                    {
+                        has = true;
+                        break;
+                    }
+                }
+                if (!has)
+                {
+                    System.Diagnostics.Debug.WriteLine("test");
+                }
+                */
                 //BasicEffect effect = new BasicEffect(this._font.renderer.GraphicsDevice);
                 //effect.Begin
-                /*this._font.renderer.GraphicsDevice.SetRenderTarget(this._cachedRenderTarget);
+
+                /*this._width = this._font.ComputeTextWidth(this._str);
+                this._height = this._font.LineHeight;
+                this._cachedRenderTarget = new RenderTarget2D(this._font.renderer.GraphicsDevice, this._width, this._height, true, SurfaceFormat.Color, DepthFormat.None);
+                this._font.renderer.GraphicsDevice.SetRenderTarget(this._cachedRenderTarget);
                 this._font.renderer.GraphicsDevice.Clear(Microsoft.Xna.Framework.Color.Transparent);
                 this._font._bitmapFont.drawText(Color.BLACK, 0, 0, this._str, this._start, this._end);
                 this._font.renderer.GraphicsDevice.SetRenderTarget(null);
                 this._cachedXNATexture = new XNATexture(this._font.renderer, this._width, this._height, this._cachedRenderTarget);
 
-                this._cachedImage = (TextureAreaBase) this._cachedXNATexture.GetImage(0, 0, this._width, this._height, Color.BLACK, false, TextureRotation.NONE);*/
+                this._cachedImage = (TextureAreaBase) this._cachedXNATexture.GetImage(0, 0, this._width, this._height, Color.BLACK, false, TextureRotation.NONE);
+                return;*/
                 if (this._multiLineWidth > 0)
                 {
                     BitmapFont.TexMultiLineOutput _texOutput = this._font._bitmapFont.cacheBDrawMultiLineText(Color.BLACK, 0, 0, this._str, this._start, this._end, this._multiLineWidth);
@@ -488,12 +505,19 @@ namespace XNATWL.Renderer.XNA
 
             public void Dispose()
             {
-                this._cachedXNATexture.Dispose();
+                if (this._cachedXNATexture != null)
+                {
+                    this._font.renderer.Disposer.Add(this._cachedXNATexture);
+                }
                 //this._cachedRenderTarget.Dispose();
             }
 
             public void Draw(AnimationState animationState, int x, int y)
             {
+                if (this._cachedImage == null)
+                {
+                    return;
+                }
                 FontState fontState = this._font.evalFontState(animationState);
                 x += fontState.offsetX;
                 y += fontState.offsetY;

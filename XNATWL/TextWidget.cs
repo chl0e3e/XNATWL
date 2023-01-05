@@ -189,6 +189,14 @@ namespace XNATWL
             return y;
         }
 
+        protected override void layout()
+        {
+            if (cacheDirty)
+            {
+                updateCache();
+            }
+        }
+
         //@Override
         protected override void paintWidget(GUI gui)
         {
@@ -197,10 +205,6 @@ namespace XNATWL
 
         protected void paintLabelText(AnimationState animState)
         {
-            if (cacheDirty)
-            {
-                updateCache();
-            }
             if (hasText() && font != null)
             {
                 int x = computeTextX();

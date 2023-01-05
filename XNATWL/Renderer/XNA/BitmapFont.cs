@@ -31,7 +31,7 @@ namespace XNATWL.Renderer.XNA
 
             internal void draw(Color color, bool newDraw, int x, int y)
             {
-                drawQuad(color, newDraw, x + xoffset, y + yoffset, tw, th);
+                drawQuad(color, x + xoffset, y + yoffset, tw, th);
             }
 
             internal int getKerning(char ch)
@@ -136,7 +136,7 @@ namespace XNATWL.Renderer.XNA
         private static int PAGE_SIZE = 1 << LOG2_PAGE_SIZE;
         private static int PAGES = 0x10000 / PAGE_SIZE;
 
-        private XNATexture texture;
+        protected internal XNATexture texture;
         private Glyph[][] glyphs;
         private GlyphTex[][] glyphsTex;
         private int lineHeight;
@@ -555,6 +555,11 @@ namespace XNATWL.Renderer.XNA
         {
             public int xOffset;
             public Microsoft.Xna.Framework.Color[] lineColors;
+            public TexOutput(int xOffset, Microsoft.Xna.Framework.Color[] lineColors)
+            {
+                this.xOffset = xOffset;
+                this.lineColors = lineColors;
+            }
         }
 
         public int drawText(Color color, int x, int y, string str, int start, int end)
@@ -562,7 +567,7 @@ namespace XNATWL.Renderer.XNA
             int startX = x;
 
             GlyphTex lastGlyph = null;
-            this.texture.SpriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend);
+            //this.texture.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
             while (start < end)
             {
                 char ch = str[start++];
@@ -586,23 +591,27 @@ namespace XNATWL.Renderer.XNA
                     x += this.spaceWidth;
                 }
             }
-            this.texture.SpriteBatch.End();
+            //this.texture.SpriteBatch.End();
             return x - startX;
         }
 
         public TexOutput cacheBDrawText(Color color, int x, int y, string str, int start, int end)
         {
+            var strLine = str.Replace("\n", "").Replace("\r", "");
+            TexMultiLineOutput a = cacheBDrawMultiLineText(color, x, y, strLine, 0, strLine.Length, 10000000);
+            return new TexOutput(a.width, a.lineColors);
             int width = computeTextWidth(str, start, end);
             int height = this.getLineHeight();
 
-            Point[] positions = new Point[(end - start)];
+            //string strWithinBounds = str.Substring(start, end - start);
+            Point[] positions = new Point[end - start];
             int tx = 0;
             int theight = this.lineHeight;
             for (int c = start; c < end; c++)
             {
                 Glyph g = getGlyph(str[c]);
                 positions[c] = new Point(g == null ? tx : (tx + g.getXOffset()), g == null ? y : (y + g.getYOffset()));
-                tx += g == null ? this.getSpaceWidth() : g.xadvance;
+                tx += g == null ? this.getSpaceWidth() : Math.Max(Math.Max(g.xadvance, g.getXOffset()), g.getWidth());
                 if (g != null)
                 {
                     theight = Math.Max(theight, g.getHeight() + g.getYOffset());
@@ -705,7 +714,6 @@ namespace XNATWL.Renderer.XNA
                 longestLine = Math.Max(width, longestLine);
                 int height = this.getLineHeight();
 
-                Point[] positions = new Point[lineToPlot.Length];
                 int tx = 0;
                 int theight = this.lineHeight;
                 for (int c = 0; c < lineToPlot.Length; c++)

@@ -218,6 +218,7 @@
     <Compile Include="Renderer\TintStack.cs" />
     <Compile Include="Renderer\XNA\BitmapFont.cs" />
     <Compile Include="Renderer\XNA\CacheContext.cs" />
+    <Compile Include="Renderer\XNA\DeferredDisposer.cs" />
     <Compile Include="Renderer\XNA\TextureArea.cs" />
     <Compile Include="Renderer\XNA\TextureAreaBase.cs" />
     <Compile Include="Renderer\XNA\XNACursor.cs" />

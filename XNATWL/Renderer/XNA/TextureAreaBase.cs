@@ -57,19 +57,7 @@ namespace XNATWL.Renderer.XNA
 
         internal virtual void drawQuad(Color color, int x, int y, int w, int h)
         {
-            this.drawQuad(color, true, x, y, w, h);
-        }
-        internal virtual void drawQuad(Color color, bool newDraw, int x, int y, int w, int h)
-        {
-            if (newDraw)
-            {
-                this._texture.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
-            }
             this._texture.SpriteBatch.Draw(this._texture.Texture2D, new Microsoft.Xna.Framework.Rectangle(x, y, w, h), new Microsoft.Xna.Framework.Rectangle(this.tx0, this.ty0, this.tw, this.th), this._texture.Renderer.TintStack.TintColorForXNA(color));
-            if (newDraw)
-            {
-                this._texture.SpriteBatch.End();
-            }
         }
     }
 }
