@@ -1,17 +1,40 @@
-﻿using Microsoft.Xna.Framework;
+﻿/*
+ * Copyright (c) 2008-2012, Matthias Mann
+ *
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ *     * Redistributions of source code must retain the above copyright notice,
+ *       this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above copyright
+ *       notice, this list of conditions and the following disclaimer in the
+ *       documentation and/or other materials provided with the distribution.
+ *     * Neither the name of Matthias Mann nor the names of its contributors may
+ *       be used to endorse or promote products derived from this software
+ *       without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+ * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Runtime.Remoting.Messaging;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
 using XNATWL.IO;
 using XNATWL.Utils;
-using static XNATWL.AnimationState;
-using static XNATWL.Renderer.XNA.BitmapFont;
 
 namespace XNATWL.Renderer.XNA
 {
@@ -553,11 +576,11 @@ namespace XNATWL.Renderer.XNA
 
         public struct TexOutput
         {
-            public int xOffset;
+            public int width;
             public Microsoft.Xna.Framework.Color[] lineColors;
-            public TexOutput(int xOffset, Microsoft.Xna.Framework.Color[] lineColors)
+            public TexOutput(int width, Microsoft.Xna.Framework.Color[] lineColors)
             {
-                this.xOffset = xOffset;
+                this.width = width;
                 this.lineColors = lineColors;
             }
         }
@@ -594,12 +617,12 @@ namespace XNATWL.Renderer.XNA
             //this.texture.SpriteBatch.End();
             return x - startX;
         }
-
+        /*
         public TexOutput cacheBDrawText(Color color, int x, int y, string str, int start, int end)
         {
-            var strLine = str.Replace("\n", "").Replace("\r", "");
-            TexMultiLineOutput a = cacheBDrawMultiLineText(color, x, y, strLine, 0, strLine.Length, 10000000);
-            return new TexOutput(a.width, a.lineColors);
+            //var strLine = str.Replace("\n", " ");
+            //TexMultiLineOutput a = cacheBDrawMultiLineText(color, x, y, strLine, start, end, 10000000);
+            //return new TexOutput(a.width, a.lineColors);
             int width = computeTextWidth(str, start, end);
             int height = this.getLineHeight();
 
@@ -611,7 +634,7 @@ namespace XNATWL.Renderer.XNA
             {
                 Glyph g = getGlyph(str[c]);
                 positions[c] = new Point(g == null ? tx : (tx + g.getXOffset()), g == null ? y : (y + g.getYOffset()));
-                tx += g == null ? this.getSpaceWidth() : Math.Max(Math.Max(g.xadvance, g.getXOffset()), g.getWidth());
+                tx += g == null ? this.getSpaceWidth() : g.xoffset;
                 if (g != null)
                 {
                     theight = Math.Max(theight, g.getHeight() + g.getYOffset());
@@ -640,6 +663,51 @@ namespace XNATWL.Renderer.XNA
 
             TexOutput output = new TexOutput();
             output.xOffset = tx - x;
+            output.lineColors = lineColors;
+            return output;
+        }*/
+
+
+        public TexOutput cacheBDrawText(Color color, int x, int y, string str, int start, int end)
+        {
+            int height = this.getLineHeight();
+
+            Point[] positions = new Point[(end - start)];
+            int tx = x;
+            int theight = this.lineHeight;
+            for (int c = start; c < end; c++)
+            {
+                char ch = str[c];
+                Glyph g = getGlyph(ch);
+                positions[c] = new Point(g == null ? tx : (tx + g.getXOffset()), g == null ? y : (y + g.getYOffset()));
+                tx += g == null ? ((ch == ' ' || ch == '\n') ? this.getSpaceWidth() : 0) : g.xadvance;
+                if (g != null)
+                    theight = Math.Max(theight, g.getHeight() + g.getYOffset());
+            }
+            theight += 1;
+            int width = (tx - x);
+            Microsoft.Xna.Framework.Color[] lineColors = new Microsoft.Xna.Framework.Color[width * theight];
+
+            for (int c = start; c < end; c++)
+            {
+                Glyph g = getGlyph(str[c]);
+                if (g == null)
+                {
+                    continue;
+                }
+                for (int j = 0; j < g.getHeight(); j++)
+                {
+                    for (int i = 0; i < g.getWidth(); i++)
+                    {
+                        var srcOfs = i + j * g.getWidth();
+                        var destOfs = (positions[c].X + i) + (positions[c].Y + j) * width;
+                        lineColors[destOfs] = g.colorData[srcOfs];
+                    }
+                }
+            }
+
+            TexOutput output = new TexOutput();
+            output.width = width;
             output.lineColors = lineColors;
             return output;
         }
@@ -678,8 +746,15 @@ namespace XNATWL.Renderer.XNA
                     continue;
                 }
                 bool isNewLine = strWithinBounds[0] == '\n';
+                if(isNewLine)
+                {
+                    linesToRender.Add(line);
+                    strWithinBounds = strWithinBounds.Substring(1);
+                    line = "";
+                    continue;
+                }
                 int newLineWidth = computeTextWidth(line + strWithinBounds[0], 0, line.Length + 1);
-                if (newLineWidth > lineWidth || isNewLine)
+                if (newLineWidth > lineWidth)
                 {
                     linesToRender.Add(line);
                     if (isNewLine)

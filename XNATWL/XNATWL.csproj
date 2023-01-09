@@ -286,7 +286,6 @@
     <Compile Include="Utils\LinkedHashSet.cs" />
     <Compile Include="Utils\Logger.cs" />
     <Compile Include="Utils\Number.cs" />
-    <Compile Include="Utils\Numeric.cs" />
     <Compile Include="Utils\ObjectCopier.cs" />
     <Compile Include="Utils\ParameterStringParser.cs" />
     <Compile Include="Utils\ParseException.cs" />

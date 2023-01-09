@@ -1,9 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
+﻿/*
+ * Copyright (c) 2008-2012, Matthias Mann
+ *
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ *     * Redistributions of source code must retain the above copyright notice,
+ *       this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above copyright
+ *       notice, this list of conditions and the following disclaimer in the
+ *       documentation and/or other materials provided with the distribution.
+ *     * Neither the name of Matthias Mann nor the names of its contributors may
+ *       be used to endorse or promote products derived from this software
+ *       without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+ * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+using System;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace XNATWL.TextAreaModel
 {
@@ -42,30 +69,25 @@ namespace XNATWL.TextAreaModel
         /** 
          * Translates characters to character classes
          */
-        private static String ZZ_CMAP_PACKED =
-          "\x09\x00\x01\x03\x01\x02\x01\x00\x01\x03\x01\x01\x12\x00\x01\x03\x01\x00\x01\x13\x01\x0c\x03\x00\x01\x12\x02\x00\x01\x05\x01\x00\x01\x0a\x01\x06\x01\x09\x01\x04\x0a\x08\x01\x0d\x01\x11\x02\x00\x01\x0b\x01\x00\x01\x0e\x1a\x07\x04\x00\x01\x07\x01\x00\x1a\x07\x01\x0f\x01\x00\x01\x10\xef\xbe\x82\x00";
+        private static int[] ZZ_CMAP_PACKED = new int[] { 9, 0, 1, 3, 1, 2, 1, 0, 1, 3, 1, 1, 18, 0, 1, 3, 1, 0, 1, 19, 1, 12, 3, 0, 1, 18, 2, 0, 1, 5, 1, 0, 1, 10, 1, 6, 1, 9, 1, 4, 10, 8, 1, 13, 1, 17, 2, 0, 1, 11, 1, 0, 1, 14, 26, 7, 4, 0, 1, 7, 1, 0, 26, 7, 1, 15, 1, 0, 1, 16, 65410, 0 };
 
-        /** 
-         * Translates characters to character classes
-         */
         private static char[] ZZ_CMAP = zzUnpackCMap(ZZ_CMAP_PACKED);
 
         /** 
          * Translates DFA states to action switch labels.
          */
-        private static int[] ZZ_ACTION = zzUnpackAction();
 
-        private static String ZZ_ACTION_PACKED_0 =
-          "\x09\x00\x01\x03\x01\x02\x01\x00\x01\x03\x01\x01\x12\x00\x01\x03\x01\x00\x01\x13\x01\x0c\x03\x00\x01\x12\x02\x00\x01\x05\x01\x00\x01\x0a\x01\x06\x01\x09\x01\x04\x0a\x08\x01\x0d\x01\x11\x02\x00\x01\x0b\x01\x00\x01\x0e\x1a\x07\x04\x00\x01\x07\x01\x00\x1a\x07\x01\x0f\x01\x00\x01\x10\xef\xbe\x82\x00";
+        private static int[] ZZ_ACTION_PACKED_0 = new int[] { 5, 0, 1, 1, 1, 2, 1, 1, 1, 3, 1, 1, 1, 4, 1, 5, 1, 6, 1, 7, 1, 8, 1, 9, 1, 10, 1, 11, 2, 12, 1, 1, 1, 13, 1, 14, 1, 15, 1, 16, 1, 17, 1, 18, 1, 19, 1, 16, 1, 20, 1, 16, 1, 21, 4, 0 };
+        private static int[] ZZ_ACTION = zzUnpackAction();
 
         private static int[] zzUnpackAction()
         {
-            int[] result = new int[36];
+            int[] result = new int[100];
             zzUnpackAction(ZZ_ACTION_PACKED_0, 0, result);
             return result;
         }
 
-        private static int zzUnpackAction(String packed, int offset, int[] result)
+        private static int zzUnpackAction(int[] packed, int offset, int[] result)
         {
             int i = 0;       /* index in packed string  */
             int j = offset;  /* index in unpacked array */
@@ -83,10 +105,9 @@ namespace XNATWL.TextAreaModel
         /** 
          * Translates a state to a row index in the transition table
          */
-        private static int[] ZZ_ROWMAP = zzUnpackRowMap();
 
-        private static String ZZ_ROWMAP_PACKED_0 =
-          "\x00\x00\x00\x14\x00\x28\x00\x3c\x00\x50\x00\x64\x00\x78\x00\xc2\x8c\x00\x64\x00\xc2\xa0\x00\xc2\xb4\x00\x64\x00\x64\x00\x64\x00\x64\x00\x64\x00\x64\x00\x64\x00\xc3\x88\x00\x64\x00\xc3\x9c\x00\xc3\xb0\x00\x64\x00\x64\x00\xc4\x84\x00\x64\x00\x64\x00\x64\x00\xc4\x98\x00\x64\x00\xc4\xac\x00\x64\x00\xc5\x80\x00\xc5\x94\x00\xc5\xa8\x00\xc5\xbc";
+        private static int[] ZZ_ROWMAP_PACKED_0 = new int[] { 0, 0, 0, 20, 0, 40, 0, 60, 0, 80, 0, 100, 0, 120, 0, 140, 0, 100, 0, 160, 0, 180, 0, 100, 0, 100, 0, 100, 0, 100, 0, 100, 0, 100, 0, 100, 0, 200, 0, 100, 0, 220, 0, 240, 0, 100, 0, 100, 0, 260, 0, 100, 0, 100, 0, 100, 0, 280, 0, 100, 0, 300, 0, 100, 0, 320, 0, 340, 0, 360, 0, 380 };
+        private static int[] ZZ_ROWMAP = zzUnpackRowMap();
 
         private static int[] zzUnpackRowMap()
         {
@@ -95,7 +116,7 @@ namespace XNATWL.TextAreaModel
             return result;
         }
 
-        private static int zzUnpackRowMap(String packed, int offset, int[] result)
+        private static int zzUnpackRowMap(int[] packed, int offset, int[] result)
         {
             int i = 0;  /* index in packed string  */
             int j = offset;  /* index in unpacked array */
@@ -111,10 +132,9 @@ namespace XNATWL.TextAreaModel
         /** 
          * The transition table of the DFA
          */
-        private static int[] ZZ_TRANS = zzUnpackTrans();
 
-        private static String ZZ_TRANS_PACKED_0 =
-          "\x01\x06\x03\x07\x01\x08\x01\x09\x01\x0a\x01\x0b\x01\x06\x01\x0c\x01\x0d\x01\x0e\x01\x0f\x01\x10\x01\x11\x01\x12\x05\x06\x01\x13\x02\x14\x01\x08\x01\x06\x01\x15\x01\x16\x05\x06\x01\x17\x02\x06\x01\x18\x03\x06\x10\x19\x01\x18\x01\x1a\x01\x1b\x01\x1c\x12\x1d\x01\x1e\x01\x1d\x13\x1f\x01\x20\x15\x00\x03\x07\x15\x00\x01\x21\x15\x00\x01\x0b\x12\x00\x03\x0b\x0d\x00\x01\x14\x18\x00\x01\x16\x12\x00\x03\x16\x0b\x00\x10\x19\x04\x00\x12\x1d\x01\x00\x01\x1d\x13\x1f\x01\x00\x05\x22\x01\x23\x13\x22\x01\x24\x0e\x22\x04\x00\x01\x14\x01\x23\x0e\x00\x04\x22\x01\x14\x01\x24\x0e\x22";
+        private static int[] ZZ_TRANS_PACKED_0 = new int[] { 1, 6, 3, 7, 1, 8, 1, 9, 1, 10, 1, 11, 1, 6, 1, 12, 1, 13, 1, 14, 1, 15, 1, 16, 1, 17, 1, 18, 5, 6, 1, 19, 2, 20, 1, 8, 1, 6, 1, 21, 1, 22, 5, 6, 1, 23, 2, 6, 1, 24, 3, 6, 16, 25, 1, 24, 1, 26, 1, 27, 1, 28, 18, 29, 1, 30, 1, 29, 19, 31, 1, 32, 21, 0, 3, 7, 21, 0, 1, 33, 21, 0, 1, 11, 18, 0, 3, 11, 13, 0, 1, 20, 24, 0, 1, 22, 18, 0, 3, 22, 11, 0, 16, 25, 4, 0, 18, 29, 1, 0, 1, 29, 19, 31, 1, 0, 5, 34, 1, 35, 19, 34, 1, 36, 14, 34, 4, 0, 1, 20, 1, 35, 14, 0, 4, 34, 1, 20, 1, 36, 14, 34 };
+        private static int[] ZZ_TRANS = zzUnpackTrans();
 
         private static int[] zzUnpackTrans()
         {
@@ -123,7 +143,7 @@ namespace XNATWL.TextAreaModel
             return result;
         }
 
-        private static int zzUnpackTrans(String packed, int offset, int[] result)
+        private static int zzUnpackTrans(int[] packed, int offset, int[] result)
         {
             int i = 0;       /* index in packed string  */
             int j = offset;  /* index in unpacked array */
@@ -141,10 +161,9 @@ namespace XNATWL.TextAreaModel
         /**
          * ZZ_ATTRIBUTE[aState] contains the attributes of state <code>aState</code>
          */
-        private static int[] ZZ_ATTRIBUTE = zzUnpackAttribute();
+        private static int[] ZZ_ATTRIBUTE_PACKED_0 = new int[] { 5, 0, 1, 9, 2, 1, 1, 9, 2, 1, 7, 9, 1, 1, 1, 9, 2, 1, 2, 9, 1, 1, 3, 9, 1, 1, 1, 9, 1, 1, 1, 9, 4, 0 };
 
-        private static String ZZ_ATTRIBUTE_PACKED_0 =
-          "\x05\x00\x01\x09\x02\x01\x01\x09\x02\x01\x07\x09\x01\x01\x01\x09\x02\x01\x02\x09\x01\x01\x03\x09\x01\x01\x01\x09\x01\x01\x01\x09\x04\x00";
+        private static int[] ZZ_ATTRIBUTE = zzUnpackAttribute();
 
         private static int[] zzUnpackAttribute()
         {
@@ -153,7 +172,7 @@ namespace XNATWL.TextAreaModel
             return result;
         }
 
-        private static int zzUnpackAttribute(String packed, int offset, int[] result)
+        private static int zzUnpackAttribute(int[] packed, int offset, int[] result)
         {
             int i = 0;       /* index in packed string  */
             int j = offset;  /* index in unpacked array */
@@ -256,7 +275,7 @@ namespace XNATWL.TextAreaModel
          * @param packed   the packed character translation table
          * @return         the unpacked character translation table
          */
-        private static char[] zzUnpackCMap(String packed)
+        private static char[] zzUnpackCMap(int[] packed)
         {
             char[] map = new char[0x10000];
             int i = 0;  /* index in packed string  */
@@ -264,8 +283,8 @@ namespace XNATWL.TextAreaModel
             while (i < 72)
             {
                 int count = packed[i++];
-                char value = packed[i++];
-                do map[j++] = value; while (--count > 0);
+                char value = (char)(packed[i++]);
+                do map[j++] = (char) value; while (--count > 0);
             }
             return map;
         }
@@ -379,271 +398,243 @@ namespace XNATWL.TextAreaModel
          * @return      the next token
          * @exception   java.io.IOException  if any I/O-Error occurs
          */
-        public int yylex()
+        /**
+         * Ported using IKVM
+         * https://github.com/ikvm-revived/ikvm/blob/develop/LICENSE.md
+         * =================
+         * 
+         * Copyright (C) 2002-2022 Jeroen Frijters, Windward Studios, Jerome Haltom, Shad Storhaug, and contributors.
+         * 
+         * This software is provided 'as-is', without any express or implied warranty. In no event will the authors be held liable for any damages arising from the use of this software.
+         * 
+         * Permission is granted to anyone to use this software for any purpose, including commercial applications, and to alter it and redistribute it freely, subject to the following restrictions:
+         * 
+         * The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment in the product documentation would be appreciated but is not required.
+         * Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software.
+         * This notice may not be removed or altered from any source distribution.
+        */
+        public virtual int yylex()
         {
-            int zzInput;
-            int zzAction;
-
-            // cached fields:
-            int zzCurrentPosL;
-            int zzMarkedPosL;
-            int zzEndReadL = zzEndRead;
-            char[] zzBufferL = zzBuffer;
-            char[] zzCMapL = ZZ_CMAP;
-
-            int[] zzTransL = ZZ_TRANS;
-            int[] zzRowMapL = ZZ_ROWMAP;
-            int[] zzAttrL = ZZ_ATTRIBUTE;
-
+            int num = zzEndRead;
+            char[] array = zzBuffer;
+            char[] zZ_CMAP = ZZ_CMAP;
+            int[] zZ_TRANS = ZZ_TRANS;
+            int[] zZ_ROWMAP = ZZ_ROWMAP;
+            int[] zZ_ATTRIBUTE = ZZ_ATTRIBUTE;
             while (true)
             {
-                zzMarkedPosL = zzMarkedPos;
-
-                bool zzR = false;
-                for (zzCurrentPosL = zzStartRead; zzCurrentPosL < zzMarkedPosL;
-                                                                       zzCurrentPosL++)
+                int num2 = zzMarkedPos;
+                int num3 = 0;
+                int i;
+                for (i = zzStartRead; i < num2; i++)
                 {
-                    switch (zzBufferL[zzCurrentPosL])
+                    switch (array[i])
                     {
-                        case '\u000B':
-                        case '\u000C':
+                        case '\v':
+                        case '\f':
                         case '\u0085':
                         case '\u2028':
                         case '\u2029':
                             yyline++;
                             yycolumn = 0;
-                            zzR = false;
+                            num3 = 0;
                             break;
                         case '\r':
                             yyline++;
                             yycolumn = 0;
-                            zzR = true;
+                            num3 = 1;
                             break;
                         case '\n':
-                            if (zzR)
-                                zzR = false;
-                            else
+                            if (num3 != 0)
                             {
-                                yyline++;
-                                yycolumn = 0;
+                                num3 = 0;
+                                break;
                             }
+                            yyline++;
+                            yycolumn = 0;
                             break;
                         default:
-                            zzR = false;
+                            num3 = 0;
                             yycolumn++;
                             break;
                     }
                 }
-
-                if (zzR)
+                if (num3 != 0)
                 {
-                    // peek one character ahead if it is \n (if we have counted one line too much)
-                    bool zzPeek;
-                    if (zzMarkedPosL < zzEndReadL)
-                        zzPeek = zzBufferL[zzMarkedPosL] == '\n';
+                    int num4;
+                    if (num2 < num)
+                    {
+                        num4 = ((array[num2] == '\n') ? 1 : 0);
+                    }
                     else if (zzAtEOF)
-                        zzPeek = false;
+                    {
+                        num4 = 0;
+                    }
                     else
                     {
-                        bool eof = zzRefill();
-                        zzEndReadL = zzEndRead;
-                        zzMarkedPosL = zzMarkedPos;
-                        zzBufferL = zzBuffer;
-                        if (eof)
-                            zzPeek = false;
-                        else
-                            zzPeek = zzBufferL[zzMarkedPosL] == '\n';
+                        int num5 = (zzRefill() ? 1 : 0);
+                        num = zzEndRead;
+                        num2 = zzMarkedPos;
+                        array = zzBuffer;
+                        num4 = ((num5 == 0 && array[num2] == '\n') ? 1 : 0);
                     }
-                    if (zzPeek) yyline--;
-                }
-                zzAction = -1;
-
-                zzCurrentPosL = zzCurrentPos = zzStartRead = zzMarkedPosL;
-
-                //      zzState = ZZ_LEXSTATE[zzLexicalState];
-                zzState = zzLexicalState / 2;
-
-
-            zzForAction:
-                {
-                    while (true)
+                    if (num4 != 0)
                     {
-
-                        if (zzCurrentPosL < zzEndReadL)
-                            zzInput = zzBufferL[zzCurrentPosL++];
-                        else if (zzAtEOF)
+                        yyline--;
+                    }
+                }
+                int num6 = -1;
+                int num7 = num2;
+                int num8 = num7;
+                zzStartRead = num7;
+                num7 = num8;
+                int num9 = num7;
+                zzCurrentPos = num7;
+                i = num9;
+                zzState = zzLexicalState / 2;
+                int num11;
+                while (true)
+                {
+                    int num4;
+                    if (i < num)
+                    {
+                        char[] array2 = array;
+                        int num10 = i;
+                        i++;
+                        num11 = array2[num10];
+                    }
+                    else
+                    {
+                        if (zzAtEOF)
                         {
-                            zzInput = YYEOF;
+                            num11 = -1;
                             break;
                         }
-                        else
+                        zzCurrentPos = i;
+                        zzMarkedPos = num2;
+                        num4 = (zzRefill() ? 1 : 0);
+                        i = zzCurrentPos;
+                        num2 = zzMarkedPos;
+                        array = zzBuffer;
+                        num = zzEndRead;
+                        if (num4 != 0)
                         {
-                            // store back cached positions
-                            zzCurrentPos = zzCurrentPosL;
-                            zzMarkedPos = zzMarkedPosL;
-                            bool eof = zzRefill();
-                            // get translated positions and possibly new buffer
-                            zzCurrentPosL = zzCurrentPos;
-                            zzMarkedPosL = zzMarkedPos;
-                            zzBufferL = zzBuffer;
-                            zzEndReadL = zzEndRead;
-                            if (eof)
-                            {
-                                zzInput = YYEOF;
-                                break;
-                            }
-                            else
-                            {
-                                zzInput = zzBufferL[zzCurrentPosL++];
-                            }
+                            num11 = -1;
+                            break;
                         }
-                        int zzNext = zzTransL[zzRowMapL[zzState] + zzCMapL[zzInput]];
-                        if (zzNext == -1) goto zzForAction;
-                        zzState = zzNext;
-
-                        int zzAttributes = zzAttrL[zzState];
-                        if ((zzAttributes & 1) == 1)
+                        char[] array3 = array;
+                        int num12 = i;
+                        i++;
+                        num11 = array3[num12];
+                    }
+                    num4 = zZ_TRANS[zZ_ROWMAP[zzState] + zZ_CMAP[num11]];
+                    if (num4 == -1)
+                    {
+                        break;
+                    }
+                    zzState = num4;
+                    int num5 = zZ_ATTRIBUTE[zzState];
+                    if ((num5 & 1) == 1)
+                    {
+                        num6 = zzState;
+                        num2 = i;
+                        if ((num5 & 8) == 8)
                         {
-                            zzAction = zzState;
-                            zzMarkedPosL = zzCurrentPosL;
-                            if ((zzAttributes & 8) == 8) break;
+                            break;
                         }
-
                     }
                 }
-
-                // store back cached position
-                zzMarkedPos = zzMarkedPosL;
-
-                switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction])
+                zzMarkedPos = num2;
+                switch ((num6 >= 0) ? ZZ_ACTION[num6] : num6)
                 {
-                    case 6:
-                        {
-                            return COMMA;
-                        }
-                    case 22: break;
-                    case 20:
-                        {
-                            yybegin(YYVALUE); sb.Append('\'');
-                        }
-                        break;
-                    case 23: break;
-                    case 10:
-                        {
-                            return ATRULE;
-                        }
-                    case 24: break;
-                    case 3:
-                        {
-                            sawWhitespace = false; return STAR;
-                        }
-                    case 25: break;
-                    case 18:
-                        {
-                            yybegin(YYSTRING1); sb.Append('\'');
-                        }
-                        break;
-                    case 26: break;
-                    case 19:
-                        {
-                            yybegin(YYSTRING2); sb.Append('\"');
-                        }
-                        break;
-                    case 27: break;
-                    case 16:
-                        {
-                            append();
-                        }
-                        break;
-                    case 28: break;
-                    case 4:
-                        {
-                            sawWhitespace = false; return IDENT;
-                        }
-                    case 29: break;
-                    case 21:
-                        {
-                            yybegin(YYVALUE); sb.Append('\"');
-                        }
-                        break;
-                    case 30: break;
-                    case 9:
-                        {
-                            return COLON;
-                        }
-                    case 31: break;
-                    case 2:
-                        {
-                            sawWhitespace = true;
-                        }
-                        break;
-                    case 32: break;
-                    case 15:
-                        {
-                            yybegin(YYINITIAL); return STYLE_END;
-                        }
-                    case 33: break;
-                    case 17:
-                        {
-                            yybegin(YYSTYLE); return SEMICOLON;
-                        }
-                    case 34: break;
-                    case 14:
-                        {
-                            yybegin(YYVALUE); sb.Length = 0; return COLON;
-                        }
-                        break;
-                    case 35: break;
-                    case 7:
-                        {
-                            return GT;
-                        }
-                    case 36: break;
-                    case 11:
-                        {
-                            yybegin(YYSTYLE); return STYLE_BEGIN;
-                        }
-                    case 37: break;
-                    case 13:
-                        {
-                            return IDENT;
-                        }
-                    case 38: break;
-                    case 1:
-                        {
-                            unexpected();
-                        }
-                        break;
-                    case 39: break;
-                    case 5:
-                        {
-                            return DOT;
-                        }
-                    case 40: break;
-                    case 8:
-                        {
-                            return HASH;
-                        }
-                    case 41: break;
                     case 12:
-                        { /* ignore */
-                        }
-                        break;
-                    case 42: break;
-                    default:
-                        if (zzInput == YYEOF && zzStartRead == zzCurrentPos)
-                        {
-                            zzAtEOF = true;
-                            {
-                                return EOF;
-                            }
-                        }
-                        else
-                        {
-                            zzScanError("Error: could not match input");
-                        }
-                        break;
+                    case 22:
+                    case 23:
+                    case 24:
+                    case 25:
+                    case 26:
+                    case 27:
+                    case 28:
+                    case 29:
+                    case 30:
+                    case 31:
+                    case 32:
+                    case 33:
+                    case 34:
+                    case 35:
+                    case 36:
+                    case 37:
+                    case 38:
+                    case 39:
+                    case 40:
+                    case 41:
+                    case 42:
+                        continue;
+                    case 6:
+                        return 6;
+                    case 20:
+                        yybegin(4);
+                        sb.Append('\'');
+                        continue;
+                    case 10:
+                        return 11;
+                    case 3:
+                        sawWhitespace = false;
+                        return 2;
+                    case 18:
+                        yybegin(6);
+                        sb.Append('\'');
+                        continue;
+                    case 19:
+                        yybegin(8);
+                        sb.Append('"');
+                        continue;
+                    case 16:
+                        append();
+                        continue;
+                    case 4:
+                        sawWhitespace = false;
+                        return 1;
+                    case 21:
+                        yybegin(4);
+                        sb.Append('"');
+                        continue;
+                    case 9:
+                        return 9;
+                    case 2:
+                        sawWhitespace = true;
+                        continue;
+                    case 15:
+                        yybegin(0);
+                        return 8;
+                    case 17:
+                        yybegin(2);
+                        return 10;
+                    case 14:
+                        yybegin(4);
+                        sb.Length = 0;
+                        return 9;
+                    case 7:
+                        return 5;
+                    case 11:
+                        yybegin(2);
+                        return 7;
+                    case 13:
+                        return 1;
+                    case 1:
+                        unexpected();
+                        continue;
+                    case 5:
+                        return 3;
+                    case 8:
+                        return 4;
                 }
+                if (num11 == -1 && zzStartRead == zzCurrentPos)
+                {
+                    zzAtEOF = true;
+                    return 0;
+                }
+                zzScanError("Error: could not match input");
             }
         }
     }
