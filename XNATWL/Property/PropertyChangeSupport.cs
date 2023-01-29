@@ -35,8 +35,8 @@ namespace XNATWL.Property
 {
     public class PropertyChangeSupport
     {
-        private Dictionary<string, HashSet<PropertyChangeListener>> propertyListeners;
-        private List<PropertyChangeListener> anyPropertyListeners;
+        private Dictionary<string, HashSet<PropertyChangeListener>> propertyListeners = new Dictionary<string, HashSet<PropertyChangeListener>>();
+        private List<PropertyChangeListener> anyPropertyListeners = new List<PropertyChangeListener>();
         private object _source;
 
         public PropertyChangeSupport()

@@ -206,7 +206,7 @@ namespace XNATWL
             handleMouseHover(evt);
             if (evt.isMouseEvent())
             {
-                if (evt.getEventType() == Event.EventType.MOUSE_CLICKED)
+                if (evt.getEventType() == EventType.MOUSE_CLICKED)
                 {
                     switch (evt.getMouseClickCount())
                     {
@@ -218,7 +218,7 @@ namespace XNATWL
                             break;
                     }
                 }
-                return evt.getEventType() != Event.EventType.MOUSE_WHEEL;
+                return evt.getEventType() != EventType.MOUSE_WHEEL;
             }
             return false;
         }

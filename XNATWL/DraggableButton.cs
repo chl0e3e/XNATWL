@@ -118,7 +118,7 @@ namespace XNATWL
         {
             if (evt.isMouseEvent() && dragging)
             {
-                if (evt.getEventType() == Event.EventType.MOUSE_DRAGGED)
+                if (evt.getEventType() == EventType.MOUSE_DRAGGED)
                 {
                     if (listener != null)
                     {
@@ -132,12 +132,12 @@ namespace XNATWL
                 return true;
             }
 
-            if (evt.getEventType() == Event.EventType.MOUSE_BTNDOWN)
+            if (evt.getEventType() == EventType.MOUSE_BTNDOWN)
             {
                 dragStartX = evt.getMouseX();
                 dragStartY = evt.getMouseY();
             }
-            else if (evt.getEventType() == Event.EventType.MOUSE_DRAGGED)
+            else if (evt.getEventType() == EventType.MOUSE_DRAGGED)
             {
                 System.Diagnostics.Debug.Assert(!dragging);
                 dragging = true;

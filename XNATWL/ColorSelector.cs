@@ -833,12 +833,12 @@ namespace XNATWL
 
             public override bool handleEvent(Event evt)
             {
-                if (evt.getEventType() == Event.EventType.MOUSE_BTNDOWN || evt.getEventType() == Event.EventType.MOUSE_DRAGGED)
+                if (evt.getEventType() == EventType.MOUSE_BTNDOWN || evt.getEventType() == EventType.MOUSE_DRAGGED)
                 {
                     handleMouse(evt.getMouseX() - getInnerX(), evt.getMouseY() - getInnerY());
                     return true;
                 }
-                else if (evt.getEventType() == Event.EventType.MOUSE_WHEEL)
+                else if (evt.getEventType() == EventType.MOUSE_WHEEL)
                 {
                     return false;
                 }

@@ -263,7 +263,7 @@ namespace XNATWL
             {
                 return true;
             }
-            if (evt.getEventType() == Event.EventType.MOUSE_CLICKED &&
+            if (evt.getEventType() == EventType.MOUSE_CLICKED &&
                     !isInside(evt.getMouseX(), evt.getMouseY()))
             {
                 mouseClickedOutside(evt);

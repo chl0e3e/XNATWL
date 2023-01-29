@@ -34,91 +34,89 @@ using System.Reflection;
 
 namespace XNATWL
 {
+    public class EventType
+    {
+        /**
+         * The mouse has entered the widget.
+         * You need to return true from {@link Widget#handleEvent(de.matthiasmann.twl.Event) } in order to receive further mouse events.
+         */
+        public static EventType MOUSE_ENTERED = new EventType(true, false);
+        /**
+         * The mouse has moved over the widget - no mouse buttons are pressed.
+         * You need to return true from {@link Widget#handleEvent(de.matthiasmann.twl.Event) } in order to receive further mouse events.
+         */
+        public static EventType MOUSE_MOVED = new EventType(true, false);
+        /**
+         * A mouse button has been pressed. The pressed button is available via {@link Event#getMouseButton() }
+         */
+        public static EventType MOUSE_BTNDOWN = new EventType(true, false);
+        /**
+         * A mouse button has been released. The released button is available via {@link Event#getMouseButton() }
+         */
+        public static EventType MOUSE_BTNUP = new EventType(true, false);
+        /**
+         * A click event with the left mouse button. A click is defined by a MOUSE_BTNDOWN event followed
+         * by a MOUSE_BTNUP without moving the mouse outside the click distance. The MOUSE_BTNUP event is
+         * sent before the MOUSE_CLICKED.
+         */
+        public static EventType MOUSE_CLICKED = new EventType(true, false);
+        /**
+         * The mouse has moved while at least one mouse button was pressed. The widget automatically
+         * captures the mouse when a drag is started, which means that the widgets will receive mouse
+         * events from this drag also outside of it's bounds. The drag ends when the last mouse button
+         * is released.
+         * 
+         * @see Event#isMouseDragEvent()
+         * @see Event#isMouseDragEnd()
+         */
+        public static EventType MOUSE_DRAGGED = new EventType(true, false);
+        /**
+         * The mouse has left the widget.
+         */
+        public static EventType MOUSE_EXITED = new EventType(true, false);
+        /**
+         * The mouse wheel has been turned. The amount is available via {@link Event#getMouseWheelDelta() }
+         */
+        public static EventType MOUSE_WHEEL = new EventType(true, false);
+        /**
+         * A key has been pressed. Not all keys generate characters.
+         * @see #isKeyEvent()
+         * @see #isKeyPressedEvent() 
+         * @see #isKeyRepeated() 
+         * @see #hasKeyChar() 
+         * @see #hasKeyCharNoModifiers() 
+         */
+        public static EventType KEY_PRESSED = new EventType(false, true);
+        /**
+         * A key has been released. No character data is available.
+         * @see #isKeyEvent() 
+         */
+        public static EventType KEY_RELEASED = new EventType(false, true);
+        /**
+         * A popup has been opened. Input event delivery will stop until the popup is closed.
+         */
+        public static EventType POPUP_OPENED = new EventType(false, false);
+        /**
+         * A popup has closed. Input events delivery will resume if no other popups are open.
+         */
+        public static EventType POPUP_CLOSED = new EventType(false, false);
+        /**
+         * Send when {@link GUI#clearKeyboardState() } is called.
+         * Widgets which remeber {@link #KEY_PRESSED} events should clear their state.
+         */
+        public static EventType CLEAR_KEYBOARD_STATE = new EventType(false, false);
+
+        public bool isMouseEvent;
+        public bool isKeyEvent;
+        public EventType(bool isMouseEvent, bool isKeyEvent)
+        {
+            this.isMouseEvent = isMouseEvent;
+            this.isKeyEvent = isKeyEvent;
+        }
+    }
+
     public class Event
     {
-
-
-        public class EventType
-        {
-            /**
-             * The mouse has entered the widget.
-             * You need to return true from {@link Widget#handleEvent(de.matthiasmann.twl.Event) } in order to receive further mouse events.
-             */
-            public static EventType MOUSE_ENTERED = new EventType(true, false);
-            /**
-             * The mouse has moved over the widget - no mouse buttons are pressed.
-             * You need to return true from {@link Widget#handleEvent(de.matthiasmann.twl.Event) } in order to receive further mouse events.
-             */
-            public static EventType MOUSE_MOVED = new EventType(true, false);
-            /**
-             * A mouse button has been pressed. The pressed button is available via {@link Event#getMouseButton() }
-             */
-            public static EventType MOUSE_BTNDOWN = new EventType(true, false);
-            /**
-             * A mouse button has been released. The released button is available via {@link Event#getMouseButton() }
-             */
-            public static EventType MOUSE_BTNUP = new EventType(true, false);
-            /**
-             * A click event with the left mouse button. A click is defined by a MOUSE_BTNDOWN event followed
-             * by a MOUSE_BTNUP without moving the mouse outside the click distance. The MOUSE_BTNUP event is
-             * sent before the MOUSE_CLICKED.
-             */
-            public static EventType MOUSE_CLICKED = new EventType(true, false);
-            /**
-             * The mouse has moved while at least one mouse button was pressed. The widget automatically
-             * captures the mouse when a drag is started, which means that the widgets will receive mouse
-             * events from this drag also outside of it's bounds. The drag ends when the last mouse button
-             * is released.
-             * 
-             * @see Event#isMouseDragEvent()
-             * @see Event#isMouseDragEnd()
-             */
-            public static EventType MOUSE_DRAGGED = new EventType(true, false);
-            /**
-             * The mouse has left the widget.
-             */
-            public static EventType MOUSE_EXITED = new EventType(true, false);
-            /**
-             * The mouse wheel has been turned. The amount is available via {@link Event#getMouseWheelDelta() }
-             */
-            public static EventType MOUSE_WHEEL = new EventType(true, false);
-            /**
-             * A key has been pressed. Not all keys generate characters.
-             * @see #isKeyEvent()
-             * @see #isKeyPressedEvent() 
-             * @see #isKeyRepeated() 
-             * @see #hasKeyChar() 
-             * @see #hasKeyCharNoModifiers() 
-             */
-            public static EventType KEY_PRESSED = new EventType(false, true);
-            /**
-             * A key has been released. No character data is available.
-             * @see #isKeyEvent() 
-             */
-            public static EventType KEY_RELEASED = new EventType(false, true);
-            /**
-             * A popup has been opened. Input event delivery will stop until the popup is closed.
-             */
-            public static EventType POPUP_OPENED = new EventType(false, false);
-            /**
-             * A popup has closed. Input events delivery will resume if no other popups are open.
-             */
-            public static EventType POPUP_CLOSED = new EventType(false, false);
-            /**
-             * Send when {@link GUI#clearKeyboardState() } is called.
-             * Widgets which remeber {@link #KEY_PRESSED} events should clear their state.
-             */
-            public static EventType CLEAR_KEYBOARD_STATE = new EventType(false, false);
-
-            public bool isMouseEvent;
-            public bool isKeyEvent;
-            public EventType(bool isMouseEvent, bool isKeyEvent)
-            {
-                this.isMouseEvent = isMouseEvent;
-                this.isKeyEvent = isKeyEvent;
-            }
-        };
-
         public const int MODIFIER_LSHIFT = 1;
         public const int MODIFIER_LMETA = 2;
         public const int MODIFIER_LCTRL = 4;

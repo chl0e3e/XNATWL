@@ -207,7 +207,7 @@ namespace XNATWL
          */
         public bool openPopup(Event evt)
         {
-            if (evt.getEventType() == Event.EventType.MOUSE_BTNDOWN)
+            if (evt.getEventType() == EventType.MOUSE_BTNDOWN)
             {
                 setMouseButton(evt.getMouseButton());
                 return openPopupAt(evt.getMouseX(), evt.getMouseY());

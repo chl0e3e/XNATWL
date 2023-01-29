@@ -910,7 +910,7 @@ namespace XNATWL
                 return true;
             }
 
-            if (evt.getEventType() == Event.EventType.KEY_PRESSED || evt.getEventType() == Event.EventType.KEY_RELEASED)
+            if (evt.getEventType() == EventType.KEY_PRESSED || evt.getEventType() == EventType.KEY_RELEASED)
             {
                 int keyCode = evt.getKeyCode();
                 if (keyCode == Event.KEY_LEFT ||
@@ -926,7 +926,7 @@ namespace XNATWL
                     return scrollbarV.handleEvent(evt);
                 }
             }
-            else if (evt.getEventType() == Event.EventType.MOUSE_WHEEL)
+            else if (evt.getEventType() == EventType.MOUSE_WHEEL)
             {
                 if (scrollbarV.isVisible())
                 {

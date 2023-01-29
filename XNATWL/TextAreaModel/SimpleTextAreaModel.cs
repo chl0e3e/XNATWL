@@ -68,7 +68,10 @@ namespace XNATWL.TextAreaModel
         {
             Style textstyle = style.With(StyleAttribute.PREFORMATTED, preformatted);
             this.element = new TextElement(textstyle, text);
-            this.Changed.Invoke(this, new TextAreaChangedEventArgs());
+            if (this.Changed != null)
+            {
+                this.Changed.Invoke(this, new TextAreaChangedEventArgs());
+            }
         }
 
         public IEnumerator<Element> GetEnumerator()

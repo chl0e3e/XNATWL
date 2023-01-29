@@ -250,7 +250,7 @@ namespace XNATWL
             {
                 throw new ArgumentNullException("action");
             }
-            if (@event.getEventType() != Event.EventType.KEY_PRESSED)
+            if (@event.getEventType() != EventType.KEY_PRESSED)
             {
                 throw new ArgumentOutOfRangeException("Event is not a Type.KEY_PRESSED");
             }

@@ -46,6 +46,10 @@ namespace XNATWL.IO
                 {
                     _preferences.Add(key, Color.Parse(node.InnerText));
                 }
+                else
+                {
+                    throw new Exception("Unknown Preferences type: " + type);
+                }
             }
         }
 
@@ -77,7 +81,14 @@ namespace XNATWL.IO
 
         public void Set(string preferenceKey, object value)
         {
-            this._preferences.Add(preferenceKey, value);
+            if (this._preferences.ContainsKey(preferenceKey))
+            {
+                this._preferences[preferenceKey] = value;
+            }
+            else
+            {
+                this._preferences.Add(preferenceKey, value);
+            }
         }
 
         public object Get(string preferenceKey, object defaultValue)

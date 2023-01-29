@@ -439,25 +439,25 @@ namespace XNATWL
             {
                 if (evt.isMouseEvent())
                 {
-                    bool newHover = evt.getEventType() != Event.EventType.MOUSE_EXITED;
+                    bool newHover = evt.getEventType() != EventType.MOUSE_EXITED;
                     if (newHover != hover)
                     {
                         hover = newHover;
                         this.comboBox.updateHover();
                     }
 
-                    if (evt.getEventType() == Event.EventType.MOUSE_CLICKED)
+                    if (evt.getEventType() == EventType.MOUSE_CLICKED)
                     {
                         this.comboBox.openPopup();
                     }
 
-                    if (evt.getEventType() == Event.EventType.MOUSE_BTNDOWN &&
+                    if (evt.getEventType() == EventType.MOUSE_BTNDOWN &&
                             evt.getMouseButton() == Event.MOUSE_RBUTTON)
                     {
                         this.comboBox.handleRightClick();
                     }
 
-                    return evt.getEventType() != Event.EventType.MOUSE_WHEEL;
+                    return evt.getEventType() != EventType.MOUSE_WHEEL;
                 }
                 return false;
             }
@@ -500,12 +500,12 @@ namespace XNATWL
         {
             protected override bool handleListBoxEvent(Event evt)
             {
-                if (evt.getEventType() == Event.EventType.MOUSE_CLICKED)
+                if (evt.getEventType() == EventType.MOUSE_CLICKED)
                 {
                     doListBoxCallback(ListBoxCallbackReason.MOUSE_CLICK);
                     return true;
                 }
-                if (evt.getEventType() == Event.EventType.MOUSE_BTNDOWN)
+                if (evt.getEventType() == EventType.MOUSE_BTNDOWN)
                 {
                     doListBoxCallback(ListBoxCallbackReason.SET_SELECTED);
                     return true;

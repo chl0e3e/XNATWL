@@ -228,12 +228,12 @@ namespace XNATWL
             {
                 if (evt.isMouseEvent())
                 {
-                    if (evt.getEventType() == Event.EventType.MOUSE_CLICKED && evt.getMouseClickCount() == 2)
+                    if (evt.getEventType() == EventType.MOUSE_CLICKED && evt.getMouseClickCount() == 2)
                     {
                         this._treePathDisplay.editPath(this._treePathDisplay.getCurrentNode());
                         return true;
                     }
-                    return evt.getEventType() != Event.EventType.MOUSE_WHEEL;
+                    return evt.getEventType() != EventType.MOUSE_WHEEL;
                 }
                 return base.handleEvent(evt);
             }

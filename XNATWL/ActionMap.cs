@@ -376,9 +376,9 @@ namespace XNATWL
 
             internal void call(Event e)
             {
-                Event.EventType type = e.getEventType();
-                if ((type == Event.EventType.KEY_RELEASED && ((flags & FLAG_ON_RELEASE) != 0)) ||
-                        (type == Event.EventType.KEY_PRESSED && ((flags & FLAG_ON_PRESSED) != 0) &&
+                EventType type = e.getEventType();
+                if ((type == EventType.KEY_RELEASED && ((flags & FLAG_ON_RELEASE) != 0)) ||
+                        (type == EventType.KEY_PRESSED && ((flags & FLAG_ON_PRESSED) != 0) &&
                         (!e.isKeyRepeated() || ((flags & FLAG_ON_REPEAT) != 0))))
                 {
                     call();

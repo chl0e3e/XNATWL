@@ -88,7 +88,11 @@ namespace XNATWL
 
         internal Widget openSubMenu(int level, Menu menu, Widget btn, bool setPosition)
         {
-            Widget popup = popups[menu];
+            Widget popup = null;
+            if (popups.ContainsKey(menu))
+            {
+                popup = popups[menu];
+            }
             if (popup == null)
             {
                 popup = menu.createPopup(this, level + 1, btn);
@@ -243,7 +247,7 @@ namespace XNATWL
             {
                 return true;
             }
-            if (evt.getEventType() == Event.EventType.MOUSE_CLICKED)
+            if (evt.getEventType() == EventType.MOUSE_CLICKED)
             {
                 mouseClickedOutside(evt);
                 return true;

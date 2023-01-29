@@ -406,7 +406,7 @@ namespace XNATWL.Model
                 }
                 if (!editField.isVisible())
                 {
-                    if (evt.getEventType() == Event.EventType.KEY_PRESSED)
+                    if (evt.getEventType() == EventType.KEY_PRESSED)
                     {
                         switch (evt.getKeyCode())
                         {
@@ -434,7 +434,7 @@ namespace XNATWL.Model
                     return false;
                 }
             }
-            else if (!editField.isVisible() && useMouseWheel && evt.getEventType() == Event.EventType.MOUSE_WHEEL)
+            else if (!editField.isVisible() && useMouseWheel && evt.getEventType() == EventType.MOUSE_WHEEL)
             {
                 if (evt.getMouseWheelDelta() < 0)
                 {

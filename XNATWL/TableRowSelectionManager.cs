@@ -132,12 +132,12 @@ namespace XNATWL
         {
             bool isShift = (evt.getModifiers() & Event.MODIFIER_SHIFT) != 0;
             bool isCtrl = (evt.getModifiers() & Event.MODIFIER_CTRL) != 0;
-            if (evt.getEventType() == Event.EventType.MOUSE_BTNDOWN && evt.getMouseButton() == Event.MOUSE_LBUTTON)
+            if (evt.getEventType() == EventType.MOUSE_BTNDOWN && evt.getMouseButton() == Event.MOUSE_LBUTTON)
             {
                 handleMouseDown(row, column, isShift, isCtrl);
                 return true;
             }
-            if (evt.getEventType() == Event.EventType.MOUSE_CLICKED)
+            if (evt.getEventType() == EventType.MOUSE_CLICKED)
             {
                 return handleMouseClick(row, column, isShift, isCtrl);
             }

@@ -301,15 +301,15 @@ namespace XNATWL
         {
             if (evt.isMouseEvent())
             {
-                bool hover = (evt.getEventType() != Event.EventType.MOUSE_EXITED) && isMouseInside(evt);
+                bool hover = (evt.getEventType() != EventType.MOUSE_EXITED) && isMouseInside(evt);
                 model.Hover = (hover);
                 model.Armed = (hover && model.Pressed);
             }
 
 
-            Event.EventType type = evt.getEventType();
+            EventType type = evt.getEventType();
 
-            if (type == Event.EventType.MOUSE_BTNDOWN)
+            if (type == EventType.MOUSE_BTNDOWN)
             {
                 if (evt.getMouseButton() == mouseButton)
                 {
@@ -317,7 +317,7 @@ namespace XNATWL
                     model.Armed = (true);
                 }
             }
-            else if (type == Event.EventType.MOUSE_BTNUP)
+            else if (type == EventType.MOUSE_BTNUP)
             {
                 if (evt.getMouseButton() == mouseButton)
                 {
@@ -325,7 +325,7 @@ namespace XNATWL
                     model.Armed = (false);
                 }
             }
-            else if (type == Event.EventType.KEY_PRESSED)
+            else if (type == EventType.KEY_PRESSED)
             {
                 switch (evt.getKeyCode())
                 {
@@ -339,7 +339,7 @@ namespace XNATWL
                         return true;
                 }
             }
-            else if (type == Event.EventType.KEY_RELEASED)
+            else if (type == EventType.KEY_RELEASED)
             {
                 switch (evt.getKeyCode())
                 {
@@ -350,11 +350,11 @@ namespace XNATWL
                         return true;
                 }
             }
-            else if (type == Event.EventType.POPUP_OPENED)
+            else if (type == EventType.POPUP_OPENED)
             {
                 model.Hover = (false);
             }
-            else if (type == Event.EventType.MOUSE_WHEEL)
+            else if (type == EventType.MOUSE_WHEEL)
             {
                 return false;
             }

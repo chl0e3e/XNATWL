@@ -307,12 +307,12 @@ namespace XNATWL
                 return true;
             }
 
-            if (evt.getEventType() == Event.EventType.MOUSE_WHEEL)
+            if (evt.getEventType() == EventType.MOUSE_WHEEL)
             {
                 autoScroll(itemHeight * evt.getMouseWheelDelta());
                 return true;
             }
-            else if (evt.getEventType() == Event.EventType.MOUSE_BTNDOWN)
+            else if (evt.getEventType() == EventType.MOUSE_BTNDOWN)
             {
                 if (evt.getMouseButton() == Event.MOUSE_LBUTTON)
                 {
@@ -322,7 +322,7 @@ namespace XNATWL
                 }
                 return true;
             }
-            else if (evt.getEventType() == Event.EventType.MOUSE_BTNDOWN)
+            else if (evt.getEventType() == EventType.MOUSE_BTNDOWN)
             {
                 switch (evt.getKeyCode())
                 {

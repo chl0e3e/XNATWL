@@ -177,6 +177,11 @@ namespace XNATWL.IO
             return this.Path.GetHashCode();
         }
 
+        public FileStream OpenRead()
+        {
+            return System.IO.File.OpenRead(this._path);
+        }
+
         public static string RelativePath(FileSystemObject from, FileSystemObject to)
         {
             int levelFrom = _countLevel(from);

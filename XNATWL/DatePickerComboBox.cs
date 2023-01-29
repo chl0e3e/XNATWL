@@ -193,7 +193,7 @@ namespace XNATWL
             {
                 if (evt.isMouseEvent())
                 {
-                    bool newHover = evt.getEventType() != Event.EventType.MOUSE_EXITED;
+                    bool newHover = evt.getEventType() != EventType.MOUSE_EXITED;
                     if (newHover != hover)
                     {
                         hover = newHover;

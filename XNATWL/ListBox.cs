@@ -511,13 +511,13 @@ namespace XNATWL
 
         public override bool handleEvent(Event evt)
         {
-            if (evt.getEventType() == Event.EventType.MOUSE_WHEEL)
+            if (evt.getEventType() == EventType.MOUSE_WHEEL)
             {
                 scrollbar.scroll(-evt.getMouseWheelDelta());
                 return true;
             }
             else
-            if (evt.getEventType() == Event.EventType.KEY_PRESSED)
+            if (evt.getEventType() == EventType.KEY_PRESSED)
             {
                 switch (evt.getKeyCode())
                 {
@@ -571,7 +571,7 @@ namespace XNATWL
                 return true;
             }
             else
-            if (evt.getEventType() == Event.EventType.KEY_RELEASED)
+            if (evt.getEventType() == EventType.KEY_RELEASED)
             {
 
                 switch (evt.getKeyCode())
@@ -840,7 +840,7 @@ namespace XNATWL
 
             protected virtual bool handleListBoxEvent(Event evt)
             {
-                if (evt.getEventType() == Event.EventType.MOUSE_BTNDOWN)
+                if (evt.getEventType() == EventType.MOUSE_BTNDOWN)
                 {
                     if (!selected)
                     {
@@ -848,7 +848,7 @@ namespace XNATWL
                     }
                     return true;
                 }
-                else if (evt.getEventType() == Event.EventType.MOUSE_CLICKED)
+                else if (evt.getEventType() == EventType.MOUSE_CLICKED)
                 {
                     if (selected && evt.getMouseClickCount() == 2)
                     {

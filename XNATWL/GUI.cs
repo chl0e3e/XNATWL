@@ -750,7 +750,7 @@ namespace XNATWL
          */
         public void setCursor()
         {
-            evt.type = Event.EventType.MOUSE_MOVED;
+            evt.type = EventType.MOUSE_MOVED;
             Widget widget = getWidgetUnderMouse();
             MouseCursor cursor = null;
             while (widget != null)
@@ -856,14 +856,14 @@ namespace XNATWL
                     mouseClickCount = 0;
                     if (wasInside)
                     {
-                        sendMouseEvent(Event.EventType.MOUSE_EXITED, null);
+                        sendMouseEvent(EventType.MOUSE_EXITED, null);
                         wasInside = false;
                     }
                 }
                 else if (!wasInside)
                 {
                     wasInside = true;
-                    if (sendMouseEvent(Event.EventType.MOUSE_ENTERED, null) != null)
+                    if (sendMouseEvent(EventType.MOUSE_ENTERED, null) != null)
                     {
                         handled = true;
                     }
@@ -897,17 +897,17 @@ namespace XNATWL
                     {
                         // a bound drag is converted to a mouse move
                         System.Diagnostics.Debug.Assert(getTopPane() == boundDragPopup);
-                        sendMouseEvent(Event.EventType.MOUSE_MOVED, null);
+                        sendMouseEvent(EventType.MOUSE_MOVED, null);
                     }
                     else if (lastMouseDownWidget != null)
                     {
                         // send MOUSE_DRAGGED only to the widget which received the MOUSE_BTNDOWN
-                        sendMouseEvent(Event.EventType.MOUSE_DRAGGED, lastMouseDownWidget);
+                        sendMouseEvent(EventType.MOUSE_DRAGGED, lastMouseDownWidget);
                     }
                 }
                 else if (prevButtonState == 0)
                 {
-                    if (sendMouseEvent(Event.EventType.MOUSE_MOVED, null) != null)
+                    if (sendMouseEvent(EventType.MOUSE_MOVED, null) != null)
                     {
                         handled = true;
                     }
@@ -923,7 +923,7 @@ namespace XNATWL
                         mouseDownX = mouseX;
                         mouseDownY = mouseY;
                         dragButton = button;
-                        lastMouseDownWidget = sendMouseEvent(Event.EventType.MOUSE_BTNDOWN, null);
+                        lastMouseDownWidget = sendMouseEvent(EventType.MOUSE_BTNDOWN, null);
                     }
                     else if (lastMouseDownWidget != null && boundDragPopup == null)
                     {
@@ -931,7 +931,7 @@ namespace XNATWL
                         // pressed then route the second button to the widget which
                         // received the first press
                         // but only when no bound drag is active
-                        sendMouseEvent(Event.EventType.MOUSE_BTNDOWN, lastMouseDownWidget);
+                        sendMouseEvent(EventType.MOUSE_BTNDOWN, lastMouseDownWidget);
                     }
                 }
                 else if (dragButton >= 0 && (boundDragPopup == null || evt.isMouseDragEnd()))
@@ -942,13 +942,13 @@ namespace XNATWL
                         if (button == dragButton)
                         {
                             // for bound drag the MOUSE_BTNUP is first send to the current widget under the mouse
-                            sendMouseEvent(Event.EventType.MOUSE_BTNUP, getWidgetUnderMouse());
+                            sendMouseEvent(EventType.MOUSE_BTNUP, getWidgetUnderMouse());
                         }
                     }
                     if (lastMouseDownWidget != null)
                     {
                         // send MOUSE_BTNUP only to the widget which received the MOUSE_BTNDOWN
-                        sendMouseEvent(Event.EventType.MOUSE_BTNUP, lastMouseDownWidget);
+                        sendMouseEvent(EventType.MOUSE_BTNUP, lastMouseDownWidget);
                     }
                 }
 
@@ -981,7 +981,7 @@ namespace XNATWL
                             mouseClickedTime = curTime;
                             if (lastMouseClickWidget != null)
                             {
-                                sendMouseEvent(Event.EventType.MOUSE_CLICKED, lastMouseClickWidget);
+                                sendMouseEvent(EventType.MOUSE_CLICKED, lastMouseClickWidget);
                             }
                         }
                         else
@@ -997,7 +997,7 @@ namespace XNATWL
                 if (dragActive)
                 {
                     dragActive = false;
-                    sendMouseEvent(Event.EventType.MOUSE_MOVED, null);
+                    sendMouseEvent(EventType.MOUSE_MOVED, null);
                 }
                 dragButton = -1;
                 if (boundDragCallback != null)
@@ -1044,7 +1044,7 @@ namespace XNATWL
             if (dragActive)
             {
                 dragActive = false;
-                sendMouseEvent(Event.EventType.MOUSE_MOVED, null);
+                sendMouseEvent(EventType.MOUSE_MOVED, null);
             }
             dragButton = -1;
         }
@@ -1058,7 +1058,7 @@ namespace XNATWL
         public bool handleMouseWheel(int wheelDelta)
         {
             evt.mouseWheelDelta = wheelDelta;
-            bool handled = sendMouseEvent(Event.EventType.MOUSE_WHEEL,
+            bool handled = sendMouseEvent(EventType.MOUSE_WHEEL,
                     dragActive ? lastMouseDownWidget : null) != null;
             evt.mouseWheelDelta = 0;
             return handled;
@@ -1090,12 +1090,12 @@ namespace XNATWL
                 if (pressed)
                 {
                     keyRepeatDelay = KEYREPEAT_INITIAL_DELAY;
-                    return sendKeyEvent(Event.EventType.KEY_PRESSED);
+                    return sendKeyEvent(EventType.KEY_PRESSED);
                 }
                 else
                 {
                     keyRepeatDelay = NO_REPEAT;
-                    return sendKeyEvent(Event.EventType.KEY_RELEASED);
+                    return sendKeyEvent(EventType.KEY_RELEASED);
                 }
             }
             else
@@ -1117,7 +1117,7 @@ namespace XNATWL
             evt.modifier &= ~(Event.MODIFIER_ALT | Event.MODIFIER_CTRL | Event.MODIFIER_SHIFT | Event.MODIFIER_META);
             keyRepeatDelay = NO_REPEAT;
 
-            evt.type = Event.EventType.CLEAR_KEYBOARD_STATE;
+            evt.type = EventType.CLEAR_KEYBOARD_STATE;
             routePopupEvent(evt);
         }
 
@@ -1139,7 +1139,7 @@ namespace XNATWL
                     keyEventTime = curTime;
                     keyRepeatDelay = KEYREPEAT_INTERVAL_DELAY;
                     evt.keyRepeated = true;
-                    sendKeyEvent(Event.EventType.KEY_PRESSED);  // refire last key event
+                    sendKeyEvent(EventType.KEY_PRESSED);  // refire last key event
                 }
             }
         }
@@ -1195,7 +1195,7 @@ namespace XNATWL
             return getTopPane().getWidgetUnderMouse();
         }
 
-        private Widget sendMouseEvent(Event.EventType type, Widget target)
+        private Widget sendMouseEvent(EventType type, Widget target)
         {
             System.Diagnostics.Debug.Assert(type.isMouseEvent);
             popupEventOccured = false;
@@ -1248,7 +1248,7 @@ namespace XNATWL
             }
         }
 
-        private bool sendKeyEvent(Event.EventType type)
+        private bool sendKeyEvent(EventType type)
         {
             System.Diagnostics.Debug.Assert(type.isKeyEvent);
             popupEventOccured = false;
@@ -1265,9 +1265,9 @@ namespace XNATWL
             return handled;
         }
 
-        private void sendPopupEvent(Event.EventType type)
+        private void sendPopupEvent(EventType type)
         {
-            System.Diagnostics.Debug.Assert(type == Event.EventType.POPUP_OPENED || type == Event.EventType.POPUP_CLOSED);
+            System.Diagnostics.Debug.Assert(type == EventType.POPUP_OPENED || type == EventType.POPUP_CLOSED);
             popupEventOccured = false;
             evt.type = type;
             evt.dragEvent = false;
@@ -1285,7 +1285,7 @@ namespace XNATWL
         {
             if (!dragActive)
             {
-                sendMouseEvent(Event.EventType.MOUSE_MOVED, null);
+                sendMouseEvent(EventType.MOUSE_MOVED, null);
             }
         }
 
@@ -1301,7 +1301,7 @@ namespace XNATWL
             }
             hideTooltip();
             hadOpenTooltip = false;
-            sendPopupEvent(Event.EventType.POPUP_OPENED);
+            sendPopupEvent(EventType.POPUP_OPENED);
             base.insertChild(popup, getNumChildren() - 2);
             popup.getOwner().setOpenPopup(this, true);
             popupEventOccured = true;
@@ -1323,7 +1323,7 @@ namespace XNATWL
                 base.removeChild(idx);
             }
             popup.getOwner().recalcOpenPopups(this);
-            sendPopupEvent(Event.EventType.POPUP_CLOSED);
+            sendPopupEvent(EventType.POPUP_CLOSED);
             popupEventOccured = true;
             closeInfoFromWidget(popup);
             requestKeyboardFocus(getTopPane());
@@ -1378,7 +1378,7 @@ namespace XNATWL
                 dragActive = true;
                 boundDragPopup = popup;
                 boundDragCallback = cb;
-                sendMouseEvent(Event.EventType.MOUSE_MOVED, null);
+                sendMouseEvent(EventType.MOUSE_MOVED, null);
                 return true;
             }
             return false;

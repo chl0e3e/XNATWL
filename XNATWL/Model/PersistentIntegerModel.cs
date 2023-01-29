@@ -56,7 +56,10 @@ namespace XNATWL.Model
                         this._preferences.Set(this._preferenceKey, value);
                     }
 
-                    this.Changed.Invoke(this, new IntegerChangedEventArgs(old, value));
+                    if (this.Changed != null)
+                    {
+                        this.Changed.Invoke(this, new IntegerChangedEventArgs(old, value));
+                    }
                 }
             }
         }

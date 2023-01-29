@@ -690,7 +690,7 @@ namespace XNATWL
         //@Override
         public override bool handleEvent(Event evt)
         {
-            bool isMouseExit = evt.getEventType() == Event.EventType.MOUSE_EXITED;
+            bool isMouseExit = evt.getEventType() == EventType.MOUSE_EXITED;
 
             if (isMouseExit && resizeHandle != null && resizeHandle.isVisible())
             {
@@ -704,7 +704,7 @@ namespace XNATWL
                 {
                     dragMode = DragMode.NONE;
                 }
-                else if (evt.getEventType() == Event.EventType.MOUSE_DRAGGED)
+                else if (evt.getEventType() == EventType.MOUSE_DRAGGED)
                 {
                     handleMouseDrag(evt);
                 }
@@ -719,7 +719,7 @@ namespace XNATWL
 
             if (!evt.isMouseDragEvent())
             {
-                if (evt.getEventType() == Event.EventType.MOUSE_BTNDOWN &&
+                if (evt.getEventType() == EventType.MOUSE_BTNDOWN &&
                         evt.getMouseButton() == Event.MOUSE_LBUTTON &&
                         handleMouseDown(evt))
                 {

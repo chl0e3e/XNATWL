@@ -91,7 +91,10 @@
     <Compile Include="InfoWindow.cs" />
     <Compile Include="InputMap.cs" />
     <Compile Include="Input\Input.cs" />
+    <Compile Include="Input\XNA\KeyInfo.cs" />
+    <Compile Include="Input\XNA\KeyState.cs" />
     <Compile Include="Input\XNA\XNAInput.cs" />
+    <Compile Include="Input\XNA\KeyboardLayout.cs" />
     <Compile Include="IO\FileSystemObject.cs" />
     <Compile Include="IO\Preferences.cs" />
     <Compile Include="KeyStroke.cs" />
@@ -317,6 +320,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ProgressBar.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="KeyboardLayouts\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

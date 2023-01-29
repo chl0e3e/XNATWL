@@ -3206,8 +3206,8 @@ namespace XNATWL
                         // we send the real event only only if we can transfer the mouse "focus" to this child
                         if (setMouseOverChild(child, evt))
                         {
-                            if (evt.getEventType() == Event.EventType.MOUSE_ENTERED ||
-                                    evt.getEventType() == Event.EventType.MOUSE_EXITED)
+                            if (evt.getEventType() == EventType.MOUSE_ENTERED ||
+                                    evt.getEventType() == EventType.MOUSE_EXITED)
                             {
                                 return child;
                             }
@@ -3217,7 +3217,7 @@ namespace XNATWL
                                 // need to check if the focus was transfered to this child or its descendants
                                 // if not we need to transfer focus on mouse click here
                                 // this can happen if we click on a widget which doesn't want the keyboard focus itself
-                                if (evt.getEventType() == Event.EventType.MOUSE_BTNDOWN && focusChild != child)
+                                if (evt.getEventType() == EventType.MOUSE_BTNDOWN && focusChild != child)
                                 {
                                     try
                                     {
@@ -3244,7 +3244,7 @@ namespace XNATWL
 
             // the following code is only executed for the widget which received
             // the click event. That's why we can call {@code requestKeyboardFocus(null)}
-            if (evt.getEventType() == Event.EventType.MOUSE_BTNDOWN && isEnabled() && canAcceptKeyboardFocus())
+            if (evt.getEventType() == EventType.MOUSE_BTNDOWN && isEnabled() && canAcceptKeyboardFocus())
             {
                 try
                 {
@@ -3263,7 +3263,7 @@ namespace XNATWL
                     focusGainedCause = FocusGainedCause.NONE;
                 }
             }
-            if (evt.getEventType() != Event.EventType.MOUSE_WHEEL)
+            if (evt.getEventType() != EventType.MOUSE_WHEEL)
             {
                 // no child has mouse over
                 setMouseOverChild(null, evt);
@@ -3281,11 +3281,11 @@ namespace XNATWL
 
         internal static bool isMouseAction(Event evt)
         {
-            Event.EventType type = evt.getEventType();
-            return type == Event.EventType.MOUSE_BTNDOWN ||
-                    type == Event.EventType.MOUSE_BTNUP ||
-                    type == Event.EventType.MOUSE_CLICKED ||
-                    type == Event.EventType.MOUSE_DRAGGED;
+            EventType type = evt.getEventType();
+            return type == EventType.MOUSE_BTNDOWN ||
+                    type == EventType.MOUSE_BTNUP ||
+                    type == EventType.MOUSE_CLICKED ||
+                    type == EventType.MOUSE_DRAGGED;
         }
 
         internal void routePopupEvent(Event evt)
@@ -3369,7 +3369,7 @@ namespace XNATWL
             {
                 if (child != null)
                 {
-                    Widget result = child.routeMouseEvent(evt.createSubEvent(Event.EventType.MOUSE_ENTERED));
+                    Widget result = child.routeMouseEvent(evt.createSubEvent(EventType.MOUSE_ENTERED));
                     if (result == null)
                     {
                         // this child widget doesn't want mouse events
@@ -3378,7 +3378,7 @@ namespace XNATWL
                 }
                 if (lastChildMouseOver != null)
                 {
-                    lastChildMouseOver.routeMouseEvent(evt.createSubEvent(Event.EventType.MOUSE_EXITED));
+                    lastChildMouseOver.routeMouseEvent(evt.createSubEvent(EventType.MOUSE_EXITED));
                 }
                 lastChildMouseOver = child;
             }

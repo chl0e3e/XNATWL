@@ -395,7 +395,7 @@ namespace XNATWL
         {
             if (evt.isMouseEvent() && !hasSharedAnimationState())
             {
-                getAnimationState().setAnimationState(STATE_HOVER, evt.getEventType() != Event.EventType.MOUSE_EXITED);
+                getAnimationState().setAnimationState(STATE_HOVER, evt.getEventType() != EventType.MOUSE_EXITED);
             }
         }
     }

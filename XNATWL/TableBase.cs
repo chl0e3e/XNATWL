@@ -1468,7 +1468,7 @@ namespace XNATWL
 
         internal override Widget routeMouseEvent(Event evt)
         {
-            if (evt.getEventType() == Event.EventType.MOUSE_EXITED)
+            if (evt.getEventType() == EventType.MOUSE_EXITED)
             {
                 mouseLeftTableArea();
             }
@@ -1508,7 +1508,7 @@ namespace XNATWL
 
         protected bool handleMouseEvent(Event evt)
         {
-            Event.EventType evtType = evt.getEventType();
+            EventType evtType = evt.getEventType();
 
             if (dragActive != DRAG_INACTIVE)
             {
@@ -1556,7 +1556,7 @@ namespace XNATWL
 
                 if (column >= 0 && (column < getNumColumns() - 1 || !fixedWidthMode))
                 {
-                    if (evtType == Event.EventType.MOUSE_BTNDOWN)
+                    if (evtType == EventType.MOUSE_BTNDOWN)
                     {
                         dragStartColWidth = getColumnWidth(column);
                         dragColumn = column;
@@ -1603,7 +1603,7 @@ namespace XNATWL
                     selectionManager.handleMouseEvent(row, column, evt);
                 }
 
-                if (evtType == Event.EventType.MOUSE_CLICKED && evt.getMouseClickCount() == 2)
+                if (evtType == EventType.MOUSE_CLICKED && evt.getMouseClickCount() == 2)
                 {
                     if (this.DoubleClick != null)
                     {
@@ -1611,7 +1611,7 @@ namespace XNATWL
                     }
                 }
 
-                if (evtType == Event.EventType.MOUSE_BTNUP && evt.getMouseButton() == Event.MOUSE_RBUTTON)
+                if (evtType == EventType.MOUSE_BTNUP && evt.getMouseButton() == Event.MOUSE_RBUTTON)
                 {
                     if (this.RightClick != null)
                     {
@@ -1621,7 +1621,7 @@ namespace XNATWL
             }
 
             // let ScrollPane handle mouse wheel
-            return evtType != Event.EventType.MOUSE_WHEEL;
+            return evtType != EventType.MOUSE_WHEEL;
         }
 
         public override MouseCursor getMouseCursor(Event evt)

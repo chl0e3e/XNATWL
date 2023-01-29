@@ -448,7 +448,7 @@ namespace XNATWL
         //@Override
         public override bool handleEvent(Event evt)
         {
-            if (evt.getEventType() == Event.EventType.MOUSE_BTNUP &&
+            if (evt.getEventType() == EventType.MOUSE_BTNUP &&
                     evt.getMouseButton() == Event.MOUSE_LBUTTON)
             {
                 trackClicked = 0;
@@ -457,7 +457,7 @@ namespace XNATWL
 
             if (!base.handleEvent(evt))
             {
-                if (evt.getEventType() == Event.EventType.MOUSE_BTNDOWN &&
+                if (evt.getEventType() == EventType.MOUSE_BTNDOWN &&
                         evt.getMouseButton() == Event.MOUSE_LBUTTON)
                 {
                     if (isMouseInside(evt))
@@ -494,7 +494,7 @@ namespace XNATWL
             bool page = (evt.getModifiers() & Event.MODIFIER_CTRL) != 0;
             int step = page ? pageSize : stepSize;
 
-            if (evt.getEventType() == Event.EventType.KEY_PRESSED)
+            if (evt.getEventType() == EventType.KEY_PRESSED)
             {
                 switch (evt.getKeyCode())
                 {
@@ -543,7 +543,7 @@ namespace XNATWL
                 }
             }
 
-            if (evt.getEventType() == Event.EventType.MOUSE_WHEEL)
+            if (evt.getEventType() == EventType.MOUSE_WHEEL)
             {
                 setValue(value - step * evt.getMouseWheelDelta());
             }

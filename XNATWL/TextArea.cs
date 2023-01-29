@@ -585,11 +585,11 @@ namespace XNATWL
 
             if (evt.isMouseEvent())
             {
-                Event.EventType eventType = evt.getEventType();
+                EventType eventType = evt.getEventType();
 
                 if (dragging)
                 {
-                    if (eventType == Event.EventType.MOUSE_DRAGGED)
+                    if (eventType == EventType.MOUSE_DRAGGED)
                     {
                         if (dragListener != null)
                         {
@@ -610,18 +610,18 @@ namespace XNATWL
 
                 updateMouseHover(evt);
 
-                if (eventType == Event.EventType.MOUSE_WHEEL)
+                if (eventType == EventType.MOUSE_WHEEL)
                 {
                     return false;
                 }
 
-                if (eventType == Event.EventType.MOUSE_BTNDOWN)
+                if (eventType == EventType.MOUSE_BTNDOWN)
                 {
                     dragStartX = evt.getMouseX();
                     dragStartY = evt.getMouseY();
                 }
 
-                if (eventType == Event.EventType.MOUSE_DRAGGED)
+                if (eventType == EventType.MOUSE_DRAGGED)
                 {
                     System.Diagnostics.Debug.Assert(!dragging);
                     dragging = true;
@@ -633,9 +633,9 @@ namespace XNATWL
                 }
 
                 if (curLElementUnderMouse != null && (
-                        eventType == Event.EventType.MOUSE_CLICKED ||
-                        eventType == Event.EventType.MOUSE_BTNDOWN ||
-                        eventType == Event.EventType.MOUSE_BTNUP))
+                        eventType == EventType.MOUSE_CLICKED ||
+                        eventType == EventType.MOUSE_BTNDOWN ||
+                        eventType == EventType.MOUSE_BTNUP))
                 {
                     Element e = curLElementUnderMouse.element;
                     if (callbacks != null)
@@ -650,7 +650,7 @@ namespace XNATWL
                     }
                 }
 
-                if (eventType == Event.EventType.MOUSE_CLICKED)
+                if (eventType == EventType.MOUSE_CLICKED)
                 {
                     if (curLElementUnderMouse != null && curLElementUnderMouse.href != null)
                     {

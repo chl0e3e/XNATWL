@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.IO;
 using XNATWL.IO;
 using XNATWL.Model;
 using XNATWL.Renderer.XNA;
@@ -104,10 +105,13 @@ namespace XNATWL.Test
             fInfo.setSize(gui.getWidth() * 2 / 3, gui.getHeight() * 2 / 3);
             fInfo.center(0.5f, 0.5f);
             fInfo.addCloseCallback();
-            /*GraphDemoDialog1 fMS = new GraphDemoDialog1();
-            root.desk.add(fMS);
-            fMS.adjustSize();
-            fMS.center(1f, 0.8f);
+
+            TextAreaDemoDialog2 fTextAreaTest = new TextAreaDemoDialog2();
+            fTextAreaTest.setHardVisible(false);
+            root.desk.add(fTextAreaTest);
+            fTextAreaTest.setSize(gui.getWidth() * 2 / 3, gui.getHeight() * 2 / 3);
+            fTextAreaTest.center(0.5f, 0.5f);
+            fTextAreaTest.addCloseCallback();
 
             ScrollPaneDemoDialog1 fScroll = new ScrollPaneDemoDialog1();
             root.desk.add(fScroll);
@@ -115,6 +119,10 @@ namespace XNATWL.Test
             fScroll.center(0f, 0f);
             fScroll.addCloseCallback();
             fScroll.centerScrollPane();
+            /*GraphDemoDialog1 fMS = new GraphDemoDialog1();
+            root.desk.add(fMS);
+            fMS.adjustSize();
+            fMS.center(1f, 0.8f);
 
             TableDemoDialog1 fTable = new TableDemoDialog1();
             root.desk.add(fTable);
@@ -129,13 +137,6 @@ namespace XNATWL.Test
             fPropertySheet.center(0f, 0.25f);
             fPropertySheet.addCloseCallback();
 
-
-            TextAreaDemoDialog2 fTextAreaTest = new TextAreaDemoDialog2();
-            fTextAreaTest.setHardVisible(false);
-            root.desk.add(fTextAreaTest);
-            fTextAreaTest.setSize(gui.getWidth() * 2 / 3, gui.getHeight() * 2 / 3);
-            fTextAreaTest.center(0.5f, 0.5f);
-            fTextAreaTest.addCloseCallback();
 
             ColorSelectorDemoDialog1 fCS = new ColorSelectorDemoDialog1();
             fCS.setHardVisible(false);
@@ -172,7 +173,7 @@ namespace XNATWL.Test
                     fInfo.show();
                 }
             }).setTooltipContent(makeComplexTooltip());
-            /*root.addButton("TA", "Shows a text area test", () => {
+            root.addButton("TA", "Shows a text area test", () => {
                 if (fTextAreaTest.isVisible())
                 {
                     fTextAreaTest.hide();
@@ -181,26 +182,35 @@ namespace XNATWL.Test
                 {
                     fTextAreaTest.show();
                 }
-            }));
-            if (!isApplet)
-            {
-                root.addButton("Settings", "Opens a dialog which might be used to change video settings", () => {
-                    settings.readSettings();
-                    settingsDlg.openPopupCentered();
-                });
-            }
+            });
             root.addButton("Toggle Theme", () => {
-
-                curThemeIdx.setValue((curThemeIdx.getValue() + 1) % THEME_FILES.length);
+                curThemeIdx.Value = ((curThemeIdx.Value + 1) % THEME_FILES.Length);
                 try
                 {
                     loadTheme();
                 }
                 catch (IOException ex)
                 {
-                    ex.printStackTrace();
+                    System.Diagnostics.Debug.Write(ex);
                 }
             });
+            root.addButton("ScrollPane", () => {
+                if (fScroll.isVisible())
+                {
+                    fScroll.hide();
+                }
+                else
+                {
+                    fScroll.show();
+                }
+            });
+            /*if (!isApplet)
+            {
+                root.addButton("Settings", "Opens a dialog which might be used to change video settings", () => {
+                    settings.readSettings();
+                    settingsDlg.openPopupCentered();
+                });
+            }
             root.addButton("ScrollPane", () => {
                 if (fScroll.isVisible())
                 {
@@ -377,7 +387,7 @@ namespace XNATWL.Test
 
             public override bool handleEvent(Event evt)
             {
-                if (evt.getEventType() == Event.EventType.KEY_PRESSED &&
+                if (evt.getEventType() == EventType.KEY_PRESSED &&
                         evt.getKeyCode() == Event.KEY_L &&
                         (evt.getModifiers() & Event.MODIFIER_CTRL) != 0 &&
                         (evt.getModifiers() & Event.MODIFIER_SHIFT) != 0)

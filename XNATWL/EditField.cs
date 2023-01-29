@@ -737,13 +737,13 @@ namespace XNATWL
 
             if (evt.isMouseEvent())
             {
-                bool hover = (evt.getEventType() != Event.EventType.MOUSE_EXITED) && isMouseInside(evt);
+                bool hover = (evt.getEventType() != EventType.MOUSE_EXITED) && isMouseInside(evt);
                 getAnimationState().setAnimationState(STATE_HOVER, hover);
             }
 
             if (evt.isMouseDragEvent())
             {
-                if (evt.getEventType() == Event.EventType.MOUSE_DRAGGED &&
+                if (evt.getEventType() == EventType.MOUSE_DRAGGED &&
                         (evt.getModifiers() & Event.MODIFIER_LBUTTON) != 0)
                 {
                     int newPos = getCursorPosFromMouse(evt.getMouseX(), evt.getMouseY());
@@ -765,8 +765,8 @@ namespace XNATWL
                 }
             }
 
-            Event.EventType type = evt.getEventType();
-            if (type == Event.EventType.KEY_PRESSED)
+            EventType type = evt.getEventType();
+            if (type == EventType.KEY_PRESSED)
             {
                 switch (evt.getKeyCode())
                 {
@@ -840,7 +840,7 @@ namespace XNATWL
                 }
                 return false;
             }
-            else if (evt.getEventType() == Event.EventType.KEY_RELEASED)
+            else if (evt.getEventType() == EventType.KEY_RELEASED)
             {
                 switch (evt.getKeyCode())
                 {
@@ -858,7 +858,7 @@ namespace XNATWL
                         return evt.hasKeyCharNoModifiers() || forwardUnhandledKeysToCallback;
                 }
             }
-            else if (evt.getEventType() == Event.EventType.MOUSE_BTNUP)
+            else if (evt.getEventType() == EventType.MOUSE_BTNUP)
             {
                 if (evt.getMouseButton() == Event.MOUSE_RBUTTON && isMouseInside(evt))
                 {
@@ -866,7 +866,7 @@ namespace XNATWL
                     return true;
                 }
             }
-            else if (evt.getEventType() == Event.EventType.MOUSE_BTNDOWN)
+            else if (evt.getEventType() == EventType.MOUSE_BTNDOWN)
             {
                 if (evt.getMouseButton() == Event.MOUSE_LBUTTON && isMouseInside(evt))
                 {
@@ -876,7 +876,7 @@ namespace XNATWL
                     return true;
                 }
             }
-            else if (evt.getEventType() == Event.EventType.MOUSE_CLICKED)
+            else if (evt.getEventType() == EventType.MOUSE_CLICKED)
             {
                 if (evt.getMouseClickCount() == 2)
                 {
@@ -894,7 +894,7 @@ namespace XNATWL
                     return true;
                 }
             }
-            else if (evt.getEventType() == Event.EventType.MOUSE_WHEEL)
+            else if (evt.getEventType() == EventType.MOUSE_WHEEL)
             {
                 return false;
             }
