@@ -228,10 +228,24 @@ namespace XNATWL.Theme
         private ThemeInfo findThemeInfo(string themePath, bool warn, bool useFallback)
         {
             int start = TextUtil.indexOf(themePath, '.', 0);
-            ThemeInfo info = themes[themePath.Substring(0, start)];
+            ThemeInfo info = null;
+            string themeKey = themePath.Substring(0, start);
+            if (themes.ContainsKey(themeKey))
+            {
+                info = themes[themeKey];
+            }
             if (info == null)
             {
-                info = themes["*"];
+                themeKey = "*";
+                if (themes.ContainsKey(themeKey))
+                {
+                    info = themes[themeKey];
+                }
+                else
+                {
+                    info = null;
+                }
+
                 if (info != null)
                 {
                     if (!useFallback)

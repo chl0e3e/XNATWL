@@ -39,7 +39,7 @@ namespace XNATWL.Model
         {
             get
             {
-                if (this._preferences != null)
+                if (this._preferences == null)
                 {
                     return _noPrefValue;
                 }
@@ -55,6 +55,10 @@ namespace XNATWL.Model
                     {
                         this._preferences.Set(this._preferenceKey, value);
                     }
+                    else
+                    {
+                        this._noPrefValue = value;
+                    }
 
                     if (this.Changed != null)
                     {
@@ -64,8 +68,21 @@ namespace XNATWL.Model
             }
         }
 
-        public override int MinValue => throw new NotImplementedException();
-        public override int MaxValue => throw new NotImplementedException();
+        public override int MinValue
+        {
+            get
+            {
+                return this._minValue;
+            }
+        }
+
+        public override int MaxValue
+        {
+            get
+            {
+                return this._maxValue;
+            }
+        }
 
         public override event EventHandler<IntegerChangedEventArgs> Changed;
 

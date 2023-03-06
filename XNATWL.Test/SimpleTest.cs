@@ -9,10 +9,8 @@ using XNATWL.Theme;
 
 namespace XNATWL.Test
 {
-
     public class SimpleTest
     {
-
         public static String WITH_TITLE = "resizableframe-title";
         public static String WITHOUT_TITLE = "resizableframe";
 
@@ -187,6 +185,7 @@ namespace XNATWL.Test
                 curThemeIdx.Value = ((curThemeIdx.Value + 1) % THEME_FILES.Length);
                 try
                 {
+                    System.Diagnostics.Debug.WriteLine("Load theme: " + curThemeIdx.Value);
                     loadTheme();
                 }
                 catch (IOException ex)
@@ -398,8 +397,6 @@ namespace XNATWL.Test
 
                 return base.handleEvent(evt);
             }
-
         }
     }
-
 }

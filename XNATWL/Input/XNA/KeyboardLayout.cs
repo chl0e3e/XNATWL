@@ -12,6 +12,7 @@ namespace XNATWL.Input.XNA
     {
         private XmlDocument _document;
         private Dictionary<Keys, KeyInfo> _keyMap = new Dictionary<Keys, KeyInfo>();
+        private KeyInfo _emptyKeyInfo;
 
         public class KeyboardLayoutParseException : Exception
         {
@@ -23,6 +24,11 @@ namespace XNATWL.Input.XNA
             Stream fileStream = keyboardLayoutXML.OpenRead();
             this._Read(fileStream);
             fileStream.Close();
+
+            this._emptyKeyInfo = new KeyInfo();
+            this._emptyKeyInfo.TWL = Event.KEY_NONE;
+            this._emptyKeyInfo.Char = '\0';
+            this._emptyKeyInfo.ShiftChar = '\0';
         }
 
         private void _Read(Stream stream)
@@ -102,6 +108,10 @@ namespace XNATWL.Input.XNA
 
         public KeyInfo KeyInfoFor(Keys key)
         {
+            if (!this._keyMap.ContainsKey(key))
+            {
+                return this._emptyKeyInfo;
+            }
             return this._keyMap[key];
         }
     }

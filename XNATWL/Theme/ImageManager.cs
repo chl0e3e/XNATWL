@@ -162,7 +162,6 @@ namespace XNATWL.Theme
                     }
                     else
                     {
-                        System.Diagnostics.Debug.WriteLine("Parsing image subtag: " + name + " <" + tagName + ">");
                         Image image = parseImage(xmlp, tagName);
                         images.Add(name, image);
                     }
@@ -282,7 +281,6 @@ namespace XNATWL.Theme
 
         private Image parseImageDelegate(XMLParser xmlp, String tagName, ImageParams parameters)
         {
-            System.Diagnostics.Debug.WriteLine("parseImageDelegate : " + tagName);
             if ("area".Equals(tagName))
             {
                 return parseArea(xmlp, parameters);
@@ -901,7 +899,6 @@ namespace XNATWL.Theme
                 throw xmlp.error("can't create area outside of <imagefile> object");
             }
             String xywh = xmlp.getAttributeNotNull("xywh");
-            System.Diagnostics.Debug.WriteLine("xywh: " + xywh);
             if ("*".Equals(xywh))
             {
                 parameters.x = 0;

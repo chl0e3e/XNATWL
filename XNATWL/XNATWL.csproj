@@ -91,6 +91,7 @@
     <Compile Include="InfoWindow.cs" />
     <Compile Include="InputMap.cs" />
     <Compile Include="Input\Input.cs" />
+    <Compile Include="Input\XNA\ConsumingMouseState.cs" />
     <Compile Include="Input\XNA\KeyInfo.cs" />
     <Compile Include="Input\XNA\KeyState.cs" />
     <Compile Include="Input\XNA\XNAInput.cs" />

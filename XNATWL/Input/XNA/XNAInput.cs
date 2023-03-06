@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Input;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -15,9 +16,10 @@ namespace XNATWL.Input.XNA
     {
         // declared in constructor
         private KeyboardLayout _keyboardLayout;
+        private ConsumingMouseState _consumingMouseState;
         private List<Keys> _pressedKeys;
         private bool[] _pressedMouseButtons;
-        private int _lastScrollWheelValue;
+        private int _counter;
 
         public XNAInput()
         {
@@ -28,10 +30,12 @@ namespace XNATWL.Input.XNA
                 keyboardLayoutPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "KeyboardLayouts", "1033.xml");
             }
             FileSystemObject kbdLayoutFso = new FileSystemObject(FileSystemObject.FileSystemObjectType.FILE, keyboardLayoutPath);
+
             this._keyboardLayout = new KeyboardLayout(kbdLayoutFso);
             this._pressedMouseButtons = new bool[3] { false, false, false };
             this._pressedKeys = new List<Keys>();
-            this._lastScrollWheelValue = 0;
+            this._counter = 0;
+            this._consumingMouseState = new ConsumingMouseState();
         }
 
         public bool PollInput(GUI gui)
@@ -73,16 +77,40 @@ namespace XNATWL.Input.XNA
                 _pressedKeys.Remove(keyToRemove[i]);
             }
 
-            gui.handleMouse(ms.X, ms.Y, Event.MOUSE_LBUTTON, ms.LeftButton == ButtonState.Pressed);
-            gui.handleMouse(ms.X, ms.Y, Event.MOUSE_RBUTTON, ms.RightButton == ButtonState.Pressed);
-            gui.handleMouse(ms.X, ms.Y, Event.MOUSE_MBUTTON, ms.MiddleButton == ButtonState.Pressed);
+            CMSAction[] consumedActions = this._consumingMouseState.Consume(ms);
 
-            int wheelDelta = ms.ScrollWheelValue - this._lastScrollWheelValue;
-            if (wheelDelta != 0)
+            if (consumedActions.Length > 0)
             {
-                gui.handleMouseWheel(wheelDelta / 120);
+                System.Diagnostics.Debug.WriteLine("=====");
+                System.Diagnostics.Debug.WriteLine(this._counter);
+                System.Diagnostics.Debug.WriteLine(this._consumingMouseState.Left);
+                foreach (CMSAction cmsAction in consumedActions)
+                {
+                    System.Diagnostics.Debug.WriteLine(cmsAction);
+                }
             }
-            this._lastScrollWheelValue = ms.ScrollWheelValue;
+
+            if (consumedActions.Contains(CMSAction.LeftChanged) || consumedActions.Contains(CMSAction.XChangedLeft) || consumedActions.Contains(CMSAction.YChangedLeft))
+            {
+                gui.handleMouse(this._consumingMouseState.X, this._consumingMouseState.Y, Event.MOUSE_LBUTTON, this._consumingMouseState.Left == ButtonState.Pressed);
+            }
+
+            if (consumedActions.Contains(CMSAction.RightChanged) || consumedActions.Contains(CMSAction.XChangedRight) || consumedActions.Contains(CMSAction.YChangedRight))
+            {
+                gui.handleMouse(this._consumingMouseState.X, this._consumingMouseState.Y, Event.MOUSE_RBUTTON, this._consumingMouseState.Right == ButtonState.Pressed);
+            }
+
+            if (consumedActions.Contains(CMSAction.MiddleChanged) || consumedActions.Contains(CMSAction.XChangedMiddle) || consumedActions.Contains(CMSAction.YChangedMiddle))
+            {
+                gui.handleMouse(this._consumingMouseState.X, this._consumingMouseState.Y, Event.MOUSE_MBUTTON, this._consumingMouseState.Middle == ButtonState.Pressed);
+            }
+
+            if (consumedActions.Contains(CMSAction.Scroll))
+            {
+                gui.handleMouseWheel(this._consumingMouseState.ScrollDelta);
+            }
+
+            this._counter++;
             return true;
         }
     }

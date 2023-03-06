@@ -41,7 +41,8 @@ namespace XNATWL.Model
 
         protected internal int _state;
 
-        public virtual bool Selected {
+        public virtual bool Selected
+        {
             get
             {
                 return false;
