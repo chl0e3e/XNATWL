@@ -78,7 +78,7 @@ namespace XNATWL.Test
 
             base.Update(gameTime);
 
-            this.simpleTest.update();
+            this.simpleTest.update(gameTime);
         }
 
         private void HandleGamePad()

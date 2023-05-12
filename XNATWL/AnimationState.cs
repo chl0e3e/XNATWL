@@ -105,7 +105,9 @@ namespace XNATWL
             State state = getState(stateKey);
             if (state != null)
             {
-                return (int)Math.Min(Int32.MaxValue, getCurrentTime() - state.lastChangedTime);
+                long a = getCurrentTime();
+                long b = state.lastChangedTime;
+                return (int)Math.Min(Int32.MaxValue, a - b);
             }
             if (parent != null)
             {

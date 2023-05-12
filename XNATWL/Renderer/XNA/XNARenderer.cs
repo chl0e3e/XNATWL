@@ -144,6 +144,14 @@ namespace XNATWL.Renderer.XNA
                 return this._tintStack;
             }
         }
+        
+        public GameTime GameTime
+        {
+            get
+            {
+                return this._gameTime;
+            }
+        }
 
         private StackTrace lastCall = null;
         public SpriteBatch SpriteBatch

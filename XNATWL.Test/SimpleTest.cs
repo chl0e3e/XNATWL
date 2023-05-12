@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.IO;
 using XNATWL.IO;
@@ -68,7 +69,7 @@ namespace XNATWL.Test
             // This allows easy reloading of a theme for development.
             // If you want fast theme switching without reloading then use the existing
             // cache context for loading the new theme and don't destroy the old theme.
-            ThemeManager newTheme = ThemeManager.createThemeManager(new IO.FileSystemObject(this.themeRootFso, THEME_FILES[curThemeIdx.Value]), renderer);
+            ThemeManager newTheme = ThemeManager.createThemeManager(new FileSystemObject(this.themeRootFso, THEME_FILES[curThemeIdx.Value]), renderer);
             long duration = DateTime.Now.Ticks - startTime;
             Console.WriteLine("Loaded theme in " + (duration / 1000) + " us");
 
@@ -299,9 +300,9 @@ namespace XNATWL.Test
             return ta;
         }
 
-        internal void update()
+        internal void update(GameTime gameTime)
         {
-            this.gui.update();
+            this.gui.update(gameTime);
         }
 
         internal void draw()

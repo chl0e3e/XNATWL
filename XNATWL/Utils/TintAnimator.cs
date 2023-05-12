@@ -248,7 +248,10 @@ namespace XNATWL.Utils
                             (currentTint[2] < ONE_EPSILON) ||
                             (currentTint[3] < ONE_EPSILON);
                     // fire callbacks
-                    this.FadeDone.Invoke(this, new FadeDoneEventArgs());
+                    if (this.FadeDone != null)
+                    {
+                        this.FadeDone.Invoke(this, new FadeDoneEventArgs());
+                    }
                 }
             }
         }

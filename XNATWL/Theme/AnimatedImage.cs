@@ -107,6 +107,14 @@ namespace XNATWL.Theme
                     cx = blend(cx, next.zoomCenterX, t);
                     cy = blend(cy, next.zoomCenterY, t);
                 }
+                System.Diagnostics.Debug.WriteLine(rr);
+                System.Diagnostics.Debug.WriteLine(gg);
+                System.Diagnostics.Debug.WriteLine(bb);
+                System.Diagnostics.Debug.WriteLine(aa);
+                System.Diagnostics.Debug.WriteLine(ai.r);
+                System.Diagnostics.Debug.WriteLine(ai.g);
+                System.Diagnostics.Debug.WriteLine(ai.b);
+                System.Diagnostics.Debug.WriteLine(ai.a);
                 ai.renderer.PushGlobalTintColor(rr * ai.r, gg * ai.g, bb * ai.b, aa * ai.a);
                 try
                 {

@@ -34,6 +34,7 @@ using static XNATWL.Utils.Logger;
 using XNATWL.Renderer;
 using XNATWL.Theme;
 using XNATWL.Utils;
+using Microsoft.Xna.Framework;
 
 namespace XNATWL
 {
@@ -611,10 +612,10 @@ namespace XNATWL
          * <p>When not using this method care must be taken to invoke the methods
          * in the right order. See the javadoc of the individual methods for details.</p>
          */
-        public void update()
+        public void update(GameTime gameTime)
         {
             setSize();
-            updateTime();
+            updateTime(gameTime);
             handleInput();
             handleKeyRepeat();
             handleTooltips();
@@ -647,9 +648,9 @@ namespace XNATWL
          * @see #getCurrentTime()
          * @see #getTimeMillis()
          */
-        public void updateTime()
+        public void updateTime(GameTime gameTime)
         {
-            long newTime = renderer.TimeMillis;
+            long newTime = (long)gameTime.TotalGameTime.TotalMilliseconds;
             deltaTime = Math.Max(0, (int)(newTime - curTime));
             curTime = newTime;
         }
