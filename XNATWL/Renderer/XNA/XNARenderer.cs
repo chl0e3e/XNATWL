@@ -43,6 +43,10 @@ namespace XNATWL.Renderer.XNA
 {
     public class XNARenderer : Renderer, LineRenderer
     {
+        public static StateKey STATE_LEFT_MOUSE_BUTTON = StateKey.Get("leftMouseButton");
+        public static StateKey STATE_MIDDLE_MOUSE_BUTTON = StateKey.Get("middleMouseButton");
+        public static StateKey STATE_RIGHT_MOUSE_BUTTON = StateKey.Get("rightMouseButton");
+
         public static FontParameter.Parameter<int> FONTPARAM_OFFSET_X = FontParameter.NewParameter("offsetX", 0);
         public static FontParameter.Parameter<int> FONTPARAM_OFFSET_Y = FontParameter.NewParameter("offsetY", 0);
         public static FontParameter.Parameter<int> FONTPARAM_UNDERLINE_OFFSET = FontParameter.NewParameter("underlineOffset", 0);
@@ -121,6 +125,9 @@ namespace XNATWL.Renderer.XNA
         private bool hasScissor;
         private Rectangle? _defaultScissor = null;
         public bool rendering = false;
+        private SWCursorAnimState _cursorAnimState;
+        private int _mouseX = 0;
+        private int _mouseY = 0;
 
         public GraphicsDevice GraphicsDevice
         {
@@ -147,6 +154,14 @@ namespace XNATWL.Renderer.XNA
             }
         }
 
+        public AnimationState CursorAnimationState
+        {
+            get
+            {
+                return this._cursorAnimState;
+            }
+        }
+
         public XNARenderer(GraphicsDevice graphicsDevice)
         {
             this._gameTime = new GameTime();
@@ -162,7 +177,9 @@ namespace XNATWL.Renderer.XNA
             Texture2D texture = Texture2D.FromStream(this._graphicsDevice, contents);
             contents.Close();
 
-            this._defaultCursor = new XNACursor(new XNATexture(this, 17, 25, texture), 0, 0, 17, 25, Color.WHITE);
+            this._defaultCursor = new XNACursor(new XNATexture(this, 17, 25, texture), 0, 0, 17, 25, 0, 0);
+
+            this._cursorAnimState = new SWCursorAnimState();
         }
 
         protected void setClipRect()
@@ -264,17 +281,28 @@ namespace XNATWL.Renderer.XNA
 
         public void SetCursor(MouseCursor cursor)
         {
+            if (cursor == null)
+            {
+                cursor = this._defaultCursor;
+            }
+
             this._mouseCursor = cursor;
         }
 
         public void SetMouseButton(int button, bool state)
         {
-           // throw new NotImplementedException();
+            this._cursorAnimState.SetAnimationState(button, state);
+        }
+
+        public void SetUseSWMouseCursors(bool useSWMouseCursors)
+        {
+            // XNA does not support HW cursors
         }
 
         public void SetMousePosition(int mouseX, int mouseY)
         {
-            //throw new NotImplementedException();
+            this._mouseX = mouseX;
+            this._mouseY = mouseY;
         }
 
         public bool StartRendering()
@@ -286,27 +314,86 @@ namespace XNATWL.Renderer.XNA
             this._spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, rasterizerState);
             this._clipStack.clearStack();
             rendering = true;
-            //this.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
             return true;
-            //throw new NotImplementedException();
         }
 
         public void EndRendering()
         {
-            //System.Diagnostics.Debug.WriteLine(this._mouseCursor == null);
             XNACursor cursor = this._mouseCursor == null ? this._defaultCursor : ((XNACursor)this._mouseCursor);
-            MouseState ms = Mouse.GetState();
-            cursor.drawQuad(Color.WHITE, ms.X, ms.Y, cursor.getWidth(), cursor.getHeight());
+            cursor.drawQuad(Color.WHITE, this._mouseX, this._mouseY, cursor.getWidth(), cursor.getHeight());
+
             rendering = false;
             this.Disposer.Update();
             this._spriteBatch.End();
-            //System.Diagnostics.Debug.WriteLine("x: " + ms.X + ", y: " + ms.Y);
-            //throw new NotImplementedException();
         }
 
         public void DrawLine(float[] pts, int numPts, float width, Color color, bool drawAsLoop)
         {
             //throw new NotImplementedException();
+        }
+
+        public class SWCursorAnimState : AnimationState
+        {
+            private long[] lastTime;
+            private bool[] active;
+
+            public SWCursorAnimState()
+            {
+                lastTime = new long[3];
+                active = new bool[3];
+            }
+
+            public void SetAnimationState(int idx, bool isActive)
+            {
+                if (idx >= 0 && idx < 3 && active[idx] != isActive)
+                {
+                    lastTime[idx] = DateTime.Now.Ticks;
+                    active[idx] = isActive;
+                }
+            }
+
+            private int GetMouseButton(StateKey key)
+            {
+                if (key == STATE_LEFT_MOUSE_BUTTON)
+                {
+                    return Event.MOUSE_LBUTTON;
+                }
+                if (key == STATE_MIDDLE_MOUSE_BUTTON)
+                {
+                    return Event.MOUSE_MBUTTON;
+                }
+                if (key == STATE_RIGHT_MOUSE_BUTTON)
+                {
+                    return Event.MOUSE_RBUTTON;
+                }
+                return -1;
+            }
+
+            public int GetAnimationTime(StateKey state)
+            {
+                long curTime = DateTime.Now.Ticks;
+                int idx = this.GetMouseButton(state);
+                if (idx >= 0)
+                {
+                    curTime -= lastTime[idx];
+                }
+                return (int)curTime & Int32.MaxValue;
+            }
+
+            public bool GetAnimationState(StateKey state)
+            {
+                int idx = this.GetMouseButton(state);
+                if (idx >= 0)
+                {
+                    return active[idx];
+                }
+                return false;
+            }
+
+            public bool ShouldAnimateState(StateKey state)
+            {
+                return true;
+            }
         }
     }
 }

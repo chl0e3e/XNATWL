@@ -81,33 +81,42 @@ namespace XNATWL.Input.XNA
 
             if (consumedActions.Length > 0)
             {
-                System.Diagnostics.Debug.WriteLine("=====");
-                System.Diagnostics.Debug.WriteLine(this._counter);
-                System.Diagnostics.Debug.WriteLine(this._consumingMouseState.Left);
+                //System.Diagnostics.Debug.WriteLine("=====");
+               // System.Diagnostics.Debug.WriteLine(this._counter);
+                //System.Diagnostics.Debug.WriteLine(this._consumingMouseState.Left);
                 foreach (CMSAction cmsAction in consumedActions)
                 {
                     System.Diagnostics.Debug.WriteLine(cmsAction);
                 }
             }
 
+            bool buzzed = false;
             if (consumedActions.Contains(CMSAction.LeftChanged) || consumedActions.Contains(CMSAction.XChangedLeft) || consumedActions.Contains(CMSAction.YChangedLeft))
             {
                 gui.handleMouse(this._consumingMouseState.X, this._consumingMouseState.Y, Event.MOUSE_LBUTTON, this._consumingMouseState.Left == ButtonState.Pressed);
+                buzzed = true;
             }
 
             if (consumedActions.Contains(CMSAction.RightChanged) || consumedActions.Contains(CMSAction.XChangedRight) || consumedActions.Contains(CMSAction.YChangedRight))
             {
                 gui.handleMouse(this._consumingMouseState.X, this._consumingMouseState.Y, Event.MOUSE_RBUTTON, this._consumingMouseState.Right == ButtonState.Pressed);
+                buzzed = true;
             }
 
             if (consumedActions.Contains(CMSAction.MiddleChanged) || consumedActions.Contains(CMSAction.XChangedMiddle) || consumedActions.Contains(CMSAction.YChangedMiddle))
             {
                 gui.handleMouse(this._consumingMouseState.X, this._consumingMouseState.Y, Event.MOUSE_MBUTTON, this._consumingMouseState.Middle == ButtonState.Pressed);
+                buzzed = true;
             }
 
             if (consumedActions.Contains(CMSAction.Scroll))
             {
                 gui.handleMouseWheel(this._consumingMouseState.ScrollDelta);
+            }
+
+            if (!buzzed && (consumedActions.Contains(CMSAction.XChanged) || consumedActions.Contains(CMSAction.YChanged)))
+            {
+                gui.handleMouse(this._consumingMouseState.X, this._consumingMouseState.Y, -1, false);
             }
 
             this._counter++;

@@ -88,7 +88,7 @@ namespace XNATWL.Test
             RootPane root = new RootPane();
             renderer = new XNARenderer(this.graphicsDevice);
             //renderer = new LWJGLEffectsRenderer();
-            //renderer.setUseSWMouseCursors(true);
+            renderer.SetUseSWMouseCursors(true);
             gui = new GUI(root, renderer);
 
             loadTheme();

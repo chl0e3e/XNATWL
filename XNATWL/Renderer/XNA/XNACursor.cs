@@ -28,13 +28,39 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using Microsoft.Xna.Framework.Graphics;
+
 namespace XNATWL.Renderer.XNA
 {
     public class XNACursor : TextureAreaBase, MouseCursor
     {
-        public XNACursor(XNATexture texture, int x, int y, int width, int height, Color tintColor) : base(texture, x, y, width, height)
-        {
+        private int hotSpotX = 0;
+        private int hotSpotY = 0;
+        private Image imageRef = null;
 
+        public XNACursor(XNATexture texture, int x, int y, int width, int height, int hotSpotX, int hotSpotY) : base(texture, x, y, width, height)
+        {
+            this.hotSpotX = hotSpotX;
+            this.hotSpotY = hotSpotY;
+        }
+
+        public XNACursor(XNATexture texture, int x, int y, int width, int height, int hotSpotX, int hotSpotY, Image imageRef) : this(texture, x, y, width, height, hotSpotX, hotSpotY)
+        {
+            this.hotSpotX = hotSpotX;
+            this.hotSpotY = hotSpotY;
+            this.imageRef = imageRef;
+        }
+
+        internal override void drawQuad(Color color, int x, int y, int w, int h)
+        {
+            if (imageRef != null)
+            {
+                imageRef.Draw(this._texture.Renderer.CursorAnimationState, x - hotSpotX, y - hotSpotY);
+            }
+            else
+            {
+                this._texture.SpriteBatch.Draw(this._texture.Texture2D, new Microsoft.Xna.Framework.Rectangle(x - hotSpotX, y - hotSpotY, w, h), new Microsoft.Xna.Framework.Rectangle(this.tx0, this.ty0, this.tw, this.th), this._texture.Renderer.TintStack.TintColorForXNA(color));
+            }
         }
     }
 }

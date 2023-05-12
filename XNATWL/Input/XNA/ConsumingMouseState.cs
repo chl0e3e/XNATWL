@@ -73,6 +73,7 @@ namespace XNATWL.Input.XNA
                 {
                     actions.Add(CMSAction.XChangedMiddle);
                 }
+                actions.Add(CMSAction.XChanged);
             }
 
             if (this.Y != mouseState.Y)
@@ -91,6 +92,7 @@ namespace XNATWL.Input.XNA
                 {
                     actions.Add(CMSAction.YChangedMiddle);
                 }
+                actions.Add(CMSAction.YChanged);
             }
 
             return actions.ToArray();
@@ -108,6 +110,8 @@ namespace XNATWL.Input.XNA
         YChangedRight,
         XChangedMiddle,
         YChangedMiddle,
+        XChanged,
+        YChanged,
         Scroll
     }
 }

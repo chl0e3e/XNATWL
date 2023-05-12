@@ -225,20 +225,18 @@ namespace XNATWL
         protected override void afterAddToGUI(GUI gui)
         {
             base.afterAddToGUI(gui);
-            if (model != null)
+            if (this.model != null)
             {
-                this.model.State += Model_State;
-                this.model.Action += Model_Action;
+                this.model.Connect();
             }
         }
 
         //@Override
         protected override void beforeRemoveFromGUI(GUI gui)
         {
-            if (model != null)
+            if (this.model != null)
             {
-                this.model.State -= Model_State;
-                this.model.Action -= Model_Action;
+                this.model.Disconnect();
             }
             base.beforeRemoveFromGUI(gui);
         }

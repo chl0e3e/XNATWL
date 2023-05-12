@@ -66,6 +66,9 @@ namespace XNATWL.Model
 
         event EventHandler<ButtonActionEventArgs> Action;
         event EventHandler<ButtonStateChangedEventArgs> State;
+
+        void Connect();
+        void Disconnect();
     }
 
     public class ButtonActionEventArgs : EventArgs

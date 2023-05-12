@@ -155,6 +155,14 @@ namespace XNATWL.Model
             }
         }
 
+        public void Connect()
+        {
+        }
+
+        public void Disconnect()
+        {
+        }
+
         public event EventHandler<ButtonActionEventArgs> Action;
         public event EventHandler<ButtonStateChangedEventArgs> State;
     }
