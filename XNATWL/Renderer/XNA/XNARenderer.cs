@@ -317,9 +317,10 @@ namespace XNATWL.Renderer.XNA
         {
             RasterizerState rasterizerState = new RasterizerState()
             {
-                ScissorTestEnable = true
+                ScissorTestEnable = true,
             };
-            this._spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, rasterizerState);
+
+            this._spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, SamplerState.PointClamp, null, rasterizerState);
             this._clipStack.clearStack();
             rendering = true;
             return true;

@@ -79,6 +79,7 @@ namespace XNATWL.Input.XNA
 
             CMSAction[] consumedActions = this._consumingMouseState.Consume(ms);
 
+            /*
             if (consumedActions.Length > 0)
             {
                 //System.Diagnostics.Debug.WriteLine("=====");
@@ -89,6 +90,7 @@ namespace XNATWL.Input.XNA
                     System.Diagnostics.Debug.WriteLine(cmsAction);
                 }
             }
+            */
 
             bool buzzed = false;
             if (consumedActions.Contains(CMSAction.LeftChanged) || consumedActions.Contains(CMSAction.XChangedLeft) || consumedActions.Contains(CMSAction.YChangedLeft))
