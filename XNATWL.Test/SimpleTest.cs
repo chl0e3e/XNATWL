@@ -99,6 +99,11 @@ namespace XNATWL.Test
             dlg1.adjustSize();
             dlg1.center(0.35f, 0.5f);
 
+            GraphDemoDialog1 fMS = new GraphDemoDialog1();
+            root.desk.add(fMS);
+            fMS.adjustSize();
+            fMS.center(1f, 0.8f);
+
             TextAreaDemoDialog1 fInfo = new TextAreaDemoDialog1(new FileSystemObject(this.themeRootFso, "license.html"));
             root.desk.add(fInfo);
             fInfo.setSize(gui.getWidth() * 2 / 3, gui.getHeight() * 2 / 3);
@@ -211,16 +216,6 @@ namespace XNATWL.Test
                     settingsDlg.openPopupCentered();
                 });
             }
-            root.addButton("ScrollPane", () => {
-                if (fScroll.isVisible())
-                {
-                    fScroll.hide();
-                }
-                else
-                {
-                    fScroll.show();
-                }
-            });
             root.addButton("Properties", () => {
                 if (fPropertySheet.isVisible())
                 {

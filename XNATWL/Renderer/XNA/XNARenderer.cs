@@ -28,7 +28,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using XNATWL.Utils;
@@ -313,32 +312,49 @@ namespace XNATWL.Renderer.XNA
             this._mouseY = mouseY;
         }
 
+        private BasicEffect startEffect;
+
         public bool StartRendering()
         {
             RasterizerState rasterizerState = new RasterizerState()
             {
                 ScissorTestEnable = true,
             };
-
             this._spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, SamplerState.PointClamp, null, rasterizerState);
             this._clipStack.clearStack();
             rendering = true;
+
             return true;
         }
 
+        List<VertexPositionColor[]> linesListBuffer = new List<VertexPositionColor[]>();
         public void EndRendering()
         {
             XNACursor cursor = this._mouseCursor == null ? this._defaultCursor : ((XNACursor)this._mouseCursor);
             cursor.drawQuad(Color.WHITE, this._mouseX, this._mouseY, cursor.getWidth(), cursor.getHeight());
-
+            
             rendering = false;
             this.Disposer.Update();
+
+
             this._spriteBatch.End();
         }
 
+        private VertexPositionColor[] vertices = new VertexPositionColor[200];
+
         public void DrawLine(float[] pts, int numPts, float width, Color color, bool drawAsLoop)
         {
-            //throw new NotImplementedException();
+            Vector2 last = new Vector2(0, 0);
+            for(int i = 0; i < pts.Length; i+= 2)
+            {
+                Vector2 next = new Vector2(pts[i], pts[i + 1]);
+                Primitives2D.DrawLine(this._spriteBatch, next, last, color.XNA);
+                last = next;
+            }
+
+
+            //            GraphicsDevice.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.LineStrip, vertices, 0, numPts);
+            //startEffect.CurrentTechnique.Passes[0].Apply();
         }
 
         public class SWCursorAnimState : AnimationState

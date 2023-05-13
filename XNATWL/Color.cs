@@ -28,6 +28,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using Microsoft.Xna.Framework;
 using System;
 using System.Reflection;
 
@@ -143,6 +144,15 @@ namespace XNATWL
                         ((R & 255) << 16) |
                         ((G & 255) << 8) |
                         ((B & 255));
+            }
+        }
+
+
+        public Microsoft.Xna.Framework.Color XNA
+        {
+            get
+            {
+                return new Microsoft.Xna.Framework.Color(this.RedF, this.GreenF, this.BlueF, this.AlphaF);
             }
         }
 
