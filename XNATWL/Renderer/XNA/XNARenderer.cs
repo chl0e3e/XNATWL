@@ -327,7 +327,6 @@ namespace XNATWL.Renderer.XNA
             return true;
         }
 
-        List<VertexPositionColor[]> linesListBuffer = new List<VertexPositionColor[]>();
         public void EndRendering()
         {
             XNACursor cursor = this._mouseCursor == null ? this._defaultCursor : ((XNACursor)this._mouseCursor);
@@ -336,11 +335,8 @@ namespace XNATWL.Renderer.XNA
             rendering = false;
             this.Disposer.Update();
 
-
             this._spriteBatch.End();
         }
-
-        private VertexPositionColor[] vertices = new VertexPositionColor[200];
 
         public void DrawLine(float[] pts, int numPts, float width, Color color, bool drawAsLoop)
         {
@@ -351,10 +347,6 @@ namespace XNATWL.Renderer.XNA
                 Primitives2D.DrawLine(this._spriteBatch, next, last, color.XNA);
                 last = next;
             }
-
-
-            //            GraphicsDevice.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.LineStrip, vertices, 0, numPts);
-            //startEffect.CurrentTechnique.Passes[0].Apply();
         }
 
         public class SWCursorAnimState : AnimationState
