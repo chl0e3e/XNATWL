@@ -34,9 +34,9 @@ namespace XNATWL.Model
     {
         protected static int STATE_MASK_SELECTED = 256;
 
-        private BooleanModel model;
-        private bool invertModelState;
-        private bool isConnected = true;
+        private BooleanModel _model;
+        private bool _invertModelState;
+        private bool _isConnected = true;
 
         public ToggleButtonModel()
         {
@@ -48,25 +48,25 @@ namespace XNATWL.Model
 
         public ToggleButtonModel(BooleanModel model, bool invertModelState)
         {
-            setModel(model, invertModelState);
+            this.setModel(model, invertModelState);
         }
 
         public override bool Selected
         {
             get
             {
-                return (this._state & STATE_MASK_SELECTED) != 0;
+                return (this._state & ToggleButtonModel.STATE_MASK_SELECTED) != 0;
             }
 
             set
             {
-                if (model != null)
+                if (this._model != null)
                 {
-                    model.Value = value ^ invertModelState;
+                    this._model.Value = value ^ this._invertModelState;
                 }
                 else
                 {
-                    setSelectedState(value);
+                    this.setSelectedState(value);
                 }
             }
         }
@@ -79,38 +79,39 @@ namespace XNATWL.Model
 
         public BooleanModel getModel()
         {
-            return model;
+            return this._model;
         }
 
         public void setModel(BooleanModel model)
         {
-            setModel(model, false);
+            this.setModel(model, false);
         }
 
         public void setModel(BooleanModel model, bool invertModelState)
         {
-            this.invertModelState = invertModelState;
-            if (this.model != model)
+            this._invertModelState = invertModelState;
+
+            if (this._model != model)
             {
-                removeModelCallback();
-                this.model = model;
-                addModelCallback();
+                this.removeModelCallback();
+                this._model = model;
+                this.addModelCallback();
                 //isConnected = true;
             }
             if (model != null)
             {
-                syncWithModel();
+                this.syncWithModel();
             }
         }
 
         public bool isInvertModelState()
         {
-            return invertModelState;
+            return this._invertModelState;
         }
 
         void syncWithModel()
         {
-            setSelectedState(model.Value ^ invertModelState);
+            this.setSelectedState(this._model.Value ^ this._invertModelState);
         }
 
         /*public override void connect()
@@ -127,23 +128,23 @@ namespace XNATWL.Model
 
         private void addModelCallback()
         {
-            if (model != null && isConnected)
+            if (this._model != null && this._isConnected)
             {
-                model.Changed += Model_Changed;
-                syncWithModel();
+                this._model.Changed += Model_Changed;
+                this.syncWithModel();
             }
         }
 
         private void Model_Changed(object sender, BooleanChangedEventArgs e)
         {
-            syncWithModel();
+            this.syncWithModel();
         }
 
         private void removeModelCallback()
         {
-            if (model != null)
+            if (this._model != null)
             {
-                model.Changed -= Model_Changed;
+                this._model.Changed -= Model_Changed;
             }
         }
 

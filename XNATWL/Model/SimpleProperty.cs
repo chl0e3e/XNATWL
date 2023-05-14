@@ -95,7 +95,7 @@ namespace XNATWL.Model
                     throw new NullReferenceException();
                 }
 
-                if (valueChanged((T)value))
+                if (this.ValueChanged((T) value))
                 {
                     var old = value;
                     this._value = (T)value;
@@ -104,7 +104,7 @@ namespace XNATWL.Model
             }
         }
 
-        protected bool valueChanged(T newValue)
+        protected bool ValueChanged(T newValue)
         {
             return !this._value.Equals(newValue) && (this._value == null || !this._value.Equals(newValue));
         }

@@ -36,12 +36,12 @@ namespace XNATWL.Model
 {
     public class SimpleGraphModel : GraphModel
     {
-        private List<GraphLineModel> lines;
-        private bool scaleLinesIndependent;
+        private List<GraphLineModel> _lines;
+        private bool _scaleLinesIndependent;
 
         public SimpleGraphModel()
         {
-            lines = new List<GraphLineModel>();
+            _lines = new List<GraphLineModel>();
         }
 
         public SimpleGraphModel(GraphLineModel[] lines) : this(lines.ToList())
@@ -51,30 +51,30 @@ namespace XNATWL.Model
 
         public SimpleGraphModel(ICollection<GraphLineModel> lines)
         {
-            this.lines = new List<GraphLineModel>(lines);
+            this._lines = new List<GraphLineModel>(lines);
         }
 
         public GraphLineModel LineAt(int idx)
         {
-            return this.lines[idx];
+            return this._lines[idx];
         }
 
         public int Lines
         {
             get
             {
-                return this.lines.Count;
+                return this._lines.Count;
             }
         }
 
         public bool ScaleLinesIndependent()
         {
-            return this.scaleLinesIndependent;
+            return this._scaleLinesIndependent;
         }
 
         public void SetScaleLinesIndependent(bool val)
         {
-            this.scaleLinesIndependent = val;
+            this._scaleLinesIndependent = val;
         }
 
         /**
@@ -83,7 +83,7 @@ namespace XNATWL.Model
          */
         public void AddLine(GraphLineModel line)
         {
-            InsertLine(this.lines.Count, line);
+            InsertLine(this._lines.Count, line);
         }
 
         /**
@@ -100,7 +100,7 @@ namespace XNATWL.Model
                 throw new ArgumentOutOfRangeException("line already added");
             }
 
-            this.lines.Insert(idx, line);
+            this._lines.Insert(idx, line);
         }
 
         /**
@@ -110,7 +110,7 @@ namespace XNATWL.Model
          */
         public int IndexOfLine(GraphLineModel line)
         {
-            return this.lines.IndexOf(line);
+            return this._lines.IndexOf(line);
         }
 
         /**
@@ -120,8 +120,8 @@ namespace XNATWL.Model
          */
         public GraphLineModel RemoveLine(int idx)
         {
-            GraphLineModel lineModel = this.lines[idx];
-            this.lines.RemoveAt(idx);
+            GraphLineModel lineModel = this._lines[idx];
+            this._lines.RemoveAt(idx);
             return lineModel;
         }
     }

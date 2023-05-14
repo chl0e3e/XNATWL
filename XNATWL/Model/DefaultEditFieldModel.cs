@@ -35,20 +35,20 @@ namespace XNATWL.Model
 {
     public class DefaultEditFieldModel : EditFieldModel
     {
-        private StringBuilder stringBuilder;
+        private StringBuilder _stringBuilder;
 
         public event EventHandler<CharSequenceChangedEventArgs> CharSequenceChanged;
 
         public DefaultEditFieldModel()
         {
-            this.stringBuilder = new StringBuilder();
+            this._stringBuilder = new StringBuilder();
         }
 
         public int Length
         {
             get
             {
-                return stringBuilder.Length;
+                return _stringBuilder.Length;
             }
         }
 
@@ -56,13 +56,13 @@ namespace XNATWL.Model
         {
             get
             {
-                return stringBuilder.ToString();
+                return _stringBuilder.ToString();
             }
         }
 
         public char CharAt(int index)
         {
-            return stringBuilder[index];
+            return _stringBuilder[index];
         }
 
         private void CheckRange(int start, int count)
@@ -88,8 +88,8 @@ namespace XNATWL.Model
 
             if (count > 0 || replacementLength > 0)
             {
-                this.stringBuilder.Remove(start, count);
-                this.stringBuilder.Insert(start, replacement);
+                this._stringBuilder.Remove(start, count);
+                this._stringBuilder.Insert(start, replacement);
                 if (this.CharSequenceChanged != null)
                 {
                     this.CharSequenceChanged.Invoke(this, new CharSequenceChangedEventArgs(start, count, replacementLength));
@@ -105,12 +105,12 @@ namespace XNATWL.Model
 
             if (count == 0)
             {
-                this.stringBuilder.Insert(start, replacement);
+                this._stringBuilder.Insert(start, replacement);
             }
             else
             {
-                this.stringBuilder.Remove(start, count - 1); // TODO: Does the minus one actually mean anything? It is unclear.
-                this.stringBuilder.Insert(start, replacement);
+                this._stringBuilder.Remove(start, count - 1); // TODO: Does the minus one actually mean anything? It is unclear.
+                this._stringBuilder.Insert(start, replacement);
             }
 
             if (this.CharSequenceChanged != null)
@@ -122,22 +122,22 @@ namespace XNATWL.Model
 
         public string SubSequence(int start, int end)
         {
-            return this.stringBuilder.ToString(start, end - start);
+            return this._stringBuilder.ToString(start, end - start);
         }
 
         public string Substring(int start, int end)
         {
-            return this.stringBuilder.ToString(start, end - start);
+            return this._stringBuilder.ToString(start, end - start);
         }
 
         public override string ToString()
         {
-            return this.stringBuilder.ToString();
+            return this._stringBuilder.ToString();
         }
 
         public StringBuilder AsStringBuilder()
         {
-            return this.stringBuilder;
+            return this._stringBuilder;
         }
     }
 }

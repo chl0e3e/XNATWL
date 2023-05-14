@@ -35,7 +35,13 @@ namespace XNATWL.Model
 {
     public class ReorderListModel<T> : AbstractListModel<T>
     {
-        public override int Entries => throw new NotImplementedException();
+        public override int Entries
+        {
+            get
+            {
+                return this._baseModel.Entries;
+            }
+        }
 
         public override event EventHandler<ListSubsetChangedEventArgs> EntriesInserted;
         public override event EventHandler<ListSubsetChangedEventArgs> EntriesDeleted;

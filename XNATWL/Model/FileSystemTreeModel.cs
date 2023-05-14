@@ -37,8 +37,8 @@ namespace XNATWL.Model
 {
     public class FileSystemTreeModel : AbstractTreeTableModel
     {
-        private FileSystemModel fsm;
-        private bool includeLastModified;
+        private FileSystemModel _fileSystemModel;
+        private bool _includeLastModified;
 
         internal IComparer<object> sorter;
 
@@ -46,7 +46,7 @@ namespace XNATWL.Model
         {
             get
             {
-                return includeLastModified ? 2 : 1;
+                return _includeLastModified ? 2 : 1;
             }
         }
 
@@ -56,8 +56,8 @@ namespace XNATWL.Model
 
         public FileSystemTreeModel(FileSystemModel fsm, bool includeLastModified)
         {
-            this.fsm = fsm;
-            this.includeLastModified = includeLastModified;
+            this._fileSystemModel = fsm;
+            this._includeLastModified = includeLastModified;
 
             InsertRoots();
         }
@@ -75,15 +75,15 @@ namespace XNATWL.Model
         {
             RemoveAllChildren();
 
-            foreach (object root in fsm.ListRoots())
+            foreach (object root in _fileSystemModel.ListRoots())
             {
-                this.InsertChildAt(new FolderNode(this, fsm, root), this.Children);
+                this.InsertChildAt(new FolderNode(this, _fileSystemModel, root), this.Children);
             }
         }
 
         public FolderNode NodeForFolder(Object obj)
         {
-            Object parent = fsm.Parent(obj);
+            Object parent = _fileSystemModel.Parent(obj);
             TreeTableNode parentNode;
 
             if (parent == null)
@@ -100,7 +100,7 @@ namespace XNATWL.Model
                 for (int i = 0; i < parentNode.Children; i++)
                 {
                     FolderNode node = (FolderNode)parentNode.ChildAt(i);
-                    if (fsm.Equals(node.Folder, obj))
+                    if (_fileSystemModel.Equals(node.Folder, obj))
                     {
                         return node;
                     }
@@ -126,7 +126,7 @@ namespace XNATWL.Model
         {
             get
             {
-                return fsm;
+                return _fileSystemModel;
             }
         }
     }

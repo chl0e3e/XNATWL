@@ -52,9 +52,9 @@ namespace XNATWL.Model
         {
             get
             {
-                if (_selection >= 0)
+                if (this._selection >= 0)
                 {
-                    return new int[] { _selection };
+                    return new int[] { this._selection };
                 }
 
                 return new int[0];
@@ -66,15 +66,15 @@ namespace XNATWL.Model
             int[] oldSelection = this.Selection;
             bool changed = false;
 
-            if (_selection >= index)
+            if (this._selection >= index)
             {
-                if (_selection < index + count)
+                if (this._selection < index + count)
                 {
-                    _selection = NO_SELECTION;
+                    this._selection = NO_SELECTION;
                 }
                 else
                 {
-                    _selection -= count;
+                    this._selection -= count;
                 }
 
                 changed = true;
@@ -92,9 +92,9 @@ namespace XNATWL.Model
         {
             int[] oldSelection = this.Selection;
             bool changed = false;
-            if (_selection >= index)
+            if (this._selection >= index)
             {
-                _selection += count;
+                this._selection += count;
                 changed = true;
             }
 
@@ -109,8 +109,8 @@ namespace XNATWL.Model
         public override void AddSelection(int index0, int index1)
         {
             int[] oldSelection = this.Selection;
-            UpdateLeadAndAnchor(index0, index1);
-            _selection = index1;
+            this.UpdateLeadAndAnchor(index0, index1);
+            this._selection = index1;
             this.FireSelectionChange(this, new SelectionChangedEventArgs(oldSelection, this.Selection));
         }
 
@@ -120,29 +120,29 @@ namespace XNATWL.Model
 
             if (this.HasSelection())
             {
-                _selection = NO_SELECTION;
+                this._selection = NO_SELECTION;
                 this.FireSelectionChange(this, new SelectionChangedEventArgs(oldSelection, this.Selection));
             }
         }
 
         public override bool HasSelection()
         {
-            return _selection >= 0;
+            return this._selection >= 0;
         }
 
         public override void InvertSelection(int index0, int index1)
         {
             int[] oldSelection = this.Selection;
 
-            UpdateLeadAndAnchor(index0, index1);
+            this.UpdateLeadAndAnchor(index0, index1);
 
-            if (_selection == index1)
+            if (this._selection == index1)
             {
-                _selection = NO_SELECTION;
+                this._selection = NO_SELECTION;
             }
             else
             {
-                _selection = index1;
+                this._selection = index1;
             }
 
             this.FireSelectionChange(this, new SelectionChangedEventArgs(oldSelection, this.Selection));
@@ -156,9 +156,9 @@ namespace XNATWL.Model
         public override void RemoveSelection(int index0, int index1)
         {
             int[] oldSelection = this.Selection;
-            UpdateLeadAndAnchor(index0, index1);
+            this.UpdateLeadAndAnchor(index0, index1);
 
-            if (HasSelection())
+            if (this.HasSelection())
             {
                 int first = Math.Min(index0, index1);
                 int last = Math.Max(index0, index1);
@@ -173,7 +173,7 @@ namespace XNATWL.Model
         public override void SetSelection(int index0, int index1)
         {
             int[] oldSelection = this.Selection;
-            UpdateLeadAndAnchor(index0, index1);
+            this.UpdateLeadAndAnchor(index0, index1);
             _selection = index1;
             this.FireSelectionChange(this, new SelectionChangedEventArgs(oldSelection, this.Selection));
         }

@@ -35,8 +35,8 @@ namespace XNATWL.Model
 {
     public class SimpleTableModel : AbstractTableModel
     {
-        private string[] columnHeaders;
-        private List<object[]> rows;
+        private string[] _columnHeaders;
+        private List<object[]> _rows;
 
         public SimpleTableModel(string[] columnHeaders)
         {
@@ -45,15 +45,15 @@ namespace XNATWL.Model
                 throw new ArgumentOutOfRangeException("must have at least one column");
             }
 
-            this.columnHeaders = (string[]) columnHeaders.Clone();
-            this.rows = new List<object[]>();
+            this._columnHeaders = (string[]) columnHeaders.Clone();
+            this._rows = new List<object[]>();
         }
 
         public override int Columns
         {
             get
             {
-                return columnHeaders.Length;
+                return this._columnHeaders.Length;
             }
         }
 
@@ -61,39 +61,39 @@ namespace XNATWL.Model
         {
             get
             {
-                return rows.Count;
+                return this._rows.Count;
             }
         }
 
         public override object CellAt(int row, int column)
         {
-            return rows[row][column];
+            return this._rows[row][column];
         }
 
         public void SetCellAt(int row, int column, object data)
         {
-            rows[row][column] = data;   
+            _rows[row][column] = data;   
             this.FireCellChanged(row, column);
         }
 
         public override string ColumnHeaderTextFor(int column)
         {
-            return columnHeaders[column];
+            return _columnHeaders[column];
         }
 
         public void AddRow(params object[] data)
         {
-            InsertRow(rows.Count, data);
+            this.InsertRow(_rows.Count, data);
         }
 
         public void AddRows(ICollection<object[]> data)
         {
-            InsertRows(rows.Count, data);
+            this.InsertRows(_rows.Count, data);
         }
 
         public void InsertRow(int index, params object[] data)
         {
-            rows.Insert(index, CreateRowData(data));
+            this._rows.Insert(index, CreateRowData(data));
             this.FireRowsInserted(index, 1);
         }
 
@@ -106,20 +106,20 @@ namespace XNATWL.Model
                 {
                     rowData.Add(CreateRowData(row));
                 }
-                this.rows.InsertRange(index, rowData);
+                this._rows.InsertRange(index, rowData);
                 this.FireRowsInserted(index, rowData.Count);
             }
         }
 
         public void DeleteRow(int index)
         {
-            rows.RemoveAt(index);
+            this._rows.RemoveAt(index);
             this.FireRowsDeleted(index, 1);
         }
 
         public void DeleteRows(int index, int count)
         {
-            int numRows = rows.Count;
+            int numRows = _rows.Count;
             if (index < 0 || count < 0 || index >= numRows || count > (numRows - index))
             {
                 throw new IndexOutOfRangeException("index=" + index + " count=" + count + " numRows=" + numRows);
@@ -129,7 +129,7 @@ namespace XNATWL.Model
             {
                 for (int i = count; i-- > 0;)
                 {
-                    rows.RemoveAt(index + i);
+                    this._rows.RemoveAt(index + i);
                 }
 
                 this.FireRowsDeleted(index, count);

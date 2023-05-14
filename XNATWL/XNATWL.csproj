@@ -185,7 +185,7 @@
     <Compile Include="Model\ToggleButtonModel.cs" />
     <Compile Include="Model\TreeTableModel.cs" />
     <Compile Include="Model\TreeTableNode.cs" />
-    <Compile Include="Model\ValueAdjuster.cs" />
+    <Compile Include="ValueAdjuster.cs" />
     <Compile Include="MouseSensitiveRectangle.cs" />
     <Compile Include="ParameterList.cs" />
     <Compile Include="ParameterMap.cs" />
