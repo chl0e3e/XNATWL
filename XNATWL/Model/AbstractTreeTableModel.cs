@@ -127,17 +127,26 @@ namespace XNATWL.Model
 
         internal void FireNodesAdded(TreeTableNode parent, int idx, int count)
         {
-            this.NodesAdded.Invoke(this, new TreeNodesChangedEventArgs(parent, idx, count));
+            if (this.NodesAdded != null)
+            {
+                this.NodesAdded.Invoke(this, new TreeNodesChangedEventArgs(parent, idx, count));
+            }
         }
 
         internal void FireNodesRemoved(TreeTableNode parent, int idx, int count)
         {
-            this.NodesRemoved.Invoke(this, new TreeNodesChangedEventArgs(parent, idx, count));
+            if (this.NodesRemoved != null)
+            {
+                this.NodesRemoved.Invoke(this, new TreeNodesChangedEventArgs(parent, idx, count));
+            }
         }
 
         internal void FireNodesChanged(TreeTableNode parent, int idx, int count)
         {
-            this.NodesChanged.Invoke(this, new TreeNodesChangedEventArgs(parent, idx, count));
+            if (this.NodesChanged != null)
+            {
+                this.NodesChanged.Invoke(this, new TreeNodesChangedEventArgs(parent, idx, count));
+            }
         }
     }
 }

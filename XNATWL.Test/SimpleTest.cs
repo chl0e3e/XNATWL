@@ -142,6 +142,11 @@ namespace XNATWL.Test
             root.desk.add(fTable);
             fTable.adjustSize();
             fTable.center(0f, 0.5f);
+            
+            TreeTableDemoDialog1 fTreeTable = new TreeTableDemoDialog1(this.preferences);
+            root.desk.add(fTreeTable);
+            fTable.adjustSize();
+            fTable.center(0f, 0.5f);
             //fTable.addCloseCallback();
             /*GraphDemoDialog1 fMS = new GraphDemoDialog1();
             root.desk.add(fMS);

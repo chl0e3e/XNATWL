@@ -57,6 +57,7 @@
     <Compile Include="TestGame.cs" />
     <Compile Include="TextAreaDemoDialog1.cs" />
     <Compile Include="TextAreaDemoDialog2.cs" />
+    <Compile Include="TreeTableDemoDialog1.cs" />
     <Compile Include="WidgetsDemoDialog1.cs" />
   </ItemGroup>
   <ItemGroup>

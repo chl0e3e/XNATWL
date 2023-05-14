@@ -1672,7 +1672,10 @@ namespace XNATWL
 
         protected virtual void columnHeaderClicked(int column)
         {
-            this.ColumnHeaderClick.Invoke(this, new TableColumnHeaderClickEventArgs(column));
+            if (this.ColumnHeaderClick != null)
+            {
+                this.ColumnHeaderClick.Invoke(this, new TableColumnHeaderClickEventArgs(column));
+            }
         }
 
         protected void updateAllColumnWidth()
@@ -2258,12 +2261,12 @@ namespace XNATWL
                 base.applyTheme(themeInfo);
             }
 
-            public void setCellData(int row, int column, Object data)
+            public virtual void setCellData(int row, int column, Object data)
             {
                 setCharSequence(data.ToString());
             }
 
-            public int getColumnSpan()
+            public virtual int getColumnSpan()
             {
                 return 1;
             }
