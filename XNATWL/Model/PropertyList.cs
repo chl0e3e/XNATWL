@@ -30,13 +30,18 @@
 
 namespace XNATWL.Model
 {
-    public interface PropertyList<T>
+    public interface PropertyList
     {
         int Count
         {
             get;
         }
 
-        Property<T> PropertyAt(int index);
+        object PropertyAt(int index);
+    }
+
+    public interface PropertyList<T> : PropertyList
+    {
+        new Property<T> PropertyAt(int index);
     }
 }

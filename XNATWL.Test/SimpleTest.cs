@@ -123,6 +123,14 @@ namespace XNATWL.Test
             fScroll.center(0f, 0f);
             fScroll.addCloseCallback();
             fScroll.centerScrollPane();
+
+            PropertySheetDemoDialog fPropertySheet = new PropertySheetDemoDialog();
+            fPropertySheet.setHardVisible(false);
+            root.desk.add(fPropertySheet);
+            fPropertySheet.setSize(400, 400);
+            fPropertySheet.center(0f, 0.25f);
+            fPropertySheet.addCloseCallback();
+
             /*GraphDemoDialog1 fMS = new GraphDemoDialog1();
             root.desk.add(fMS);
             fMS.adjustSize();
@@ -133,13 +141,6 @@ namespace XNATWL.Test
             fTable.adjustSize();
             fTable.center(0f, 0.5f);
             //fTable.addCloseCallback();
-
-            PropertySheetDemoDialog fPropertySheet = new PropertySheetDemoDialog();
-            fPropertySheet.setHardVisible(false);
-            root.desk.add(fPropertySheet);
-            fPropertySheet.setSize(400, 400);
-            fPropertySheet.center(0f, 0.25f);
-            fPropertySheet.addCloseCallback();
 
 
             ColorSelectorDemoDialog1 fCS = new ColorSelectorDemoDialog1();
@@ -209,13 +210,6 @@ namespace XNATWL.Test
                     fScroll.show();
                 }
             });
-            /*if (!isApplet)
-            {
-                root.addButton("Settings", "Opens a dialog which might be used to change video settings", () => {
-                    settings.readSettings();
-                    settingsDlg.openPopupCentered();
-                });
-            }
             root.addButton("Properties", () => {
                 if (fPropertySheet.isVisible())
                 {
@@ -226,6 +220,13 @@ namespace XNATWL.Test
                     fPropertySheet.show();
                 }
             });
+            /*if (!isApplet)
+            {
+                root.addButton("Settings", "Opens a dialog which might be used to change video settings", () => {
+                    settings.readSettings();
+                    settingsDlg.openPopupCentered();
+                });
+            }
             root.addButton("Color", () => {
                 if (fCS.isVisible())
                 {

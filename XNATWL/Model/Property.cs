@@ -32,7 +32,7 @@ using System;
 
 namespace XNATWL.Model
 {
-    public interface Property<T>
+    public interface Property
     {
         string Name
         {
@@ -49,21 +49,31 @@ namespace XNATWL.Model
             get;
         }
 
-        T Value
+        object Value
         {
             get;
             set;
         }
-        
+
         Type Type
         {
             get;
         }
 
-        event EventHandler<PropertyChangedEventArgs<T>> Changed;
+        event EventHandler<PropertyChangedEventArgs> Changed;
     }
 
-    public class PropertyChangedEventArgs<T> : EventArgs
+
+    public interface Property<T> : Property
+    {
+        T ValueCast
+        {
+            get;
+            set;
+        }
+    }
+
+    public class PropertyChangedEventArgs : EventArgs
     {
         public PropertyChangedEventArgs()
         {

@@ -37,9 +37,10 @@ namespace XNATWL.Model
         public abstract string Name { get; }
         public abstract bool IsReadOnly { get; }
         public abstract bool Nullable { get; }
-        public abstract T Value { get; set; }
         public abstract Type Type { get; }
+        public abstract object Value { get; set; }
+        public abstract T ValueCast { get; set; }
 
-        public abstract event EventHandler<PropertyChangedEventArgs<T>> Changed;
+        public abstract event EventHandler<PropertyChangedEventArgs> Changed;
     }
 }

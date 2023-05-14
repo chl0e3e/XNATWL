@@ -81,7 +81,7 @@ namespace XNATWL.Model
             }
         }
 
-        public override T Value
+        public override object Value
         {
             get
             {
@@ -95,11 +95,11 @@ namespace XNATWL.Model
                     throw new NullReferenceException();
                 }
 
-                if (valueChanged(value))
+                if (valueChanged((T)value))
                 {
                     var old = value;
-                    this._value = value;
-                    this.Changed.Invoke(this, new PropertyChangedEventArgs<T>());
+                    this._value = (T)value;
+                    this.Changed.Invoke(this, new PropertyChangedEventArgs());
                 }
             }
         }
@@ -117,6 +117,18 @@ namespace XNATWL.Model
             }
         }
 
-        public override event EventHandler<PropertyChangedEventArgs<T>> Changed;
+        public override T ValueCast
+        {
+            get
+            {
+                return (T)this.Value;
+            }
+            set
+            {
+                this.Value = value;
+            }
+        }
+
+        public override event EventHandler<PropertyChangedEventArgs> Changed;
     }
 }

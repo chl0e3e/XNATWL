@@ -363,11 +363,17 @@ namespace XNATWL
 
             if (ns.expanded)
             {
-                this.NodeExpanded.Invoke(this, new TreeTableNodeExpandedEventArgs(row, ns.key));
+                if (this.NodeExpanded != null)
+                {
+                    this.NodeExpanded.Invoke(this, new TreeTableNodeExpandedEventArgs(row, ns.key));
+                }
             }
             else
             {
-                this.NodeCollapsed.Invoke(this, new TreeTableNodeCollapsedEventArgs(row, ns.key));
+                if (this.NodeCollapsed != null)
+                {
+                    this.NodeCollapsed.Invoke(this, new TreeTableNodeCollapsedEventArgs(row, ns.key));
+                }
             }
         }
 
@@ -432,6 +438,11 @@ namespace XNATWL
 
         protected void modelNodesAdded(TreeTableNode parent, int idx, int count)
         {
+            if (!this._states.ContainsKey(parent))
+            {
+                return;
+            }
+
             NodeState ns = this._states[parent];
             // if ns is null then this node has not yet been displayed
             if (ns != null)

@@ -63,10 +63,10 @@ namespace XNATWL
 
         public interface PropertyEditorFactory
         {
-            PropertyEditor createEditor(Property<T> property);
+            PropertyEditor createEditor(XNATWL.Model.Property property);
         }
 
-        private SimplePropertyList<T> rootList;
+        private SimplePropertyList rootList;
         private PropertyListCellRenderer subListRenderer;
         private CellRenderer editorRenderer;
         private TypeMapping factories;
@@ -78,7 +78,7 @@ namespace XNATWL
 
         private PropertySheet(Model model) : base(model)
         {
-            this.rootList = new SimplePropertyList<T>("<root>");
+            this.rootList = new SimplePropertyList("<root>");
             this.subListRenderer = new PropertyListCellRenderer(this);
             this.editorRenderer = new EditorRenderer();
             this.factories = new TypeMapping();
@@ -90,7 +90,7 @@ namespace XNATWL
             registerPropertyEditorFactory<string>(typeof(String), new StringEditorFactory());
         }
 
-        public SimplePropertyList<T> getPropertyList()
+        public SimplePropertyList getPropertyList()
         {
             return rootList;
         }
@@ -164,9 +164,9 @@ namespace XNATWL
             }
         }
 
-        TreeTableNode createNode(TreeTableNode parent, Property<T> property)
+        TreeTableNode createNode(TreeTableNode parent, XNATWL.Model.Property property)
         {
-            if (property.GetType() == typeof(PropertyList<T>))
+            if (property is PropertyList)
             {
                 return new ListNode(this, parent, property);
             }
@@ -198,17 +198,17 @@ namespace XNATWL
 
         abstract class PropertyNode : AbstractTreeTableNode, PSTreeTableNode
         {
-            protected Property<T> property;
+            protected XNATWL.Model.Property property;
             protected PropertySheet<T> propertySheet;
 
-            public PropertyNode(PropertySheet<T> propertySheet, TreeTableNode parent, Property<T> property) : base(parent)
+            public PropertyNode(PropertySheet<T> propertySheet, TreeTableNode parent, XNATWL.Model.Property property) : base(parent)
             {
                 this.propertySheet = propertySheet;
                 this.property = property;
                 property.Changed += Property_Changed;
             }
 
-            private void Property_Changed(object sender, PropertyChangedEventArgs<T> e)
+            private void Property_Changed(object sender, PropertyChangedEventArgs e)
             {
                 this.run();
             }
@@ -231,11 +231,11 @@ namespace XNATWL
 
         class TreeGenerator
         {
-            private PropertyList<T> list;
+            private PropertyList list;
             private PSTreeTableNode parent;
             private PropertySheet<T> propertySheet;
 
-            public TreeGenerator(PropertySheet<T> propertySheet, PropertyList<T> list, PSTreeTableNode parent)
+            public TreeGenerator(PropertySheet<T> propertySheet, PropertyList list, PSTreeTableNode parent)
             {
                 this.propertySheet = propertySheet;
                 this.list = list;
@@ -257,7 +257,7 @@ namespace XNATWL
             {
                 for (int i = 0; i < list.Count; ++i)
                 {
-                    TreeTableNode node = this.propertySheet.createNode(parent, list.PropertyAt(i));
+                    TreeTableNode node = this.propertySheet.createNode(parent, (XNATWL.Model.Property) list.PropertyAt(i));
                     if (node != null)
                     {
                         parent.addChild(node);
@@ -270,12 +270,12 @@ namespace XNATWL
         {
             private PropertyEditor editor;
 
-            public LeafNode(PropertySheet<T> propertySheet, TreeTableNode parent, Property<T> property, PropertyEditor editor) : base(propertySheet, parent, property)
+            public LeafNode(PropertySheet<T> propertySheet, TreeTableNode parent, XNATWL.Model.Property property, PropertyEditor editor) : base(propertySheet, parent, property)
             {
                 this.editor = editor;
                 this.IsLeaf = true;
             }
-            public Object getData(int column)
+            public override Object DataAtColumn(int column)
             {
                 switch (column)
                 {
@@ -295,12 +295,12 @@ namespace XNATWL
         {
             protected TreeGenerator treeGenerator;
 
-            public ListNode(PropertySheet<T> propertySheet, TreeTableNode parent, Property<T> property) : base(propertySheet, parent, property)
+            public ListNode(PropertySheet<T> propertySheet, TreeTableNode parent, XNATWL.Model.Property property) : base(propertySheet, parent, property)
             {
-                this.treeGenerator = new TreeGenerator(propertySheet, (PropertyList<T>)property.Value, this);
+                this.treeGenerator = new TreeGenerator(propertySheet, (PropertyList)property.Value, this);
                 treeGenerator.run();
             }
-            public Object getData(int column)
+            public override Object DataAtColumn(int column)
             {
                 return property.Name;
             }
@@ -481,7 +481,7 @@ namespace XNATWL
             }
             private void resetValue()
             {
-                editField.setText(property.Value);
+                editField.setText((string)property.Value);
                 editField.setErrorMessage(null);
                 editField.setReadOnly(property.IsReadOnly);
             }
@@ -493,7 +493,7 @@ namespace XNATWL
 
         class StringEditorFactory : PropertyEditorFactory
         {
-            public PropertyEditor createEditor(Property<T> property)
+            public PropertyEditor createEditor(XNATWL.Model.Property property)
             {
                 if (property is Property<string>)
                 {
@@ -571,7 +571,7 @@ namespace XNATWL
 
             protected void resetValue()
             {
-                comboBox.setSelected(findEntry(property.Value));
+                comboBox.setSelected(findEntry(property.ValueCast));
             }
 
             protected int findEntry(T value)
@@ -610,9 +610,9 @@ namespace XNATWL
                 modelForwarder.setModel(model);
             }
 
-            public PropertyEditor createEditor(Property<T> property)
+            public PropertyEditor createEditor(XNATWL.Model.Property property)
             {
-                return new ComboBoxEditor<T>(property, modelForwarder);
+                return new ComboBoxEditor<T>((Property<T>)property, modelForwarder);
             }
 
             class ModelForwarder : AbstractListModel<T>

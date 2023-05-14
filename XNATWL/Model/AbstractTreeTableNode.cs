@@ -33,7 +33,7 @@ using System.Collections.Generic;
 
 namespace XNATWL.Model
 {
-    public class AbstractTreeTableNode : TreeTableNode
+    public abstract class AbstractTreeTableNode : TreeTableNode
     {
         private TreeTableNode _parent;
         private List<TreeTableNode> _children;
@@ -80,13 +80,15 @@ namespace XNATWL.Model
 
         public int ChildIndexOf(TreeTableNode child)
         {
+            if (this._children == null)
+            {
+                return -1;
+            }
+
             return this._children.IndexOf(child);
         }
 
-        public object DataAtColumn(int column)
-        {
-            throw new NotImplementedException();
-        }
+        public abstract object DataAtColumn(int column);
 
         public object TooltipContentAtColumn(int column)
         {
