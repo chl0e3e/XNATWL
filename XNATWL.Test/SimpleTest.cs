@@ -131,6 +131,12 @@ namespace XNATWL.Test
             fPropertySheet.center(0f, 0.25f);
             fPropertySheet.addCloseCallback();
 
+            ColorSelectorDemoDialog1 fCS = new ColorSelectorDemoDialog1();
+            fCS.setHardVisible(false);
+            root.desk.add(fCS);
+            fCS.adjustSize();
+            fCS.center(0.5f, 0.5f);
+            fCS.addCloseCallback();
             /*GraphDemoDialog1 fMS = new GraphDemoDialog1();
             root.desk.add(fMS);
             fMS.adjustSize();
@@ -218,6 +224,16 @@ namespace XNATWL.Test
                 else
                 {
                     fPropertySheet.show();
+                }
+            });
+            root.addButton("Color", () => {
+                if (fCS.isVisible())
+                {
+                    fCS.hide();
+                }
+                else
+                {
+                    fCS.show();
                 }
             });
             /*if (!isApplet)

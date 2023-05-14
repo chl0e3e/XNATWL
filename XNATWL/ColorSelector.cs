@@ -29,6 +29,8 @@
  */
 
 using System;
+using System.Linq;
+using System.Text;
 using XNATWL.Model;
 using XNATWL.Renderer;
 using XNATWL.Utils;
@@ -58,7 +60,7 @@ namespace XNATWL
         private ColorModel model;
         private Runnable modelCallback;
         private bool inModelSetValue;
-        uint currentColor;
+        int currentColor;
         private ARGBModel[] argbModels;
         EditField hexColorEditField;
         private TintAnimator previewTintAnimator;
@@ -71,7 +73,7 @@ namespace XNATWL
             // allocate enough space for 2D color areas
             this.imgData = new Microsoft.Xna.Framework.Color[IMAGE_SIZE * IMAGE_SIZE];
 
-            currentColor = (uint) Color.WHITE.ARGB;
+            currentColor = Color.WHITE.ARGB;
 
             setColorSpace(colorSpace);
         }
@@ -140,13 +142,19 @@ namespace XNATWL
 
         public void setDefaultColor()
         {
-            currentColor = (uint)Color.WHITE.ARGB;
+            currentColor = Color.WHITE.ARGB;
             for (int i = 0; i < colorSpace.Components; i++)
             {
                 float oldValue = colorValues[i];
                 colorValues[i] = colorSpace.ComponentDefaultValueOf(i);
-                colorValueModels[i].fireCallback(oldValue, colorValues[i]);
+                //colorValueModels[i].fireCallback(oldValue, colorValues[i]);
+
+                if (colorValueModels != null && colorValueModels.Length > i && colorValueModels[i] != null)
+                {
+                    colorValueModels[i].fireCallback(oldValue, colorValues[i]);
+                }
             }
+        
             colorChanged();
         }
 
@@ -319,8 +327,11 @@ namespace XNATWL
         protected void colorChanged()
         {
             int oldV = (int)currentColor;
-            currentColor = (uint)((currentColor & (0xFF << 24)) | colorSpace.RGB(colorValues));
-            this.ColorChanged.Invoke(this, new ColorSelectorColorChangedEventArgs());
+            currentColor = ((currentColor & (0xFF << 24)) | colorSpace.RGB(colorValues));
+            if (this.ColorChanged != null)
+            {
+                this.ColorChanged.Invoke(this, new ColorSelectorColorChangedEventArgs());
+            }
             updateModel();
             if (argbModels != null)
             {
@@ -338,9 +349,9 @@ namespace XNATWL
 
         protected void setColorInt(int argb)
         {
-            currentColor = (uint)argb;
+            currentColor = argb;
             float[] oldValues = colorValues;
-            colorValues = colorSpace.FromRGB(argb & 0xFFFFFF);
+            colorValues = colorSpace.FromRGB(argb & 0x00FFFFFF);
             for (int i = 0; i < colorSpace.Components; i++)
             {
                 colorValueModels[i].fireCallback(oldValues[i], colorValues[i]);
@@ -619,56 +630,71 @@ namespace XNATWL
             modelValueChanged();
         }
 
+        class HexColorEditField : EditField
+        {
+            protected override void insertChar(char ch)
+            {
+                if (isValid(ch))
+                {
+                    base.insertChar(ch);
+                }
+            }
+
+            public override void insertText(String str)
+            {
+                for (int i = 0, n = str.Length; i < n; i++)
+                {
+                    if (!isValid(str[i]))
+                    {
+                        StringBuilder sb = new StringBuilder(str);
+                        for (int j = n; j-- >= i;)
+                        {
+                            if (!isValid(sb[j]))
+                            {
+                                sb.Remove(j, 1);
+                            }
+                        }
+                        str = sb.ToString();
+                        break;
+                    }
+                }
+                base.insertText(str);
+            }
+
+            private bool isValid(char ch)
+            {
+                int digit = CharUtil.Digit(ch, 16);
+                return digit >= 0 && digit < 16;
+            }
+        }
+
         private void createHexColorEditField()
         {
-            /*hexColorEditField = new EditField() {
-                protected override void insertChar(char ch) {
-                    if(isValid(ch)) {
-                        base.insertChar(ch);
-                    }
-                }
-
-                public override void insertText(String str) {
-                    for(int i=0,n=str.length() ; i<n ; i++) {
-                        if(!isValid(str.charAt(i))) {
-                            StringBuilder sb = new StringBuilder(str);
-                            for(int j=n ; j-- >= i ;) {
-                                if(!isValid(sb.charAt(j))) {
-                                    sb.deleteCharAt(j);
-                                }
-                            }
-                            str = sb.toString();
-                            break;
-                        }
-                    }
-                    base.insertText(str);
-                }
-
-                private bool isValid(char ch) {
-                    int digit = Character.digit(ch, 16);
-                    return digit >= 0 && digit < 16;
-                }
-            };
+            hexColorEditField = new HexColorEditField();
             hexColorEditField.setTheme("hexColorEditField");
             hexColorEditField.setColumns(8);
-            hexColorEditField.addCallback(new EditField.Callback() {
-                public void callback(int key) {
-                    if(key == Event.KEY_ESCAPE) {
-                        updateHexEditField();
-                        return;
-                    }
-                    Color color = null;
-                    try {
-                        color = Color.parserColor("#".concat(hexColorEditField.getText()));
-                        hexColorEditField.setErrorMessage(null);
-                    } catch(Exception ex) {
-                        hexColorEditField.setErrorMessage("Invalid color format");
-                    }
-                    if(key == Event.KEY_RETURN && color != null) {
-                        setColor(color);
-                    }
+            hexColorEditField.Callback += (sender, e) =>
+            {
+                if (e.Key == Event.KEY_ESCAPE)
+                {
+                    updateHexEditField();
+                    return;
                 }
-            });*/
+                Color color = null;
+                try
+                {
+                    color = Color.Parse("#" + hexColorEditField.getText());
+                    hexColorEditField.setErrorMessage(null);
+                }
+                catch (Exception ex)
+                {
+                    hexColorEditField.setErrorMessage("Invalid color format");
+                }
+                if (e.Key == Event.KEY_RETURN && color != null)
+                {
+                    setColor(color);
+                }
+            };
         }
 
         void updateHexEditField()
@@ -760,7 +786,17 @@ namespace XNATWL
 
                 set
                 {
-                    this.colorSelector.setColorInt((int)((this.colorSelector.currentColor & ~(255 << startBit)) | (value << startBit)));
+                    string x = this.colorSelector.currentColor.ToString("X");
+
+                    int xy = ~(255 << startBit);
+                    System.Diagnostics.Debug.WriteLine("a:  " + xy.ToString("X"));
+                    int xyy = this.colorSelector.currentColor & xy;
+                    System.Diagnostics.Debug.WriteLine("ya:  " + xyy.ToString("X"));
+                    int xy4 = (value << startBit);
+                    System.Diagnostics.Debug.WriteLine("xy4:  " + xy4.ToString("X"));
+                    this.colorSelector.setColorInt((int)((this.colorSelector.currentColor & xy) | (value << startBit)));
+                    string x2 = this.colorSelector.currentColor.ToString("X");
+                    System.Diagnostics.Debug.WriteLine("x:  " + x + " | x2: " + x2);
                 }
             }
 

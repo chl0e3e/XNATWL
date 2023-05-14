@@ -51,5 +51,26 @@ namespace XNATWL.Utils
         {
             return ' ' == c;
         }
+
+        // https://stackoverflow.com/a/40041591
+        public static int Digit(char value, int radix)
+        {
+            if ((radix <= 0) || (radix > 36))
+                return -1; // Or throw exception
+
+            if (radix <= 10)
+                if (value >= '0' && value < '0' + radix)
+                    return value - '0';
+                else
+                    return -1;
+            else if (value >= '0' && value <= '9')
+                return value - '0';
+            else if (value >= 'a' && value < 'a' + radix - 10)
+                return value - 'a' + 10;
+            else if (value >= 'A' && value < 'A' + radix - 10)
+                return value - 'A' + 10;
+
+            return -1;
+        }
     }
 }

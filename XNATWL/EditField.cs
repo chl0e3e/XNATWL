@@ -381,7 +381,7 @@ namespace XNATWL
             }
         }
 
-        public void insertText(String str)
+        public virtual void insertText(String str)
         {
             if (!readOnly)
             {
@@ -1159,7 +1159,7 @@ namespace XNATWL
             }
         }
 
-        protected void insertChar(char ch)
+        protected virtual void insertChar(char ch)
         {
             // don't add control characters
             if (!readOnly && (!Char.IsControl(ch) || (multiLine && ch == '\n')))

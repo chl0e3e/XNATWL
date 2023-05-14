@@ -178,6 +178,7 @@ namespace XNATWL.Renderer.XNA
             this._spriteBatch = new SpriteBatch(this._graphicsDevice);
             this.clipRectTemp = new Rect();
             this._disposer = new DeferredDisposer(this);
+            this.dynamicImages = new List<XNADynamicImage>();
 
             var bytes = Convert.FromBase64String("iVBORw0KGgoAAAANSUhEUgAAABEAAAAZCAMAAADg4DWlAAAAmVBMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD///8jo0yHAAAAMXRSTlMAAQUPA0IfMgInFzlGCwwpGQcJEiIIP04vGDoqDgYbNVFDGjFBMEgWIElFEyw4PjRLq1RDbAAAALhJREFUeF5V0NlygzAMBVDbKK1tgtlJSgrZ93RR/v/jgjwTC/R45o6kuUJIDVqK0SDkSaHGhBhlNhoTPtGkH0QsT4w/iVgGmjGRMAVhCsLEwsTCRDKhsIemTW2hvQyKm8Xp989kCZAgyeL/cKxslFMG11uia7OySQdSIO72Mcl8tvyq/fX6bNKLp7j6Bnqxo34mId+h5tC7Z5Jbs7qrUJxEfLQ/pmQR4HpjegcsUrmydNQHEygFA7wAtBchFf1cSBMAAAAASUVORK5CYII=");
             var contents = new MemoryStream(bytes);

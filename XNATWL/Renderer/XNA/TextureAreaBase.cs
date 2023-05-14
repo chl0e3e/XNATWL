@@ -45,10 +45,11 @@ namespace XNATWL.Renderer.XNA
 
         public TextureAreaBase(XNATexture texture, int x, int y, int width, int height)
         {
+            /*
             if (texture == null)
             {
                 throw new ArgumentNullException("No texture!");
-            }
+            }*/
 
             this.tx0 = x;
             this.ty0 = y;
