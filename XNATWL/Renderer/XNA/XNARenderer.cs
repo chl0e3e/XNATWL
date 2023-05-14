@@ -321,6 +321,11 @@ namespace XNATWL.Renderer.XNA
             {
                 ScissorTestEnable = true,
             };
+            if(rendering)
+            {
+                this._spriteBatch.End();
+
+        }
             this._spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, SamplerState.PointClamp, null, rasterizerState);
             this._clipStack.clearStack();
             rendering = true;

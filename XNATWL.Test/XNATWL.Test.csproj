@@ -53,6 +53,7 @@
     <Compile Include="ScrollPaneDemoDialog1.cs" />
     <Compile Include="SimpleTest.cs" />
     <Compile Include="StyleItem.cs" />
+    <Compile Include="TableDemoDialog1.cs" />
     <Compile Include="TestGame.cs" />
     <Compile Include="TextAreaDemoDialog1.cs" />
     <Compile Include="TextAreaDemoDialog2.cs" />

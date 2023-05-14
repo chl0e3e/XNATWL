@@ -58,7 +58,10 @@ namespace XNATWL.Model
                 if (value != old)
                 {
                     this._value = value;
-                    this.Changed.Invoke(this, new IntegerChangedEventArgs(old, value));
+                    if (this.Changed != null)
+                    {
+                        this.Changed.Invoke(this, new IntegerChangedEventArgs(old, value));
+                    }
                 }
             }
         }

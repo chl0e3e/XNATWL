@@ -137,6 +137,12 @@ namespace XNATWL.Test
             fCS.adjustSize();
             fCS.center(0.5f, 0.5f);
             fCS.addCloseCallback();
+
+            TableDemoDialog1 fTable = new TableDemoDialog1();
+            root.desk.add(fTable);
+            fTable.adjustSize();
+            fTable.center(0f, 0.5f);
+            //fTable.addCloseCallback();
             /*GraphDemoDialog1 fMS = new GraphDemoDialog1();
             root.desk.add(fMS);
             fMS.adjustSize();

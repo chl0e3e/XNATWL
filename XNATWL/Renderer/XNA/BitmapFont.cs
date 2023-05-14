@@ -857,7 +857,7 @@ namespace XNATWL.Renderer.XNA
                 {
                     int startX = x;
 
-                    this.texture.SpriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend);
+                    //this.texture.SpriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend);
                     while (start < lineEnd)
                     {
                         char ch = str[start++];
@@ -883,7 +883,7 @@ namespace XNATWL.Renderer.XNA
 
                         //theight = Math.Max(theight, g.getHeight() + g.yoffset);
                     }
-                    this.texture.SpriteBatch.End();
+                    //this.texture.SpriteBatch.End();
                 }
                 start = lineEnd + 1;
                 y += theight;
