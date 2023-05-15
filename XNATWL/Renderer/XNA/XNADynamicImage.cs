@@ -35,11 +35,11 @@ namespace XNATWL.Renderer.XNA
     public class XNADynamicImage : TextureAreaBase, DynamicImage
     {
         private XNARenderer _renderer;
-        private Color tintColor;
+        private Color _tintColor;
 
         public XNADynamicImage(XNARenderer renderer, int width, int height, Color tintColor) : base(null, 0, 0, width, height)
         {
-            this.tintColor = tintColor;
+            this._tintColor = tintColor;
             this._renderer = renderer;
         }
 
@@ -47,7 +47,7 @@ namespace XNATWL.Renderer.XNA
         {
             get
             {
-                return this.width;
+                return this._width;
             }
         }
 
@@ -55,7 +55,7 @@ namespace XNATWL.Renderer.XNA
         {
             get
             {
-                return this.height;
+                return this._height;
             }
         }
 
@@ -72,12 +72,12 @@ namespace XNATWL.Renderer.XNA
 
         public void Draw(AnimationState state, int x, int y)
         {
-            this.drawQuad(this.tintColor, x, y, this.width, this.height);
+            this.DrawQuad(this._tintColor, x, y, this._width, this._height);
         }
 
         public void Draw(AnimationState state, int x, int y, int width, int height)
         {
-            this.drawQuad(this.tintColor, x, y, width, height);
+            this.DrawQuad(this._tintColor, x, y, width, height);
         }
 
         public void Update(Microsoft.Xna.Framework.Color[] data)
@@ -87,9 +87,9 @@ namespace XNATWL.Renderer.XNA
                 this._texture.Dispose();
             }
 
-            Texture2D texture2D = new Texture2D(this._renderer.GraphicsDevice, this.width, this.height);
+            Texture2D texture2D = new Texture2D(this._renderer.GraphicsDevice, this._width, this._height);
             texture2D.SetData(data);
-            this._texture = new XNATexture(this._renderer, this.width, this.height, texture2D);
+            this._texture = new XNATexture(this._renderer, this._width, this._height, texture2D);
         }
     }
 }

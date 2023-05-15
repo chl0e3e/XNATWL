@@ -34,32 +34,32 @@ namespace XNATWL.Renderer.XNA
 {
     public class XNACursor : TextureAreaBase, MouseCursor
     {
-        private int hotSpotX = 0;
-        private int hotSpotY = 0;
-        private Image imageRef = null;
+        private int _hotSpotX = 0;
+        private int _hotSpotY = 0;
+        private Image _imageRef = null;
 
         public XNACursor(XNATexture texture, int x, int y, int width, int height, int hotSpotX, int hotSpotY) : base(texture, x, y, width, height)
         {
-            this.hotSpotX = hotSpotX;
-            this.hotSpotY = hotSpotY;
+            this._hotSpotX = hotSpotX;
+            this._hotSpotY = hotSpotY;
         }
 
         public XNACursor(XNATexture texture, int x, int y, int width, int height, int hotSpotX, int hotSpotY, Image imageRef) : this(texture, x, y, width, height, hotSpotX, hotSpotY)
         {
-            this.hotSpotX = hotSpotX;
-            this.hotSpotY = hotSpotY;
-            this.imageRef = imageRef;
+            this._hotSpotX = hotSpotX;
+            this._hotSpotY = hotSpotY;
+            this._imageRef = imageRef;
         }
 
-        internal override void drawQuad(Color color, int x, int y, int w, int h)
+        internal override void DrawQuad(Color color, int x, int y, int w, int h)
         {
-            if (imageRef != null)
+            if (_imageRef != null)
             {
-                imageRef.Draw(this._texture.Renderer.CursorAnimationState, x - hotSpotX, y - hotSpotY);
+                _imageRef.Draw(this._texture.Renderer.CursorAnimationState, x - _hotSpotX, y - _hotSpotY);
             }
             else
             {
-                this._texture.SpriteBatch.Draw(this._texture.Texture2D, new Microsoft.Xna.Framework.Rectangle(x - hotSpotX, y - hotSpotY, w, h), new Microsoft.Xna.Framework.Rectangle(this.tx0, this.ty0, this.tw, this.th), this._texture.Renderer.TintStack.TintColorForXNA(color));
+                this._texture.SpriteBatch.Draw(this._texture.Texture2D, new Microsoft.Xna.Framework.Rectangle(x - _hotSpotX, y - _hotSpotY, w, h), new Microsoft.Xna.Framework.Rectangle(this._tx0, this._ty0, this._textureWidth, this._textureHeight), this._texture.Renderer.TintStack.TintColorForXNA(color));
             }
         }
     }

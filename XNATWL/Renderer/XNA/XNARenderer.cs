@@ -109,8 +109,6 @@ namespace XNATWL.Renderer.XNA
         }
 
         private GameTime _gameTime;
-        private List<TextureArea> textureAreas;
-        //private List<TextureAreaRotated> rotatedTextureAreas;
         private List<XNADynamicImage> dynamicImages;
         private GraphicsDevice _graphicsDevice;
         private SpriteBatch _spriteBatch;
@@ -120,10 +118,10 @@ namespace XNATWL.Renderer.XNA
         private MouseCursor _mouseCursor;
         private XNACursor _defaultCursor;
         private DeferredDisposer _disposer;
-        protected Rect clipRectTemp;
+        protected Rect _clipRectTemp;
         private bool hasScissor;
         private Rectangle? _defaultScissor = null;
-        public bool rendering = false;
+        public bool _rendering = false;
         private SWCursorAnimState _cursorAnimState;
         private int _mouseX = 0;
         private int _mouseY = 0;
@@ -152,7 +150,6 @@ namespace XNATWL.Renderer.XNA
             }
         }
 
-        private StackTrace lastCall = null;
         public SpriteBatch SpriteBatch
         {
             get
@@ -176,7 +173,7 @@ namespace XNATWL.Renderer.XNA
             this._tintStack = new TintStack();
             this._clipStack = new ClipStack();
             this._spriteBatch = new SpriteBatch(this._graphicsDevice);
-            this.clipRectTemp = new Rect();
+            this._clipRectTemp = new Rect();
             this._disposer = new DeferredDisposer(this);
             this.dynamicImages = new List<XNADynamicImage>();
 
@@ -190,9 +187,10 @@ namespace XNATWL.Renderer.XNA
             this._cursorAnimState = new SWCursorAnimState();
         }
 
-        protected void setClipRect()
+        protected void SetClipRect()
         {
-            Rect rect = clipRectTemp;
+            Rect rect = this._clipRectTemp;
+
             if (_clipStack.getClipRect(rect))
             {
                 if (!hasScissor)
@@ -215,13 +213,13 @@ namespace XNATWL.Renderer.XNA
         public void ClipEnter(int x, int y, int w, int h)
         {
             this._clipStack.push(x, y, w, h);
-            setClipRect();
+            this.SetClipRect();
         }
 
         public void ClipEnter(Rect rect)
         {
             this._clipStack.push(rect);
-            setClipRect();
+            this.SetClipRect();
         }
 
         public bool ClipIsEmpty()
@@ -233,13 +231,13 @@ namespace XNATWL.Renderer.XNA
         public void ClipLeave()
         {
             this._clipStack.pop();
-            setClipRect();
+            SetClipRect();
         }
 
         public DynamicImage CreateDynamicImage(int width, int height)
         {
             XNADynamicImage image = new XNADynamicImage(this, width, height, Color.WHITE);
-            dynamicImages.Add(image);
+            this.dynamicImages.Add(image);
             return image;
         }
 
@@ -313,22 +311,16 @@ namespace XNATWL.Renderer.XNA
             this._mouseY = mouseY;
         }
 
-        private BasicEffect startEffect;
-
         public bool StartRendering()
         {
             RasterizerState rasterizerState = new RasterizerState()
             {
                 ScissorTestEnable = true,
             };
-            if(rendering)
-            {
-                this._spriteBatch.End();
 
-        }
             this._spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, SamplerState.PointClamp, null, rasterizerState);
             this._clipStack.clearStack();
-            rendering = true;
+            this._rendering = true;
 
             return true;
         }
@@ -336,9 +328,9 @@ namespace XNATWL.Renderer.XNA
         public void EndRendering()
         {
             XNACursor cursor = this._mouseCursor == null ? this._defaultCursor : ((XNACursor)this._mouseCursor);
-            cursor.drawQuad(Color.WHITE, this._mouseX, this._mouseY, cursor.getWidth(), cursor.getHeight());
-            
-            rendering = false;
+            cursor.DrawQuad(Color.WHITE, this._mouseX, this._mouseY, cursor.getWidth(), cursor.getHeight());
+
+            this._rendering = false;
             this.Disposer.Update();
 
             this._spriteBatch.End();
@@ -357,21 +349,21 @@ namespace XNATWL.Renderer.XNA
 
         public class SWCursorAnimState : AnimationState
         {
-            private long[] lastTime;
-            private bool[] active;
+            private long[] _lastTime;
+            private bool[] _active;
 
             public SWCursorAnimState()
             {
-                lastTime = new long[3];
-                active = new bool[3];
+                _lastTime = new long[3];
+                _active = new bool[3];
             }
 
             public void SetAnimationState(int idx, bool isActive)
             {
-                if (idx >= 0 && idx < 3 && active[idx] != isActive)
+                if (idx >= 0 && idx < 3 && _active[idx] != isActive)
                 {
-                    lastTime[idx] = DateTime.Now.Ticks;
-                    active[idx] = isActive;
+                    _lastTime[idx] = DateTime.Now.Ticks;
+                    _active[idx] = isActive;
                 }
             }
 
@@ -398,7 +390,7 @@ namespace XNATWL.Renderer.XNA
                 int idx = this.GetMouseButton(state);
                 if (idx >= 0)
                 {
-                    curTime -= lastTime[idx];
+                    curTime -= _lastTime[idx];
                 }
                 return (int)curTime & Int32.MaxValue;
             }
@@ -408,7 +400,7 @@ namespace XNATWL.Renderer.XNA
                 int idx = this.GetMouseButton(state);
                 if (idx >= 0)
                 {
-                    return active[idx];
+                    return _active[idx];
                 }
                 return false;
             }

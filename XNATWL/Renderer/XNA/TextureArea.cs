@@ -36,17 +36,17 @@ namespace XNATWL.Renderer.XNA
     {
         protected static int REPEAT_CACHE_SIZE = 10;
 
-        protected Color tintColor;
-        protected int repeatCacheID = -1;
+        protected Color _tintColor;
+        protected int _repeatCacheID = -1;
 
         public TextureArea(XNATexture texture, int x, int y, int width, int height, Color tintColor) : base(texture, x, y, width, height)
         {
-            this.tintColor = (tintColor == null) ? Color.WHITE : tintColor;
+            this._tintColor = (tintColor == null) ? Color.WHITE : tintColor;
         }
 
         public TextureArea(TextureArea src, Color tintColor) : base(src)
         {
-            this.tintColor = tintColor;
+            this._tintColor = tintColor;
         }
 
         public int Width
@@ -120,17 +120,17 @@ namespace XNATWL.Renderer.XNA
 
         public void Draw(AnimationState animationState, int x, int y)
         {
-            this.Draw(animationState, x, y, width, height);
+            this.Draw(animationState, x, y, _width, _height);
         }
 
         public void Draw(AnimationState animationState, int x, int y, int w, int h)
         {
-            drawQuad(this.tintColor, x, y, w, h);
+            DrawQuad(this._tintColor, x, y, w, h);
         }
 
         public void Draw(AnimationState animationState, int x, int y, int width, int height, int repeatCountX, int repeatCountY)
         {
-            if ((repeatCountX * this.width != width) || (repeatCountY * this.height != height))
+            if ((repeatCountX * this._width != width) || (repeatCountY * this._height != height))
             {
                 DrawRepeatSlow(x, y, width, height, repeatCountX, repeatCountY);
                 return;
@@ -156,7 +156,7 @@ namespace XNATWL.Renderer.XNA
                 for (int xi = 0; xi < repeatCountX;)
                 {
                     int nx = ++xi * width / repeatCountX;
-                    drawQuad(this.tintColor, x + cx, y, nx - cx, rowHeight);
+                    DrawQuad(this._tintColor, x + cx, y, nx - cx, rowHeight);
                     cx = nx;
                 }
 
@@ -169,8 +169,8 @@ namespace XNATWL.Renderer.XNA
 
         protected void DrawRepeat(int x, int y, int repeatCountX, int repeatCountY)
         {
-            int w = width;
-            int h = height;
+            int w = _width;
+            int h = _height;
             //GL11.glBegin(GL11.GL_QUADS);
             while (repeatCountY-- > 0)
             {
@@ -178,7 +178,7 @@ namespace XNATWL.Renderer.XNA
                 int cntX = repeatCountX;
                 while (cntX-- > 0)
                 {
-                    drawQuad(this.tintColor, curX, y, w, h);
+                    DrawQuad(this._tintColor, curX, y, w, h);
                     curX += w;
                 }
                 y += h;
@@ -188,7 +188,7 @@ namespace XNATWL.Renderer.XNA
 
         protected void DrawRepeatCached(int x, int y, int repeatCountX, int repeatCountY)
         {
-            if (repeatCacheID < 0)
+            if (_repeatCacheID < 0)
             {
                 CreateRepeatCache();
             }
@@ -198,7 +198,7 @@ namespace XNATWL.Renderer.XNA
 
             if (repeatCountX > repeatsByCacheX)
             {
-                DrawRepeat(x + width * repeatsByCacheX, y,
+                DrawRepeat(x + _width * repeatsByCacheX, y,
                         repeatCountX - repeatsByCacheX, repeatCountY);
             }
 
@@ -217,7 +217,7 @@ namespace XNATWL.Renderer.XNA
 
                 //GL11.glPopMatrix();
                 repeatCountY -= REPEAT_CACHE_SIZE;
-                y += height * REPEAT_CACHE_SIZE;
+                y += _height * REPEAT_CACHE_SIZE;
             } while (repeatCountY >= REPEAT_CACHE_SIZE);
 
             if (repeatCountY > 0)
@@ -250,8 +250,8 @@ namespace XNATWL.Renderer.XNA
             {
                 throw new NullReferenceException("color");
             }
-            Color newTintColor = tintColor.Multiply(color);
-            if (newTintColor.Equals(tintColor))
+            Color newTintColor = _tintColor.Multiply(color);
+            if (newTintColor.Equals(_tintColor))
             {
                 return this;
             }
