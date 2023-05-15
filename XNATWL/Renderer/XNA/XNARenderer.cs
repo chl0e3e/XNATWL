@@ -282,7 +282,7 @@ namespace XNATWL.Renderer.XNA
 
         public void PushGlobalTintColor(float r, float g, float b, float a)
         {
-            _tintStack = _tintStack.push(r, g, b, a);
+            _tintStack = _tintStack.Push(r, g, b, a);
         }
 
         public void SetCursor(MouseCursor cursor)

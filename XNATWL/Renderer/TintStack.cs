@@ -34,53 +34,53 @@ namespace XNATWL.Renderer
     {
         private static float ONE_OVER_255 = 1f;// / 255f;
 
-        TintStack prev;
-        TintStack next;
-        float r, g, b, a;
+        TintStack _prev;
+        TintStack _next;
+        float _r, _g, _b, _a;
 
         public TintStack()
         {
-            this.prev = this;
-            this.r = ONE_OVER_255;
-            this.g = ONE_OVER_255;
-            this.b = ONE_OVER_255;
-            this.a = ONE_OVER_255;
+            this._prev = this;
+            this._r = ONE_OVER_255;
+            this._g = ONE_OVER_255;
+            this._b = ONE_OVER_255;
+            this._a = ONE_OVER_255;
         }
 
         private TintStack(TintStack prev)
         {
-            this.prev = prev;
+            this._prev = prev;
         }
 
-        public TintStack pushReset()
+        public TintStack PushReset()
         {
-            if (next == null)
+            if (_next == null)
             {
-                next = new TintStack(this);
+                _next = new TintStack(this);
             }
-            next.r = ONE_OVER_255;
-            next.g = ONE_OVER_255;
-            next.b = ONE_OVER_255;
-            next.a = ONE_OVER_255;
-            return next;
+            _next._r = ONE_OVER_255;
+            _next._g = ONE_OVER_255;
+            _next._b = ONE_OVER_255;
+            _next._a = ONE_OVER_255;
+            return _next;
         }
 
-        public TintStack push(float r, float g, float b, float a)
+        public TintStack Push(float r, float g, float b, float a)
         {
-            if (next == null)
+            if (_next == null)
             {
-                next = new TintStack(this);
+                _next = new TintStack(this);
             }
-            next.r = this.r * r;
-            next.g = this.g * g;
-            next.b = this.b * b;
-            next.a = this.a * a;
-            return next;
+            _next._r = this._r * r;
+            _next._g = this._g * g;
+            _next._b = this._b * b;
+            _next._a = this._a * a;
+            return _next;
         }
 
-        public TintStack push(Color color)
+        public TintStack Push(Color color)
         {
-            return push(
+            return Push(
                     color.RedF,
                     color.GreenF,
                     color.BlueF,
@@ -89,32 +89,32 @@ namespace XNATWL.Renderer
 
         public Microsoft.Xna.Framework.Color TintColorForXNA(Color color)
         {
-            return new Microsoft.Xna.Framework.Color(this.r * color.RedF, this.g * color.GreenF, this.b * color.BlueF, this.a * color.AlphaF);
+            return new Microsoft.Xna.Framework.Color(this._r * color.RedF, this._g * color.GreenF, this._b * color.BlueF, this._a * color.AlphaF);
         }
 
         public TintStack pop()
         {
-            return prev;
+            return _prev;
         }
 
-        public float getR()
+        public float Red()
         {
-            return r;
+            return _r;
         }
 
-        public float getG()
+        public float Green()
         {
-            return g;
+            return _g;
         }
 
-        public float getB()
+        public float Blue()
         {
-            return b;
+            return _b;
         }
 
-        public float getA()
+        public float Alpha()
         {
-            return a;
+            return _a;
         }
     }
 }

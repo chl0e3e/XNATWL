@@ -36,22 +36,22 @@ namespace XNATWL.Renderer
 {
     public class FontParameter
     {
-        static Dictionary<String, object> parameterMap = new Dictionary<String, object>();
+        static Dictionary<String, object> _PARAMETER_MAP = new Dictionary<String, object>();
 
         public static Parameter<Color> COLOR = NewParameter("color", Color.WHITE);
         public static Parameter<bool> UNDERLINE = NewParameter("underline", false);
         public static Parameter<bool> LINETHROUGH = NewParameter("linethrough", false);
 
-        private object[] values;
+        private object[] _values;
 
         public FontParameter()
         {
-            this.values = new Object[8];
+            this._values = new Object[8];
         }
 
         public FontParameter(FontParameter baseParameter)
         {
-            this.values = (object[]) baseParameter.values.Clone();
+            this._values = (object[]) baseParameter._values.Clone();
         }
 
         /**
@@ -67,14 +67,14 @@ namespace XNATWL.Renderer
                 throw new Exception("value casting failed");
             }
             int ordinal = param._ordinal;
-            int curLength = values.Length;
+            int curLength = _values.Length;
             if (ordinal >= curLength)
             {
                 Object[] tmp = new Object[Math.Max(ordinal + 1, curLength * 2)];
-                Array.Copy(values, 0, tmp, 0, curLength);
-                values = tmp;
+                Array.Copy(_values, 0, tmp, 0, curLength);
+                _values = tmp;
             }
-            values[ordinal] = value;
+            _values[ordinal] = value;
         }
 
         /**
@@ -85,9 +85,9 @@ namespace XNATWL.Renderer
          */
         public T Get<T>(Parameter<T> param)
         {
-            if (param._ordinal < values.Length)
+            if (param._ordinal < _values.Length)
             {
-                Object raw = values[param._ordinal];
+                Object raw = _values[param._ordinal];
                 if (raw != null)
                 {
                     return (T) raw;
@@ -102,8 +102,8 @@ namespace XNATWL.Renderer
          */
         public static object[] RegisteredParameter()
         {
-            lock (parameterMap) {
-                return parameterMap.Values.ToArray();
+            lock (_PARAMETER_MAP) {
+                return _PARAMETER_MAP.Values.ToArray();
             }
         }
 
@@ -114,12 +114,12 @@ namespace XNATWL.Renderer
          */
         public static object ParameterByName(String name)
         {
-            lock(parameterMap) {
-                if (!parameterMap.ContainsKey(name))
+            lock(_PARAMETER_MAP) {
+                if (!_PARAMETER_MAP.ContainsKey(name))
                 {
                     return null;
                 }
-                return parameterMap[name];
+                return _PARAMETER_MAP[name];
             }
         }
 
@@ -159,7 +159,7 @@ namespace XNATWL.Renderer
          */
         public static Parameter<T> NewParameter<T>(String name, Type dataClass, T defaultValue)
         {
-            lock(parameterMap)
+            lock(_PARAMETER_MAP)
             {
                 object existing = ParameterByName(name);
                 if (existing != null)
@@ -178,8 +178,8 @@ namespace XNATWL.Renderer
                     return (Parameter<T>)existing;
                 }
 
-                Parameter<T> type = new Parameter<T>(name, dataClass, defaultValue, parameterMap.Count);
-                parameterMap.Add(name, type);
+                Parameter<T> type = new Parameter<T>(name, dataClass, defaultValue, _PARAMETER_MAP.Count);
+                _PARAMETER_MAP.Add(name, type);
                 return type;
             }
         }
@@ -238,5 +238,4 @@ namespace XNATWL.Renderer
             }
         }
     }
-
 }
