@@ -1,6 +1,7 @@
 # XNATWL
 
-A port of TWL created from LWJGL to the C# XNA/FNA engine. Multiple components are of open-source origin, including TWL itself.
+A port of TWL to the C# XNA/FNA engine. The original TWL is written in Java and supports LWJGL 2.
+Multiple components are of open-source origin, including TWL itself.
 
 ### Features
 
