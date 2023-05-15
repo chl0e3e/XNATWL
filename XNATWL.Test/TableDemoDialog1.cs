@@ -106,7 +106,7 @@ namespace XNATWL.Test
 
             public void applyTheme(ThemeInfo themeInfo)
             {
-                comboBoxHeight = themeInfo.getParameter("comboBoxHeight", 0);
+                comboBoxHeight = themeInfo.GetParameter("comboBoxHeight", 0);
             }
 
             public String getTheme()

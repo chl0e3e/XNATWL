@@ -365,16 +365,16 @@ namespace XNATWL
 
         protected void applyThemeScrollbar(ThemeInfo themeInfo)
         {
-            setScaleThumb(themeInfo.getParameter("scaleThumb", false));
+            setScaleThumb(themeInfo.GetParameter("scaleThumb", false));
             if (orientation == Orientation.HORIZONTAL)
             {
-                trackImageUpLeft = (Renderer.Image) themeInfo.getParameterValue("trackImageLeft", false, typeof(Renderer.Image));
-                trackImageDownRight = (Renderer.Image)themeInfo.getParameterValue("trackImageRight", false, typeof(Renderer.Image));
+                trackImageUpLeft = (Renderer.Image) themeInfo.GetParameterValue("trackImageLeft", false, typeof(Renderer.Image));
+                trackImageDownRight = (Renderer.Image)themeInfo.GetParameterValue("trackImageRight", false, typeof(Renderer.Image));
             }
             else
             {
-                trackImageUpLeft = (Renderer.Image)themeInfo.getParameterValue("trackImageUp", false, typeof(Renderer.Image));
-                trackImageDownRight = (Renderer.Image)themeInfo.getParameterValue("trackImageDown", false, typeof(Renderer.Image));
+                trackImageUpLeft = (Renderer.Image)themeInfo.GetParameterValue("trackImageUp", false, typeof(Renderer.Image));
+                trackImageDownRight = (Renderer.Image)themeInfo.GetParameterValue("trackImageDown", false, typeof(Renderer.Image));
             }
         }
 

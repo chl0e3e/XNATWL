@@ -161,7 +161,7 @@ namespace XNATWL
 
         protected void applyThemeLabel(ThemeInfo themeInfo)
         {
-            String themeText = (string) themeInfo.getParameterValue("text", false, typeof(string));
+            String themeText = (string) themeInfo.GetParameterValue("text", false, typeof(string));
             if (themeText != null)
             {
                 setText(themeText);

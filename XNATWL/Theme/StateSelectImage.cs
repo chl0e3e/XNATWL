@@ -35,9 +35,10 @@ namespace XNATWL.Theme
 {
     public class StateSelectImage : Renderer.Image, HasBorder
     {
-        public Renderer.Image[] images;
-        public StateSelect select;
-        public Border border;
+        private Border _border;
+
+        public Renderer.Image[] Images;
+        public StateSelect Select;
 
         public StateSelectImage(StateSelect select, Border border, params Renderer.Image[] ximages)
         {
@@ -50,16 +51,16 @@ namespace XNATWL.Theme
                 throw new Exception("Assert exception");
             }
 
-            this.images = ximages;
-            this.select = select;
-            this.border = border;
+            this.Images = ximages;
+            this.Select = select;
+            this._border = border;
         }
 
         public int Width
         {
             get
             {
-                return images[0].Width;
+                return Images[0].Width;
             }
         }
 
@@ -67,7 +68,7 @@ namespace XNATWL.Theme
         {
             get
             {
-                return images[0].Height;
+                return Images[0].Height;
             }
         }
 
@@ -78,10 +79,10 @@ namespace XNATWL.Theme
 
         public void Draw(Renderer.AnimationState animationState, int x, int y, int width, int height)
         {
-            int idx = select.Evaluate(animationState);
-            if (idx < images.Length)
+            int idx = Select.Evaluate(animationState);
+            if (idx < Images.Length)
             {
-                images[idx].Draw(animationState, x, y, width, height);
+                Images[idx].Draw(animationState, x, y, width, height);
             }
         }
 
@@ -89,18 +90,18 @@ namespace XNATWL.Theme
         {
             get
             {
-                return border;
+                return this._border;
             }
         }
 
         public Renderer.Image CreateTintedVersion(Color color)
         {
-            Renderer.Image[] newImages = new Renderer.Image[images.Length];
+            Renderer.Image[] newImages = new Renderer.Image[Images.Length];
             for (int i = 0; i < newImages.Length; i++)
             {
-                newImages[i] = images[i].CreateTintedVersion(color);
+                newImages[i] = Images[i].CreateTintedVersion(color);
             }
-            return new StateSelectImage(select, border, newImages);
+            return new StateSelectImage(Select, Border, newImages);
         }
 
     }

@@ -233,8 +233,8 @@ namespace XNATWL
 
         protected void applyThemeRadialPopupMenu(ThemeInfo themeInfo)
         {
-            setRadius(themeInfo.getParameter("radius", 40));
-            setButtonRadius(themeInfo.getParameter("buttonRadius", 40));
+            setRadius(themeInfo.GetParameter("radius", 40));
+            setButtonRadius(themeInfo.GetParameter("buttonRadius", 40));
         }
 
         protected override void layout()

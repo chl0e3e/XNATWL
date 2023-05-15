@@ -429,9 +429,9 @@ namespace XNATWL
 
         protected void applyThemeWheel(ThemeInfo themeInfo)
         {
-            itemHeight = themeInfo.getParameter("itemHeight", 10);
-            numVisibleItems = themeInfo.getParameter("visibleItems", 5);
-            selectedOverlay = themeInfo.getImage("selectedOverlay");
+            itemHeight = themeInfo.GetParameter("itemHeight", 10);
+            numVisibleItems = themeInfo.GetParameter("visibleItems", 5);
+            selectedOverlay = themeInfo.GetImage("selectedOverlay");
             invalidateLayout();
         }
 

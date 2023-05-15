@@ -106,9 +106,9 @@ namespace XNATWL
 
         protected void applyThemeGraph(ThemeInfo themeInfo)
         {
-            this.themeLineStyles = themeInfo.getParameterMap("lineStyles");
-            setSizeMultipleX(themeInfo.getParameter("sizeMultipleX", 1));
-            setSizeMultipleY(themeInfo.getParameter("sizeMultipleY", 1));
+            this.themeLineStyles = themeInfo.GetParameterMap("lineStyles");
+            setSizeMultipleX(themeInfo.GetParameter("sizeMultipleX", 1));
+            setSizeMultipleY(themeInfo.GetParameter("sizeMultipleY", 1));
             invalidateLineStyles();
         }
 
@@ -145,7 +145,7 @@ namespace XNATWL
                     ParameterMap lineStyle = null;
                     if (themeLineStyles != null)
                     {
-                        lineStyle = themeLineStyles.getParameterMap(visualStyle);
+                        lineStyle = themeLineStyles.GetParameterMap(visualStyle);
                     }
                     style.setStyleName(visualStyle, lineStyle);
                 }
@@ -242,8 +242,8 @@ namespace XNATWL
                 this.name = name;
                 if (lineStyle != null)
                 {
-                    this.color = lineStyle.getParameter("color", Color.WHITE);
-                    this.lineWidth = Math.Max(EPSILON, lineStyle.getParameter("width", 1.0f));
+                    this.color = lineStyle.GetParameter("color", Color.WHITE);
+                    this.lineWidth = Math.Max(EPSILON, lineStyle.GetParameter("width", 1.0f));
                 }
             }
         }

@@ -153,8 +153,8 @@ namespace XNATWL
         protected override void applyTheme(ThemeInfo themeInfo)
         {
             base.applyTheme(themeInfo);
-            setSpacing(themeInfo.getParameter("spacing", 0));
-            setAlignment((Alignment) themeInfo.getParameter("alignment", Alignment.TOP));
+            setSpacing(themeInfo.GetParameter("spacing", 0));
+            setAlignment((Alignment) themeInfo.GetParameter("alignment", Alignment.TOP));
         }
 
         public static int computeMinWidthHorizontal(Widget container, int spacing)

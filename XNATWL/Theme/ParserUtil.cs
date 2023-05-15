@@ -36,12 +36,11 @@ namespace XNATWL.Theme
 {
     public class ParserUtil
     {
-
         private ParserUtil()
         {
         }
 
-        public static void checkNameNotEmpty(String name, XMLParser xmlp)
+        public static void CheckNameNotEmpty(String name, XMLParser xmlp)
         {
             if (name == null)
             {
@@ -65,17 +64,17 @@ namespace XNATWL.Theme
             }
         }
 
-        public static Border parseBorderFromAttribute(XMLParser xmlp, String attribute)
+        public static Border ParseBorderFromAttribute(XMLParser xmlp, String attribute)
         {
             String value = xmlp.getAttributeValue(null, attribute);
             if (value == null)
             {
                 return null;
             }
-            return parseBorder(xmlp, value);
+            return ParseBorder(xmlp, value);
         }
 
-        public static Border parseBorder(XMLParser xmlp, String value)
+        public static Border ParseBorder(XMLParser xmlp, String value)
         {
             try
             {
@@ -98,24 +97,24 @@ namespace XNATWL.Theme
             }
         }
 
-        public static Color parseColorFromAttribute(XMLParser xmlp, String attribute, ParameterMapImpl constants, Color defaultColor)
+        public static Color ParseColorFromAttribute(XMLParser xmlp, String attribute, ParameterMapImpl constants, Color defaultColor)
         {
             String value = xmlp.getAttributeValue(null, attribute);
             if (value == null)
             {
                 return defaultColor;
             }
-            return parseColor(xmlp, value, constants);
+            return ParseColor(xmlp, value, constants);
         }
 
-        public static Color parseColor(XMLParser xmlp, String value, ParameterMapImpl constants)
+        public static Color ParseColor(XMLParser xmlp, String value, ParameterMapImpl constants)
         {
             try
             {
                 Color color = Color.Parse(value);
                 if (color == null && constants != null)
                 {
-                    color = (Color) constants.getParameterValue(value, false, typeof(Color));
+                    color = (Color) constants.GetParameterValue(value, false, typeof(Color));
                 }
                 if (color == null)
                 {
@@ -129,7 +128,7 @@ namespace XNATWL.Theme
             }
         }
 
-        public static String appendDot(String name)
+        public static String AppendDot(String name)
         {
             int len = name.Length;
             if (len > 0 && name[len - 1] != '.')
@@ -139,7 +138,7 @@ namespace XNATWL.Theme
             return name;
         }
 
-        public static int[] parseIntArrayFromAttribute(XMLParser xmlp, String attribute)
+        public static int[] ParseIntArrayFromAttribute(XMLParser xmlp, String attribute)
         {
             try
             {
@@ -152,7 +151,7 @@ namespace XNATWL.Theme
             }
         }
 
-        public static int parseIntExpressionFromAttribute(XMLParser xmlp, String attribute, int defaultValue, AbstractMathInterpreter interpreter)
+        public static int ParseIntExpressionFromAttribute(XMLParser xmlp, String attribute, int defaultValue, AbstractMathInterpreter interpreter)
         {
             try
             {
@@ -184,7 +183,7 @@ namespace XNATWL.Theme
             }
         }
 
-        public static SortedDictionary<String, V> find<V>(SortedDictionary<String, V> map, String baseName)
+        public static SortedDictionary<String, V> Find<V>(SortedDictionary<String, V> map, String baseName)
         {
             SortedDictionary<string, V> subMap = new SortedDictionary<string, V>();
             bool adding = false;
@@ -199,13 +198,13 @@ namespace XNATWL.Theme
             return subMap;
         }
 
-        public static Dictionary<String, V> resolve<V>(SortedDictionary<String, V> map, String reference, String name, V mapToNull)
+        public static Dictionary<String, V> Resolve<V>(SortedDictionary<String, V> map, String reference, String name, V mapToNull)
         {
-            name = ParserUtil.appendDot(name);
+            name = ParserUtil.AppendDot(name);
             int refLen = reference.Length - 1;
             reference = reference.Substring(0, refLen);
 
-            SortedDictionary<String, V> matched = find(map, reference);
+            SortedDictionary<String, V> matched = Find(map, reference);
             if (matched.Count == 0)
             {
                 return new Dictionary<string, V>(matched);
@@ -230,7 +229,7 @@ namespace XNATWL.Theme
             return result;
         }
 
-        public static StateExpression parseCondition(XMLParser xmlp)
+        public static StateExpression ParseCondition(XMLParser xmlp)
         {
             String expression = xmlp.getAttributeValue(null, "if");
             bool negate = expression == null;

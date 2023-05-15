@@ -1781,51 +1781,51 @@ namespace XNATWL
 
         protected void applyThemeBackground(ThemeInfo themeInfo)
         {
-            setBackground(themeInfo.getImage("background"));
+            setBackground(themeInfo.GetImage("background"));
         }
 
         protected void applyThemeOverlay(ThemeInfo themeInfo)
         {
-            setOverlay(themeInfo.getImage("overlay"));
+            setOverlay(themeInfo.GetImage("overlay"));
         }
 
         protected void applyThemeBorder(ThemeInfo themeInfo)
         {
-            setBorderSize((Border) themeInfo.getParameterValue("border", false, typeof(Border)));
+            setBorderSize((Border) themeInfo.GetParameterValue("border", false, typeof(Border)));
         }
 
         protected void applyThemeOffscreenExtra(ThemeInfo themeInfo)
         {
-            setOffscreenExtra((Border) themeInfo.getParameterValue("offscreenExtra", false, typeof(Border)));
+            setOffscreenExtra((Border) themeInfo.GetParameterValue("offscreenExtra", false, typeof(Border)));
         }
 
         protected void applyThemeMinSize(ThemeInfo themeInfo)
         {
             setMinSize(
-                    themeInfo.getParameter("minWidth", 0),
-                    themeInfo.getParameter("minHeight", 0));
+                    themeInfo.GetParameter("minWidth", 0),
+                    themeInfo.GetParameter("minHeight", 0));
         }
 
         protected void applyThemeMaxSize(ThemeInfo themeInfo)
         {
             setMaxSize(
-                    themeInfo.getParameter("maxWidth", short.MaxValue),
-                    themeInfo.getParameter("maxHeight", short.MaxValue));
+                    themeInfo.GetParameter("maxWidth", short.MaxValue),
+                    themeInfo.GetParameter("maxHeight", short.MaxValue));
         }
 
         protected virtual void applyThemeMouseCursor(ThemeInfo themeInfo)
         {
-            setMouseCursor(themeInfo.getMouseCursor("mouseCursor"));
+            setMouseCursor(themeInfo.GetMouseCursor("mouseCursor"));
         }
 
         protected void applyThemeInputMap(ThemeInfo themeInfo)
         {
-            setInputMap((InputMap) themeInfo.getParameterValue("inputMap", false, typeof(InputMap)));
+            setInputMap((InputMap) themeInfo.GetParameterValue("inputMap", false, typeof(InputMap)));
         }
 
         protected void applyThemeTooltip(ThemeInfo themeInfo)
         {
-            themeTooltipContent = themeInfo.getParameterValue("tooltip", false);
+            themeTooltipContent = themeInfo.GetParameterValue("tooltip", false);
             if (tooltipContent == null)
             {
                 updateTooltip();
@@ -3075,7 +3075,7 @@ namespace XNATWL
             ThemeInfo themeInfo = null;
             try
             {
-                themeInfo = themeManager.findThemeInfo(themePath);
+                themeInfo = themeManager.FindThemeInfo(themePath);
                 if (themeInfo != null && theme.Length > 0)
                 {
                     try
@@ -3119,11 +3119,11 @@ namespace XNATWL
                 {
                     if (isAbsoluteTheme(theme))
                     {
-                        themeInfo = themeManager.findThemeInfo(theme.Substring(1));
+                        themeInfo = themeManager.FindThemeInfo(theme.Substring(1));
                     }
                     else
                     {
-                        themeInfo = themeInfo.getChildTheme(theme);
+                        themeInfo = themeInfo.GetChildTheme(theme);
                     }
                     if (themeInfo != null)
                     {

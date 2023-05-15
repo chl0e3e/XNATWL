@@ -664,8 +664,8 @@ namespace XNATWL
 
             public void applyTheme(ThemeInfo themeInfo)
             {
-                treeIndent = themeInfo.getParameter("treeIndent", 10);
-                treeButtonSize = themeInfo.getParameterValue("treeButtonSize", true, typeof(Dimension), Dimension.ZERO);
+                treeIndent = themeInfo.GetParameter("treeIndent", 10);
+                treeButtonSize = themeInfo.GetParameterValue("treeButtonSize", true, typeof(Dimension), Dimension.ZERO);
             }
 
             public String getTheme()

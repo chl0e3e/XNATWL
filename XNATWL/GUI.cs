@@ -1611,7 +1611,7 @@ namespace XNATWL
             protected override void applyTheme(ThemeInfo themeInfo)
             {
                 base.applyTheme(themeInfo);
-                fadeInTime = themeInfo.getParameter("fadeInTime", 0);
+                fadeInTime = themeInfo.GetParameter("fadeInTime", 0);
             }
 
             //@Override

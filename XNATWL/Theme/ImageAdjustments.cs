@@ -36,42 +36,42 @@ namespace XNATWL.Theme
 {
     internal class ImageAdjustments : Image, HasBorder
     {
-        internal Renderer.Image image;
-        Border border;
-        Border inset;
-        int sizeOverwriteH;
-        int sizeOverwriteV;
-        bool center;
-        internal StateExpression condition;
+        internal Renderer.Image _image;
+        Border _border;
+        Border _inset;
+        int _sizeOverwriteH;
+        int _sizeOverwriteV;
+        bool _center;
+        internal StateExpression _condition;
 
         public ImageAdjustments(Renderer.Image image, Border border, Border inset,
                 int sizeOverwriteH, int sizeOverwriteV,
                 bool center, StateExpression condition)
         {
-            this.image = image;
-            this.border = border;
-            this.inset = inset;
-            this.sizeOverwriteH = sizeOverwriteH;
-            this.sizeOverwriteV = sizeOverwriteV;
-            this.center = center;
-            this.condition = condition;
+            this._image = image;
+            this._border = border;
+            this._inset = inset;
+            this._sizeOverwriteH = sizeOverwriteH;
+            this._sizeOverwriteV = sizeOverwriteV;
+            this._center = center;
+            this._condition = condition;
         }
 
         public int Width
         {
             get
             {
-                if (sizeOverwriteH >= 0)
+                if (_sizeOverwriteH >= 0)
                 {
-                    return sizeOverwriteH;
+                    return _sizeOverwriteH;
                 }
-                else if (inset != null)
+                else if (_inset != null)
                 {
-                    return image.Width + inset.BorderLeft + inset.BorderRight;
+                    return _image.Width + _inset.BorderLeft + _inset.BorderRight;
                 }
                 else
                 {
-                    return image.Width;
+                    return _image.Width;
                 }
             }
         }
@@ -80,69 +80,69 @@ namespace XNATWL.Theme
         {
             get
             {
-                if (sizeOverwriteV >= 0)
+                if (_sizeOverwriteV >= 0)
                 {
-                    return sizeOverwriteV;
+                    return _sizeOverwriteV;
                 }
-                else if (inset != null)
+                else if (_inset != null)
                 {
-                    return image.Height + inset.BorderTop + inset.BorderBottom;
+                    return _image.Height + _inset.BorderTop + _inset.BorderBottom;
                 }
                 else
                 {
-                    return image.Height;
+                    return _image.Height;
                 }
             }
         }
 
         public void Draw(Renderer.AnimationState animationState, int x, int y, int width, int height)
         {
-            if (condition == null || condition.Evaluate(animationState))
+            if (_condition == null || _condition.Evaluate(animationState))
             {
-                if (inset != null)
+                if (_inset != null)
                 {
-                    x += inset.BorderLeft;
-                    y += inset.BorderTop;
-                    width = Math.Max(0, width - inset.BorderLeft - inset.BorderRight);
-                    height = Math.Max(0, height - inset.BorderTop - inset.BorderBottom);
+                    x += _inset.BorderLeft;
+                    y += _inset.BorderTop;
+                    width = Math.Max(0, width - _inset.BorderLeft - _inset.BorderRight);
+                    height = Math.Max(0, height - _inset.BorderTop - _inset.BorderBottom);
                 }
-                if (center)
+                if (_center)
                 {
-                    int w = Math.Min(width, image.Width);
-                    int h = Math.Min(height, image.Height);
+                    int w = Math.Min(width, _image.Width);
+                    int h = Math.Min(height, _image.Height);
                     x += (width - w) / 2;
                     y += (height - h) / 2;
                     width = w;
                     height = h;
                 }
-                image.Draw(animationState, x, y, width, height);
+                _image.Draw(animationState, x, y, width, height);
             }
         }
 
         public void Draw(Renderer.AnimationState animationState, int x, int y)
         {
-            this.Draw(animationState, x, y, image.Width, image.Height);
+            this.Draw(animationState, x, y, _image.Width, _image.Height);
         }
 
         public Border Border
         {
             get
             {
-                return this.border;
+                return this._border;
             }
         }
 
         public Renderer.Image CreateTintedVersion(Color color)
         {
-            return new ImageAdjustments(image.CreateTintedVersion(color), border,
-                    inset, sizeOverwriteH, sizeOverwriteV, center, condition);
+            return new ImageAdjustments(_image.CreateTintedVersion(color), _border,
+                    _inset, _sizeOverwriteH, _sizeOverwriteV, _center, _condition);
         }
 
         public bool IsSimple()
         {
             // used for ImageManager.parseStateSelect
             // only check parameters affecting rendering (except condition)
-            return !center && inset == null && sizeOverwriteH < 0 && sizeOverwriteV < 0;
+            return !_center && _inset == null && _sizeOverwriteH < 0 && _sizeOverwriteV < 0;
         }
     }
 }

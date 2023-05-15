@@ -348,11 +348,11 @@ namespace XNATWL
             try
             {
                 blockInvalidateLayoutTree = true;
-                setSmallGap(themeInfo.getParameterValue("smallGap", true, typeof(Dimension), Dimension.ZERO));
-                setMediumGap(themeInfo.getParameterValue("mediumGap", true, typeof(Dimension), Dimension.ZERO));
-                setLargeGap(themeInfo.getParameterValue("largeGap", true, typeof(Dimension), Dimension.ZERO));
-                setDefaultGap(themeInfo.getParameterValue("defaultGap", true, typeof(Dimension), Dimension.ZERO));
-                namedGaps = themeInfo.getParameterMap("namedGaps");
+                setSmallGap(themeInfo.GetParameterValue("smallGap", true, typeof(Dimension), Dimension.ZERO));
+                setMediumGap(themeInfo.GetParameterValue("mediumGap", true, typeof(Dimension), Dimension.ZERO));
+                setLargeGap(themeInfo.GetParameterValue("largeGap", true, typeof(Dimension), Dimension.ZERO));
+                setDefaultGap(themeInfo.GetParameterValue("defaultGap", true, typeof(Dimension), Dimension.ZERO));
+                namedGaps = themeInfo.GetParameterMap("namedGaps");
             }
             finally
             {
@@ -1055,7 +1055,7 @@ namespace XNATWL
             {
                 if (this._dialogLayout.namedGaps != null)
                 {
-                    return this._dialogLayout.namedGaps.getParameterValue(name, true, typeof(Gap), NO_GAP);
+                    return this._dialogLayout.namedGaps.GetParameterValue(name, true, typeof(Gap), NO_GAP);
                 }
                 return NO_GAP;
             }

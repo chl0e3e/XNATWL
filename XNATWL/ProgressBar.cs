@@ -134,7 +134,7 @@ namespace XNATWL
 
 		protected void applyThemeProgressBar(ThemeInfo themeInfo)
 		{
-			setProgressImage(themeInfo.getImage("progressImage"));
+			setProgressImage(themeInfo.GetImage("progressImage"));
 		}
 
 		protected override void applyTheme(ThemeInfo themeInfo)

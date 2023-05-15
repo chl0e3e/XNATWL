@@ -211,7 +211,7 @@ namespace XNATWL
 
         protected void applyTreeComboboxPopupThemeName(ThemeInfo themeInfo)
         {
-            popup.setTheme(themeInfo.getParameter("popupThemeName", DEFAULT_POPUP_THEME));
+            popup.setTheme(themeInfo.GetParameter("popupThemeName", DEFAULT_POPUP_THEME));
         }
 
         protected override Widget getLabel()

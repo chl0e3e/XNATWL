@@ -217,7 +217,7 @@ namespace XNATWL
 
         protected void applyThemeButton(ThemeInfo themeInfo)
         {
-            themeText = themeInfo.getParameterValue<string>("text", false, typeof(String), "");
+            themeText = themeInfo.GetParameterValue<string>("text", false, typeof(String), "");
             updateText();
         }
 

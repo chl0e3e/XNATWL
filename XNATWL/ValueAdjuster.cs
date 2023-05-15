@@ -211,9 +211,9 @@ namespace XNATWL.Model
 
         protected void applyThemeValueAdjuster(ThemeInfo themeInfo)
         {
-            width = themeInfo.getParameter("width", 100);
-            displayPrefixTheme = themeInfo.getParameter("displayPrefix", "");
-            useMouseWheel = themeInfo.getParameter("useMouseWheel", useMouseWheel);
+            width = themeInfo.GetParameter("width", 100);
+            displayPrefixTheme = themeInfo.GetParameter("displayPrefix", "");
+            useMouseWheel = themeInfo.GetParameter("useMouseWheel", useMouseWheel);
         }
 
         //@Override

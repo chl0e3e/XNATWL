@@ -44,7 +44,7 @@ namespace XNATWL
          * @param idx The index in the list
          * @return A font object
          */
-        Font getFont(int idx);
+        Font GetFont(int idx);
 
         /**
          * Returns the image at the given list index.
@@ -53,7 +53,7 @@ namespace XNATWL
          * @param idx The index in the list
          * @return A image object or null.
          */
-        Image getImage(int idx);
+        Image GetImage(int idx);
 
         /**
          * Returns the mouse cursor at the given list index.
@@ -62,7 +62,7 @@ namespace XNATWL
          * @param idx The index in the list
          * @return A mouse cursor object or null.
          */
-        MouseCursor getMouseCursor(int idx);
+        MouseCursor GetMouseCursor(int idx);
 
         /**
          * Returns a parameter map at the given list index.
@@ -71,7 +71,7 @@ namespace XNATWL
          * @param idx The index in the list
          * @return A parameter map object.
          */
-        ParameterMap getParameterMap(int idx);
+        ParameterMap GetParameterMap(int idx);
 
         /**
          * Returns a parameter list at the given list index.
@@ -80,30 +80,30 @@ namespace XNATWL
          * @param idx The index in the list
          * @return A parameter list object.
          */
-        ParameterList getParameterList(int idx);
+        ParameterList GetParameterList(int idx);
 
-        bool getParameter(int idx, bool defaultValue);
+        bool GetParameter(int idx, bool defaultValue);
 
-        int getParameter(int idx, int defaultValue);
+        int GetParameter(int idx, int defaultValue);
 
-        float getParameter(int idx, float defaultValue);
+        float GetParameter(int idx, float defaultValue);
 
-        string getParameter(int idx, string defaultValue);
+        string GetParameter(int idx, string defaultValue);
 
-        Color getParameter(int idx, Color defaultValue);
+        Color GetParameter(int idx, Color defaultValue);
 
-        E getParameter<E>(int idx, E defaultValue) where E : struct, IConvertible;
+        E GetParameter<E>(int idx, E defaultValue) where E : struct, IConvertible;
 
         /**
          * Retrives a parameter.
          * @param idx The index in the list
          * @return the parameter value
          */
-        Object getParameterValue(int idx);
+        Object GetParameterValue(int idx);
 
-        object getParameterValue(int idx, Type type);
+        object GetParameterValue(int idx, Type type);
 
-        object getParameterValue<T>(int idx, Type type);
+        object GetParameterValue<T>(int idx, Type type);
 
     }
 }

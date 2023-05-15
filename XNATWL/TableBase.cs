@@ -700,15 +700,15 @@ namespace XNATWL
         protected void applyThemeTableBase(ThemeInfo themeInfo)
         {
             this.tableBaseThemeInfo = themeInfo;
-            this.imageColumnDivider = themeInfo.getImage("columnDivider");
-            this.imageRowBackground = themeInfo.getImage("row.background");
-            this.imageRowOverlay = themeInfo.getImage("row.overlay");
-            this.imageRowDropMarker = themeInfo.getImage("row.dropmarker");
-            this.rowHeight = themeInfo.getParameter("rowHeight", 32);
-            this.defaultColumnWidth = themeInfo.getParameter("columnHeaderWidth", 256);
-            this.columnHeaderHeight = themeInfo.getParameter("columnHeaderHeight", 10);
-            this.columnDividerDragableDistance = themeInfo.getParameter("columnDividerDragableDistance", 3);
-            this.ensureColumnHeaderMinWidth = themeInfo.getParameter("ensureColumnHeaderMinWidth", false);
+            this.imageColumnDivider = themeInfo.GetImage("columnDivider");
+            this.imageRowBackground = themeInfo.GetImage("row.background");
+            this.imageRowOverlay = themeInfo.GetImage("row.overlay");
+            this.imageRowDropMarker = themeInfo.GetImage("row.dropmarker");
+            this.rowHeight = themeInfo.GetParameter("rowHeight", 32);
+            this.defaultColumnWidth = themeInfo.GetParameter("columnHeaderWidth", 256);
+            this.columnHeaderHeight = themeInfo.GetParameter("columnHeaderHeight", 10);
+            this.columnDividerDragableDistance = themeInfo.GetParameter("columnDividerDragableDistance", 3);
+            this.ensureColumnHeaderMinWidth = themeInfo.GetParameter("ensureColumnHeaderMinWidth", false);
 
             foreach (CellRenderer cellRenderer in cellRenderers.getUniqueValues())
             {
@@ -720,16 +720,16 @@ namespace XNATWL
 
         protected override void applyThemeMouseCursor(ThemeInfo themeInfo)
         {
-            this.columnResizeCursor = themeInfo.getMouseCursor("columnResizeCursor");
-            this.normalCursor = themeInfo.getMouseCursor("mouseCursor");
-            this.dragNotPossibleCursor = themeInfo.getMouseCursor("dragNotPossibleCursor");
+            this.columnResizeCursor = themeInfo.GetMouseCursor("columnResizeCursor");
+            this.normalCursor = themeInfo.GetMouseCursor("mouseCursor");
+            this.dragNotPossibleCursor = themeInfo.GetMouseCursor("dragNotPossibleCursor");
         }
 
         protected void applyCellRendererTheme(CellRenderer cellRenderer)
         {
             String childThemeName = cellRenderer.getTheme();
             System.Diagnostics.Debug.Assert(!isAbsoluteTheme(childThemeName));
-            ThemeInfo childTheme = tableBaseThemeInfo.getChildTheme(childThemeName);
+            ThemeInfo childTheme = tableBaseThemeInfo.GetChildTheme(childThemeName);
             if (childTheme != null)
             {
                 cellRenderer.applyTheme(childTheme);
@@ -1265,8 +1265,8 @@ namespace XNATWL
         {
             if (tableBaseThemeInfo != null)
             {
-                ParameterMap columnWidthMap = tableBaseThemeInfo.getParameterMap("columnWidths");
-                Object obj = columnWidthMap.getParameterValue(column.ToString(), false);
+                ParameterMap columnWidthMap = tableBaseThemeInfo.GetParameterMap("columnWidths");
+                Object obj = columnWidthMap.GetParameterValue(column.ToString(), false);
                 if (obj is DialogLayout.Gap)
                 {
                     return (DialogLayout.Gap)obj;

@@ -618,14 +618,14 @@ namespace XNATWL
 
         protected void applyThemeScrollPane(ThemeInfo themeInfo)
         {
-            autoScrollArea = themeInfo.getParameter("autoScrollArea", 5);
-            autoScrollSpeed = themeInfo.getParameter("autoScrollSpeed", autoScrollArea * 2);
-            hscrollbarOffset = themeInfo.getParameterValue("hscrollbarOffset", false, typeof(Dimension), Dimension.ZERO);
-            vscrollbarOffset = themeInfo.getParameterValue("vscrollbarOffset", false, typeof(Dimension), Dimension.ZERO);
-            contentScrollbarSpacing = themeInfo.getParameterValue("contentScrollbarSpacing", false, typeof(Dimension), Dimension.ZERO);
-            scrollbarsAlwaysVisible = themeInfo.getParameter("scrollbarsAlwaysVisible", false);
+            autoScrollArea = themeInfo.GetParameter("autoScrollArea", 5);
+            autoScrollSpeed = themeInfo.GetParameter("autoScrollSpeed", autoScrollArea * 2);
+            hscrollbarOffset = themeInfo.GetParameterValue("hscrollbarOffset", false, typeof(Dimension), Dimension.ZERO);
+            vscrollbarOffset = themeInfo.GetParameterValue("vscrollbarOffset", false, typeof(Dimension), Dimension.ZERO);
+            contentScrollbarSpacing = themeInfo.GetParameterValue("contentScrollbarSpacing", false, typeof(Dimension), Dimension.ZERO);
+            scrollbarsAlwaysVisible = themeInfo.GetParameter("scrollbarsAlwaysVisible", false);
 
-            bool hasDragButton = themeInfo.getParameter("hasDragButton", false);
+            bool hasDragButton = themeInfo.GetParameter("hasDragButton", false);
             if (hasDragButton && dragButton == null)
             {
                 dragButton = new DraggableButton();

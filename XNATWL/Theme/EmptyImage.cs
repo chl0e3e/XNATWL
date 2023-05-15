@@ -34,13 +34,13 @@ namespace XNATWL.Theme
 {
     public class EmptyImage : Image
     {
-        private int width;
-        private int height;
+        private int _width;
+        private int _height;
 
         public EmptyImage(int width, int height)
         {
-            this.width = width;
-            this.height = height;
+            this._width = width;
+            this._height = height;
         }
 
         public void Draw(Renderer.AnimationState animationState, int x, int y)
@@ -55,7 +55,7 @@ namespace XNATWL.Theme
         {
             get
             {
-                return height;
+                return _height;
             }
         }
 
@@ -63,7 +63,7 @@ namespace XNATWL.Theme
         {
             get
             {
-                return width;
+                return _width;
             }
         }
 

@@ -326,24 +326,24 @@ namespace XNATWL
             int i = 0;
             foreach (DragMode m in Enum.GetValues(typeof(DragMode)))
             {
-                cursors[i] = themeInfo.getMouseCursor(DragModeName(m));
+                cursors[i] = themeInfo.GetMouseCursor(DragModeName(m));
                 i++;
             }
-            titleAreaTop = themeInfo.getParameter("titleAreaTop", 0);
-            titleAreaLeft = themeInfo.getParameter("titleAreaLeft", 0);
-            titleAreaRight = themeInfo.getParameter("titleAreaRight", 0);
-            titleAreaBottom = themeInfo.getParameter("titleAreaBottom", 0);
-            closeButtonX = themeInfo.getParameter("closeButtonX", 0);
-            closeButtonY = themeInfo.getParameter("closeButtonY", 0);
-            hasCloseButton = themeInfo.getParameter("hasCloseButton", false);
-            hasResizeHandle = themeInfo.getParameter("hasResizeHandle", false);
-            resizeHandleX = themeInfo.getParameter("resizeHandleX", 0);
-            resizeHandleY = themeInfo.getParameter("resizeHandleY", 0);
-            fadeColorInactive = themeInfo.getParameter("fadeColorInactive", Color.WHITE);
-            fadeDurationActivate = themeInfo.getParameter("fadeDurationActivate", 0);
-            fadeDurationDeactivate = themeInfo.getParameter("fadeDurationDeactivate", 0);
-            fadeDurationShow = themeInfo.getParameter("fadeDurationShow", 0);
-            fadeDurationHide = themeInfo.getParameter("fadeDurationHide", 0);
+            titleAreaTop = themeInfo.GetParameter("titleAreaTop", 0);
+            titleAreaLeft = themeInfo.GetParameter("titleAreaLeft", 0);
+            titleAreaRight = themeInfo.GetParameter("titleAreaRight", 0);
+            titleAreaBottom = themeInfo.GetParameter("titleAreaBottom", 0);
+            closeButtonX = themeInfo.GetParameter("closeButtonX", 0);
+            closeButtonY = themeInfo.GetParameter("closeButtonY", 0);
+            hasCloseButton = themeInfo.GetParameter("hasCloseButton", false);
+            hasResizeHandle = themeInfo.GetParameter("hasResizeHandle", false);
+            resizeHandleX = themeInfo.GetParameter("resizeHandleX", 0);
+            resizeHandleY = themeInfo.GetParameter("resizeHandleY", 0);
+            fadeColorInactive = themeInfo.GetParameter("fadeColorInactive", Color.WHITE);
+            fadeDurationActivate = themeInfo.GetParameter("fadeDurationActivate", 0);
+            fadeDurationDeactivate = themeInfo.GetParameter("fadeDurationDeactivate", 0);
+            fadeDurationShow = themeInfo.GetParameter("fadeDurationShow", 0);
+            fadeDurationHide = themeInfo.GetParameter("fadeDurationHide", 0);
             invalidateLayout();
 
             if (base.isVisible() && !hasKeyboardFocus() &&

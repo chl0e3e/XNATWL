@@ -34,8 +34,8 @@ namespace XNATWL
 {
     public interface ThemeInfo : ParameterMap
     {
-        ThemeInfo getChildTheme(String theme);
+        ThemeInfo GetChildTheme(String theme);
 
-        String getThemePath();
+        String GetThemePath();
     }
 }

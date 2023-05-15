@@ -37,26 +37,26 @@ namespace XNATWL.Theme
     {
         public abstract class Element
         {
-            internal int duration;
+            internal int _duration;
 
-            public abstract int getWidth();
-            public abstract int getHeight();
-            public abstract Img getFirstImg();
-            public abstract void render(int time, Img next, int x, int y,
+            public abstract int GetWidth();
+            public abstract int GetHeight();
+            public abstract Img GetFirstImg();
+            public abstract void Render(int time, Img next, int x, int y,
                     int width, int height, AnimatedImage ai, Renderer.AnimationState animationState);
         }
 
         public class Img : Element
         {
-            public Image image;
-            float r;
-            float g;
-            float b;
-            float a;
-            float zoomX;
-            float zoomY;
-            float zoomCenterX;
-            float zoomCenterY;
+            public Image Image;
+            float _r;
+            float _g;
+            float _b;
+            float _a;
+            float _zoomX;
+            float _zoomY;
+            float _zoomCenterX;
+            float _zoomCenterY;
 
             public Img(int duration, Image image, Color tintColor, float zoomX, float zoomY, float zoomCenterX, float zoomCenterY)
             {
@@ -64,62 +64,63 @@ namespace XNATWL.Theme
                 {
                     throw new ArgumentOutOfRangeException("duration");
                 }
-                this.duration = duration;
-                this.image = image;
-                this.r = tintColor.RedF;
-                this.g = tintColor.GreenF;
-                this.b = tintColor.BlueF;
-                this.a = tintColor.AlphaF;
-                this.zoomX = zoomX;
-                this.zoomY = zoomY;
-                this.zoomCenterX = zoomCenterX;
-                this.zoomCenterY = zoomCenterY;
+
+                this.Image = image;
+                this._duration = duration;
+                this._r = tintColor.RedF;
+                this._g = tintColor.GreenF;
+                this._b = tintColor.BlueF;
+                this._a = tintColor.AlphaF;
+                this._zoomX = zoomX;
+                this._zoomY = zoomY;
+                this._zoomCenterX = zoomCenterX;
+                this._zoomCenterY = zoomCenterY;
             }
 
-            public override int getWidth()
+            public override int GetWidth()
             {
-                return image.Width;
+                return Image.Width;
             }
 
-            public override int getHeight()
+            public override int GetHeight()
             {
-                return image.Height;
+                return Image.Height;
             }
 
-            public override Img getFirstImg()
+            public override Img GetFirstImg()
             {
                 return this;
             }
 
-            public override void render(int time, Img next, int x, int y, int width, int height, AnimatedImage ai, Renderer.AnimationState animationState)
+            public override void Render(int time, Img next, int x, int y, int width, int height, AnimatedImage ai, Renderer.AnimationState animationState)
             {
-                float rr = r, gg = g, bb = b, aa = a;
-                float zx = zoomX, zy = zoomY, cx = zoomCenterX, cy = zoomCenterY;
+                float rr = _r, gg = _g, bb = _b, aa = _a;
+                float zx = _zoomX, zy = _zoomY, cx = _zoomCenterX, cy = _zoomCenterY;
                 if (next != null)
                 {
-                    float t = time / (float)duration;
-                    rr = blend(rr, next.r, t);
-                    gg = blend(gg, next.g, t);
-                    bb = blend(bb, next.b, t);
-                    aa = blend(aa, next.a, t);
-                    zx = blend(zx, next.zoomX, t);
-                    zy = blend(zy, next.zoomY, t);
-                    cx = blend(cx, next.zoomCenterX, t);
-                    cy = blend(cy, next.zoomCenterY, t);
+                    float t = time / (float)_duration;
+                    rr = blend(rr, next._r, t);
+                    gg = blend(gg, next._g, t);
+                    bb = blend(bb, next._b, t);
+                    aa = blend(aa, next._a, t);
+                    zx = blend(zx, next._zoomX, t);
+                    zy = blend(zy, next._zoomY, t);
+                    cx = blend(cx, next._zoomCenterX, t);
+                    cy = blend(cy, next._zoomCenterY, t);
                 }
-                ai.renderer.PushGlobalTintColor(rr * ai.r, gg * ai.g, bb * ai.b, aa * ai.a);
+                ai._renderer.PushGlobalTintColor(rr * ai._r, gg * ai._g, bb * ai._b, aa * ai._a);
                 try
                 {
                     int zWidth = (int)(width * zx);
                     int zHeight = (int)(height * zy);
-                    image.Draw(animationState,
+                    Image.Draw(animationState,
                             x + (int)((width - zWidth) * cx),
                             y + (int)((height - zHeight) * cy),
                             zWidth, zHeight);
                 }
                 finally
                 {
-                    ai.renderer.PopGlobalTintColor();
+                    ai._renderer.PopGlobalTintColor();
                 }
             }
 
@@ -131,14 +132,14 @@ namespace XNATWL.Theme
 
         public class Repeat : Element
         {
-            public Element[] children;
-            public int repeatCount;
-            public int singleDuration;
+            public Element[] _children;
+            public int _repeatCount;
+            public int _singleDuration;
 
             public Repeat(Element[] children, int repeatCount)
             {
-                this.children = children;
-                this.repeatCount = repeatCount;
+                this._children = children;
+                this._repeatCount = repeatCount;
                 if(!(repeatCount >= 0))
                 {
                     throw new Exception("Assert exception");
@@ -150,144 +151,145 @@ namespace XNATWL.Theme
 
                 foreach (Element e in children)
                 {
-                    duration += e.duration;
+                    _duration += e._duration;
                 }
-                singleDuration = duration;
+
+                _singleDuration = _duration;
                 if (repeatCount == 0)
                 {
-                    duration = Int32.MaxValue;
+                    _duration = Int32.MaxValue;
                 }
                 else
                 {
-                    duration *= repeatCount;
+                    _duration *= repeatCount;
                 }
             }
 
             //@Override
-            public override int getHeight()
+            public override int GetHeight()
             {
                 int tmp = 0;
-                foreach (Element e in children)
+                foreach (Element e in _children)
                 {
-                    tmp = Math.Max(tmp, e.getHeight());
+                    tmp = Math.Max(tmp, e.GetHeight());
                 }
                 return tmp;
             }
 
             //@Override
-            public override int getWidth()
+            public override int GetWidth()
             {
                 int tmp = 0;
-                foreach (Element e in children)
+                foreach (Element e in _children)
                 {
-                    tmp = Math.Max(tmp, e.getWidth());
+                    tmp = Math.Max(tmp, e.GetWidth());
                 }
                 return tmp;
             }
 
-            public override Img getFirstImg()
+            public override Img GetFirstImg()
             {
-                return children[0].getFirstImg();
+                return _children[0].GetFirstImg();
             }
 
-            public override void render(int time, Img next, int x, int y, int width, int height, AnimatedImage ai, Renderer.AnimationState animationState)
+            public override void Render(int time, Img next, int x, int y, int width, int height, AnimatedImage ai, Renderer.AnimationState animationState)
             {
-                if (singleDuration == 0)
+                if (_singleDuration == 0)
                 {
                     // animation data is invalid - don't crash
                     return;
                 }
 
                 int iteration = 0;
-                if (repeatCount == 0)
+                if (_repeatCount == 0)
                 {
-                    time %= singleDuration;
+                    time %= _singleDuration;
                 }
                 else
                 {
-                    iteration = time / singleDuration;
-                    time -= Math.Min(iteration, repeatCount - 1) * singleDuration;
+                    iteration = time / _singleDuration;
+                    time -= Math.Min(iteration, _repeatCount - 1) * _singleDuration;
                 }
 
                 Element e = null;
-                for (int i = 0; i < children.Length; i++)
+                for (int i = 0; i < _children.Length; i++)
                 {
-                    e = children[i];
-                    if (time < e.duration && e.duration > 0)
+                    e = _children[i];
+                    if (time < e._duration && e._duration > 0)
                     {
-                        if (i + 1 < children.Length)
+                        if (i + 1 < _children.Length)
                         {
-                            next = children[i + 1].getFirstImg();
+                            next = _children[i + 1].GetFirstImg();
                         }
-                        else if (repeatCount == 0 || iteration + 1 < repeatCount)
+                        else if (_repeatCount == 0 || iteration + 1 < _repeatCount)
                         {
-                            next = getFirstImg();
+                            next = GetFirstImg();
                         }
                         break;
                     }
 
-                    time -= e.duration;
+                    time -= e._duration;
                 }
 
                 if (e != null)
                 {
-                    e.render(time, next, x, y, width, height, ai, animationState);
+                    e.Render(time, next, x, y, width, height, ai, animationState);
                 }
             }
         }
 
-        Renderer.Renderer renderer;
-        Element root;
-        StateKey timeSource;
-        Border border;
-        float r;
-        float g;
-        float b;
-        float a;
-        int width;
-        int height;
-        int frozenTime;
+        Renderer.Renderer _renderer;
+        Element _root;
+        StateKey _timeSource;
+        Border _border;
+        float _r;
+        float _g;
+        float _b;
+        float _a;
+        int _width;
+        int _height;
+        int _frozenTime;
 
         public AnimatedImage(Renderer.Renderer renderer, Element root, String timeSource, Border border, Color tintColor, int frozenTime)
         {
-            this.renderer = renderer;
-            this.root = root;
-            this.timeSource = StateKey.Get(timeSource);
-            this.border = border;
-            this.r = tintColor.RedF;
-            this.g = tintColor.GreenF;
-            this.b = tintColor.BlueF;
-            this.a = tintColor.AlphaF;
-            this.width = root.getWidth();
-            this.height = root.getHeight();
-            this.frozenTime = frozenTime;
+            this._renderer = renderer;
+            this._root = root;
+            this._timeSource = StateKey.Get(timeSource);
+            this._border = border;
+            this._r = tintColor.RedF;
+            this._g = tintColor.GreenF;
+            this._b = tintColor.BlueF;
+            this._a = tintColor.AlphaF;
+            this._width = root.GetWidth();
+            this._height = root.GetHeight();
+            this._frozenTime = frozenTime;
         }
 
         public AnimatedImage(AnimatedImage src, Color tintColor)
         {
-            this.renderer = src.renderer;
-            this.root = src.root;
-            this.timeSource = src.timeSource;
-            this.border = src.border;
-            this.r = src.r * tintColor.RedF;
-            this.g = src.g * tintColor.GreenF;
-            this.b = src.b * tintColor.BlueF;
-            this.a = src.a * tintColor.AlphaF;
-            this.width = src.width;
-            this.height = src.height;
-            this.frozenTime = src.frozenTime;
+            this._renderer = src._renderer;
+            this._root = src._root;
+            this._timeSource = src._timeSource;
+            this._border = src._border;
+            this._r = src._r * tintColor.RedF;
+            this._g = src._g * tintColor.GreenF;
+            this._b = src._b * tintColor.BlueF;
+            this._a = src._a * tintColor.AlphaF;
+            this._width = src._width;
+            this._height = src._height;
+            this._frozenTime = src._frozenTime;
         }
 
-        public int getWidth()
+        public int GetWidth()
         {
-            return width;
+            return _width;
         }
 
         public int Width
         {
             get
             {
-                return width;
+                return _width;
             }
         }
 
@@ -295,13 +297,13 @@ namespace XNATWL.Theme
         {
             get
             {
-                return height;
+                return _height;
             }
         }
 
         public void Draw (Renderer.AnimationState animationState, int x, int y)
         {
-            this.Draw(animationState, x, y, width, height);
+            this.Draw(animationState, x, y, _width, _height);
         }
 
         public void Draw (Renderer.AnimationState animationState, int x, int y, int width, int height)
@@ -309,23 +311,23 @@ namespace XNATWL.Theme
             int time = 0;
             if (animationState != null)
             {
-                if (frozenTime < 0 || animationState.ShouldAnimateState(timeSource))
+                if (_frozenTime < 0 || animationState.ShouldAnimateState(_timeSource))
                 {
-                    time = animationState.GetAnimationTime(timeSource);
+                    time = animationState.GetAnimationTime(_timeSource);
                 }
                 else
                 {
-                    time = frozenTime;
+                    time = _frozenTime;
                 }
             }
-            root.render(time, null, x, y, width, height, this, animationState);
+            _root.Render(time, null, x, y, width, height, this, animationState);
         }
 
         public Border Border
         {
             get
             {
-                return border;
+                return _border;
             }
         }
 

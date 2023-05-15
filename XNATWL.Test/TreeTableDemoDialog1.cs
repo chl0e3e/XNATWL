@@ -247,7 +247,7 @@ namespace XNATWL.Test
 
             public void applyTheme(ThemeInfo themeInfo)
             {
-                editFieldHeight = themeInfo.getParameter("editFieldHeight", 10);
+                editFieldHeight = themeInfo.GetParameter("editFieldHeight", 10);
             }
 
             public String getTheme()

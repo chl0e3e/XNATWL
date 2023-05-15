@@ -39,42 +39,41 @@ namespace XNATWL.Theme
 {
     public class ThemeManager
     {
-        private static Dictionary<string, Type> enums =
-                new Dictionary<string, Type>();
+        private static Dictionary<string, Type> enums = new Dictionary<string, Type>();
 
         static ThemeManager()
         {
-            registerEnumType<PositionAnimatedPanel.eDirection>("direction", typeof(PositionAnimatedPanel.eDirection));
+            RegisterEnumType<PositionAnimatedPanel.eDirection>("direction", typeof(PositionAnimatedPanel.eDirection));
         }
 
         static Object NULL = new Object();
 
-        ParameterMapImpl constants;
-        private Renderer.Renderer renderer;
-        private CacheContext cacheContext;
-        private ImageManager imageManager;
-        private Dictionary<string, Font> fonts;
-        private Dictionary<string, ThemeInfoImpl> themes;
-        private Dictionary<string, InputMap> inputMaps;
-        private MathInterpreter mathInterpreter;
-        private Font defaultFont;
-        private Font firstFont;
+        ParameterMapImpl _constants;
+        private Renderer.Renderer _renderer;
+        private CacheContext _cacheContext;
+        private ImageManager _imageManager;
+        private Dictionary<string, Font> _fonts;
+        private Dictionary<string, ThemeInfoImpl> _themes;
+        private Dictionary<string, InputMap> _inputMaps;
+        private MathInterpreter _mathInterpreter;
+        private Font _defaultFont;
+        private Font _firstFont;
 
-        internal ParameterMapImpl emptyMap;
-        internal ParameterListImpl emptyList;
+        internal ParameterMapImpl _emptyMap;
+        internal ParameterListImpl _emptyList;
 
         private ThemeManager(Renderer.Renderer renderer, CacheContext cacheContext)
         {
-            this.constants = new ParameterMapImpl(this, null);
-            this.renderer = renderer;
-            this.cacheContext = cacheContext;
-            this.imageManager = new ImageManager(constants, renderer);
-            this.fonts = new Dictionary<string, Font>();
-            this.themes = new Dictionary<string, ThemeInfoImpl>();
-            this.inputMaps = new Dictionary<string, InputMap>();
-            this.emptyMap = new ParameterMapImpl(this, null);
-            this.emptyList = new ParameterListImpl(this, null);
-            this.mathInterpreter = new MathInterpreter(this);
+            this._constants = new ParameterMapImpl(this, null);
+            this._renderer = renderer;
+            this._cacheContext = cacheContext;
+            this._imageManager = new ImageManager(_constants, renderer);
+            this._fonts = new Dictionary<string, Font>();
+            this._themes = new Dictionary<string, ThemeInfoImpl>();
+            this._inputMaps = new Dictionary<string, InputMap>();
+            this._emptyMap = new ParameterMapImpl(this, null);
+            this._emptyList = new ParameterListImpl(this, null);
+            this._mathInterpreter = new MathInterpreter(this);
         }
 
         /**
@@ -82,9 +81,9 @@ namespace XNATWL.Theme
          * @return the cache context
          * @see #createThemeManager(java.net.URL, de.matthiasmann.twl.renderer.Renderer.Renderer, de.matthiasmann.twl.renderer.CacheContext) 
          */
-        public CacheContext getCacheContext()
+        public CacheContext GetCacheContext()
         {
-            return cacheContext;
+            return _cacheContext;
         }
 
         /**
@@ -92,18 +91,18 @@ namespace XNATWL.Theme
          * @see CacheContext#destroy()
          * @see #getCacheContext()
          */
-        public void destroy()
+        public void Destroy()
         {
-            foreach (Font font in fonts.Values)
+            foreach (Font font in _fonts.Values)
             {
                 font.Dispose();
             }
-            cacheContext.Dispose();
+            _cacheContext.Dispose();
         }
 
-        public Font getDefaultFont()
+        public Font GetDefaultFont()
         {
-            return defaultFont;
+            return _defaultFont;
         }
 
         /**
@@ -119,7 +118,7 @@ namespace XNATWL.Theme
          * @see #createThemeManager(java.net.URL, de.matthiasmann.twl.renderer.Renderer.Renderer, de.matthiasmann.twl.renderer.CacheContext)
          * @see #destroy() 
          */
-        public static ThemeManager createThemeManager(FileSystemObject fso, Renderer.Renderer renderer)
+        public static ThemeManager CreateThemeManager(FileSystemObject fso, Renderer.Renderer renderer)
         {
             if (fso == null)
             {
@@ -129,7 +128,7 @@ namespace XNATWL.Theme
             {
                 throw new ArgumentNullException("renderer is null");
             }
-            return createThemeManager(fso, renderer, renderer.CreateNewCacheContext());
+            return CreateThemeManager(fso, renderer, renderer.CreateNewCacheContext());
         }
 
         /**
@@ -146,9 +145,9 @@ namespace XNATWL.Theme
          * @see #createThemeManager(java.net.URL, de.matthiasmann.twl.renderer.Renderer.Renderer, de.matthiasmann.twl.renderer.CacheContext, java.util.Map) 
          * @see #destroy() 
          */
-        public static ThemeManager createThemeManager(FileSystemObject fso, Renderer.Renderer renderer, CacheContext cacheContext)
+        public static ThemeManager CreateThemeManager(FileSystemObject fso, Renderer.Renderer renderer, CacheContext cacheContext)
         {
-            return createThemeManager(fso, renderer, cacheContext, null);
+            return CreateThemeManager(fso, renderer, cacheContext, null);
         }
 
         /**
@@ -171,7 +170,7 @@ namespace XNATWL.Theme
          * @see Renderer.Renderer#setActiveCacheContext(de.matthiasmann.twl.renderer.CacheContext)
          * @see #destroy() 
          */
-        public static ThemeManager createThemeManager(FileSystemObject fso, Renderer.Renderer renderer, CacheContext cacheContext, Dictionary<string, Object> constants)
+        public static ThemeManager CreateThemeManager(FileSystemObject fso, Renderer.Renderer renderer, CacheContext cacheContext, Dictionary<string, Object> constants)
         {
             if (fso == null)
             {
@@ -189,15 +188,15 @@ namespace XNATWL.Theme
             {
                 renderer.SetActiveCacheContext(cacheContext);
                 ThemeManager tm = new ThemeManager(renderer, cacheContext);
-                tm.insertDefaultConstants();
+                tm.InsertDefaultConstants();
                 if (constants != null && constants.Count != 0)
                 {
-                    tm.insertConstants(constants);
+                    tm.InsertConstants(constants);
                 }
-                tm.parseThemeFile(fso);
-                if (tm.defaultFont == null)
+                tm.ParseThemeFile(fso);
+                if (tm._defaultFont == null)
                 {
-                    tm.defaultFont = tm.firstFont;
+                    tm._defaultFont = tm._firstFont;
                 }
                 return tm;
             }
@@ -207,7 +206,7 @@ namespace XNATWL.Theme
             }
         }
 
-        public static void registerEnumType<E>(string name, Type enumClazz) where E : struct, IConvertible
+        public static void RegisterEnumType<E>(string name, Type enumClazz) where E : struct, IConvertible
         {
             if (!enumClazz.IsEnum)
             {
@@ -220,26 +219,26 @@ namespace XNATWL.Theme
             enums.Add(name, enumClazz);
         }
 
-        public ThemeInfo findThemeInfo(string themePath)
+        public ThemeInfo FindThemeInfo(string themePath)
         {
-            return findThemeInfo(themePath, true, true);
+            return FindThemeInfo(themePath, true, true);
         }
 
-        private ThemeInfo findThemeInfo(string themePath, bool warn, bool useFallback)
+        private ThemeInfo FindThemeInfo(string themePath, bool warn, bool useFallback)
         {
             int start = TextUtil.indexOf(themePath, '.', 0);
             ThemeInfo info = null;
             string themeKey = themePath.Substring(0, start);
-            if (themes.ContainsKey(themeKey))
+            if (_themes.ContainsKey(themeKey))
             {
-                info = themes[themeKey];
+                info = _themes[themeKey];
             }
             if (info == null)
             {
                 themeKey = "*";
-                if (themes.ContainsKey(themeKey))
+                if (_themes.ContainsKey(themeKey))
                 {
-                    info = themes[themeKey];
+                    info = _themes[themeKey];
                 }
                 else
                 {
@@ -258,7 +257,7 @@ namespace XNATWL.Theme
             while (info != null && ++start < themePath.Length)
             {
                 int next = TextUtil.indexOf(themePath, '.', start);
-                info = info.getChildTheme(themePath.Substring(start, next - start));
+                info = info.GetChildTheme(themePath.Substring(start, next - start));
                 start = next;
             }
             if (info == null && warn)
@@ -268,14 +267,14 @@ namespace XNATWL.Theme
             return info;
         }
 
-        public Image getImageNoWarning(string name)
+        public Image GetImageNoWarning(string name)
         {
-            return imageManager.getImage(name);
+            return _imageManager.GetImage(name);
         }
 
-        public Image getImage(string name)
+        public Image GetImage(string name)
         {
-            Image img = imageManager.getImage(name);
+            Image img = _imageManager.GetImage(name);
             if (img == null)
             {
                 DebugHook.getDebugHook().missingImage(name);
@@ -283,33 +282,33 @@ namespace XNATWL.Theme
             return img;
         }
 
-        public Object getCursor(string name)
+        public Object GetCursor(string name)
         {
-            return imageManager.getCursor(name);
+            return _imageManager.GetCursor(name);
         }
 
-        public Font getFont(string name)
+        public Font GetFont(string name)
         {
-            return fonts[name];
+            return _fonts[name];
         }
 
-        public ParameterMap getConstants()
+        public ParameterMap GetConstants()
         {
-            return constants;
+            return _constants;
         }
 
-        private void insertDefaultConstants()
+        private void InsertDefaultConstants()
         {
-            constants.put("SINGLE_COLUMN", -1);
-            constants.put("MAX", short.MaxValue);
+            _constants.Put("SINGLE_COLUMN", -1);
+            _constants.Put("MAX", short.MaxValue);
         }
 
-        private void insertConstants(Dictionary<string, Object> src)
+        private void InsertConstants(Dictionary<string, Object> src)
         {
-            constants.put(src);
+            _constants.Put(src);
         }
 
-        private void parseThemeFile(FileSystemObject fso)
+        private void ParseThemeFile(FileSystemObject fso)
         {
             try
             {
@@ -320,7 +319,7 @@ namespace XNATWL.Theme
                     xmlp.next();
                     xmlp.require(XmlPullParser.XML_DECLARATION, null, null);
                     xmlp.next();
-                    parseThemeFile(xmlp, fso.Parent);
+                    ParseThemeFile(xmlp, fso.Parent);
                 }
                 finally
                 {
@@ -341,7 +340,7 @@ namespace XNATWL.Theme
             }
         }
 
-        private void parseThemeFile(XMLParser xmlp, FileSystemObject baseFso)
+        private void ParseThemeFile(XMLParser xmlp, FileSystemObject baseFso)
         {
             xmlp.require(XmlPullParser.START_TAG, null, "themes");
             xmlp.nextTag();
@@ -352,14 +351,14 @@ namespace XNATWL.Theme
                 string tagName = xmlp.getName();
                 if ("images".Equals(tagName) || "textures".Equals(tagName))
                 {
-                    imageManager.parseImages(xmlp, baseFso);
+                    _imageManager.ParseImages(xmlp, baseFso);
                 }
                 else if ("include".Equals(tagName))
                 {
                     string fontFileName = xmlp.getAttributeNotNull("filename");
                     try
                     {
-                        parseThemeFile(new FileSystemObject(baseFso, fontFileName));
+                        ParseThemeFile(new FileSystemObject(baseFso, fontFileName));
                     }
                     catch (ThemeException ex)
                     {
@@ -373,45 +372,45 @@ namespace XNATWL.Theme
                     string name = xmlp.getAttributeNotNull("name");
                     if ("theme".Equals(tagName))
                     {
-                        if (themes.ContainsKey(name))
+                        if (_themes.ContainsKey(name))
                         {
                             throw xmlp.error("theme \"" + name + "\" already defined");
                         }
-                        themes.Add(name, parseTheme(xmlp, name, null, baseFso));
+                        _themes.Add(name, ParseTheme(xmlp, name, null, baseFso));
                     }
                     else if ("inputMapDef".Equals(tagName))
                     {
-                        if (inputMaps.ContainsKey(name))
+                        if (_inputMaps.ContainsKey(name))
                         {
                             throw xmlp.error("inputMap \"" + name + "\" already defined");
                         }
-                        inputMaps.Add(name, parseInputMap(xmlp, name, null));
+                        _inputMaps.Add(name, ParseInputMap(xmlp, name, null));
                     }
                     else if ("fontDef".Equals(tagName))
                     {
-                        if (fonts.ContainsKey(name))
+                        if (_fonts.ContainsKey(name))
                         {
                             throw xmlp.error("font \"" + name + "\" already defined");
                         }
                         bool makeDefault = xmlp.parseBoolFromAttribute("default", false);
-                        Font font = parseFont(xmlp, baseFso);
-                        fonts.Add(name, font);
-                        if (firstFont == null)
+                        Font font = ParseFont(xmlp, baseFso);
+                        _fonts.Add(name, font);
+                        if (_firstFont == null)
                         {
-                            firstFont = font;
+                            _firstFont = font;
                         }
                         if (makeDefault)
                         {
-                            if (defaultFont != null)
+                            if (_defaultFont != null)
                             {
                                 throw xmlp.error("default font already set");
                             }
-                            defaultFont = font;
+                            _defaultFont = font;
                         }
                     }
                     else if ("constantDef".Equals(tagName))
                     {
-                        parseParam(xmlp, baseFso, "constantDef", null, constants);
+                        ParseParam(xmlp, baseFso, "constantDef", null, _constants);
                     }
                     else
                     {
@@ -424,17 +423,17 @@ namespace XNATWL.Theme
             xmlp.require(XmlPullParser.END_TAG, null, "themes");
         }
 
-        private InputMap getInputMap(XMLParser xmlp, string name)
+        private InputMap GetInputMap(XMLParser xmlp, string name)
         {
-            if (!inputMaps.ContainsKey(name))
+            if (!_inputMaps.ContainsKey(name))
             {
                 throw xmlp.error("Undefined input map: " + name);
             }
 
-            return inputMaps[name];
+            return _inputMaps[name];
         }
 
-        private InputMap parseInputMap(XMLParser xmlp, string name, ThemeInfoImpl parent)
+        private InputMap ParseInputMap(XMLParser xmlp, string name, ThemeInfoImpl parent)
         {
             InputMap baseMap = InputMap.empty();
             if (xmlp.parseBoolFromAttribute("merge", false))
@@ -443,7 +442,7 @@ namespace XNATWL.Theme
                 {
                     throw xmlp.error("Can't merge on top level");
                 }
-                Object o = parent.getParam(name);
+                Object o = parent.GetParam(name);
                 if (o is InputMap)
                 {
                     baseMap = (InputMap)o;
@@ -456,7 +455,7 @@ namespace XNATWL.Theme
             string baseName = xmlp.getAttributeValue(null, "ref");
             if (baseName != null)
             {
-                baseMap = baseMap.addKeyStrokes(getInputMap(xmlp, baseName));
+                baseMap = baseMap.addKeyStrokes(GetInputMap(xmlp, baseName));
             }
 
             xmlp.nextTag();
@@ -466,7 +465,7 @@ namespace XNATWL.Theme
             return im;
         }
 
-        private Font parseFont(XMLParser xmlp, FileSystemObject baseFso)
+        private Font ParseFont(XMLParser xmlp, FileSystemObject baseFso)
         {
             FileSystemObject fso;
             string fileName = xmlp.getAttributeValue(null, "filename");
@@ -479,13 +478,13 @@ namespace XNATWL.Theme
                 fso = baseFso;
             }
 
-            List<string> fontFamilies = parseList(xmlp, "families");
+            List<string> fontFamilies = ParseList(xmlp, "families");
             int fontSize = 0;
             int fontStyle = 0;
             if (fontFamilies != null)
             {
-                fontSize = parseMath(xmlp, xmlp.getAttributeNotNull("size")).intValue();
-                List<string> styles = parseList(xmlp, "style");
+                fontSize = ParseMath(xmlp, xmlp.getAttributeNotNull("size")).intValue();
+                List<string> styles = ParseList(xmlp, "style");
                 foreach(string style in styles)
                 {
                     if ("bold".Equals(style.ToLower()))
@@ -500,7 +499,7 @@ namespace XNATWL.Theme
             }
 
             FontParameter baseParams = new FontParameter();
-            parseFontParameter(xmlp, baseParams);
+            ParseFontParameter(xmlp, baseParams);
             List<FontParameter> fontParams = new List<FontParameter>();
             List<StateExpression> stateExpr = new List<StateExpression>();
 
@@ -509,7 +508,7 @@ namespace XNATWL.Theme
             {
                 xmlp.require(XmlPullParser.START_TAG, null, "fontParam");
 
-                StateExpression cond = ParserUtil.parseCondition(xmlp);
+                StateExpression cond = ParserUtil.ParseCondition(xmlp);
                 if (cond == null)
                 {
                     throw xmlp.error("Condition required");
@@ -517,7 +516,7 @@ namespace XNATWL.Theme
                 stateExpr.Add(cond);
 
                 FontParameter parameters = new FontParameter(baseParams);
-                parseFontParameter(xmlp, parameters);
+                ParseFontParameter(xmlp, parameters);
                 fontParams.Add(parameters);
 
                 xmlp.nextTag();
@@ -531,7 +530,7 @@ namespace XNATWL.Theme
 
             if (fontFamilies != null)
             {
-                FontMapper fontMapper = renderer.FontMapper;
+                FontMapper fontMapper = _renderer.FontMapper;
                 if (fontMapper != null)
                 {
                     Font font = fontMapper.GetFont(fontFamilies, fontSize, fontStyle, stateSelect, stateParams);
@@ -542,10 +541,10 @@ namespace XNATWL.Theme
                 }
             }
 
-            return renderer.LoadFont(fso, stateSelect, stateParams);
+            return _renderer.LoadFont(fso, stateSelect, stateParams);
         }
 
-        private void parseFontParameter(XMLParser xmlp, FontParameter fp)
+        private void ParseFontParameter(XMLParser xmlp, FontParameter fp)
         {
             for (int i = 0, n = xmlp.getAttributeCount(); i < n; i++)
             {
@@ -561,13 +560,13 @@ namespace XNATWL.Theme
                         if (dataClass == typeof(Color))
                         {
                             FontParameter.Parameter<Color> colorType = (FontParameter.Parameter<Color>)type;
-                            fp.Put(colorType, ParserUtil.parseColor(xmlp, value, constants));
+                            fp.Put(colorType, ParserUtil.ParseColor(xmlp, value, _constants));
 
                         }
                         else if (dataClass == typeof(int))
                         {
                             FontParameter.Parameter<int> intType = (FontParameter.Parameter<int>)type;
-                            fp.Put(intType, parseMath(xmlp, value).intValue());
+                            fp.Put(intType, ParseMath(xmlp, value).intValue());
 
                         }
                         else if (dataClass == typeof(bool))
@@ -591,17 +590,17 @@ namespace XNATWL.Theme
             }
         }
 
-        private static List<string> parseList(XMLParser xmlp, string name)
+        private static List<string> ParseList(XMLParser xmlp, string name)
         {
             string value = xmlp.getAttributeValue(null, name);
             if (value != null)
             {
-                return parseList(value, 0);
+                return ParseList(value, 0);
             }
             return null;
         }
 
-        private static List<string> parseList(string value, int idx)
+        private static List<string> ParseList(string value, int idx)
         {
             idx = TextUtil.skipSpaces(value, idx);
             if (idx >= value.Length)
@@ -612,10 +611,10 @@ namespace XNATWL.Theme
             int end = TextUtil.indexOf(value, ',', idx);
             string part = TextUtil.trim(value, idx, end);
 
-            return new List<string> { part, parseList(value, end + 1)[0] };
+            return new List<string> { part, ParseList(value, end + 1)[0] };
         }
 
-        private void parseThemeWildcardRef(XMLParser xmlp, ThemeInfoImpl parent)
+        private void ParseThemeWildcardRef(XMLParser xmlp, ThemeInfoImpl parent)
         {
             string reference = xmlp.getAttributeValue(null, "ref");
             if (parent == null)
@@ -635,23 +634,23 @@ namespace XNATWL.Theme
             {
                 throw xmlp.error("Wildcard must end with \".*\" or be \"*\"");
             }
-            parent.wildcardImportPath = refPath;
+            parent._wildcardImportPath = refPath;
             xmlp.nextTag();
         }
 
-        private ThemeInfoImpl parseTheme(XMLParser xmlp, string themeName, ThemeInfoImpl parent, FileSystemObject baseFso)
+        private ThemeInfoImpl ParseTheme(XMLParser xmlp, string themeName, ThemeInfoImpl parent, FileSystemObject baseFso)
         {
             // allow top level theme "*" as fallback theme
             if (!themeName.Equals("*") || parent != null)
             {
-                ParserUtil.checkNameNotEmpty(themeName, xmlp);
+                ParserUtil.CheckNameNotEmpty(themeName, xmlp);
                 if (themeName.IndexOf('.') >= 0)
                 {
                     throw xmlp.error("'.' is not allowed in names");
                 }
             }
             ThemeInfoImpl ti = new ThemeInfoImpl(this, themeName, parent);
-            ThemeInfoImpl oldEnv = mathInterpreter.setEnv(ti);
+            ThemeInfoImpl oldEnv = _mathInterpreter.SetEnv(ti);
             try
             {
                 if (xmlp.parseBoolFromAttribute("merge", false))
@@ -660,10 +659,10 @@ namespace XNATWL.Theme
                     {
                         throw xmlp.error("Can't merge on top level");
                     }
-                    ThemeInfoImpl tiPrev = parent.getTheme(themeName);
+                    ThemeInfoImpl tiPrev = parent.GetTheme(themeName);
                     if (tiPrev != null)
                     {
-                        ti.themeInfoImplCopy(tiPrev);
+                        ti.ThemeInfoImplCopy(tiPrev);
                     }
                 }
                 string reference = xmlp.getAttributeValue(null, "ref");
@@ -672,19 +671,19 @@ namespace XNATWL.Theme
                     ThemeInfoImpl tiRef = null;
                     if (parent != null)
                     {
-                        tiRef = parent.getTheme(reference);
+                        tiRef = parent.GetTheme(reference);
                     }
                     if (tiRef == null)
                     {
-                        tiRef = (ThemeInfoImpl)findThemeInfo(reference);
+                        tiRef = (ThemeInfoImpl)FindThemeInfo(reference);
                     }
                     if (tiRef == null)
                     {
                         throw xmlp.error("referenced theme info not found: " + reference);
                     }
-                    ti.themeInfoImplCopy(tiRef);
+                    ti.ThemeInfoImplCopy(tiRef);
                 }
-                ti.maybeUsedFromWildcard = xmlp.parseBoolFromAttribute("allowWildcard", true);
+                ti._maybeUsedFromWildcard = xmlp.parseBoolFromAttribute("allowWildcard", true);
                 xmlp.nextTag();
                 while (!xmlp.isEndTag())
                 {
@@ -693,18 +692,18 @@ namespace XNATWL.Theme
                     string name = xmlp.getAttributeNotNull("name");
                     if ("param".Equals(tagName))
                     {
-                        parseParam(xmlp, baseFso, "param", ti, ti);
+                        ParseParam(xmlp, baseFso, "param", ti, ti);
                     }
                     else if ("theme".Equals(tagName))
                     {
                         if (name.Length == 0)
                         {
-                            parseThemeWildcardRef(xmlp, ti);
+                            ParseThemeWildcardRef(xmlp, ti);
                         }
                         else
                         {
-                            ThemeInfoImpl tiChild = parseTheme(xmlp, name, ti, baseFso);
-                            ti.putTheme(name, tiChild);
+                            ThemeInfoImpl tiChild = ParseTheme(xmlp, name, ti, baseFso);
+                            ti.PutTheme(name, tiChild);
                         }
                     }
                     else
@@ -717,12 +716,12 @@ namespace XNATWL.Theme
             }
             finally
             {
-                mathInterpreter.setEnv(oldEnv);
+                _mathInterpreter.SetEnv(oldEnv);
             }
             return ti;
         }
 
-        private void parseParam(XMLParser xmlp, FileSystemObject baseFso, string tagName, ThemeInfoImpl parent, ParameterMapImpl target)
+        private void ParseParam(XMLParser xmlp, FileSystemObject baseFso, string tagName, ThemeInfoImpl parent, ParameterMapImpl target)
         {
             try
             {
@@ -730,7 +729,7 @@ namespace XNATWL.Theme
                 string name = xmlp.getAttributeNotNull("name");
                 xmlp.nextTag();
                 string valueTagName = xmlp.getName();
-                Object value = parseValue(xmlp, valueTagName, name, baseFso, parent);
+                Object value = ParseValue(xmlp, valueTagName, name, baseFso, parent);
                 xmlp.require(XmlPullParser.END_TAG, null, valueTagName);
                 xmlp.nextTag();
                 xmlp.require(XmlPullParser.END_TAG, null, tagName);
@@ -739,7 +738,7 @@ namespace XNATWL.Theme
                     IDictionary<string, Renderer.Image> map = (IDictionary<string, Renderer.Image>)value;
                     foreach (string key in map.Keys)
                     {
-                        target.put(key, map[key]);
+                        target.Put(key, map[key]);
                     }
                 }
                 else if (value is IDictionary<string, Renderer.MouseCursor>)
@@ -747,7 +746,7 @@ namespace XNATWL.Theme
                     IDictionary<string, Renderer.MouseCursor> map = (IDictionary<string, Renderer.MouseCursor>)value;
                     foreach (string key in map.Keys)
                     {
-                        target.put(key, map[key]);
+                        target.Put(key, map[key]);
                     }
                 }
                 else if (value is IDictionary<string, object>)
@@ -758,12 +757,12 @@ namespace XNATWL.Theme
                     {
                         throw xmlp.error("constant definitions must define exactly 1 value");
                     }
-                    target.put(map);
+                    target.Put(map);
                 }
                 else
                 {
-                    ParserUtil.checkNameNotEmpty(name, xmlp);
-                    target.put(name, value);
+                    ParserUtil.CheckNameNotEmpty(name, xmlp);
+                    target.Put(name, value);
                 }
             }
             catch (FormatException ex)
@@ -772,22 +771,22 @@ namespace XNATWL.Theme
             }
         }
 
-        private ParameterListImpl parseList(XMLParser xmlp, FileSystemObject baseFso, ThemeInfoImpl parent)
+        private ParameterListImpl ParseList(XMLParser xmlp, FileSystemObject baseFso, ThemeInfoImpl parent)
         {
             ParameterListImpl result = new ParameterListImpl(this, parent);
             xmlp.nextTag();
             while (xmlp.isStartTag())
             {
                 string tagName = xmlp.getName();
-                Object obj = parseValue(xmlp, tagName, null, baseFso, parent);
+                Object obj = ParseValue(xmlp, tagName, null, baseFso, parent);
                 xmlp.require(XmlPullParser.END_TAG, null, tagName);
-                result.parameters.Add(obj);
+                result._parameters.Add(obj);
                 xmlp.nextTag();
             }
             return result;
         }
 
-        private ParameterMapImpl parseMap(XMLParser xmlp, FileSystemObject baseFso, string name, ThemeInfoImpl parent)
+        private ParameterMapImpl ParseMap(XMLParser xmlp, FileSystemObject baseFso, string name, ThemeInfoImpl parent)
         {
             ParameterMapImpl result = new ParameterMapImpl(this, parent);
             if (xmlp.parseBoolFromAttribute("merge", false))
@@ -796,11 +795,11 @@ namespace XNATWL.Theme
                 {
                     throw xmlp.error("Can't merge on top level");
                 }
-                Object obj = parent.getParam(name);
+                Object obj = parent.GetParam(name);
                 if (obj is ParameterMapImpl)
                 {
                     ParameterMapImpl baseMap = (ParameterMapImpl)obj;
-                    result.copy(baseMap);
+                    result.Copy(baseMap);
                 }
                 else if (obj != null)
                 {
@@ -810,10 +809,10 @@ namespace XNATWL.Theme
             string reference = xmlp.getAttributeValue(null, "ref");
             if (reference != null)
             {
-                Object obj = parent.getParam(reference);
+                Object obj = parent.GetParam(reference);
                 if (obj == null)
                 {
-                    obj = constants.getParam(reference);
+                    obj = _constants.GetParam(reference);
                     if (obj == null)
                     {
                         throw new IOException("Referenced map not found: " + reference);
@@ -822,7 +821,7 @@ namespace XNATWL.Theme
                 if (obj is ParameterMapImpl)
                 {
                     ParameterMapImpl baseMap = (ParameterMapImpl)obj;
-                    result.copy(baseMap);
+                    result.Copy(baseMap);
                 }
                 else
                 {
@@ -833,32 +832,32 @@ namespace XNATWL.Theme
             while (xmlp.isStartTag())
             {
                 string tagName = xmlp.getName();
-                parseParam(xmlp, baseFso, "param", parent, result);
+                ParseParam(xmlp, baseFso, "param", parent, result);
                 xmlp.require(XmlPullParser.END_TAG, null, tagName);
                 xmlp.nextTag();
             }
             return result;
         }
 
-        private Object parseValue(XMLParser xmlp, string tagName, string wildcardName, FileSystemObject baseFso, ThemeInfoImpl parent)
+        private Object ParseValue(XMLParser xmlp, string tagName, string wildcardName, FileSystemObject baseFso, ThemeInfoImpl parent)
         {
             try
             {
                 if ("list".Equals(tagName))
                 {
-                    return parseList(xmlp, baseFso, parent);
+                    return ParseList(xmlp, baseFso, parent);
                 }
                 if ("map".Equals(tagName))
                 {
-                    return parseMap(xmlp, baseFso, wildcardName, parent);
+                    return ParseMap(xmlp, baseFso, wildcardName, parent);
                 }
                 if ("inputMapDef".Equals(tagName))
                 {
-                    return parseInputMap(xmlp, wildcardName, parent);
+                    return ParseInputMap(xmlp, wildcardName, parent);
                 }
                 if ("fontDef".Equals(tagName))
                 {
-                    return parseFont(xmlp, baseFso);
+                    return ParseFont(xmlp, baseFso);
                 }
                 if ("enum".Equals(tagName))
                 {
@@ -882,15 +881,15 @@ namespace XNATWL.Theme
 
                 if ("color".Equals(tagName))
                 {
-                    return ParserUtil.parseColor(xmlp, value, constants);
+                    return ParserUtil.ParseColor(xmlp, value, _constants);
                 }
                 if ("float".Equals(tagName))
                 {
-                    return parseMath(xmlp, value).floatValue();
+                    return ParseMath(xmlp, value).floatValue();
                 }
                 if ("int".Equals(tagName))
                 {
-                    return parseMath(xmlp, value).intValue();
+                    return ParseMath(xmlp, value).intValue();
                 }
                 if ("string".Equals(tagName))
                 {
@@ -898,7 +897,7 @@ namespace XNATWL.Theme
                 }
                 if ("font".Equals(tagName))
                 {
-                    Font font = fonts[value];
+                    Font font = _fonts[value];
                     if (font == null)
                     {
                         throw xmlp.error("Font \"" + value + "\" not found");
@@ -907,19 +906,19 @@ namespace XNATWL.Theme
                 }
                 if ("border".Equals(tagName))
                 {
-                    return parseObject<Border>(xmlp, value, typeof(Border));
+                    return ParseObject<Border>(xmlp, value, typeof(Border));
                 }
                 if ("dimension".Equals(tagName))
                 {
-                    return parseObject<Dimension>(xmlp, value, typeof(Dimension));
+                    return ParseObject<Dimension>(xmlp, value, typeof(Dimension));
                 }
                 if ("gap".Equals(tagName) || "size".Equals(tagName))
                 {
-                    return parseObject<DialogLayout.Gap>(xmlp, value, typeof(DialogLayout.Gap));
+                    return ParseObject<DialogLayout.Gap>(xmlp, value, typeof(DialogLayout.Gap));
                 }
                 if ("constant".Equals(tagName))
                 {
-                    Object result = constants.getParam(value);
+                    Object result = _constants.GetParam(value);
                     if (result == null)
                     {
                         throw xmlp.error("Unknown constant: " + value);
@@ -938,9 +937,9 @@ namespace XNATWL.Theme
                         {
                             throw new ArgumentNullException("Wildcard's not allowed");
                         }
-                        return imageManager.getImages(value, wildcardName);
+                        return _imageManager.GetImages(value, wildcardName);
                     }
-                    return imageManager.getReferencedImage(xmlp, value);
+                    return _imageManager.GetReferencedImage(xmlp, value);
                 }
                 if ("cursor".Equals(tagName))
                 {
@@ -950,13 +949,13 @@ namespace XNATWL.Theme
                         {
                             throw new ArgumentNullException("Wildcard's not allowed");
                         }
-                        return imageManager.getCursors(value, wildcardName);
+                        return _imageManager.GetCursors(value, wildcardName);
                     }
-                    return imageManager.getReferencedCursor(xmlp, value);
+                    return _imageManager.GetReferencedCursor(xmlp, value);
                 }
                 if ("inputMap".Equals(tagName))
                 {
-                    return getInputMap(xmlp, value);
+                    return GetInputMap(xmlp, value);
                 }
                 throw xmlp.error("Unknown type \"" + tagName + "\" specified");
             }
@@ -966,31 +965,31 @@ namespace XNATWL.Theme
             }
         }
 
-        private Number parseMath(XMLParser xmlp, string str)
+        private Number ParseMath(XMLParser xmlp, string str)
         {
             try
             {
-                return mathInterpreter.execute(str);
+                return _mathInterpreter.execute(str);
             }
             catch (ParseException ex)
             {
-                throw xmlp.error("unable to evaluate", unwrap(ex));
+                throw xmlp.error("unable to evaluate", Unwrap(ex));
             }
         }
 
-        private T parseObject<T>(XMLParser xmlp, string str, Type type)
+        private T ParseObject<T>(XMLParser xmlp, string str, Type type)
         {
             try
             {
-                return mathInterpreter.executeCreateObject<T>(str, type);
+                return _mathInterpreter.executeCreateObject<T>(str, type);
             }
             catch (ParseException ex)
             {
-                throw xmlp.error("unable to evaluate", unwrap(ex));
+                throw xmlp.error("unable to evaluate", Unwrap(ex));
             }
         }
 
-        private Exception unwrap(ParseException ex)
+        private Exception Unwrap(ParseException ex)
         {
             if (ex.InnerException != null)
             {
@@ -1002,15 +1001,15 @@ namespace XNATWL.Theme
             }
         }
 
-        internal ThemeInfo resolveWildcard(string baseStr, string name, bool useFallback)
+        internal ThemeInfo ResolveWildcard(string baseStr, string name, bool useFallback)
         {
             if(!(baseStr.Length == 0 || baseStr.EndsWith(".")))
             {
                 throw new Exception("Assertion exception");
             }
             string fullPath = baseStr + name;
-            ThemeInfo info = findThemeInfo(fullPath, false, useFallback);
-            if (info != null && ((ThemeInfoImpl)info).maybeUsedFromWildcard)
+            ThemeInfo info = FindThemeInfo(fullPath, false, useFallback);
+            if (info != null && ((ThemeInfoImpl)info)._maybeUsedFromWildcard)
             {
                 return info;
             }
@@ -1019,32 +1018,32 @@ namespace XNATWL.Theme
 
         class MathInterpreter : AbstractMathInterpreter
         {
-            private ThemeInfoImpl env;
-            private ThemeManager themeManager;
+            private ThemeInfoImpl _env;
+            private ThemeManager _themeManager;
 
             public MathInterpreter(ThemeManager themeManager)
             {
-                this.themeManager = themeManager;
+                this._themeManager = themeManager;
             }
 
-            public ThemeInfoImpl setEnv(ThemeInfoImpl env)
+            public ThemeInfoImpl SetEnv(ThemeInfoImpl env)
             {
-                ThemeInfoImpl oldEnv = this.env;
-                this.env = env;
+                ThemeInfoImpl oldEnv = this._env;
+                this._env = env;
                 return oldEnv;
             }
 
-            public override void accessVariable(string name)
+            public override void AccessVariable(string name)
             {
-                for (ThemeInfoImpl e = env; e != null; e = e.parent)
+                for (ThemeInfoImpl e = _env; e != null; e = e._parent)
                 {
-                    Object objx = e.getParam(name);
+                    Object objx = e.GetParam(name);
                     if (objx != null)
                     {
                         push(objx);
                         return;
                     }
-                    objx = e.getChildThemeImpl(name, false);
+                    objx = e.GetChildThemeImpl(name, false);
                     if (objx != null)
                     {
                         push(objx);
@@ -1052,28 +1051,27 @@ namespace XNATWL.Theme
                     }
                 }
 
-                Object obj = this.themeManager.constants.getParam(name);
+                Object obj = this._themeManager._constants.GetParam(name);
                 if (obj != null)
                 {
                     push(obj);
                     return;
                 }
 
-                if (this.themeManager.fonts.ContainsKey(name))
+                if (this._themeManager._fonts.ContainsKey(name))
                 {
-                    push(this.themeManager.fonts[name]);
+                    push(this._themeManager._fonts[name]);
                     return;
                 }
 
                 throw new ArgumentNullException("variable not found: " + name);
             }
 
-
-            protected override Object accessField(Object obj, string field)
+            protected override Object AccessField(Object obj, string field)
             {
                 if (obj is ThemeInfoImpl)
                 {
-                    Object result = ((ThemeInfoImpl)obj).getTheme(field);
+                    Object result = ((ThemeInfoImpl)obj).GetTheme(field);
                     if (result != null)
                     {
                         return result;
@@ -1081,7 +1079,7 @@ namespace XNATWL.Theme
                 }
                 if (obj is ParameterMapImpl)
                 {
-                    Object result = ((ParameterMapImpl)obj).getParam(field);
+                    Object result = ((ParameterMapImpl)obj).GetParam(field);
                     if (result == null)
                     {
                         throw new ArgumentNullException("field not found: " + field);
@@ -1097,7 +1095,7 @@ namespace XNATWL.Theme
                     }
                     return (border != null) ? border : Border.ZERO;
                 }
-                return base.accessField(obj, field);
+                return base.AccessField(obj, field);
             }
         }
     }

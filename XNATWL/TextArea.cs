@@ -334,11 +334,11 @@ namespace XNATWL
 
         protected void applyThemeTextArea(ThemeInfo themeInfo)
         {
-            fonts = themeInfo.getParameterMap("fonts");
-            images = themeInfo.getParameterMap("images");
-            defaultFont = themeInfo.getFont("font");
-            mouseCursorNormal = themeInfo.getMouseCursor("mouseCursor");
-            mouseCursorLink = themeInfo.getMouseCursor("mouseCursor.link");
+            fonts = themeInfo.GetParameterMap("fonts");
+            images = themeInfo.GetParameterMap("images");
+            defaultFont = themeInfo.GetFont("font");
+            mouseCursorNormal = themeInfo.GetMouseCursor("mouseCursor");
+            mouseCursorLink = themeInfo.GetMouseCursor("mouseCursor.link");
             forceRelayout();
         }
 
@@ -1060,7 +1060,7 @@ namespace XNATWL
                 {
                     foreach(string fontFamily in fontFamilies)
                     {
-                        Font font = fonts.getFont(fontFamily);
+                        Font font = fonts.GetFont(fontFamily);
                         if (font != null)
                         {
                             return font;
@@ -1226,7 +1226,7 @@ namespace XNATWL
             }
             if (images != null)
             {
-                return images.getImage(name);
+                return images.GetImage(name);
             }
             return null;
         }

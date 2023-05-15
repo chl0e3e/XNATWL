@@ -36,42 +36,42 @@ namespace XNATWL.Theme
 {
     public class ThemeInfoImpl : ParameterMapImpl, ThemeInfo
     {
-        private String name;
-        private CascadedHashMap<string, ThemeInfoImpl> children;
-        internal bool maybeUsedFromWildcard;
-        internal String wildcardImportPath;
+        private String _name;
+        private CascadedHashMap<string, ThemeInfoImpl> _children;
+        internal bool _maybeUsedFromWildcard;
+        internal String _wildcardImportPath;
 
         public ThemeInfoImpl(ThemeManager manager, string name, ThemeInfoImpl parent) : base(manager, parent)
         {
-            this.name = name;
-            this.children = new CascadedHashMap<string, ThemeInfoImpl>();
+            this._name = name;
+            this._children = new CascadedHashMap<string, ThemeInfoImpl>();
         }
 
-        public void themeInfoImplCopy(ThemeInfoImpl src)
+        public void ThemeInfoImplCopy(ThemeInfoImpl src)
         {
-            base.copy(src);
-            children.CollapseAndSetFallback(src.children);
-            wildcardImportPath = src.wildcardImportPath;
+            base.Copy(src);
+            _children.CollapseAndSetFallback(src._children);
+            _wildcardImportPath = src._wildcardImportPath;
         }
 
-        public String getName()
+        public String GetName()
         {
-            return name;
+            return _name;
         }
 
-        public ThemeInfo getChildTheme(String theme)
+        public ThemeInfo GetChildTheme(String theme)
         {
-            return getChildThemeImpl(theme, true);
+            return GetChildThemeImpl(theme, true);
         }
 
-        public ThemeInfo getChildThemeImpl(String theme, bool useFallback)
+        public ThemeInfo GetChildThemeImpl(String theme, bool useFallback)
         {
-            ThemeInfo info = (ThemeInfo) children.CascadingEntry(theme);
+            ThemeInfo info = (ThemeInfo) _children.CascadingEntry(theme);
             if (info == null)
             {
-                if (wildcardImportPath != null)
+                if (_wildcardImportPath != null)
                 {
-                    info = manager.resolveWildcard(wildcardImportPath, theme, useFallback);
+                    info = _manager.ResolveWildcard(_wildcardImportPath, theme, useFallback);
                 }
                 if (info == null && useFallback)
                 {
@@ -81,35 +81,35 @@ namespace XNATWL.Theme
             return info;
         }
 
-        public ThemeInfoImpl getTheme(String name)
+        public ThemeInfoImpl GetTheme(String name)
         {
-            return (ThemeInfoImpl) children.CascadingEntry(name);
+            return (ThemeInfoImpl) _children.CascadingEntry(name);
         }
 
-        public void putTheme(String name, ThemeInfoImpl child)
+        public void PutTheme(String name, ThemeInfoImpl child)
         {
-            children.PutCascadingEntry(name, child);
+            _children.PutCascadingEntry(name, child);
         }
 
-        public String getThemePath()
+        public String GetThemePath()
         {
-            return getThemePath(0).ToString();
+            return GetThemePath(0).ToString();
         }
 
-        private StringBuilder getThemePath(int length)
+        private StringBuilder GetThemePath(int length)
         {
             StringBuilder sb;
-            length += getName().Length;
-            if (parent != null)
+            length += GetName().Length;
+            if (_parent != null)
             {
-                sb = parent.getThemePath(length + 1);
+                sb = _parent.GetThemePath(length + 1);
                 sb.Append('.');
             }
             else
             {
                 sb = new StringBuilder(length);
             }
-            sb.Append(getName());
+            sb.Append(GetName());
             return sb;
         }
     }

@@ -79,7 +79,7 @@ namespace XNATWL
 
         public void missingChildTheme(ThemeInfo parent, String theme)
         {
-            System.Diagnostics.Debug.WriteLine("Missing child theme \"" + theme + "\" for \"" + parent.getThemePath() + "\"");
+            System.Diagnostics.Debug.WriteLine("Missing child theme \"" + theme + "\" for \"" + parent.GetThemePath() + "\"");
         }
 
         public void missingParameter(ParameterMap map, String paramName, String parentDescription, Type dataType)
@@ -96,7 +96,7 @@ namespace XNATWL
             }
             sb.Append(" not set");
             if (map is ThemeInfo) {
-                sb.Append(" for \"").Append(((ThemeInfo)map).getThemePath()).Append("\"");
+                sb.Append(" for \"").Append(((ThemeInfo)map).GetThemePath()).Append("\"");
             } else
             {
                 sb.Append(parentDescription);

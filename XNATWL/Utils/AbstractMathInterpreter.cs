@@ -53,7 +53,7 @@ namespace XNATWL.Utils
             registerFunction("max", new FunctionMax());
         }
 
-        public abstract void accessVariable(string name);
+        public abstract void AccessVariable(string name);
 
         public void registerFunction(String name, Function function)
         {
@@ -249,11 +249,11 @@ namespace XNATWL.Utils
             {
                 throw new InvalidOperationException("null pointer");
             }
-            Object result = accessField(obj, field);
+            Object result = AccessField(obj, field);
             push(result);
         }
 
-        protected virtual Object accessField(Object obj, String field)
+        protected virtual Object AccessField(Object obj, String field)
         {
             Type clazz = obj.GetType();
             try

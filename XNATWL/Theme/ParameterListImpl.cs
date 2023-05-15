@@ -36,31 +36,31 @@ namespace XNATWL.Theme
 {
     public class ParameterListImpl : ThemeChildImpl, ParameterList
     {
-        internal List<object> parameters;
+        internal List<object> _parameters;
 
         public ParameterListImpl(ThemeManager manager, ThemeInfoImpl parent) : base(manager, parent)
         {
-            this.parameters = new List<Object>();
+            this._parameters = new List<Object>();
         }
 
         public int getSize()
         {
-            return parameters.Count;
+            return _parameters.Count;
         }
 
-        public Font getFont(int idx)
+        public Font GetFont(int idx)
         {
-            Font value = (Font) getParameterValue(idx, typeof(Font));
+            Font value = (Font) GetParameterValue(idx, typeof(Font));
             if (value != null)
             {
                 return value;
             }
-            return manager.getDefaultFont();
+            return _manager.GetDefaultFont();
         }
 
-        public Image getImage(int idx)
+        public Image GetImage(int idx)
         {
-            Image img = (Image) getParameterValue(idx, typeof(Image));
+            Image img = (Image) GetParameterValue(idx, typeof(Image));
             if (img == ImageManager.NONE)
             {
                 return null;
@@ -68,34 +68,34 @@ namespace XNATWL.Theme
             return img;
         }
 
-        public MouseCursor getMouseCursor(int idx)
+        public MouseCursor GetMouseCursor(int idx)
         {
-            return (MouseCursor)getParameterValue(idx, typeof(MouseCursor));
+            return (MouseCursor)GetParameterValue(idx, typeof(MouseCursor));
         }
 
-        public ParameterMap getParameterMap(int idx)
+        public ParameterMap GetParameterMap(int idx)
         {
-            ParameterMap value = (ParameterMap) getParameterValue(idx, typeof(ParameterMap));
+            ParameterMap value = (ParameterMap) GetParameterValue(idx, typeof(ParameterMap));
             if (value == null)
             {
-                return manager.emptyMap;
+                return _manager._emptyMap;
             }
             return value;
         }
 
-        public ParameterList getParameterList(int idx)
+        public ParameterList GetParameterList(int idx)
         {
-            ParameterList value = (ParameterList) getParameterValue(idx, typeof(ParameterList));
+            ParameterList value = (ParameterList) GetParameterValue(idx, typeof(ParameterList));
             if (value == null)
             {
-                return manager.emptyList;
+                return _manager._emptyList;
             }
             return value;
         }
 
-        public bool getParameter(int idx, bool defaultValue)
+        public bool GetParameter(int idx, bool defaultValue)
         {
-            object value = getParameterValue(idx, typeof(bool));
+            object value = GetParameterValue(idx, typeof(bool));
             if (value == null)
             {
                 return defaultValue;
@@ -104,9 +104,9 @@ namespace XNATWL.Theme
             return (bool)value;
         }
 
-        public int getParameter(int idx, int defaultValue)
+        public int GetParameter(int idx, int defaultValue)
         {
-            object value = getParameterValue(idx, typeof(int));
+            object value = GetParameterValue(idx, typeof(int));
             if (value == null)
             {
                 return defaultValue;
@@ -115,9 +115,9 @@ namespace XNATWL.Theme
             return (int)value;
         }
 
-        public float getParameter(int idx, float defaultValue)
+        public float GetParameter(int idx, float defaultValue)
         {
-            object value = getParameterValue(idx, typeof(float));
+            object value = GetParameterValue(idx, typeof(float));
             if (value == null)
             {
                 return defaultValue;
@@ -126,9 +126,9 @@ namespace XNATWL.Theme
             return (float)value;
         }
 
-        public string getParameter(int idx, string defaultValue)
+        public string GetParameter(int idx, string defaultValue)
         {
-            object value = getParameterValue(idx, typeof(string));
+            object value = GetParameterValue(idx, typeof(string));
             if (value == null)
             {
                 return defaultValue;
@@ -137,9 +137,9 @@ namespace XNATWL.Theme
             return (string)value;
         }
 
-        public Color getParameter(int idx, Color defaultValue)
+        public Color GetParameter(int idx, Color defaultValue)
         {
-            Color value = (Color) getParameterValue(idx, typeof(Color));
+            Color value = (Color) GetParameterValue(idx, typeof(Color));
             if (value != null)
             {
                 return value;
@@ -147,9 +147,9 @@ namespace XNATWL.Theme
             return defaultValue;
         }
 
-        public E getParameter<E>(int idx, E defaultValue) where E : struct, IConvertible
+        public E GetParameter<E>(int idx, E defaultValue) where E : struct, IConvertible
         {
-            E? value = (E?) getParameterValue(idx, defaultValue.GetType());
+            E? value = (E?) GetParameterValue(idx, defaultValue.GetType());
             if (value != null)
             {
                 return (E) value;
@@ -157,36 +157,36 @@ namespace XNATWL.Theme
             return defaultValue;
         }
 
-        public Object getParameterValue(int idx)
+        public Object GetParameterValue(int idx)
         {
-            return parameters[idx];
+            return _parameters[idx];
         }
 
-        public object getParameterValue(int idx, Type type)
+        public object GetParameterValue(int idx, Type type)
         {
-            object value = getParameterValue(idx);
+            object value = GetParameterValue(idx);
             if (value != null && !type.IsInstanceOfType(value))
             {
-                wrongParameterType(idx, type, value.GetType());
+                WrongParameterType(idx, type, value.GetType());
                 return null;
             }
             return value;
         }
 
-        public object getParameterValue<T>(int idx, Type type)
+        public object GetParameterValue<T>(int idx, Type type)
         {
-            T value = (T) getParameterValue(idx);
+            T value = (T) GetParameterValue(idx);
             if (value != null && !type.IsInstanceOfType(value))
             {
-                wrongParameterType(idx, type, value.GetType());
+                WrongParameterType(idx, type, value.GetType());
                 return null;
             }
             return value;
         }
 
-        protected void wrongParameterType(int idx, Type expectedType, Type foundType)
+        protected void WrongParameterType(int idx, Type expectedType, Type foundType)
         {
-            DebugHook.getDebugHook().wrongParameterType(this, idx, expectedType, foundType, getParentDescription());
+            DebugHook.getDebugHook().wrongParameterType(this, idx, expectedType, foundType, GetParentDescription());
         }
     }
 }

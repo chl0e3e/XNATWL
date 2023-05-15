@@ -34,13 +34,13 @@ namespace XNATWL.Theme
 {
     public class ComposedImage : Image, HasBorder
     {
-        private Image[] layers;
-        private Border border;
+        private Image[] _layers;
+        private Border _border;
 
         public ComposedImage(Image[] layers, Border border) : base()
         {
-            this.layers = layers;
-            this.border = border;
+            this._layers = layers;
+            this._border = border;
         }
 
         public void Draw(Renderer.AnimationState animationState, int x, int y)
@@ -50,7 +50,7 @@ namespace XNATWL.Theme
 
         public void Draw(Renderer.AnimationState animationState, int x, int y, int width, int height)
         {
-            foreach (Image layer in layers)
+            foreach (Image layer in _layers)
             {
                 layer.Draw(animationState, x, y, width, height);
             }
@@ -60,7 +60,7 @@ namespace XNATWL.Theme
         {
             get
             {
-                return layers[0].Height;
+                return _layers[0].Height;
             }
         }
 
@@ -68,7 +68,7 @@ namespace XNATWL.Theme
         {
             get
             {
-                return layers[0].Width;
+                return _layers[0].Width;
             }
         }
 
@@ -76,18 +76,18 @@ namespace XNATWL.Theme
         {
             get
             {
-                return border;
+                return _border;
             }
         }
 
         public Image CreateTintedVersion(Color color)
         {
-            Image[] newLayers = new Image[layers.Length];
+            Image[] newLayers = new Image[_layers.Length];
             for (int i = 0; i < newLayers.Length; i++)
             {
-                newLayers[i] = layers[i].CreateTintedVersion(color);
+                newLayers[i] = _layers[i].CreateTintedVersion(color);
             }
-            return new ComposedImage(newLayers, border);
+            return new ComposedImage(newLayers, _border);
         }
     }
 }

@@ -39,52 +39,52 @@ namespace XNATWL.Theme
 {
     public class ImageManager
     {
-        ParameterMapImpl constants;
-        private Renderer.Renderer renderer;
-        private SortedDictionary<String, Image> images;
-        private SortedDictionary<String, MouseCursor> cursors;
-        private MathInterpreter mathInterpreter;
+        ParameterMapImpl _constants;
+        private Renderer.Renderer _renderer;
+        private SortedDictionary<String, Image> _images;
+        private SortedDictionary<String, MouseCursor> _cursors;
+        private MathInterpreter _mathInterpreter;
 
-        private Texture currentTexture;
+        private Texture _currentTexture;
 
         internal static EmptyImage NONE = new EmptyImage(0, 0);
         private static MouseCursor INHERIT_CURSOR = InheritedMouseCursor.INHERITED_DEFAULT;// new MouseCursor() { };
 
         public ImageManager(ParameterMapImpl constants, Renderer.Renderer renderer)
         {
-            this.constants = constants;
-            this.renderer = renderer;
-            this.images = new SortedDictionary<String, Image>();
-            this.cursors = new SortedDictionary<String, MouseCursor>();
-            this.mathInterpreter = new MathInterpreter(this);
+            this._constants = constants;
+            this._renderer = renderer;
+            this._images = new SortedDictionary<String, Image>();
+            this._cursors = new SortedDictionary<String, MouseCursor>();
+            this._mathInterpreter = new MathInterpreter(this);
 
-            images.Add("none", NONE);
-            cursors.Add("os-default", DefaultMouseCursor.OS_DEFAULT);
-            cursors.Add("inherit", INHERIT_CURSOR);
+            _images.Add("none", NONE);
+            _cursors.Add("os-default", DefaultMouseCursor.OS_DEFAULT);
+            _cursors.Add("inherit", INHERIT_CURSOR);
         }
 
-        public Image getImage(String name)
+        public Image GetImage(String name)
         {
-            if (!images.ContainsKey(name))
+            if (!_images.ContainsKey(name))
             {
                 return null;
             }
-            return images[name];
+            return _images[name];
         }
 
-        public Image getReferencedImage(XMLParser xmlp)
+        public Image GetReferencedImage(XMLParser xmlp)
         {
             String reference = xmlp.getAttributeNotNull("ref");
-            return getReferencedImage(xmlp, reference);
+            return GetReferencedImage(xmlp, reference);
         }
 
-        public Image getReferencedImage(XMLParser xmlp, String reference)
+        public Image GetReferencedImage(XMLParser xmlp, String reference)
         {
             if (reference.EndsWith(".*"))
             {
                 throw xmlp.error("wildcard mapping not allowed");
             }
-            Image img = images[reference];
+            Image img = _images[reference];
             if (img == null)
             {
                 throw xmlp.error("referenced image \"" + reference + "\" not found");
@@ -92,32 +92,32 @@ namespace XNATWL.Theme
             return img;
         }
 
-        public MouseCursor getReferencedCursor(XMLParser xmlp, String reference)
+        public MouseCursor GetReferencedCursor(XMLParser xmlp, String reference)
         {
-            MouseCursor cursor = cursors[reference];
+            MouseCursor cursor = _cursors[reference];
             if (cursor == null)
             {
                 throw xmlp.error("referenced cursor \"" + reference + "\" not found");
             }
-            return unwrapCursor(cursor);
+            return UnwrapCursor(cursor);
         }
 
-        public Dictionary<String, Image> getImages(String reference, String name)
+        public Dictionary<String, Image> GetImages(String reference, String name)
         {
-            return ParserUtil.resolve(images, reference, name, null);
+            return ParserUtil.Resolve(_images, reference, name, null);
         }
 
-        public MouseCursor getCursor(String name)
+        public MouseCursor GetCursor(String name)
         {
-            return unwrapCursor(cursors[name]);
+            return UnwrapCursor(_cursors[name]);
         }
 
-        public Dictionary<String, MouseCursor> getCursors(String reference, String name)
+        public Dictionary<String, MouseCursor> GetCursors(String reference, String name)
         {
-            return ParserUtil.resolve(cursors, reference, name, INHERIT_CURSOR);
+            return ParserUtil.Resolve(_cursors, reference, name, INHERIT_CURSOR);
         }
 
-        public void parseImages(XMLParser xmlp, FileSystemObject baseFolder)
+        public void ParseImages(XMLParser xmlp, FileSystemObject baseFolder)
         {
             xmlp.require(XmlPullParser.START_TAG, null, null);
 
@@ -132,7 +132,7 @@ namespace XNATWL.Theme
 
                 try
                 {
-                    texture = renderer.LoadTexture(new FileSystemObject(baseFolder, fileName), fmt, filter);
+                    texture = _renderer.LoadTexture(new FileSystemObject(baseFolder, fileName), fmt, filter);
                     if (texture == null)
                     {
                         throw new NullReferenceException("loadTexture returned null");
@@ -144,7 +144,7 @@ namespace XNATWL.Theme
                 }
             }
 
-            this.currentTexture = texture;
+            this._currentTexture = texture;
 
             try
             {
@@ -154,16 +154,16 @@ namespace XNATWL.Theme
                     bool emptyElement = xmlp.isEmptyElement();
                     String tagName = xmlp.getName();
                     String name = xmlp.getAttributeNotNull("name");
-                    checkImageName(name, xmlp);
+                    CheckImageName(name, xmlp);
 
                     if ("cursor".Equals(xmlp.getName()))
                     {
-                        parseCursor(xmlp, name);
+                        ParseCursor(xmlp, name);
                     }
                     else
                     {
-                        Image image = parseImage(xmlp, tagName);
-                        images.Add(name, image);
+                        Image image = ParseImage(xmlp, tagName);
+                        _images.Add(name, image);
                     }
 
                     if (!emptyElement)
@@ -176,7 +176,7 @@ namespace XNATWL.Theme
             }
             finally
             {
-                currentTexture = null;
+                _currentTexture = null;
                 if (texture != null)
                 {
                     texture.ThemeLoadingDone();
@@ -184,21 +184,21 @@ namespace XNATWL.Theme
             }
         }
 
-        private MouseCursor unwrapCursor(MouseCursor cursor)
+        private MouseCursor UnwrapCursor(MouseCursor cursor)
         {
             return (cursor == INHERIT_CURSOR) ? null : cursor;
         }
 
-        private void checkImageName(String name, XMLParser xmlp)
+        private void CheckImageName(String name, XMLParser xmlp)
         {
-            ParserUtil.checkNameNotEmpty(name, xmlp);
-            if (images.ContainsKey(name))
+            ParserUtil.CheckNameNotEmpty(name, xmlp);
+            if (_images.ContainsKey(name))
             {
                 throw xmlp.error("image \"" + name + "\" already defined");
             }
         }
 
-        private static Border getBorder(Image image, Border border)
+        private static Border GetBorder(Image image, Border border)
         {
             if (border == null && (image is HasBorder))
             {
@@ -207,13 +207,13 @@ namespace XNATWL.Theme
             return border;
         }
 
-        private void parseCursor(XMLParser xmlp, String name)
+        private void ParseCursor(XMLParser xmlp, String name)
         {
             String reference = xmlp.getAttributeValue(null, "ref");
             MouseCursor cursor;
             if (reference != null)
             {
-                cursor = cursors[reference];
+                cursor = _cursors[reference];
                 if (cursor == null)
                 {
                     throw xmlp.error("referenced cursor \"" + reference + "\" not found");
@@ -222,7 +222,7 @@ namespace XNATWL.Theme
             else
             {
                 ImageParams imageParams = new ImageParams();
-                parseRectFromAttribute(xmlp, imageParams);
+                ParseRectFromAttribute(xmlp, imageParams);
                 int hotSpotX = xmlp.parseIntFromAttribute("hotSpotX");
                 int hotSpotY = xmlp.parseIntFromAttribute("hotSpotY");
                 String imageRefStr = xmlp.getAttributeValue(null, "imageRef");
@@ -230,84 +230,84 @@ namespace XNATWL.Theme
                 Image imageRef = null;
                 if (imageRefStr != null)
                 {
-                    imageRef = getReferencedImage(xmlp, imageRefStr);
+                    imageRef = GetReferencedImage(xmlp, imageRefStr);
                 }
-                cursor = currentTexture.CreateCursor(imageParams.x, imageParams.y, imageParams.w, imageParams.h, hotSpotX, hotSpotY, imageRef);
+                cursor = _currentTexture.CreateCursor(imageParams.X, imageParams.Y, imageParams.W, imageParams.H, hotSpotX, hotSpotY, imageRef);
                 if (cursor == null)
                 {
                     cursor = DefaultMouseCursor.OS_DEFAULT;
                 }
             }
-            cursors.Add(name, cursor);
+            _cursors.Add(name, cursor);
             xmlp.nextTag();
         }
 
-        private Image parseImage(XMLParser xmlp, String tagName)
+        private Image ParseImage(XMLParser xmlp, String tagName)
         {
             ImageParams parameters = new ImageParams();
-            parameters.condition = ParserUtil.parseCondition(xmlp);
-            return parseImageNoCond(xmlp, tagName, parameters);
+            parameters.Condition = ParserUtil.ParseCondition(xmlp);
+            return ParseImageNoCond(xmlp, tagName, parameters);
         }
 
-        private Image parseImageNoCond(XMLParser xmlp, String tagName, ImageParams parameters)
+        private Image ParseImageNoCond(XMLParser xmlp, String tagName, ImageParams parameters)
         {
-            parseStdAttributes(xmlp, parameters);
-            Image image = parseImageDelegate(xmlp, tagName, parameters);
-            return adjustImage(image, parameters);
+            ParseStdAttributes(xmlp, parameters);
+            Image image = ParseImageDelegate(xmlp, tagName, parameters);
+            return AdjustImage(image, parameters);
         }
 
-        private Image adjustImage(Image image, ImageParams parameters)
+        private Image AdjustImage(Image image, ImageParams parameters)
         {
-            Border border = getBorder(image, parameters.border);
-            if (parameters.tintColor != null && !Color.WHITE.Equals(parameters.tintColor))
+            Border border = GetBorder(image, parameters.Border);
+            if (parameters.TintColor != null && !Color.WHITE.Equals(parameters.TintColor))
             {
-                image = image.CreateTintedVersion(parameters.tintColor);
+                image = image.CreateTintedVersion(parameters.TintColor);
             }
-            if (parameters.repeatX || parameters.repeatY)
+            if (parameters.RepeatX || parameters.RepeatY)
             {
-                image = new RepeatImage(image, border, parameters.repeatX, parameters.repeatY);
+                image = new RepeatImage(image, border, parameters.RepeatX, parameters.RepeatY);
             }
-            Border imgBorder = getBorder(image, null);
-            if ((border != null && border != imgBorder) || parameters.inset != null ||
-                    parameters.center || parameters.condition != null ||
-                    parameters.sizeOverwriteH >= 0 || parameters.sizeOverwriteV >= 0)
+            Border imgBorder = GetBorder(image, null);
+            if ((border != null && border != imgBorder) || parameters.Inset != null ||
+                    parameters.Center || parameters.Condition != null ||
+                    parameters.SizeOverwriteH >= 0 || parameters.SizeOverwriteV >= 0)
             {
-                image = new ImageAdjustments(image, border, parameters.inset,
-                        parameters.sizeOverwriteH, parameters.sizeOverwriteV,
-                        parameters.center, parameters.condition);
+                image = new ImageAdjustments(image, border, parameters.Inset,
+                        parameters.SizeOverwriteH, parameters.SizeOverwriteV,
+                        parameters.Center, parameters.Condition);
             }
             return image;
         }
 
-        private Image parseImageDelegate(XMLParser xmlp, String tagName, ImageParams parameters)
+        private Image ParseImageDelegate(XMLParser xmlp, String tagName, ImageParams parameters)
         {
             if ("area".Equals(tagName))
             {
-                return parseArea(xmlp, parameters);
+                return ParseArea(xmlp, parameters);
             }
             else if ("alias".Equals(tagName))
             {
-                return parseAlias(xmlp);
+                return ParseAlias(xmlp);
             }
             else if ("composed".Equals(tagName))
             {
-                return parseComposed(xmlp, parameters);
+                return ParseComposed(xmlp, parameters);
             }
             else if ("select".Equals(tagName))
             {
-                return parseStateSelect(xmlp, parameters);
+                return ParseStateSelect(xmlp, parameters);
             }
             else if ("grid".Equals(tagName))
             {
-                return parseGrid(xmlp, parameters);
+                return ParseGrid(xmlp, parameters);
             }
             else if ("animation".Equals(tagName))
             {
-                return parseAnimation(xmlp, parameters);
+                return ParseAnimation(xmlp, parameters);
             }
             else if ("gradient".Equals(tagName))
             {
-                return parseGradient(xmlp, parameters);
+                return ParseGradient(xmlp, parameters);
             }
             else
             {
@@ -315,7 +315,7 @@ namespace XNATWL.Theme
             }
         }
 
-        private Image parseComposed(XMLParser xmlp, ImageParams parameters)
+        private Image ParseComposed(XMLParser xmlp, ImageParams parameters)
         {
             List<Image> layers = new List<Image>();
             xmlp.nextTag();
@@ -323,9 +323,9 @@ namespace XNATWL.Theme
             {
                 xmlp.require(XmlPullParser.START_TAG, null, null);
                 String tagName = xmlp.getName();
-                Image image = parseImage(xmlp, tagName);
+                Image image = ParseImage(xmlp, tagName);
                 layers.Add(image);
-                parameters.border = getBorder(image, parameters.border);
+                parameters.Border = GetBorder(image, parameters.Border);
                 xmlp.require(XmlPullParser.END_TAG, null, tagName);
                 xmlp.nextTag();
             }
@@ -338,11 +338,11 @@ namespace XNATWL.Theme
                 default:
                     return new ComposedImage(
                             layers.ToArray(),
-                            parameters.border);
+                            parameters.Border);
             }
         }
 
-        private Image parseStateSelect(XMLParser xmlp, ImageParams parameters)
+        private Image ParseStateSelect(XMLParser xmlp, ImageParams parameters)
         {
             List<Image> stateImages = new List<Image>();
             List<StateExpression> conditions = new List<StateExpression>();
@@ -351,10 +351,10 @@ namespace XNATWL.Theme
             while (!last && !xmlp.isEndTag())
             {
                 xmlp.require(XmlPullParser.START_TAG, null, null);
-                StateExpression cond = ParserUtil.parseCondition(xmlp);
+                StateExpression cond = ParserUtil.ParseCondition(xmlp);
                 String tagName = xmlp.getName();
-                Image ximage = parseImageNoCond(xmlp, tagName, new ImageParams());
-                parameters.border = getBorder(ximage, parameters.border);
+                Image ximage = ParseImageNoCond(xmlp, tagName, new ImageParams());
+                parameters.Border = GetBorder(ximage, parameters.Border);
                 xmlp.require(XmlPullParser.END_TAG, null, tagName);
                 xmlp.nextTag();
                 last = cond == null;
@@ -364,14 +364,14 @@ namespace XNATWL.Theme
                     ImageAdjustments ia = (ImageAdjustments)ximage;
                     if (ia.IsSimple())
                     {
-                        cond = and(cond, ia.condition);
-                        ximage = ia.image;
+                        cond = And(cond, ia._condition);
+                        ximage = ia._image;
                     }
                 }
 
                 if (StateSelect.IsUseOptimizer() && (ximage is StateSelectImage))
                 {
-                    inlineSelect((StateSelectImage)ximage, cond, stateImages, conditions);
+                    InlineSelect((StateSelectImage)ximage, cond, stateImages, conditions);
                 }
                 else
                 {
@@ -396,19 +396,19 @@ namespace XNATWL.Theme
                 }
             }
             StateSelect select = new StateSelect(conditions);
-            Image image = new StateSelectImage(select, parameters.border, stateImages.ToArray());
+            Image image = new StateSelectImage(select, parameters.Border, stateImages.ToArray());
             return image;
         }
 
-        private static void inlineSelect(StateSelectImage src, StateExpression cond, List<Image> stateImages, List<StateExpression> conditions)
+        private static void InlineSelect(StateSelectImage src, StateExpression cond, List<Image> stateImages, List<StateExpression> conditions)
         {
-            int n = src.images.Length;
-            int m = src.select.Expressions();
+            int n = src.Images.Length;
+            int m = src.Select.Expressions();
             for (int i = 0; i < n; i++)
             {
-                StateExpression imgCond = (i < m) ? src.select.ExpressionAt(i) : null;
-                imgCond = and(imgCond, cond);
-                stateImages.Add(src.images[i]);
+                StateExpression imgCond = (i < m) ? src.Select.ExpressionAt(i) : null;
+                imgCond = And(imgCond, cond);
+                stateImages.Add(src.Images[i]);
                 if (imgCond != null)
                 {
                     conditions.Add(imgCond);
@@ -424,7 +424,7 @@ namespace XNATWL.Theme
             }
         }
 
-        private static StateExpression and(StateExpression imgCond, StateExpression cond)
+        private static StateExpression And(StateExpression imgCond, StateExpression cond)
         {
             if (imgCond == null)
             {
@@ -437,13 +437,13 @@ namespace XNATWL.Theme
             return imgCond;
         }
 
-        private Image parseArea(XMLParser xmlp, ImageParams parameters)
+        private Image ParseArea(XMLParser xmlp, ImageParams parameters)
         {
-            parseRectFromAttribute(xmlp, parameters);
-            parseRotationFromAttribute(xmlp, parameters);
+            ParseRectFromAttribute(xmlp, parameters);
+            ParseRotationFromAttribute(xmlp, parameters);
             bool tiled = xmlp.parseBoolFromAttribute("tiled", false);
-            int[] splitx = parseSplit2(xmlp, "splitx", Math.Abs(parameters.w));
-            int[] splity = parseSplit2(xmlp, "splity", Math.Abs(parameters.h));
+            int[] splitx = ParseSplit2(xmlp, "splitx", Math.Abs(parameters.W));
+            int[] splity = ParseSplit2(xmlp, "splity", Math.Abs(parameters.H));
             Image image;
             if (splitx != null || splity != null)
             {
@@ -456,26 +456,26 @@ namespace XNATWL.Theme
                     int imgY, imgH;
                     if (splity != null)
                     {
-                        imgY = (parameters.h < 0) ? (parameters.y - parameters.h - splity[r + 1]) : (parameters.y + splity[r]);
-                        imgH = (splity[r + 1] - splity[r]) * Math.Sign(parameters.h);
+                        imgY = (parameters.H < 0) ? (parameters.Y - parameters.H - splity[r + 1]) : (parameters.Y + splity[r]);
+                        imgH = (splity[r + 1] - splity[r]) * Math.Sign(parameters.H);
                     }
                     else
                     {
-                        imgY = parameters.y;
-                        imgH = parameters.h;
+                        imgY = parameters.Y;
+                        imgH = parameters.H;
                     }
                     for (int c = 0; c < columns; c++)
                     {
                         int imgX, imgW;
                         if (splitx != null)
                         {
-                            imgX = (parameters.w < 0) ? (parameters.x - parameters.w - splitx[c + 1]) : (parameters.x + splitx[c]);
-                            imgW = (splitx[c + 1] - splitx[c]) * Math.Sign(parameters.w);
+                            imgX = (parameters.W < 0) ? (parameters.X - parameters.W - splitx[c + 1]) : (parameters.X + splitx[c]);
+                            imgW = (splitx[c + 1] - splitx[c]) * Math.Sign(parameters.W);
                         }
                         else
                         {
-                            imgX = parameters.x;
-                            imgW = parameters.w;
+                            imgX = parameters.X;
+                            imgW = parameters.W;
                         }
 
                         bool isCenter = (r == rows / 2) && (c == columns / 2);
@@ -486,10 +486,10 @@ namespace XNATWL.Theme
                         }
                         else
                         {
-                            img = createImage(xmlp, imgX, imgY, imgW, imgH, parameters.tintColor, isCenter & tiled, parameters.rot);
+                            img = CreateImage(xmlp, imgX, imgY, imgW, imgH, parameters.TintColor, isCenter & tiled, parameters.Rot);
                         }
                         int idx;
-                        switch (parameters.rot)
+                        switch (parameters.Rot)
                         {
                             default:
                                 idx = r * columns + c;
@@ -508,45 +508,45 @@ namespace XNATWL.Theme
                         imageParts[idx] = img;
                     }
                 }
-                switch (parameters.rot)
+                switch (parameters.Rot)
                 {
                     case TextureRotation.CLOCKWISE_90:
                     case TextureRotation.CLOCKWISE_270:
                         image = new GridImage(imageParts,
                                 (splity != null) ? SPLIT_WEIGHTS_3 : SPLIT_WEIGHTS_1,
                                 (splitx != null) ? SPLIT_WEIGHTS_3 : SPLIT_WEIGHTS_1,
-                                parameters.border);
+                                parameters.Border);
                         break;
                     default:
                         image = new GridImage(imageParts,
                                 (splitx != null) ? SPLIT_WEIGHTS_3 : SPLIT_WEIGHTS_1,
                                 (splity != null) ? SPLIT_WEIGHTS_3 : SPLIT_WEIGHTS_1,
-                                parameters.border);
+                                parameters.Border);
                         break;
                 }
             }
             else
             {
-                image = createImage(xmlp, parameters.x, parameters.y, parameters.w, parameters.h, parameters.tintColor, tiled, parameters.rot);
+                image = CreateImage(xmlp, parameters.X, parameters.Y, parameters.W, parameters.H, parameters.TintColor, tiled, parameters.Rot);
             }
             int tagToken = xmlp.nextTag();
-            parameters.tintColor = null;
+            parameters.TintColor = null;
             if (tiled)
             {
-                parameters.repeatX = false;
-                parameters.repeatY = false;
+                parameters.RepeatX = false;
+                parameters.RepeatY = false;
             }
             return image;
         }
 
-        private Image parseAlias(XMLParser xmlp)
+        private Image ParseAlias(XMLParser xmlp)
         {
-            Image image = getReferencedImage(xmlp);
+            Image image = GetReferencedImage(xmlp);
             xmlp.nextTag();
             return image;
         }
 
-        private static int[] parseSplit2(XMLParser xmlp, String attribName, int size)
+        private static int[] ParseSplit2(XMLParser xmlp, String attribName, int size)
         {
             String splitStr = xmlp.getAttributeValue(null, attribName);
             if (splitStr != null)
@@ -630,7 +630,7 @@ namespace XNATWL.Theme
             }
         }
 
-        private void parseSubImages(XMLParser xmlp, Image[] textures)
+        private void ParseSubImages(XMLParser xmlp, Image[] textures)
         {
             int idx = 0;
             while (xmlp.isStartTag())
@@ -640,7 +640,7 @@ namespace XNATWL.Theme
                     throw xmlp.error("Too many sub images");
                 }
                 String tagName = xmlp.getName();
-                textures[idx++] = parseImage(xmlp, tagName);
+                textures[idx++] = ParseImage(xmlp, tagName);
                 xmlp.require(XmlPullParser.END_TAG, null, tagName);
                 xmlp.nextTag();
             }
@@ -650,16 +650,16 @@ namespace XNATWL.Theme
             }
         }
 
-        private Image parseGrid(XMLParser xmlp, ImageParams parameters)
+        private Image ParseGrid(XMLParser xmlp, ImageParams parameters)
         {
             try
             {
-                int[] weightsX = ParserUtil.parseIntArrayFromAttribute(xmlp, "weightsX");
-                int[] weightsY = ParserUtil.parseIntArrayFromAttribute(xmlp, "weightsY");
+                int[] weightsX = ParserUtil.ParseIntArrayFromAttribute(xmlp, "weightsX");
+                int[] weightsY = ParserUtil.ParseIntArrayFromAttribute(xmlp, "weightsY");
                 Image[] textures = new Image[weightsX.Length * weightsY.Length];
                 xmlp.nextTag();
-                parseSubImages(xmlp, textures);
-                Image image = new GridImage(textures, weightsX, weightsY, parameters.border);
+                ParseSubImages(xmlp, textures);
+                Image image = new GridImage(textures, weightsX, weightsY, parameters.Border);
                 return image;
             }
             catch (ArgumentOutOfRangeException ex)
@@ -671,19 +671,19 @@ namespace XNATWL.Theme
         private static int[] SPLIT_WEIGHTS_3 = { 0, 1, 0 };
         private static int[] SPLIT_WEIGHTS_1 = { 1 };
 
-        private void parseAnimElements(XMLParser xmlp, String tagName, List<AnimatedImage.Element> frames)
+        private void ParseAnimElements(XMLParser xmlp, String tagName, List<AnimatedImage.Element> frames)
         {
             if ("repeat".Equals(tagName))
             {
-                frames.Add(parseAnimRepeat(xmlp));
+                frames.Add(ParseAnimRepeat(xmlp));
             }
             else if ("frame".Equals(tagName))
             {
-                frames.Add(parseAnimFrame(xmlp));
+                frames.Add(ParseAnimFrame(xmlp));
             }
             else if ("frames".Equals(tagName))
             {
-                parseAnimFrames(xmlp, frames);
+                ParseAnimFrames(xmlp, frames);
             }
             else
             {
@@ -691,38 +691,38 @@ namespace XNATWL.Theme
             }
         }
 
-        private AnimatedImage.Img parseAnimFrame(XMLParser xmlp)
+        private AnimatedImage.Img ParseAnimFrame(XMLParser xmlp)
         {
             int duration = xmlp.parseIntFromAttribute("duration");
             if (duration < 0)
             {
                 throw new ArgumentOutOfRangeException("duration must be >= 0 ms");
             }
-            AnimParams animParams = parseAnimParams(xmlp);
-            Image image = getReferencedImage(xmlp);
-            AnimatedImage.Img img = new AnimatedImage.Img(duration, image, animParams.tintColor,
-                    animParams.zoomX, animParams.zoomY, animParams.zoomCenterX, animParams.zoomCenterY);
+            AnimParams animParams = ParseAnimParams(xmlp);
+            Image image = GetReferencedImage(xmlp);
+            AnimatedImage.Img img = new AnimatedImage.Img(duration, image, animParams.TintColor,
+                    animParams.ZoomX, animParams.ZoomY, animParams.ZoomCenterX, animParams.ZoomCenterY);
             xmlp.nextTag();
             return img;
         }
 
-        private AnimParams parseAnimParams(XMLParser xmlp)
+        private AnimParams ParseAnimParams(XMLParser xmlp)
         {
             AnimParams parameters = new AnimParams();
-            parameters.tintColor = ParserUtil.parseColorFromAttribute(xmlp, "tint", constants, Color.WHITE);
+            parameters.TintColor = ParserUtil.ParseColorFromAttribute(xmlp, "tint", _constants, Color.WHITE);
             float zoom = xmlp.parseFloatFromAttribute("zoom", 1.0f);
-            parameters.zoomX = xmlp.parseFloatFromAttribute("zoomX", zoom);
-            parameters.zoomY = xmlp.parseFloatFromAttribute("zoomY", zoom);
-            parameters.zoomCenterX = xmlp.parseFloatFromAttribute("zoomCenterX", 0.5f);
-            parameters.zoomCenterY = xmlp.parseFloatFromAttribute("zoomCenterY", 0.5f);
+            parameters.ZoomX = xmlp.parseFloatFromAttribute("zoomX", zoom);
+            parameters.ZoomY = xmlp.parseFloatFromAttribute("zoomY", zoom);
+            parameters.ZoomCenterX = xmlp.parseFloatFromAttribute("zoomCenterX", 0.5f);
+            parameters.ZoomCenterY = xmlp.parseFloatFromAttribute("zoomCenterY", 0.5f);
             return parameters;
         }
 
-        private void parseAnimFrames(XMLParser xmlp, List<AnimatedImage.Element> frames)
+        private void ParseAnimFrames(XMLParser xmlp, List<AnimatedImage.Element> frames)
         {
             ImageParams parameters = new ImageParams();
-            parseRectFromAttribute(xmlp, parameters);
-            parseRotationFromAttribute(xmlp, parameters);
+            ParseRectFromAttribute(xmlp, parameters);
+            ParseRotationFromAttribute(xmlp, parameters);
             int duration = xmlp.parseIntFromAttribute("duration");
             if (duration < 1)
             {
@@ -733,7 +733,7 @@ namespace XNATWL.Theme
             {
                 throw new ArgumentOutOfRangeException("count must be >= 1");
             }
-            AnimParams animParams = parseAnimParams(xmlp);
+            AnimParams animParams = ParseAnimParams(xmlp);
             int xOffset = xmlp.parseIntFromAttribute("offsetx", 0);
             int yOffset = xmlp.parseIntFromAttribute("offsety", 0);
             if (count > 1 && (xOffset == 0 && yOffset == 0))
@@ -742,18 +742,18 @@ namespace XNATWL.Theme
             }
             for (int i = 0; i < count; i++)
             {
-                Image image = createImage(xmlp, parameters.x, parameters.y, parameters.w, parameters.h, Color.WHITE, false, parameters.rot);
-                AnimatedImage.Img img = new AnimatedImage.Img(duration, image, animParams.tintColor,
-                        animParams.zoomX, animParams.zoomY, animParams.zoomCenterX, animParams.zoomCenterY);
+                Image image = CreateImage(xmlp, parameters.X, parameters.Y, parameters.W, parameters.H, Color.WHITE, false, parameters.Rot);
+                AnimatedImage.Img img = new AnimatedImage.Img(duration, image, animParams.TintColor,
+                        animParams.ZoomX, animParams.ZoomY, animParams.ZoomCenterX, animParams.ZoomCenterY);
                 frames.Add(img);
-                parameters.x += xOffset;
-                parameters.y += yOffset;
+                parameters.X += xOffset;
+                parameters.Y += yOffset;
             }
 
             xmlp.nextTag();
         }
 
-        private AnimatedImage.Repeat parseAnimRepeat(XMLParser xmlp)
+        private AnimatedImage.Repeat ParseAnimRepeat(XMLParser xmlp)
         {
             String strRepeatCount = xmlp.getAttributeValue(null, "count");
             int repeatCount = 0;
@@ -777,25 +777,25 @@ namespace XNATWL.Theme
                     System.Diagnostics.Debug.WriteLine("Animation frames after an endless repeat won''t be displayed: " + xmlp.getPositionDescription());
                 }
                 String tagName = xmlp.getName();
-                parseAnimElements(xmlp, tagName, children);
+                ParseAnimElements(xmlp, tagName, children);
                 AnimatedImage.Element e = children[children.Count - 1];
                 lastRepeatsEndless =
                         (e is AnimatedImage.Repeat) &&
-                        ((AnimatedImage.Repeat)e).repeatCount == 0;
+                        ((AnimatedImage.Repeat)e)._repeatCount == 0;
                 xmlp.require(XmlPullParser.END_TAG, null, tagName);
                 xmlp.nextTag();
             }
             return new AnimatedImage.Repeat(children.ToArray(), repeatCount);
         }
 
-        private Border getBorder(AnimatedImage.Element e)
+        private Border GetBorder(AnimatedImage.Element e)
         {
             if (e is AnimatedImage.Repeat)
             {
                 AnimatedImage.Repeat r = (AnimatedImage.Repeat)e;
-                foreach (AnimatedImage.Element c in r.children)
+                foreach (AnimatedImage.Element c in r._children)
                 {
-                    Border border = getBorder(c);
+                    Border border = GetBorder(c);
                     if (border != null)
                     {
                         return border;
@@ -805,28 +805,28 @@ namespace XNATWL.Theme
             else if (e is AnimatedImage.Img)
             {
                 AnimatedImage.Img i = (AnimatedImage.Img)e;
-                if (i.image is HasBorder)
+                if (i.Image is HasBorder)
                 {
-                    return ((HasBorder)i.image).Border;
+                    return ((HasBorder)i.Image).Border;
                 }
             }
             return null;
         }
 
-        private Image parseAnimation(XMLParser xmlp, ImageParams parameters)
+        private Image ParseAnimation(XMLParser xmlp, ImageParams parameters)
         {
             try
             {
                 String timeSource = xmlp.getAttributeNotNull("timeSource");
                 int frozenTime = xmlp.parseIntFromAttribute("frozenTime", -1);
-                AnimatedImage.Repeat root = parseAnimRepeat(xmlp);
-                if (parameters.border == null)
+                AnimatedImage.Repeat root = ParseAnimRepeat(xmlp);
+                if (parameters.Border == null)
                 {
-                    parameters.border = getBorder(root);
+                    parameters.Border = GetBorder(root);
                 }
-                Image image = new AnimatedImage(renderer, root, timeSource, parameters.border,
-                        (parameters.tintColor == null) ? Color.WHITE : parameters.tintColor, frozenTime);
-                parameters.tintColor = null;
+                Image image = new AnimatedImage(_renderer, root, timeSource, parameters.Border,
+                        (parameters.TintColor == null) ? Color.WHITE : parameters.TintColor, frozenTime);
+                parameters.TintColor = null;
                 return image;
             }
             catch (ArgumentException ex)
@@ -835,7 +835,7 @@ namespace XNATWL.Theme
             }
         }
 
-        private Image parseGradient(XMLParser xmlp, ImageParams parameters)
+        private Image ParseGradient(XMLParser xmlp, ImageParams parameters)
         {
             try
             {
@@ -850,14 +850,14 @@ namespace XNATWL.Theme
                 {
                     xmlp.require(XmlPullParser.START_TAG, null, "stop");
                     float pos = xmlp.parseFloatFromAttribute("pos");
-                    Color color = ParserUtil.parseColor(xmlp, xmlp.getAttributeNotNull("color"), constants);
+                    Color color = ParserUtil.ParseColor(xmlp, xmlp.getAttributeNotNull("color"), _constants);
                     gradient.AddStop(pos, color);
                     xmlp.nextTag();
                     xmlp.require(XmlPullParser.END_TAG, null, "stop");
                     xmlp.nextTag();
                 }
 
-                return renderer.CreateGradient(gradient);
+                return _renderer.CreateGradient(gradient);
             }
             catch (ArgumentException ex)
             {
@@ -865,14 +865,14 @@ namespace XNATWL.Theme
             }
         }
 
-        private Image createImage(XMLParser xmlp, int x, int y, int w, int h, Color tintColor, bool tiled, TextureRotation rotation)
+        private Image CreateImage(XMLParser xmlp, int x, int y, int w, int h, Color tintColor, bool tiled, TextureRotation rotation)
         {
             if (w == 0 || h == 0)
             {
                 return new EmptyImage(Math.Abs(w), Math.Abs(h));
             }
 
-            Texture texture = currentTexture;
+            Texture texture = _currentTexture;
             int texWidth = texture.Width;
             int texHeight = texture.Height;
 
@@ -892,19 +892,19 @@ namespace XNATWL.Theme
             return texture.GetImage(x, y, w, h, tintColor, tiled, rotation);
         }
 
-        private void parseRectFromAttribute(XMLParser xmlp, ImageParams parameters)
+        private void ParseRectFromAttribute(XMLParser xmlp, ImageParams parameters)
         {
-            if (currentTexture == null)
+            if (_currentTexture == null)
             {
                 throw xmlp.error("can't create area outside of <imagefile> object");
             }
             String xywh = xmlp.getAttributeNotNull("xywh");
             if ("*".Equals(xywh))
             {
-                parameters.x = 0;
-                parameters.y = 0;
-                parameters.w = currentTexture.Width;
-                parameters.h = currentTexture.Height;
+                parameters.X = 0;
+                parameters.Y = 0;
+                parameters.W = _currentTexture.Width;
+                parameters.H = _currentTexture.Height;
             }
             else try
                 {
@@ -913,10 +913,10 @@ namespace XNATWL.Theme
                     {
                         throw xmlp.error("xywh requires 4 integer arguments");
                     }
-                    parameters.x = coords[0];
-                    parameters.y = coords[1];
-                    parameters.w = coords[2];
-                    parameters.h = coords[3];
+                    parameters.X = coords[0];
+                    parameters.Y = coords[1];
+                    parameters.W = coords[2];
+                    parameters.H = coords[3];
                 }
                 catch (ArgumentException ex)
                 {
@@ -924,58 +924,58 @@ namespace XNATWL.Theme
                 }
         }
 
-        private void parseRotationFromAttribute(XMLParser xmlp, ImageParams parameters)
+        private void ParseRotationFromAttribute(XMLParser xmlp, ImageParams parameters)
         {
-            if (currentTexture == null)
+            if (_currentTexture == null)
             {
                 throw xmlp.error("can't create area outside of <imagefile> object");
             }
             int rot = xmlp.parseIntFromAttribute("rot", 0);
             switch (rot)
             {
-                case 0: parameters.rot = TextureRotation.NONE; break;
-                case 90: parameters.rot = TextureRotation.CLOCKWISE_90; break;
-                case 180: parameters.rot = TextureRotation.CLOCKWISE_180; break;
-                case 270: parameters.rot = TextureRotation.CLOCKWISE_270; break;
+                case 0: parameters.Rot = TextureRotation.NONE; break;
+                case 90: parameters.Rot = TextureRotation.CLOCKWISE_90; break;
+                case 180: parameters.Rot = TextureRotation.CLOCKWISE_180; break;
+                case 270: parameters.Rot = TextureRotation.CLOCKWISE_270; break;
                 default:
                     throw xmlp.error("invalid rotation angle");
             }
         }
 
-        private void parseStdAttributes(XMLParser xmlp, ImageParams parameters)
+        private void ParseStdAttributes(XMLParser xmlp, ImageParams parameters)
         {
-            parameters.tintColor = ParserUtil.parseColorFromAttribute(xmlp, "tint", constants, null);
-            parameters.border = ParserUtil.parseBorderFromAttribute(xmlp, "border");
-            parameters.inset = ParserUtil.parseBorderFromAttribute(xmlp, "inset");
-            parameters.repeatX = xmlp.parseBoolFromAttribute("repeatX", false);
-            parameters.repeatY = xmlp.parseBoolFromAttribute("repeatY", false);
-            parameters.sizeOverwriteH = ParserUtil.parseIntExpressionFromAttribute(xmlp, "sizeOverwriteH", -1, mathInterpreter);
-            parameters.sizeOverwriteV = ParserUtil.parseIntExpressionFromAttribute(xmlp, "sizeOverwriteV", -1, mathInterpreter);
-            parameters.center = xmlp.parseBoolFromAttribute("center", false);
+            parameters.TintColor = ParserUtil.ParseColorFromAttribute(xmlp, "tint", _constants, null);
+            parameters.Border = ParserUtil.ParseBorderFromAttribute(xmlp, "border");
+            parameters.Inset = ParserUtil.ParseBorderFromAttribute(xmlp, "inset");
+            parameters.RepeatX = xmlp.parseBoolFromAttribute("repeatX", false);
+            parameters.RepeatY = xmlp.parseBoolFromAttribute("repeatY", false);
+            parameters.SizeOverwriteH = ParserUtil.ParseIntExpressionFromAttribute(xmlp, "sizeOverwriteH", -1, _mathInterpreter);
+            parameters.SizeOverwriteV = ParserUtil.ParseIntExpressionFromAttribute(xmlp, "sizeOverwriteV", -1, _mathInterpreter);
+            parameters.Center = xmlp.parseBoolFromAttribute("center", false);
         }
 
         public class ImageParams
         {
-            public int x, y, w, h;
-            public Color tintColor;
-            public Border border;
-            public Border inset;
-            public bool repeatX;
-            public bool repeatY;
-            public int sizeOverwriteH = -1;
-            public int sizeOverwriteV = -1;
-            public bool center;
-            public StateExpression condition;
-            public TextureRotation rot;
+            public int X, Y, W, H;
+            public Color TintColor;
+            public Border Border;
+            public Border Inset;
+            public bool RepeatX;
+            public bool RepeatY;
+            public int SizeOverwriteH = -1;
+            public int SizeOverwriteV = -1;
+            public bool Center;
+            public StateExpression Condition;
+            public TextureRotation Rot;
         }
 
         public class AnimParams
         {
-            public Color tintColor;
-            public float zoomX;
-            public float zoomY;
-            public float zoomCenterX;
-            public float zoomCenterY;
+            public Color TintColor;
+            public float ZoomX;
+            public float ZoomY;
+            public float ZoomCenterX;
+            public float ZoomCenterY;
         }
 
         public class MathInterpreter : AbstractMathInterpreter
@@ -987,15 +987,15 @@ namespace XNATWL.Theme
                 this.ImageManager = imageManager;
             }
 
-            public override void accessVariable(String name)
+            public override void AccessVariable(String name)
             {
-                Image img = this.ImageManager.getImage(name);
+                Image img = this.ImageManager.GetImage(name);
                 if (img != null)
                 {
                     push(img);
                     return;
                 }
-                Object obj = this.ImageManager.constants.getParam(name);
+                Object obj = this.ImageManager._constants.GetParam(name);
                 if (obj != null)
                 {
                     push(obj);
@@ -1005,11 +1005,11 @@ namespace XNATWL.Theme
             }
 
             //@Override
-            protected override Object accessField(Object obj, String field)
+            protected override Object AccessField(Object obj, String field)
             {
                 if (obj is ParameterMapImpl)
                 {
-                    Object result = ((ParameterMapImpl)obj).getParam(field);
+                    Object result = ((ParameterMapImpl)obj).GetParam(field);
                     if (result == null)
                     {
                         throw new ArgumentNullException("field not found: " + field);
@@ -1025,7 +1025,7 @@ namespace XNATWL.Theme
                     }
                     return (border != null) ? border : Border.ZERO;
                 }
-                return base.accessField(obj, field);
+                return base.AccessField(obj, field);
             }
         }
     }

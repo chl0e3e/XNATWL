@@ -468,12 +468,12 @@ namespace XNATWL
         protected override void applyTheme(ThemeInfo themeInfo)
         {
             base.applyTheme(themeInfo);
-            setCellHeight(themeInfo.getParameter("cellHeight", DEFAULT_CELL_HEIGHT));
-            setCellWidth(themeInfo.getParameter("cellWidth", SINGLE_COLUMN));
-            setRowMajor(themeInfo.getParameter("rowMajor", true));
-            setFixedCellWidth(themeInfo.getParameter("fixedCellWidth", false));
-            setFixedCellHeight(themeInfo.getParameter("fixedCellHeight", false));
-            minDisplayedRows = themeInfo.getParameter("minDisplayedRows", 1);
+            setCellHeight(themeInfo.GetParameter("cellHeight", DEFAULT_CELL_HEIGHT));
+            setCellWidth(themeInfo.GetParameter("cellWidth", SINGLE_COLUMN));
+            setRowMajor(themeInfo.GetParameter("rowMajor", true));
+            setFixedCellWidth(themeInfo.GetParameter("fixedCellWidth", false));
+            setFixedCellHeight(themeInfo.GetParameter("fixedCellHeight", false));
+            minDisplayedRows = themeInfo.GetParameter("minDisplayedRows", 1);
         }
 
         protected void goKeyboard(int dir)

@@ -69,19 +69,19 @@ namespace XNATWL.Test
             // This allows easy reloading of a theme for development.
             // If you want fast theme switching without reloading then use the existing
             // cache context for loading the new theme and don't destroy the old theme.
-            ThemeManager newTheme = ThemeManager.createThemeManager(new FileSystemObject(this.themeRootFso, THEME_FILES[curThemeIdx.Value]), renderer);
+            ThemeManager newTheme = ThemeManager.CreateThemeManager(new FileSystemObject(this.themeRootFso, THEME_FILES[curThemeIdx.Value]), renderer);
             long duration = DateTime.Now.Ticks - startTime;
             Console.WriteLine("Loaded theme in " + (duration / 1000) + " us");
 
             if (theme != null)
             {
-                theme.destroy();
+                theme.Destroy();
             }
             theme = newTheme;
 
             gui.setSize();
             gui.applyTheme(theme);
-            gui.setBackground(theme.getImageNoWarning("gui.background"));
+            gui.setBackground(theme.GetImageNoWarning("gui.background"));
         }
 
         public void setup()

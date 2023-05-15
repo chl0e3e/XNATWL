@@ -35,11 +35,11 @@ namespace XNATWL.Theme
 {
     public class RepeatImage : Image, HasBorder, SupportsDrawRepeat
     {
-        private Image baseImage;
-        private Border border;
-        private bool repeatX;
-        private bool repeatY;
-        private SupportsDrawRepeat sdr;
+        private Image _baseImage;
+        private Border _border;
+        private bool _repeatX;
+        private bool _repeatY;
+        private SupportsDrawRepeat _supportsDrawRepeat;
 
         public RepeatImage(Image baseImage, Border border, bool repeatX, bool repeatY)
         {
@@ -48,18 +48,18 @@ namespace XNATWL.Theme
                 throw new Exception("assert exception");
             }
 
-            this.baseImage = baseImage;
-            this.border = border;
-            this.repeatX = repeatX;
-            this.repeatY = repeatY;
+            this._baseImage = baseImage;
+            this._border = border;
+            this._repeatX = repeatX;
+            this._repeatY = repeatY;
 
             if (baseImage is SupportsDrawRepeat)
             {
-                sdr = (SupportsDrawRepeat)baseImage;
+                _supportsDrawRepeat = (SupportsDrawRepeat)baseImage;
             }
             else
             {
-                sdr = this;
+                _supportsDrawRepeat = this;
             }
         }
 
@@ -67,7 +67,7 @@ namespace XNATWL.Theme
         {
             get
             {
-                return baseImage.Width;
+                return _baseImage.Width;
             }
         }
 
@@ -75,20 +75,20 @@ namespace XNATWL.Theme
         {
             get
             {
-                return baseImage.Height;
+                return _baseImage.Height;
             }
         }
 
         public void Draw(Renderer.AnimationState animationState, int x, int y)
         {
-            baseImage.Draw(animationState, x, y);
+            _baseImage.Draw(animationState, x, y);
         }
 
         public void Draw(Renderer.AnimationState animationState, int x, int y, int width, int height)
         {
-            int countX = repeatX ? Math.Max(1, width / baseImage.Width) : 1;
-            int countY = repeatY ? Math.Max(1, height / baseImage.Height) : 1;
-            sdr.Draw(animationState, x, y, width, height, countX, countY);
+            int countX = _repeatX ? Math.Max(1, width / _baseImage.Width) : 1;
+            int countY = _repeatY ? Math.Max(1, height / _baseImage.Height) : 1;
+            _supportsDrawRepeat.Draw(animationState, x, y, width, height, countX, countY);
         }
 
         public void Draw(Renderer.AnimationState animationState, int x, int y, int width, int height, int repeatCountX, int repeatCountY)
@@ -101,7 +101,7 @@ namespace XNATWL.Theme
                 for (int xi = 0; xi < repeatCountX;)
                 {
                     int nx = ++xi * width / repeatCountX;
-                    baseImage.Draw(animationState, x + cx, y, nx - cx, rowHeight);
+                    _baseImage.Draw(animationState, x + cx, y, nx - cx, rowHeight);
                     cx = nx;
                 }
 
@@ -116,13 +116,13 @@ namespace XNATWL.Theme
         {
             get
             {
-                return border;
+                return _border;
             }
         }
 
         public Image CreateTintedVersion(Color color)
         {
-            return new RepeatImage(baseImage.CreateTintedVersion(color), border, repeatX, repeatY);
+            return new RepeatImage(_baseImage.CreateTintedVersion(color), _border, _repeatX, _repeatY);
         }
     }
 }

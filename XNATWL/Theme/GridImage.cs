@@ -35,16 +35,16 @@ namespace XNATWL.Theme
 {
     public class GridImage : Image, HasBorder
     {
-        private Image[] images;
-        private int[] weightX;
-        private int[] weightY;
-        private Border border;
-        private int width;
-        private int height;
-        private int[] columnWidth;
-        private int[] rowHeight;
-        private int weightSumX;
-        private int weightSumY;
+        private Image[] _images;
+        private int[] _weightX;
+        private int[] _weightY;
+        private Border _border;
+        private int _width;
+        private int _height;
+        private int[] _columnWidth;
+        private int[] _rowHeight;
+        private int _weightSumX;
+        private int _weightSumY;
 
         public GridImage(Image[] images, int[] weightX, int[] weightY, Border border)
         {
@@ -56,12 +56,12 @@ namespace XNATWL.Theme
             {
                 throw new Exception("Assertion exception");
             }
-            this.images = images;
-            this.weightX = weightX;
-            this.weightY = weightY;
-            this.border = border;
-            this.columnWidth = new int[weightX.Length];
-            this.rowHeight = new int[weightY.Length];
+            this._images = images;
+            this._weightX = weightX;
+            this._weightY = weightY;
+            this._border = border;
+            this._columnWidth = new int[weightX.Length];
+            this._rowHeight = new int[weightY.Length];
 
             int widthTmp = 0;
             for (int x = 0; x < weightX.Length; x++)
@@ -72,9 +72,9 @@ namespace XNATWL.Theme
                     widthColumn = Math.Max(widthColumn, this.GetImage(x, y).Width);
                 }
                 widthTmp += widthColumn;
-                columnWidth[x] = widthColumn;
+                _columnWidth[x] = widthColumn;
             }
-            this.width = widthTmp;
+            this._width = widthTmp;
 
             int heightTmp = 0;
             for (int y = 0; y < weightY.Length; y++)
@@ -85,9 +85,9 @@ namespace XNATWL.Theme
                     heightRow = Math.Max(heightRow, this.GetImage(x, y).Height);
                 }
                 heightTmp += heightRow;
-                rowHeight[y] = heightRow;
+                _rowHeight[y] = heightRow;
             }
-            this.height = heightTmp;
+            this._height = heightTmp;
 
             int tmpSumX = 0;
             foreach (int weight in weightX)
@@ -98,7 +98,7 @@ namespace XNATWL.Theme
                 }
                 tmpSumX += weight;
             }
-            weightSumX = tmpSumX;
+            _weightSumX = tmpSumX;
 
             int tmpSumY = 0;
             foreach (int weight in weightY)
@@ -109,13 +109,13 @@ namespace XNATWL.Theme
                 }
                 tmpSumY += weight;
             }
-            weightSumY = tmpSumY;
+            _weightSumY = tmpSumY;
 
-            if (weightSumX <= 0)
+            if (_weightSumX <= 0)
             {
                 throw new ArgumentOutOfRangeException("zero weightX not allowed");
             }
-            if (weightSumY <= 0)
+            if (_weightSumY <= 0)
             {
                 throw new ArgumentOutOfRangeException("zero weightX not allowed");
             }
@@ -123,24 +123,23 @@ namespace XNATWL.Theme
 
         private GridImage(Image[] images, GridImage src)
         {
-            this.images = images;
-            this.weightX = src.weightX;
-            this.weightY = src.weightY;
-            this.border = src.border;
-            this.columnWidth = src.columnWidth;
-            this.rowHeight = src.rowHeight;
-            this.weightSumX = src.weightSumX;
-            this.weightSumY = src.weightSumY;
-            this.width = src.width;
-            this.height = src.height;
+            this._images = images;
+            this._weightX = src._weightX;
+            this._weightY = src._weightY;
+            this._border = src._border;
+            this._columnWidth = src._columnWidth;
+            this._rowHeight = src._rowHeight;
+            this._weightSumX = src._weightSumX;
+            this._weightSumY = src._weightSumY;
+            this._width = src._width;
+            this._height = src._height;
         }
-
 
         public int Width
         {
             get
             {
-                return width;
+                return _width;
             }
         }
 
@@ -148,45 +147,45 @@ namespace XNATWL.Theme
         {
             get
             {
-                return height;
+                return _height;
             }
         }
 
         public void Draw(Renderer.AnimationState animationState, int x, int y)
         {
-            this.Draw(animationState, x, y, width, height);
+            this.Draw(animationState, x, y, _width, _height);
         }
 
         public void Draw(Renderer.AnimationState animationState, int x, int y, int width, int height)
         {
-            int deltaY = height - this.height;
-            int remWeightY = weightSumY;
-            for (int yi = 0, idx = 0; yi < weightY.Length; yi++)
+            int deltaY = height - this._height;
+            int remWeightY = _weightSumY;
+            for (int yi = 0, idx = 0; yi < _weightY.Length; yi++)
             {
-                int heightRow = rowHeight[yi];
+                int heightRow = _rowHeight[yi];
                 if (remWeightY > 0)
                 {
-                    int partY = deltaY * weightY[yi] / remWeightY;
-                    remWeightY -= weightY[yi];
+                    int partY = deltaY * _weightY[yi] / remWeightY;
+                    remWeightY -= _weightY[yi];
                     heightRow += partY;
                     deltaY -= partY;
                 }
 
                 int tmpX = x;
-                int deltaX = width - this.width;
-                int remWeightX = weightSumX;
-                for (int xi = 0; xi < weightX.Length; xi++, idx++)
+                int deltaX = width - this._width;
+                int remWeightX = _weightSumX;
+                for (int xi = 0; xi < _weightX.Length; xi++, idx++)
                 {
-                    int widthColumn = columnWidth[xi];
+                    int widthColumn = _columnWidth[xi];
                     if (remWeightX > 0)
                     {
-                        int partX = deltaX * weightX[xi] / remWeightX;
-                        remWeightX -= weightX[xi];
+                        int partX = deltaX * _weightX[xi] / remWeightX;
+                        remWeightX -= _weightX[xi];
                         widthColumn += partX;
                         deltaX -= partX;
                     }
 
-                    images[idx].Draw(animationState, tmpX, y, widthColumn, heightRow);
+                    _images[idx].Draw(animationState, tmpX, y, widthColumn, heightRow);
                     tmpX += widthColumn;
                 }
 
@@ -198,23 +197,23 @@ namespace XNATWL.Theme
         {
             get
             {
-                return border;
+                return _border;
             }
         }
 
         public Image CreateTintedVersion(Color color)
         {
-            Image[] newImages = new Image[images.Length];
+            Image[] newImages = new Image[_images.Length];
             for (int i = 0; i < newImages.Length; i++)
             {
-                newImages[i] = images[i].CreateTintedVersion(color);
+                newImages[i] = _images[i].CreateTintedVersion(color);
             }
             return new GridImage(newImages, this);
         }
 
         private Image GetImage(int x, int y)
         {
-            return images[x + y * weightX.Length];
+            return _images[x + y * _weightX.Length];
         }
     }
 }

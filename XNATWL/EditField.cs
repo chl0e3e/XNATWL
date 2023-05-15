@@ -534,11 +534,11 @@ namespace XNATWL
 
         protected void applyThemeEditField(ThemeInfo themeInfo)
         {
-            cursorImage = themeInfo.getImage("cursor");
-            selectionImage = themeInfo.getImage("selection");
-            autoCompletionHeight = themeInfo.getParameter("autocompletion-height", 100);
-            columns = themeInfo.getParameter("columns", 5);
-            setPasswordChar((char)themeInfo.getParameter("passwordChar", '*'));
+            cursorImage = themeInfo.GetImage("cursor");
+            selectionImage = themeInfo.GetImage("selection");
+            autoCompletionHeight = themeInfo.GetParameter("autocompletion-height", 100);
+            columns = themeInfo.GetParameter("columns", 5);
+            setPasswordChar((char)themeInfo.GetParameter("passwordChar", '*'));
         }
 
         //@Override

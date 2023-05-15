@@ -41,31 +41,31 @@ namespace XNATWL.Theme
 {
     public class ParameterMapImpl : ThemeChildImpl, ParameterMap
     {
-        internal CascadedHashMap<String, Object> parameters;
+        internal CascadedHashMap<String, Object> _parameters;
 
         public ParameterMapImpl(ThemeManager manager, ThemeInfoImpl parent) : base(manager, parent)
         {
-            this.parameters = new CascadedHashMap<String, Object>();
+            this._parameters = new CascadedHashMap<String, Object>();
         }
 
-        public virtual void copy(ParameterMapImpl src)
+        public virtual void Copy(ParameterMapImpl src)
         {
-            this.parameters.CollapseAndSetFallback(src.parameters);
+            this._parameters.CollapseAndSetFallback(src._parameters);
         }
 
-        public Font getFont(String name)
+        public Font GetFont(String name)
         {
-            Font value = (Font) getParameterValue(name, true, typeof(Font));
+            Font value = (Font) GetParameterValue(name, true, typeof(Font));
             if (value != null)
             {
                 return value;
             }
-            return manager.getDefaultFont();
+            return _manager.GetDefaultFont();
         }
 
-        public Image getImage(String name)
+        public Image GetImage(String name)
         {
-            Image img = (Image) getParameterValue(name, true, typeof(Image));
+            Image img = (Image) GetParameterValue(name, true, typeof(Image));
             if (img == ImageManager.NONE)
             {
                 return null;
@@ -73,35 +73,35 @@ namespace XNATWL.Theme
             return img;
         }
 
-        public MouseCursor getMouseCursor(String name)
+        public MouseCursor GetMouseCursor(String name)
         {
-            MouseCursor value = (MouseCursor) getParameterValue(name, false, typeof(MouseCursor));
+            MouseCursor value = (MouseCursor) GetParameterValue(name, false, typeof(MouseCursor));
             return value;
         }
 
-        public ParameterMap getParameterMap(String name)
+        public ParameterMap GetParameterMap(String name)
         {
-            ParameterMap value = (ParameterMap) getParameterValue(name, true, typeof(ParameterMap));
+            ParameterMap value = (ParameterMap) GetParameterValue(name, true, typeof(ParameterMap));
             if (value == null)
             {
-                return manager.emptyMap;
+                return _manager._emptyMap;
             }
             return value;
         }
 
-        public ParameterList getParameterList(String name)
+        public ParameterList GetParameterList(String name)
         {
-            ParameterList value = (ParameterList) getParameterValue(name, true, typeof(ParameterList));
+            ParameterList value = (ParameterList) GetParameterValue(name, true, typeof(ParameterList));
             if (value == null)
             {
-                return manager.emptyList;
+                return _manager._emptyList;
             }
             return value;
         }
 
-        public object getParameter(String name, object defaultValue)
+        public object GetParameter(String name, object defaultValue)
         {
-            Object value = getParameterValue(name, true, typeof(object));
+            Object value = GetParameterValue(name, true, typeof(object));
             if (value != null)
             {
                 return (object)value;
@@ -109,9 +109,9 @@ namespace XNATWL.Theme
             return defaultValue;
         }
 
-        public bool getParameter(String name, bool defaultValue)
+        public bool GetParameter(String name, bool defaultValue)
         {
-            Object value = getParameterValue(name, true, typeof(bool));
+            Object value = GetParameterValue(name, true, typeof(bool));
             if (value != null)
             {
                 return (bool)value;
@@ -119,9 +119,9 @@ namespace XNATWL.Theme
             return defaultValue;
         }
 
-        public int getParameter(String name, int defaultValue)
+        public int GetParameter(String name, int defaultValue)
         {
-            Object value = getParameterValue(name, true, typeof(int));
+            Object value = GetParameterValue(name, true, typeof(int));
             if (value != null)
             {
                 return (int)value;
@@ -129,9 +129,9 @@ namespace XNATWL.Theme
             return defaultValue;
         }
 
-        public float getParameter(String name, float defaultValue)
+        public float GetParameter(String name, float defaultValue)
         {
-            Object value = getParameterValue(name, true, typeof(float));
+            Object value = GetParameterValue(name, true, typeof(float));
             if (value != null)
             {
                 return (float) value;
@@ -139,9 +139,9 @@ namespace XNATWL.Theme
             return defaultValue;
         }
 
-        public string getParameter(String name, String defaultValue)
+        public string GetParameter(String name, String defaultValue)
         {
-            string value = (string) getParameterValue(name, true, typeof(string));
+            string value = (string) GetParameterValue(name, true, typeof(string));
             if (value != null)
             {
                 return value;
@@ -149,9 +149,9 @@ namespace XNATWL.Theme
             return defaultValue;
         }
 
-        public Color getParameter(String name, Color defaultValue)
+        public Color GetParameter(String name, Color defaultValue)
         {
-            Color value = (Color)getParameterValue(name, true, typeof(Color));
+            Color value = (Color)GetParameterValue(name, true, typeof(Color));
             if (value != null)
             {
                 return value;
@@ -159,10 +159,10 @@ namespace XNATWL.Theme
             return defaultValue;
         }
 
-        public E getParameter<E>(String name, E defaultValue) where E : struct, IConvertible
+        public E GetParameter<E>(String name, E defaultValue) where E : struct, IConvertible
         {
             Type enumType = defaultValue.GetType();
-            E? value = (E?) getParameterValue(name, true, enumType);
+            E? value = (E?) GetParameterValue(name, true, enumType);
             if (value != null)
             {
                 return (E) value;
@@ -170,28 +170,28 @@ namespace XNATWL.Theme
             return defaultValue;
         }
 
-        public object getParameterValue(String name, bool warnIfNotPresent)
+        public object GetParameterValue(String name, bool warnIfNotPresent)
         {
-            object value = this.parameters.CascadingEntry(name);
+            object value = this._parameters.CascadingEntry(name);
             if (value == null && warnIfNotPresent)
             {
-                missingParameter(name, null);
+                MissingParameter(name, null);
             }
             return value;
         }
 
-        public object getParameterValue(String name, bool warnIfNotPresent, Type type)
+        public object GetParameterValue(String name, bool warnIfNotPresent, Type type)
         {
-            return getParameterValue(name, warnIfNotPresent, type, null);
+            return GetParameterValue(name, warnIfNotPresent, type, null);
         }
 
-        public object getParameterValue(String name, bool warnIfNotPresent, Type type, object defaultValue)
+        public object GetParameterValue(String name, bool warnIfNotPresent, Type type, object defaultValue)
         {
-            object value = this.parameters.CascadingEntry(name);
+            object value = this._parameters.CascadingEntry(name);
 
             if (value == null && warnIfNotPresent)
             {
-                missingParameter(name, type);
+                MissingParameter(name, type);
             }
 
             if (type.IsPrimitive && value != null)
@@ -214,7 +214,7 @@ namespace XNATWL.Theme
             {
                 if (value != null)
                 {
-                    wrongParameterType(name, type, value.GetType());
+                    WrongParameterType(name, type, value.GetType());
                 }
                 return defaultValue;
             }
@@ -222,20 +222,20 @@ namespace XNATWL.Theme
             return value;
         }
 
-        public T getParameterValue<T>(String name, bool warnIfNotPresent, Type type, T defaultValue)
+        public T GetParameterValue<T>(String name, bool warnIfNotPresent, Type type, T defaultValue)
         {
-            T value = (T) this.parameters.CascadingEntry(name);
+            T value = (T) this._parameters.CascadingEntry(name);
 
             if (value == null && warnIfNotPresent)
             {
-                missingParameter(name, type);
+                MissingParameter(name, type);
             }
 
             if (!type.IsInstanceOfType(value))
             {
                 if (value != null)
                 {
-                    wrongParameterType(name, type, value.GetType());
+                    WrongParameterType(name, type, value.GetType());
                 }
                 return defaultValue;
             }
@@ -244,51 +244,51 @@ namespace XNATWL.Theme
         }
 
 
-        protected void wrongParameterType(String paramName, Type expectedType, Type foundType)
+        protected void WrongParameterType(String paramName, Type expectedType, Type foundType)
         {
-            DebugHook.getDebugHook().wrongParameterType(this, paramName, expectedType, foundType, getParentDescription());
+            DebugHook.getDebugHook().wrongParameterType(this, paramName, expectedType, foundType, GetParentDescription());
         }
 
-        protected void missingParameter(String paramName, Type dataType)
+        protected void MissingParameter(String paramName, Type dataType)
         {
-            DebugHook.getDebugHook().missingParameter(this, paramName, getParentDescription(), dataType);
+            DebugHook.getDebugHook().missingParameter(this, paramName, GetParentDescription(), dataType);
         }
 
-        protected void replacingWithDifferentType(String paramName, Type oldType, Type newType)
+        protected void ReplacingWithDifferentType(String paramName, Type oldType, Type newType)
         {
-            DebugHook.getDebugHook().replacingWithDifferentType(this, paramName, oldType, newType, getParentDescription());
+            DebugHook.getDebugHook().replacingWithDifferentType(this, paramName, oldType, newType, GetParentDescription());
         }
 
-        public object getParam(String name)
+        public object GetParam(String name)
         {
-            return this.parameters.CascadingEntry(name);
+            return this._parameters.CascadingEntry(name);
         }
 
-        public void put(Dictionary<string, object> parameters)
+        public void Put(Dictionary<string, object> parameters)
         {
             foreach (string key in parameters.Keys)
             {
-                put(key, parameters[key]);
+                Put(key, parameters[key]);
             }
         }
 
-        public void put(string paramName, object value)
+        public void Put(string paramName, object value)
         {
-            object old = this.parameters.PutCascadingEntry(paramName, value);
+            object old = this._parameters.PutCascadingEntry(paramName, value);
 
             if (old != null && value != null)
             {
                 Type oldType = old.GetType();
                 Type newType = value.GetType();
 
-                if (oldType != newType && !areTypesCompatible(oldType, newType))
+                if (oldType != newType && !AreTypesCompatible(oldType, newType))
                 {
-                    replacingWithDifferentType(paramName, oldType, newType);
+                    ReplacingWithDifferentType(paramName, oldType, newType);
                 }
             }
         }
 
-        private static bool areTypesCompatible(Type typeA, Type typeB)
+        private static bool AreTypesCompatible(Type typeA, Type typeB)
         {
             foreach (Type type in BASE_CLASSES)
             {

@@ -36,7 +36,7 @@ namespace XNATWL.Utils
     {
         public interface Interpreter
         {
-            void accessVariable(string name);
+            void AccessVariable(string name);
             void accessField(string field);
             void accessArray();
             void loadConst(Number n);
@@ -168,7 +168,7 @@ namespace XNATWL.Utils
                     parseCall(ident);
                     return;
                 }
-                interpreter.accessVariable(ident);
+                interpreter.AccessVariable(ident);
                 while (ch == '.' || ch == '[')
                 {
                     pos++;

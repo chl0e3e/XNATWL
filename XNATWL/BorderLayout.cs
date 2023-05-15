@@ -163,8 +163,8 @@ namespace XNATWL
 
         protected override void applyTheme(ThemeInfo themeInfo)
         {
-            hgap = themeInfo.getParameter("hgap", 0);
-            vgap = themeInfo.getParameter("vgap", 0);
+            hgap = themeInfo.GetParameter("hgap", 0);
+            vgap = themeInfo.GetParameter("vgap", 0);
 
             base.applyTheme(themeInfo);
         }

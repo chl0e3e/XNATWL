@@ -42,7 +42,7 @@ namespace XNATWL
          * @param name The name of the font
          * @return A font object
          */
-        Font getFont(string name);
+        Font GetFont(string name);
 
         /**
          * Returns the image with the given name.
@@ -51,7 +51,7 @@ namespace XNATWL
          * @param name The name of the image.
          * @return A image object or null.
          */
-        Image getImage(string name);
+        Image GetImage(string name);
 
         /**
          * Returns the mouse cursor with the given name.
@@ -60,7 +60,7 @@ namespace XNATWL
          * @param name The name of the mouse cursor.
          * @return A mouse cursor object or null.
          */
-        MouseCursor getMouseCursor(string name);
+        MouseCursor GetMouseCursor(string name);
 
         /**
          * Returns a parameter map with the given name.
@@ -69,7 +69,7 @@ namespace XNATWL
          * @param name The name of the parameter map.
          * @return A parameter map object.
          */
-        ParameterMap getParameterMap(string name);
+        ParameterMap GetParameterMap(string name);
 
         /**
          * Returns a parameter list with the given name.
@@ -78,21 +78,21 @@ namespace XNATWL
          * @param name The name of the parameter list.
          * @return A parameter list object.
          */
-        ParameterList getParameterList(string name);
+        ParameterList GetParameterList(string name);
 
-        object getParameter(string name, object defaultValue);
+        object GetParameter(string name, object defaultValue);
 
-        bool getParameter(string name, bool defaultValue);
+        bool GetParameter(string name, bool defaultValue);
 
-        int getParameter(string name, int defaultValue);
+        int GetParameter(string name, int defaultValue);
 
-        float getParameter(string name, float defaultValue);
+        float GetParameter(string name, float defaultValue);
 
-        string getParameter(string name, string defaultValue);
+        string GetParameter(string name, string defaultValue);
 
-        Color getParameter(string name, Color defaultValue);
+        Color GetParameter(string name, Color defaultValue);
 
-        E getParameter<E>(string name, E defaultValue) where E : struct, IConvertible;
+        E GetParameter<E>(string name, E defaultValue) where E : struct, IConvertible;
 
         /**
          * Retrives a parameter.
@@ -100,7 +100,7 @@ namespace XNATWL
          * @param warnIfNotPresent if true and the parameter was not set then a warning is issued
          * @return the parameter value
          */
-        Object getParameterValue(string name, bool warnIfNotPresent);
+        Object GetParameterValue(string name, bool warnIfNotPresent);
 
         /**
          * Retrieves a parameter and ensures that it has the desired type.
@@ -110,7 +110,7 @@ namespace XNATWL
          * @param clazz the required data type
          * @return the parameter value or null if the type does not match
          */
-        object getParameterValue(string name, bool warnIfNotPresent, Type type);
+        object GetParameterValue(string name, bool warnIfNotPresent, Type type);
 
         /**
          * Retrieves a parameter and ensures that it has the desired type.
@@ -121,8 +121,8 @@ namespace XNATWL
          * @param defaultValue the default value
          * @return the parameter value or the defaultValue if the type does not match
          */
-        T getParameterValue<T>(string name, bool warnIfNotPresent, Type type, T defaultValue);
+        T GetParameterValue<T>(string name, bool warnIfNotPresent, Type type, T defaultValue);
 
-        object getParameterValue(string name, bool warnIfNotPresent, Type type, object defaultValue);
+        object GetParameterValue(string name, bool warnIfNotPresent, Type type, object defaultValue);
     }
 }

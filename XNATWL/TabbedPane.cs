@@ -713,9 +713,9 @@ namespace XNATWL
                 base.applyTheme(themeInfo);
                 if (closeButton != null)
                 {
-                    closeButtonAlignment = (Alignment) themeInfo.getParameter("closeButtonAlignment", Alignment.RIGHT);
-                    closeButtonOffsetX = themeInfo.getParameter("closeButtonOffsetX", 0);
-                    closeButtonOffsetY = themeInfo.getParameter("closeButtonOffsetY", 0);
+                    closeButtonAlignment = (Alignment) themeInfo.GetParameter("closeButtonAlignment", Alignment.RIGHT);
+                    closeButtonOffsetX = themeInfo.GetParameter("closeButtonOffsetX", 0);
+                    closeButtonOffsetY = themeInfo.GetParameter("closeButtonOffsetY", 0);
                 }
                 else
                 {

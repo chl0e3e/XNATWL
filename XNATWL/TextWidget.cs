@@ -171,8 +171,8 @@ namespace XNATWL
 
         protected void applyThemeTextWidget(ThemeInfo themeInfo)
         {
-            setFont(themeInfo.getFont("font"));
-            setAlignment(themeInfo.getParameterValue<Alignment>("textAlignment", false, typeof(Alignment), Alignment.TOPLEFT));
+            setFont(themeInfo.GetFont("font"));
+            setAlignment(themeInfo.GetParameterValue<Alignment>("textAlignment", false, typeof(Alignment), Alignment.TOPLEFT));
         }
 
         //@Override

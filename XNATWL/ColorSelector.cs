@@ -833,7 +833,7 @@ namespace XNATWL
             protected override void applyTheme(ThemeInfo themeInfo)
             {
                 base.applyTheme(themeInfo);
-                cursorImage = themeInfo.getImage("cursor");
+                cursorImage = themeInfo.GetImage("cursor");
             }
 
             public abstract void createImage(GUI gui);
