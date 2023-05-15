@@ -35,8 +35,8 @@ namespace XNATWL.Property
 {
     public class PropertyChangeSupport
     {
-        private Dictionary<string, HashSet<PropertyChangeListener>> propertyListeners = new Dictionary<string, HashSet<PropertyChangeListener>>();
-        private List<PropertyChangeListener> anyPropertyListeners = new List<PropertyChangeListener>();
+        private Dictionary<string, HashSet<PropertyChangeListener>> _propertyListeners = new Dictionary<string, HashSet<PropertyChangeListener>>();
+        private List<PropertyChangeListener> _anyPropertyListeners = new List<PropertyChangeListener>();
         private object _source;
 
         public PropertyChangeSupport()
@@ -49,71 +49,71 @@ namespace XNATWL.Property
             this._source = o;
         }
 
-        internal void addPropertyChangeListener(string propertyName, PropertyChangeListener listener)
+        internal void AddPropertyChangeListener(string propertyName, PropertyChangeListener listener)
         {
-            if (!this.propertyListeners.ContainsKey(propertyName))
+            if (!this._propertyListeners.ContainsKey(propertyName))
             {
-                this.propertyListeners[propertyName] = new HashSet<PropertyChangeListener>();
+                this._propertyListeners[propertyName] = new HashSet<PropertyChangeListener>();
             }
 
-            this.propertyListeners[propertyName].Add(listener);
+            this._propertyListeners[propertyName].Add(listener);
         }
 
-        internal void addPropertyChangeListener(PropertyChangeListener listener)
+        internal void AddPropertyChangeListener(PropertyChangeListener listener)
         {
-            this.anyPropertyListeners.Add(listener);
+            this._anyPropertyListeners.Add(listener);
         }
 
-        internal void firePropertyChange(PropertyChangeEvent evt)
+        internal void FirePropertyChange(PropertyChangeEvent evt)
         {
             //throw new NotImplementedException();
-            foreach (string key in this.propertyListeners.Keys)
+            foreach (string key in this._propertyListeners.Keys)
             {
                 if (evt.Name == key)
                 {
-                    foreach (PropertyChangeListener listener in this.propertyListeners[key])
+                    foreach (PropertyChangeListener listener in this._propertyListeners[key])
                     {
-                        listener.propertyChange(evt);
+                        listener.PropertyChange(evt);
                     }
                 }
             }
 
-            foreach (PropertyChangeListener listener in this.anyPropertyListeners)
+            foreach (PropertyChangeListener listener in this._anyPropertyListeners)
             {
-                listener.propertyChange(evt);
+                listener.PropertyChange(evt);
             }
         }
 
-        internal void firePropertyChange(string propertyName, object oldValue, object newValue)
+        internal void FirePropertyChange(string propertyName, object oldValue, object newValue)
         {
-            this.firePropertyChange(new PropertyChangeEvent(this._source, propertyName, oldValue, newValue));
+            this.FirePropertyChange(new PropertyChangeEvent(this._source, propertyName, oldValue, newValue));
         }
 
-        internal void firePropertyChange(string propertyName, int oldValue, int newValue)
+        internal void FirePropertyChange(string propertyName, int oldValue, int newValue)
         {
-            this.firePropertyChange(propertyName, oldValue, newValue);
+            this.FirePropertyChange(propertyName, oldValue, newValue);
         }
 
-        internal void firePropertyChange(string propertyName, bool oldValue, bool newValue)
+        internal void FirePropertyChange(string propertyName, bool oldValue, bool newValue)
         {
-            this.firePropertyChange(propertyName, oldValue, newValue);
+            this.FirePropertyChange(propertyName, oldValue, newValue);
         }
 
-        internal void removePropertyChangeListener(PropertyChangeListener listener)
+        internal void RemovePropertyChangeListener(PropertyChangeListener listener)
         {
-            this.anyPropertyListeners.Remove(listener);
+            this._anyPropertyListeners.Remove(listener);
         }
 
-        internal void removePropertyChangeListener(string propertyName, PropertyChangeListener listener)
+        internal void RemovePropertyChangeListener(string propertyName, PropertyChangeListener listener)
         {
             List<string> keys = new List<string>();
             
-            if (!this.propertyListeners.ContainsKey(propertyName))
+            if (!this._propertyListeners.ContainsKey(propertyName))
             {
                 throw new AccessViolationException();
             }
 
-            this.propertyListeners[propertyName].Remove(listener);
+            this._propertyListeners[propertyName].Remove(listener);
             //throw new NotImplementedException();
         }
     }

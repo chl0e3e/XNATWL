@@ -191,7 +191,7 @@ namespace XNATWL
          */
         public void addPropertyChangeListener(PropertyChangeListener listener)
         {
-            createPropertyChangeSupport().addPropertyChangeListener(listener);
+            createPropertyChangeSupport().AddPropertyChangeListener(listener);
         }
 
         /**
@@ -203,7 +203,7 @@ namespace XNATWL
          */
         public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener)
         {
-            createPropertyChangeSupport().addPropertyChangeListener(propertyName, listener);
+            createPropertyChangeSupport().AddPropertyChangeListener(propertyName, listener);
         }
 
         /**
@@ -216,7 +216,7 @@ namespace XNATWL
         {
             if (propertyChangeSupport != null)
             {
-                propertyChangeSupport.removePropertyChangeListener(listener);
+                propertyChangeSupport.RemovePropertyChangeListener(listener);
             }
         }
 
@@ -231,7 +231,7 @@ namespace XNATWL
         {
             if (propertyChangeSupport != null)
             {
-                propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
+                propertyChangeSupport.RemovePropertyChangeListener(propertyName, listener);
             }
         }
 
@@ -2585,7 +2585,7 @@ namespace XNATWL
         {
             if (propertyChangeSupport != null)
             {
-                propertyChangeSupport.firePropertyChange(evt);
+                propertyChangeSupport.FirePropertyChange(evt);
             }
         }
 
@@ -2601,7 +2601,7 @@ namespace XNATWL
         {
             if (propertyChangeSupport != null)
             {
-                propertyChangeSupport.firePropertyChange(propertyName, oldValue, newValue);
+                propertyChangeSupport.FirePropertyChange(propertyName, oldValue, newValue);
             }
         }
 
@@ -2617,7 +2617,7 @@ namespace XNATWL
         {
             if (propertyChangeSupport != null)
             {
-                propertyChangeSupport.firePropertyChange(propertyName, oldValue, newValue);
+                propertyChangeSupport.FirePropertyChange(propertyName, oldValue, newValue);
             }
         }
 
@@ -2633,7 +2633,7 @@ namespace XNATWL
         {
             if (propertyChangeSupport != null)
             {
-                propertyChangeSupport.firePropertyChange(propertyName, oldValue, newValue);
+                propertyChangeSupport.FirePropertyChange(propertyName, oldValue, newValue);
             }
         }
 

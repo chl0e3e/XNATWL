@@ -134,7 +134,7 @@ namespace XNATWL
             {
                 pcs = new PropertyChangeSupport(this);
             }
-            pcs.addPropertyChangeListener(listener);
+            pcs.AddPropertyChangeListener(listener);
         }
 
         public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener)
@@ -143,14 +143,14 @@ namespace XNATWL
             {
                 pcs = new PropertyChangeSupport(this);
             }
-            pcs.addPropertyChangeListener(propertyName, listener);
+            pcs.AddPropertyChangeListener(propertyName, listener);
         }
 
         public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener)
         {
             if (pcs != null)
             {
-                pcs.removePropertyChangeListener(propertyName, listener);
+                pcs.RemovePropertyChangeListener(propertyName, listener);
             }
         }
 
@@ -158,7 +158,7 @@ namespace XNATWL
         {
             if (pcs != null)
             {
-                pcs.removePropertyChangeListener(listener);
+                pcs.RemovePropertyChangeListener(listener);
             }
         }
 
@@ -166,7 +166,7 @@ namespace XNATWL
         {
             if (pcs != null)
             {
-                pcs.firePropertyChange(propertyName, oldValue, newValue);
+                pcs.FirePropertyChange(propertyName, oldValue, newValue);
             }
         }
 
@@ -174,7 +174,7 @@ namespace XNATWL
         {
             if (pcs != null)
             {
-                pcs.firePropertyChange(propertyName, oldValue, newValue);
+                pcs.FirePropertyChange(propertyName, oldValue, newValue);
             }
         }
 
@@ -182,7 +182,7 @@ namespace XNATWL
         {
             if (pcs != null)
             {
-                pcs.firePropertyChange(propertyName, oldValue, newValue);
+                pcs.FirePropertyChange(propertyName, oldValue, newValue);
             }
         }
 
@@ -225,7 +225,7 @@ namespace XNATWL
                 base.beforeRemoveFromGUI(gui);
             }
 
-            public virtual void propertyChange(PropertyChangeEvent evt)
+            public virtual void PropertyChange(PropertyChangeEvent evt)
             {
                 sync();
             }

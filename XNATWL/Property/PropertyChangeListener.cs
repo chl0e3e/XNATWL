@@ -32,6 +32,6 @@ namespace XNATWL.Property
 {
     public interface PropertyChangeListener
     {
-        void propertyChange(PropertyChangeEvent e);
+        void PropertyChange(PropertyChangeEvent e);
     }
 }

@@ -75,7 +75,7 @@ namespace XNATWL
 
             public void propertyChange(PropertyChangeEvent evt)
             {
-                base.propertyChange(evt);
+                base.PropertyChange(evt);
                 ((ToggleButtonModel)getModel()).setModel(this._menuCheckBox.getModel());
             }
         }
