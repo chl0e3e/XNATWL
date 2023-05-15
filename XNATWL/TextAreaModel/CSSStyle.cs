@@ -43,133 +43,170 @@ namespace XNATWL.TextAreaModel
 
         public CSSStyle(string cssStyle)
         {
-            parseCSS(cssStyle);
+            this.ParseCSS(cssStyle);
         }
 
         public CSSStyle(Style parent, StyleSheetKey styleSheetKey, string cssStyle) : base(parent, styleSheetKey)
         {
-            parseCSS(cssStyle);
+            this.ParseCSS(cssStyle);
         }
 
-        private void parseCSS(string style)
+        private void ParseCSS(string style)
         {
             ParameterStringParser psp = new ParameterStringParser(style, ';', ':');
             psp.setTrim(true);
-            while(psp.next()) {
-                try {
-                    parseCSSAttribute(psp.getKey(), psp.getValue());
-                } catch(ArgumentOutOfRangeException ex) {
+            while (psp.next())
+            {
+                try
+                {
+                    this.ParseCSSAttribute(psp.getKey(), psp.getValue());
+                }
+                catch (ArgumentOutOfRangeException ex)
+                {
                     System.Diagnostics.Debug.WriteLine(typeof(CSSStyle).Name + " - Unable to parse CSS attribute: " + psp.getKey() + "=" + psp.getValue(), ex);
                 }
             }
         }
 
-        internal void parseCSSAttribute(string key, string value)
+        internal void ParseCSSAttribute(string key, string value)
         {
-            if(key.StartsWith("margin")) {
-                parseBox(key.Substring(6), value, StyleAttribute.MARGIN);
+            if (key.StartsWith("margin"))
+            {
+                this.ParseBox(key.Substring(6), value, StyleAttribute.MARGIN);
                 return;
             }
-            if(key.StartsWith("padding")) {
-                parseBox(key.Substring(7), value, StyleAttribute.PADDING);
+            if (key.StartsWith("padding"))
+            {
+                this.ParseBox(key.Substring(7), value, StyleAttribute.PADDING);
                 return;
             }
-            if(key.StartsWith("font")) {
-                parseFont(key, value);
+            if (key.StartsWith("font"))
+            {
+                this.ParseFont(key, value);
                 return;
             }
-            if("text-indent".Equals(key)) {
-                parseValueUnit(StyleAttribute.TEXT_INDENT, value);
+            if ("text-indent".Equals(key))
+            {
+                this.ParseValueUnit(StyleAttribute.TEXT_INDENT, value);
                 return;
             }
-            if("-twl-font".Equals(key)) {
-                Put(StyleAttribute.FONT_FAMILIES, new List<string> { value });
+            if ("-twl-font".Equals(key))
+            {
+                this.Put(StyleAttribute.FONT_FAMILIES, new List<string> { value });
                 return;
             }
-            if("-twl-hover".Equals(key)) {
-                parseEnum(StyleAttribute.INHERIT_HOVER, INHERITHOVER, value);
+            if ("-twl-hover".Equals(key))
+            {
+                this.ParseEnum(StyleAttribute.INHERIT_HOVER, INHERITHOVER, value);
                 return;
             }
-            if("text-align".Equals(key)) {
-                parseEnum(StyleAttribute.HORIZONTAL_ALIGNMENT, value);
+            if ("text-align".Equals(key))
+            {
+                this.ParseEnum(StyleAttribute.HORIZONTAL_ALIGNMENT, value);
                 return;
             }
-            if("text-decoration".Equals(key)) {
-                parseEnum(StyleAttribute.TEXT_DECORATION, TEXTDECORATION, value);
+            if ("text-decoration".Equals(key))
+            {
+                this.ParseEnum(StyleAttribute.TEXT_DECORATION, TEXTDECORATION, value);
                 return;
             }
-            if("vertical-align".Equals(key)) {
-                parseEnum(StyleAttribute.VERTICAL_ALIGNMENT, value);
+            if ("vertical-align".Equals(key))
+            {
+                this.ParseEnum(StyleAttribute.VERTICAL_ALIGNMENT, value);
                 return;
             }
-            if("white-space".Equals(key)) {
-                parseEnum(StyleAttribute.PREFORMATTED, PRE, value);
+            if ("white-space".Equals(key))
+            {
+                this.ParseEnum(StyleAttribute.PREFORMATTED, PRE, value);
                 return;
             }
-            if("word-wrap".Equals(key)) {
-                parseEnum(StyleAttribute.BREAKWORD, BREAKWORD, value);
+            if ("word-wrap".Equals(key))
+            {
+                this.ParseEnum(StyleAttribute.BREAKWORD, BREAKWORD, value);
                 return;
             }
-            if("list-style-image".Equals(key)) {
-                parseURL(StyleAttribute.LIST_STYLE_IMAGE, value);
+            if ("list-style-image".Equals(key))
+            {
+                this.ParseURL(StyleAttribute.LIST_STYLE_IMAGE, value);
                 return;
             }
-            if("list-style-type".Equals(key)) {
-                parseEnum(StyleAttribute.LIST_STYLE_TYPE, OLT, value);
+            if ("list-style-type".Equals(key))
+            {
+                this.ParseEnum(StyleAttribute.LIST_STYLE_TYPE, OLT, value);
                 return;
             }
-            if("clear".Equals(key)) {
-                parseEnum(StyleAttribute.CLEAR, value);
+            if ("clear".Equals(key))
+            {
+                this.ParseEnum(StyleAttribute.CLEAR, value);
                 return;
             }
-            if("float".Equals(key)) {
-                parseEnum(StyleAttribute.FLOAT_POSITION, value);
+            if ("float".Equals(key))
+            {
+                this.ParseEnum(StyleAttribute.FLOAT_POSITION, value);
                 return;
             }
-            if("display".Equals(key)) {
-                parseEnum(StyleAttribute.DISPLAY, value);
+            if ("display".Equals(key))
+            {
+                this.ParseEnum(StyleAttribute.DISPLAY, value);
                 return;
             }
-            if("width".Equals(key)) {
-                parseValueUnit(StyleAttribute.WIDTH, value);
+            if ("width".Equals(key))
+            {
+                this.ParseValueUnit(StyleAttribute.WIDTH, value);
                 return;
             }
-            if("height".Equals(key)) {
-                parseValueUnit(StyleAttribute.HEIGHT, value);
+            if ("height".Equals(key))
+            {
+                this.ParseValueUnit(StyleAttribute.HEIGHT, value);
                 return;
             }
-            if("background-image".Equals(key)) {
-                parseURL(StyleAttribute.BACKGROUND_IMAGE, value);
+            if ("background-image".Equals(key))
+            {
+                this.ParseURL(StyleAttribute.BACKGROUND_IMAGE, value);
                 return;
             }
-            if("background-color".Equals(key) || "-twl-background-color".Equals(key)) {
-                parseColor(StyleAttribute.BACKGROUND_COLOR, value);
+            if ("background-color".Equals(key) || "-twl-background-color".Equals(key))
+            {
+                this.ParseColor(StyleAttribute.BACKGROUND_COLOR, value);
                 return;
             }
-            if("color".Equals(key)) {
-                parseColor(StyleAttribute.COLOR, value);
+            if ("color".Equals(key))
+            {
+                this.ParseColor(StyleAttribute.COLOR, value);
                 return;
             }
-            if("tab-size".Equals(key) || "-moz-tab-size".Equals(key)) {
-                parseInteger(StyleAttribute.TAB_SIZE, value);
+            if ("tab-size".Equals(key) || "-moz-tab-size".Equals(key))
+            {
+                this.ParseInteger(StyleAttribute.TAB_SIZE, value);
                 return;
             }
             throw new ArgumentOutOfRangeException("Unsupported key: " + key);
         }
 
-        private void parseBox(string key, string value, BoxAttribute box) {
-            if("-top".Equals(key)) {
-                parseValueUnit(box.Top, value);
-            } else if("-left".Equals(key)) {
-                parseValueUnit(box.Left, value);
-            } else if("-right".Equals(key)) {
-                parseValueUnit(box.Right, value);
-            } else if("-bottom".Equals(key)) {
-                parseValueUnit(box.Bottom, value);
-            } else if("".Equals(key)) {
-                Value[] vu = parseValueUnits(value);
+        private void ParseBox(string key, string value, BoxAttribute box)
+        {
+            if ("-top".Equals(key))
+            {
+                this.ParseValueUnit(box.Top, value);
+            }
+            else if ("-left".Equals(key))
+            {
+                this.ParseValueUnit(box.Left, value);
+            }
+            else if ("-right".Equals(key))
+            {
+                this.ParseValueUnit(box.Right, value);
+            }
+            else if ("-bottom".Equals(key))
+            {
+                this.ParseValueUnit(box.Bottom, value);
+            }
+            else if ("".Equals(key))
+            {
+                Value[] vu = ParseValueUnits(value);
 
-                switch(vu.Length) {
+                switch (vu.Length)
+                {
                     case 1:
                         Put(box.Top, vu[0]);
                         Put(box.Left, vu[0]);
@@ -199,13 +236,15 @@ namespace XNATWL.TextAreaModel
                 }
             }
         }
-    
-        private void parseFont(string key, string value) {
-            if("font-family".Equals(key)) {
-                parseList(StyleAttribute.FONT_FAMILIES, value);
+
+        private void ParseFont(string key, string value)
+        {
+            if ("font-family".Equals(key))
+            {
+                this.ParseList(StyleAttribute.FONT_FAMILIES, value);
                 return;
             }
-            if("font-weight".Equals(key))
+            if ("font-weight".Equals(key))
             {
                 Int32 weight;
                 if (!WEIGHTS.ContainsKey(value))
@@ -217,49 +256,69 @@ namespace XNATWL.TextAreaModel
                     weight = WEIGHTS[value];
                 }
 
-                Put(StyleAttribute.FONT_WEIGHT, weight);
+                this.Put(StyleAttribute.FONT_WEIGHT, weight);
                 return;
             }
-            if("font-size".Equals(key)) {
-                parseValueUnit(StyleAttribute.FONT_SIZE, value);
+            if ("font-size".Equals(key))
+            {
+                this.ParseValueUnit(StyleAttribute.FONT_SIZE, value);
                 return;
             }
-            if("font-style".Equals(key)) {
-                parseEnum(StyleAttribute.FONT_ITALIC, ITALIC, value);
+            if ("font-style".Equals(key))
+            {
+                this.ParseEnum(StyleAttribute.FONT_ITALIC, ITALIC, value);
                 return;
             }
-            if("font".Equals(key)) {
-                value = parseStartsWith(StyleAttribute.FONT_WEIGHT, WEIGHTS, value);
-                value = parseStartsWith(StyleAttribute.FONT_ITALIC, ITALIC, value);
-                if(value.Length > 0 && "1234567890".Contains(value[0])) {
+            if ("font".Equals(key))
+            {
+                value = this.ParseStartsWith(StyleAttribute.FONT_WEIGHT, WEIGHTS, value);
+                value = this.ParseStartsWith(StyleAttribute.FONT_ITALIC, ITALIC, value);
+                if (value.Length > 0 && "1234567890".Contains(value[0]))
+                {
                     int end = TextUtil.indexOf(value, ' ', 0);
-                    parseValueUnit(StyleAttribute.FONT_SIZE, value.Substring(0, end));
+                    this.ParseValueUnit(StyleAttribute.FONT_SIZE, value.Substring(0, end));
                     end = TextUtil.skipSpaces(value, end);
                     value = value.Substring(end);
                 }
-                parseList(StyleAttribute.FONT_FAMILIES, value);
+                this.ParseList(StyleAttribute.FONT_FAMILIES, value);
             }
         }
-    
-        private Value parseValueUnit(string value) {
+
+        private Value ParseValueUnit(string value)
+        {
             Value.Unit unit;
             int suffixLength = 2;
-            if(value.EndsWith("px")) {
+            if (value.EndsWith("px"))
+            {
                 unit = Value.Unit.PX;
-            } else if(value.EndsWith("pt")) {
+            }
+            else if (value.EndsWith("pt"))
+            {
                 unit = Value.Unit.PT;
-            } else if(value.EndsWith("em")) {
+            }
+            else if (value.EndsWith("em"))
+            {
                 unit = Value.Unit.EM;
-            } else if(value.EndsWith("ex")) {
+            }
+            else if (value.EndsWith("ex"))
+            {
                 unit = Value.Unit.EX;
-            } else if(value.EndsWith("%")) {
+            }
+            else if (value.EndsWith("%"))
+            {
                 suffixLength = 1;
                 unit = Value.Unit.PERCENT;
-            } else if("0".Equals(value)) {
+            }
+            else if ("0".Equals(value))
+            {
                 return Value.ZERO_PX;
-            } else if("auto".Equals(value)) {
+            }
+            else if ("auto".Equals(value))
+            {
                 return Value.AUTO;
-            } else {
+            }
+            else
+            {
                 throw new ArgumentOutOfRangeException("Unknown numeric suffix: " + value);
             }
 
@@ -267,29 +326,36 @@ namespace XNATWL.TextAreaModel
             return new Value(float.Parse(numberPart), unit);
         }
 
-        private Value[] parseValueUnits(string value) {
+        private Value[] ParseValueUnits(string value)
+        {
             string[] parts = value.Split(new string[] { "\\s+" }, StringSplitOptions.None);
             Value[] result = new Value[parts.Length];
-            for(int i=0 ; i<parts.Length ; i++) {
-                result[i] = parseValueUnit(parts[i]);
+            for (int i = 0; i < parts.Length; i++)
+            {
+                result[i] = this.ParseValueUnit(parts[i]);
             }
             return result;
         }
 
-        private void parseValueUnit(StyleAttribute attribute, string value) {
-            Put(attribute, parseValueUnit(value));
+        private void ParseValueUnit(StyleAttribute attribute, string value)
+        {
+            this.Put(attribute, ParseValueUnit(value));
         }
 
-        private void parseInteger(StyleAttribute<Int32> attribute, string value) {
-            if("inherit".Equals(value)) {
-                Put(attribute, null);
-            } else {
+        private void ParseInteger(StyleAttribute<Int32> attribute, string value)
+        {
+            if ("inherit".Equals(value))
+            {
+                this.Put(attribute, null);
+            }
+            else
+            {
                 int intval = Int32.Parse(value);
-                Put(attribute, intval);
+                this.Put(attribute, intval);
             }
         }
-    
-        private void parseEnum<T>(StyleAttribute<T> attribute, Dictionary<string, T> map, string value)
+
+        private void ParseEnum<T>(StyleAttribute<T> attribute, Dictionary<string, T> map, string value)
         {
             if (!map.ContainsKey(value))
             {
@@ -297,19 +363,21 @@ namespace XNATWL.TextAreaModel
             }
 
             T obj = map[value];
-            Put(attribute, obj);
+            this.Put(attribute, obj);
         }
 
-        private void parseEnum<E>(StyleAttribute<E> attribute, string value) where E : struct, IConvertible
+        private void ParseEnum<E>(StyleAttribute<E> attribute, string value) where E : struct, IConvertible
         {
             object obj = Enum.Parse(attribute.DataType, value.ToUpper());
             Put(attribute, obj);
         }
-    
-        private string parseStartsWith<E>(StyleAttribute<E> attribute, Dictionary<string, E> map, string value) {
+
+        private string ParseStartsWith<E>(StyleAttribute<E> attribute, Dictionary<string, E> map, string value)
+        {
             int end = TextUtil.indexOf(value, ' ', 0);
             E obj = map[value.Substring(0, end)];
-            if(obj != null) {
+            if (obj != null)
+            {
                 end = TextUtil.skipSpaces(value, end);
                 value = value.Substring(end);
             }
@@ -317,83 +385,107 @@ namespace XNATWL.TextAreaModel
             return value;
         }
 
-        private void parseURL(StyleAttribute<string> attribute, string value) {
-            Put(attribute, stripURL(value));
+        private void ParseURL(StyleAttribute<string> attribute, string value)
+        {
+            Put(attribute, StripURL(value));
         }
 
-        static string stripTrim(string value, int start, int end) {
+        static string StripTrim(string value, int start, int end)
+        {
             return TextUtil.trim(value, start, value.Length - end);
         }
-    
-        public static string stripURL(string value) {
-            if(value.StartsWith("url(") && value.EndsWith(")")) {
-                value = stripQuotes(stripTrim(value, 4, 1));
+
+        public static string StripURL(string value)
+        {
+            if (value.StartsWith("url(") && value.EndsWith(")"))
+            {
+                value = StripQuotes(StripTrim(value, 4, 1));
             }
             return value;
         }
-    
-        static string stripQuotes(string value) {
-            if((value.StartsWith("\"") && value.EndsWith("\"")) ||
-                    (value.StartsWith("'") && value.EndsWith("'"))) {
+
+        static string StripQuotes(string value)
+        {
+            if ((value.StartsWith("\"") && value.EndsWith("\"")) ||
+                    (value.StartsWith("'") && value.EndsWith("'")))
+            {
                 value = value.Substring(1, value.Length - 1);
             }
             return value;
         }
 
-        private void parseColor(StyleAttribute<Color> attribute, string value) {
+        private void ParseColor(StyleAttribute<Color> attribute, string value)
+        {
             Color color;
-            if(value.StartsWith("rgb(") && value.EndsWith(")")) {
-                value = stripTrim(value, 4, 1);
-                byte[] rgb = parseRGBA(value, 3);
+            if (value.StartsWith("rgb(") && value.EndsWith(")"))
+            {
+                value = StripTrim(value, 4, 1);
+                byte[] rgb = ParseRGBA(value, 3);
                 color = new Color(rgb[0], rgb[1], rgb[2], (byte)255);
-            } else if(value.StartsWith("rgba(") && value.EndsWith(")")) {
-                value = stripTrim(value, 5, 1);
-                byte[] rgba = parseRGBA(value, 4);
+            }
+            else if (value.StartsWith("rgba(") && value.EndsWith(")"))
+            {
+                value = StripTrim(value, 5, 1);
+                byte[] rgba = ParseRGBA(value, 4);
                 color = new Color(rgba[0], rgba[1], rgba[2], rgba[3]);
-            } else {
+            }
+            else
+            {
                 color = Color.Parse(value);
-                if(color == null) {
+                if (color == null)
+                {
                     throw new ArgumentOutOfRangeException("unknown color name: " + value);
                 }
             }
             Put(attribute, color);
         }
-    
-        private byte[] parseRGBA(string value, int numElements) {
+
+        private byte[] ParseRGBA(string value, int numElements)
+        {
             string[] parts = value.Split(',');
-            if(parts.Length != numElements) {
+            if (parts.Length != numElements)
+            {
                 throw new ArgumentOutOfRangeException("3 values required for rgb()");
             }
             byte[] rgba = new byte[numElements];
-            for(int i=0 ; i<numElements ; i++) {
+            for (int i = 0; i < numElements; i++)
+            {
                 string part = parts[i].Trim();
                 int v;
-                if(i == 3) {
+                if (i == 3)
+                {
                     // handle alpha component specially
                     float f = float.Parse(part);
-                    v = (int) Math.Round(f * 255.0f);
-                } else {
+                    v = (int)Math.Round(f * 255.0f);
+                }
+                else
+                {
                     bool percent = part.EndsWith("%");
-                    if(percent) {
-                        part = stripTrim(value, 0, 1);
+                    if (percent)
+                    {
+                        part = StripTrim(value, 0, 1);
                     }
                     v = Int32.Parse(part);
-                    if(percent) {
-                        v = 255*v / 100;
+                    if (percent)
+                    {
+                        v = 255 * v / 100;
                     }
                 }
                 rgba[i] = (byte)Math.Max(0, Math.Min(255, v));
             }
             return rgba;
         }
-    
-        private void parseList(StyleAttribute<List<string>> attribute, string value) {
-            Put(attribute, parseList(value, 0));
+
+        private void ParseList(StyleAttribute<List<string>> attribute, string value)
+        {
+            Put(attribute, ParseList(value, 0));
         }
-    
-        public static List<String> parseList(string value, int idx) {
+
+        public static List<String> ParseList(string value, int idx)
+        {
             idx = TextUtil.skipSpaces(value, idx);
-            if(idx >= value.Length) {
+            if (idx >= value.Length)
+            {
                 return null;
             }
 
@@ -401,20 +493,24 @@ namespace XNATWL.TextAreaModel
             int end;
             string part;
 
-            if(startChar == '"' || startChar == '\'') {
+            if (startChar == '"' || startChar == '\'')
+            {
                 ++idx;
                 end = TextUtil.indexOf(value, startChar, idx);
                 part = value.Substring(idx, end);
                 end = TextUtil.skipSpaces(value, ++end);
-                if(end < value.Length && value[end] != ',') {
+                if (end < value.Length && value[end] != ',')
+                {
                     throw new ArgumentOutOfRangeException("',' expected at " + idx);
                 }
-            } else {
+            }
+            else
+            {
                 end = TextUtil.indexOf(value, ',', idx);
                 part = TextUtil.trim(value, idx, end);
             }
 
-            List<string> result = parseList(value, end + 1);
+            List<string> result = ParseList(value, end + 1);
             if (result == null)
             {
                 return new List<string> { part };
@@ -424,7 +520,7 @@ namespace XNATWL.TextAreaModel
                 return new List<string> { part, result[0] };
             }
         }
-    
+
         static Dictionary<string, Boolean> PRE = new Dictionary<string, Boolean>();
         static Dictionary<string, Boolean> BREAKWORD = new Dictionary<string, Boolean>();
         static Dictionary<string, OrderedListType> OLT = new Dictionary<string, OrderedListType>();
@@ -433,7 +529,7 @@ namespace XNATWL.TextAreaModel
         static Dictionary<string, TextDecoration> TEXTDECORATION = new Dictionary<string, TextDecoration>();
         static Dictionary<string, Boolean> INHERITHOVER = new Dictionary<string, Boolean>();
 
-        static OrderedListType createRoman(bool lowercase)
+        static OrderedListType CreateRoman(bool lowercase)
         {
             return new RomanOrderedListType(lowercase);
         }
@@ -459,8 +555,9 @@ namespace XNATWL.TextAreaModel
                 }
             }
         }
-    
-        static CSSStyle() {
+
+        static CSSStyle()
+        {
             PRE.Add("pre", true);
             PRE.Add("normal", false);
 
@@ -474,25 +571,25 @@ namespace XNATWL.TextAreaModel
             OLT.Add("lower-alpha", lower_alpha);
             OLT.Add("upper-latin", upper_alpha);
             OLT.Add("lower-latin", lower_alpha);
-            OLT.Add("upper-roman", createRoman(false));
-            OLT.Add("lower-roman", createRoman(true));
+            OLT.Add("upper-roman", CreateRoman(false));
+            OLT.Add("lower-roman", CreateRoman(true));
             OLT.Add("lower-greek", new OrderedListType("αβγδεζηθικλμνξοπρστυφχψω"));
             OLT.Add("upper-norwegian", new OrderedListType("ABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅ"));
             OLT.Add("lower-norwegian", new OrderedListType("abcdefghijklmnopqrstuvwxyzæøå"));
             OLT.Add("upper-russian-short", new OrderedListType("АБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЭЮЯ"));
             OLT.Add("lower-russian-short", new OrderedListType("абвгдежзиклмнопрстуфхцчшщэюя"));
-        
+
             ITALIC.Add("normal", false);
             ITALIC.Add("italic", true);
             ITALIC.Add("oblique", true);
-        
+
             WEIGHTS.Add("normal", 400);
             WEIGHTS.Add("bold", 700);
-        
+
             TEXTDECORATION.Add("none", TextDecoration.NONE);
             TEXTDECORATION.Add("underline", TextDecoration.UNDERLINE);
             TEXTDECORATION.Add("line-through", TextDecoration.LINE_THROUGH);
-        
+
             INHERITHOVER.Add("inherit", true);
             INHERITHOVER.Add("normal", false);
         }

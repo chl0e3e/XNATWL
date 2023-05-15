@@ -87,16 +87,16 @@ namespace XNATWL.TextAreaModel
             }
         }
 
-        internal bool inherited;
-        internal Type dataType;
-        internal object defaultValue;
-        internal int ordinal;
+        internal bool _inherited;
+        internal Type _dataType;
+        internal object _defaultValue;
+        internal int _ordinal;
 
         public bool Inherited
         {
             get
             {
-                return this.inherited;
+                return this._inherited;
             }
         }
 
@@ -104,7 +104,7 @@ namespace XNATWL.TextAreaModel
         {
             get
             {
-                return this.dataType;
+                return this._dataType;
             }
         }
 
@@ -112,7 +112,7 @@ namespace XNATWL.TextAreaModel
         {
             get
             {
-                return this.defaultValue;
+                return this._defaultValue;
             }
         }
 
@@ -120,7 +120,7 @@ namespace XNATWL.TextAreaModel
         {
             get
             {
-                return this.ordinal;
+                return this._ordinal;
             }
         }
     }
@@ -159,7 +159,7 @@ namespace XNATWL.TextAreaModel
         {
             get
             {
-                return (T) this.defaultValue;
+                return (T) this._defaultValue;
             }
         }
 
@@ -170,10 +170,10 @@ namespace XNATWL.TextAreaModel
 
         internal StyleAttribute(bool inherited, Type dataType, T defaultValue)
         {
-            this.inherited = inherited;
-            this.dataType = dataType;
-            this.defaultValue = (object) defaultValue;
-            this.ordinal = StyleAttribute.ATTRIBUTES.Count;
+            this._inherited = inherited;
+            this._dataType = dataType;
+            this._defaultValue = (object) defaultValue;
+            this._ordinal = StyleAttribute.ATTRIBUTES.Count;
             StyleAttribute.ATTRIBUTES.Add(this);
         }
 

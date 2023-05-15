@@ -86,21 +86,21 @@ namespace XNATWL.TextAreaModel
 
     public abstract class Element
     {
-        private Style style;
+        private Style _style;
 
         protected Element(Style style)
         {
-            notNull(style, "style");
-            this.style = style;
+            NotNull(style, "style");
+            this._style = style;
         }
 
         /**
          * Returns the style associated with this element
          * @return the style associated with this element
          */
-        public Style getStyle()
+        public Style GetStyle()
         {
-            return style;
+            return _style;
         }
 
         /**
@@ -109,13 +109,13 @@ namespace XNATWL.TextAreaModel
          *
          * @param style the new style. Must not be null.
          */
-        public void setStyle(Style style)
+        public void SetStyle(Style style)
         {
-            notNull(style, "style");
-            this.style = style;
+            NotNull(style, "style");
+            this._style = style;
         }
 
-        public static void notNull(Object o, String name)
+        public static void NotNull(Object o, String name)
         {
             if (o == null)
             {
@@ -135,21 +135,21 @@ namespace XNATWL.TextAreaModel
 
     public class TextElement : Element
     {
-        private String text;
+        private String _text;
 
         public TextElement(Style style, String text) : base(style)
         {
-            notNull(text, "text");
-            this.text = text;
+            NotNull(text, "text");
+            this._text = text;
         }
 
         /**
          * Returns ths text.
          * @return the text.
          */
-        public String getText()
+        public String GetText()
         {
-            return text;
+            return _text;
         }
 
         /**
@@ -158,22 +158,22 @@ namespace XNATWL.TextAreaModel
          *
          * @param text the new text. Must not be null.
          */
-        public void setText(String text)
+        public void SetText(String text)
         {
-            notNull(text, "text");
-            this.text = text;
+            NotNull(text, "text");
+            this._text = text;
         }
     }
 
     public class ImageElement : Element
     {
-        private String imageName;
-        private String tooltip;
+        private String _imageName;
+        private String _tooltip;
 
         public ImageElement(Style style, String imageName, String tooltip) : base(style)
         {
-            this.imageName = imageName;
-            this.tooltip = tooltip;
+            this._imageName = imageName;
+            this._tooltip = tooltip;
         }
 
         public ImageElement(Style style, String imageName) : this(style, imageName, null)
@@ -185,52 +185,52 @@ namespace XNATWL.TextAreaModel
          * Returns the image name for this image element.
          * @return the image name for this image element.
          */
-        public String getImageName()
+        public String GetImageName()
         {
-            return imageName;
+            return _imageName;
         }
 
         /**
          * Returns the tooltip or null for this image.
          * @return the tooltip or null for this image. Can be null.
          */
-        public String getToolTip()
+        public String GetToolTip()
         {
-            return tooltip;
+            return _tooltip;
         }
     }
 
     public class WidgetElement : Element
     {
-        private String widgetName;
-        private String widgetParam;
+        private String _widgetName;
+        private String _widgetParam;
 
         public WidgetElement(Style style, String widgetName, String widgetParam) : base(style)
         {
-            this.widgetName = widgetName;
-            this.widgetParam = widgetParam;
+            this._widgetName = widgetName;
+            this._widgetParam = widgetParam;
         }
 
-        public String getWidgetName()
+        public String GetWidgetName()
         {
-            return widgetName;
+            return _widgetName;
         }
 
-        public String getWidgetParam()
+        public String GetWidgetParam()
         {
-            return widgetParam;
+            return _widgetParam;
         }
     }
 
     public class ContainerElement : Element, ICollection<Element>
     {
-        protected List<Element> children;
+        protected List<Element> _children;
 
         public int Count
         {
             get
             {
-                return this.children.Count;
+                return this._children.Count;
             }
         }
 
@@ -244,47 +244,47 @@ namespace XNATWL.TextAreaModel
 
         public ContainerElement(Style style) : base(style)
         {
-            this.children = new List<Element>();
+            this._children = new List<Element>();
         }
 
         public Element ElementAt(int idx)
         {
-            return this.children[idx];
+            return this._children[idx];
         }
 
         public void Add(Element item)
         {
-            children.Add(item);
+            _children.Add(item);
         }
 
         public void Clear()
         {
-            children.Clear();
+            _children.Clear();
         }
 
         public bool Contains(Element item)
         {
-            return children.Contains(item);
+            return _children.Contains(item);
         }
 
         public void CopyTo(Element[] array, int arrayIndex)
         {
-            children.CopyTo(array, arrayIndex);
+            _children.CopyTo(array, arrayIndex);
         }
 
         public bool Remove(Element item)
         {
-            return children.Remove(item);
+            return _children.Remove(item);
         }
 
         public IEnumerator<Element> GetEnumerator()
         {
-            return children.GetEnumerator();
+            return _children.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return children.GetEnumerator();
+            return _children.GetEnumerator();
         }
     }
 
@@ -309,7 +309,7 @@ namespace XNATWL.TextAreaModel
          * Returns the href of the link.
          * @return the href of the link. Can be null.
          */
-        public String getHREF()
+        public String GetHREF()
         {
             return href;
         }
@@ -320,7 +320,7 @@ namespace XNATWL.TextAreaModel
          *
          * @param href the new href of the link, can be null.
          */
-        public void setHREF(String href)
+        public void SetHREF(String href)
         {
             this.href = href;
         }
@@ -342,16 +342,16 @@ namespace XNATWL.TextAreaModel
      */
     public class OrderedListElement : ContainerElement
     {
-        private int start;
+        private int _start;
 
         public OrderedListElement(Style style, int start) : base(style)
         {
-            this.start = start;
+            this._start = start;
         }
 
-        public int getStart()
+        public int GetStart()
         {
-            return start;
+            return _start;
         }
     }
 
@@ -365,7 +365,7 @@ namespace XNATWL.TextAreaModel
 
     public class TableCellElement : ContainerElement
     {
-        private int colspan;
+        private int _colspan;
 
         public TableCellElement(Style style) : this(style, 1)
         {
@@ -374,23 +374,23 @@ namespace XNATWL.TextAreaModel
 
         public TableCellElement(Style style, int colspan) : base(style)
         {
-            this.colspan = colspan;
+            this._colspan = colspan;
         }
 
-        public int getColspan()
+        public int GetColspan()
         {
-            return colspan;
+            return _colspan;
         }
     }
 
     public class TableElement : Element
     {
-        private int numColumns;
-        private int numRows;
-        private int cellSpacing;
-        private int cellPadding;
-        private TableCellElement[] cells;
-        private Style[] rowStyles;
+        private int _numColumns;
+        private int _numRows;
+        private int _cellSpacing;
+        private int _cellPadding;
+        private TableCellElement[] _cells;
+        private Style[] _rowStyles;
 
         public TableElement(Style style, int numColumns, int numRows, int cellSpacing, int cellPadding) : base(style)
         {
@@ -403,72 +403,72 @@ namespace XNATWL.TextAreaModel
                 throw new ArgumentOutOfRangeException("numRows");
             }
 
-            this.numColumns = numColumns;
-            this.numRows = numRows;
-            this.cellSpacing = cellSpacing;
-            this.cellPadding = cellPadding;
-            this.cells = new TableCellElement[numRows * numColumns];
-            this.rowStyles = new Style[numRows];
+            this._numColumns = numColumns;
+            this._numRows = numRows;
+            this._cellSpacing = cellSpacing;
+            this._cellPadding = cellPadding;
+            this._cells = new TableCellElement[numRows * numColumns];
+            this._rowStyles = new Style[numRows];
         }
 
-        public int getNumColumns()
+        public int GetNumColumns()
         {
-            return numColumns;
+            return _numColumns;
         }
 
-        public int getNumRows()
+        public int GetNumRows()
         {
-            return numRows;
+            return _numRows;
         }
 
-        public int getCellPadding()
+        public int GetCellPadding()
         {
-            return cellPadding;
+            return _cellPadding;
         }
 
-        public int getCellSpacing()
+        public int GetCellSpacing()
         {
-            return cellSpacing;
+            return _cellSpacing;
         }
 
-        public TableCellElement getCell(int row, int column)
+        public TableCellElement GetCell(int row, int column)
         {
-            if (column < 0 || column >= numColumns)
+            if (column < 0 || column >= _numColumns)
             {
                 throw new IndexOutOfRangeException("column");
             }
 
-            if (row < 0 || row >= numRows)
+            if (row < 0 || row >= _numRows)
             {
                 throw new IndexOutOfRangeException("row");
             }
 
-            return cells[row * numColumns + column];
+            return _cells[row * _numColumns + column];
         }
 
-        public Style getRowStyle(int row)
+        public Style GetRowStyle(int row)
         {
-            return rowStyles[row];
+            return _rowStyles[row];
         }
 
-        public void setCell(int row, int column, TableCellElement cell)
+        public void SetCell(int row, int column, TableCellElement cell)
         {
-            if (column < 0 || column >= numColumns)
+            if (column < 0 || column >= _numColumns)
             {
                 throw new IndexOutOfRangeException("column");
             }
 
-            if (row < 0 || row >= numRows)
+            if (row < 0 || row >= _numRows)
             {
                 throw new IndexOutOfRangeException("row");
             }
 
-            cells[row * numColumns + column] = cell;
+            _cells[row * _numColumns + column] = cell;
         }
 
-        public void setRowStyle(int row, Style style)
+        public void SetRowStyle(int row, Style style)
         {
-            rowStyles[row] = style;
+            _rowStyles[row] = style;
         }
     }
 }

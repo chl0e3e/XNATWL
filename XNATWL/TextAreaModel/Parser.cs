@@ -71,23 +71,23 @@ namespace XNATWL.TextAreaModel
          */
         private static int[] ZZ_CMAP_PACKED = new int[] { 9, 0, 1, 3, 1, 2, 1, 0, 1, 3, 1, 1, 18, 0, 1, 3, 1, 0, 1, 19, 1, 12, 3, 0, 1, 18, 2, 0, 1, 5, 1, 0, 1, 10, 1, 6, 1, 9, 1, 4, 10, 8, 1, 13, 1, 17, 2, 0, 1, 11, 1, 0, 1, 14, 26, 7, 4, 0, 1, 7, 1, 0, 26, 7, 1, 15, 1, 0, 1, 16, 65410, 0 };
 
-        private static char[] ZZ_CMAP = zzUnpackCMap(ZZ_CMAP_PACKED);
+        private static char[] ZZ_CMAP = ZZUnpackCMap(ZZ_CMAP_PACKED);
 
         /** 
          * Translates DFA states to action switch labels.
          */
 
         private static int[] ZZ_ACTION_PACKED_0 = new int[] { 5, 0, 1, 1, 1, 2, 1, 1, 1, 3, 1, 1, 1, 4, 1, 5, 1, 6, 1, 7, 1, 8, 1, 9, 1, 10, 1, 11, 2, 12, 1, 1, 1, 13, 1, 14, 1, 15, 1, 16, 1, 17, 1, 18, 1, 19, 1, 16, 1, 20, 1, 16, 1, 21, 4, 0 };
-        private static int[] ZZ_ACTION = zzUnpackAction();
+        private static int[] ZZ_ACTION = ZZUnpackAction();
 
-        private static int[] zzUnpackAction()
+        private static int[] ZZUnpackAction()
         {
             int[] result = new int[100];
-            zzUnpackAction(ZZ_ACTION_PACKED_0, 0, result);
+            ZZUnpackAction(ZZ_ACTION_PACKED_0, 0, result);
             return result;
         }
 
-        private static int zzUnpackAction(int[] packed, int offset, int[] result)
+        private static int ZZUnpackAction(int[] packed, int offset, int[] result)
         {
             int i = 0;       /* index in packed string  */
             int j = offset;  /* index in unpacked array */
@@ -107,16 +107,16 @@ namespace XNATWL.TextAreaModel
          */
 
         private static int[] ZZ_ROWMAP_PACKED_0 = new int[] { 0, 0, 0, 20, 0, 40, 0, 60, 0, 80, 0, 100, 0, 120, 0, 140, 0, 100, 0, 160, 0, 180, 0, 100, 0, 100, 0, 100, 0, 100, 0, 100, 0, 100, 0, 100, 0, 200, 0, 100, 0, 220, 0, 240, 0, 100, 0, 100, 0, 260, 0, 100, 0, 100, 0, 100, 0, 280, 0, 100, 0, 300, 0, 100, 0, 320, 0, 340, 0, 360, 0, 380 };
-        private static int[] ZZ_ROWMAP = zzUnpackRowMap();
+        private static int[] ZZ_ROWMAP = ZZUnpackRowMap();
 
-        private static int[] zzUnpackRowMap()
+        private static int[] ZZUnpackRowMap()
         {
             int[] result = new int[36];
-            zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, 0, result);
+            ZZUnpackRowMap(ZZ_ROWMAP_PACKED_0, 0, result);
             return result;
         }
 
-        private static int zzUnpackRowMap(int[] packed, int offset, int[] result)
+        private static int ZZUnpackRowMap(int[] packed, int offset, int[] result)
         {
             int i = 0;  /* index in packed string  */
             int j = offset;  /* index in unpacked array */
@@ -134,16 +134,16 @@ namespace XNATWL.TextAreaModel
          */
 
         private static int[] ZZ_TRANS_PACKED_0 = new int[] { 1, 6, 3, 7, 1, 8, 1, 9, 1, 10, 1, 11, 1, 6, 1, 12, 1, 13, 1, 14, 1, 15, 1, 16, 1, 17, 1, 18, 5, 6, 1, 19, 2, 20, 1, 8, 1, 6, 1, 21, 1, 22, 5, 6, 1, 23, 2, 6, 1, 24, 3, 6, 16, 25, 1, 24, 1, 26, 1, 27, 1, 28, 18, 29, 1, 30, 1, 29, 19, 31, 1, 32, 21, 0, 3, 7, 21, 0, 1, 33, 21, 0, 1, 11, 18, 0, 3, 11, 13, 0, 1, 20, 24, 0, 1, 22, 18, 0, 3, 22, 11, 0, 16, 25, 4, 0, 18, 29, 1, 0, 1, 29, 19, 31, 1, 0, 5, 34, 1, 35, 19, 34, 1, 36, 14, 34, 4, 0, 1, 20, 1, 35, 14, 0, 4, 34, 1, 20, 1, 36, 14, 34 };
-        private static int[] ZZ_TRANS = zzUnpackTrans();
+        private static int[] ZZ_TRANS = ZZUnpackTrans();
 
-        private static int[] zzUnpackTrans()
+        private static int[] ZZUnpackTrans()
         {
             int[] result = new int[400];
-            zzUnpackTrans(ZZ_TRANS_PACKED_0, 0, result);
+            ZZUnpackTrans(ZZ_TRANS_PACKED_0, 0, result);
             return result;
         }
 
-        private static int zzUnpackTrans(int[] packed, int offset, int[] result)
+        private static int ZZUnpackTrans(int[] packed, int offset, int[] result)
         {
             int i = 0;       /* index in packed string  */
             int j = offset;  /* index in unpacked array */
@@ -163,16 +163,16 @@ namespace XNATWL.TextAreaModel
          */
         private static int[] ZZ_ATTRIBUTE_PACKED_0 = new int[] { 5, 0, 1, 9, 2, 1, 1, 9, 2, 1, 7, 9, 1, 1, 1, 9, 2, 1, 2, 9, 1, 1, 3, 9, 1, 1, 1, 9, 1, 1, 1, 9, 4, 0 };
 
-        private static int[] ZZ_ATTRIBUTE = zzUnpackAttribute();
+        private static int[] ZZ_ATTRIBUTE = ZZUnpackAttribute();
 
-        private static int[] zzUnpackAttribute()
+        private static int[] ZZUnpackAttribute()
         {
             int[] result = new int[36];
-            zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, 0, result);
+            ZZUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, 0, result);
             return result;
         }
 
-        private static int zzUnpackAttribute(int[] packed, int offset, int[] result)
+        private static int ZZUnpackAttribute(int[] packed, int offset, int[] result)
         {
             int i = 0;       /* index in packed string  */
             int j = offset;  /* index in unpacked array */
@@ -187,42 +187,42 @@ namespace XNATWL.TextAreaModel
         }
 
         /** the input device */
-        private StreamReader zzReader;
+        private StreamReader _zzReader;
 
         /** the current state of the DFA */
-        private int zzState;
+        private int _zzState;
 
         /** the current lexical state */
-        private int zzLexicalState = YYINITIAL;
+        private int _zzLexicalState = YYINITIAL;
 
         /** this buffer contains the current text to be matched and is
             the source of the yytext() string */
-        private char[] zzBuffer = new char[ZZ_BUFFERSIZE];
+        private char[] _zzBuffer = new char[ZZ_BUFFERSIZE];
 
         /** the textposition at the last accepting state */
-        private int zzMarkedPos;
+        private int _zzMarkedPos;
 
         /** the current text position in the buffer */
-        private int zzCurrentPos;
+        private int _zzCurrentPos;
 
         /** startRead marks the beginning of the yytext() string in the buffer */
-        private int zzStartRead;
+        private int _zzStartRead;
 
         /** endRead marks the last character in the buffer, that has been read
             from input */
-        private int zzEndRead;
+        private int _zzEndRead;
 
         /** number of newlines encountered up to the start of the matched text */
-        private int yyline;
+        private int _yyLine;
 
         /**
          * the number of characters from the last newline up to the start of the 
          * matched text
          */
-        private int yycolumn;
+        private int _yyColumn;
 
         /** zzAtEOF == true <=> the scanner is at the EOF */
-        private bool zzAtEOF;
+        private bool _zzAtEOF;
 
         /* user code: */
         internal static int EOF = 0;
@@ -238,23 +238,23 @@ namespace XNATWL.TextAreaModel
         internal static int SEMICOLON = 10;
         internal static int ATRULE = 11;
 
-        internal bool sawWhitespace;
+        internal bool _sawWhitespace;
 
-        internal StringBuilder sb = new StringBuilder();
+        internal StringBuilder _stringBuilder = new StringBuilder();
 
-        private void append()
+        private void Append()
         {
-            sb.Append(zzBuffer, zzStartRead, zzMarkedPos - zzStartRead);
+            _stringBuilder.Append(_zzBuffer, _zzStartRead, _zzMarkedPos - _zzStartRead);
         }
 
-        public void unexpected()
+        public void Unexpected()
         {
-            throw new IOException("Unexpected \"" + yytext() + "\" at line " + yyline + ", column " + yycolumn);
+            throw new IOException("Unexpected \"" + YYText() + "\" at line " + _yyLine + ", column " + _yyColumn);
         }
 
-        public void expect(int token)
+        public void Expect(int token)
         {
-            if (yylex() != token) unexpected();
+            if (YYLex() != token) Unexpected();
         }
 
 
@@ -266,7 +266,7 @@ namespace XNATWL.TextAreaModel
          */
         internal Parser(StreamReader srin)
         {
-            this.zzReader = srin;
+            this._zzReader = srin;
         }
 
         /**
@@ -275,7 +275,7 @@ namespace XNATWL.TextAreaModel
          * @param packed   the packed character translation table
          * @return         the unpacked character translation table
          */
-        private static char[] zzUnpackCMap(int[] packed)
+        private static char[] ZZUnpackCMap(int[] packed)
         {
             char[] map = new char[0x10000];
             int i = 0;  /* index in packed string  */
@@ -297,51 +297,51 @@ namespace XNATWL.TextAreaModel
          * 
          * @exception   java.io.IOException  if any I/O-Error occurs
          */
-        private bool zzRefill()
+        private bool ZZRefill()
         {
 
             /* first: make room (if you can) */
-            if (zzStartRead > 0)
+            if (_zzStartRead > 0)
             {
-                Array.Copy(zzBuffer, zzStartRead,
-                                 zzBuffer, 0,
-                                 zzEndRead - zzStartRead);
+                Array.Copy(_zzBuffer, _zzStartRead,
+                                 _zzBuffer, 0,
+                                 _zzEndRead - _zzStartRead);
 
                 /* translate stored positions */
-                zzEndRead -= zzStartRead;
-                zzCurrentPos -= zzStartRead;
-                zzMarkedPos -= zzStartRead;
-                zzStartRead = 0;
+                _zzEndRead -= _zzStartRead;
+                _zzCurrentPos -= _zzStartRead;
+                _zzMarkedPos -= _zzStartRead;
+                _zzStartRead = 0;
             }
 
             /* is the buffer big enough? */
-            if (zzCurrentPos >= zzBuffer.Length)
+            if (_zzCurrentPos >= _zzBuffer.Length)
             {
                 /* if not: blow it up */
-                char[] newBuffer = new char[zzCurrentPos * 2];
-                Array.Copy(zzBuffer, 0, newBuffer, 0, zzBuffer.Length);
-                zzBuffer = newBuffer;
+                char[] newBuffer = new char[_zzCurrentPos * 2];
+                Array.Copy(_zzBuffer, 0, newBuffer, 0, _zzBuffer.Length);
+                _zzBuffer = newBuffer;
             }
 
             /* finally: fill the buffer with new input */
-            int numRead = zzReader.Read(zzBuffer, zzEndRead, zzBuffer.Length - zzEndRead);
+            int numRead = _zzReader.Read(_zzBuffer, _zzEndRead, _zzBuffer.Length - _zzEndRead);
 
             if (numRead > 0)
             {
-                zzEndRead += numRead;
+                _zzEndRead += numRead;
                 return false;
             }
             // unlikely but not impossible: read 0 characters, but not at end of stream    
             if (numRead == 0)
             {
-                int c = zzReader.Read();
+                int c = _zzReader.Read();
                 if (c == -1)
                 {
                     return true;
                 }
                 else
                 {
-                    zzBuffer[zzEndRead++] = (char)c;
+                    _zzBuffer[_zzEndRead++] = (char)c;
                     return false;
                 }
             }
@@ -356,18 +356,18 @@ namespace XNATWL.TextAreaModel
          *
          * @param newState the new lexical state
          */
-        public void yybegin(int newState)
+        public void YYBegin(int newState)
         {
-            zzLexicalState = newState;
+            _zzLexicalState = newState;
         }
 
 
         /**
          * Returns the text matched by the current regular expression.
          */
-        public String yytext()
+        public String YYText()
         {
-            return new String(zzBuffer, zzStartRead, zzMarkedPos - zzStartRead);
+            return new String(_zzBuffer, _zzStartRead, _zzMarkedPos - _zzStartRead);
         }
 
 
@@ -385,7 +385,7 @@ namespace XNATWL.TextAreaModel
          *
          * @param   message  the errormessage to display
          */
-        private void zzScanError(String message)
+        private void ZZScanError(String message)
         {
             throw new Exception(message);
         }
@@ -413,20 +413,20 @@ namespace XNATWL.TextAreaModel
          * Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software.
          * This notice may not be removed or altered from any source distribution.
         */
-        public virtual int yylex()
+        public virtual int YYLex()
         {
-            int num = zzEndRead;
-            char[] array = zzBuffer;
+            int num = _zzEndRead;
+            char[] array = _zzBuffer;
             char[] zZ_CMAP = ZZ_CMAP;
             int[] zZ_TRANS = ZZ_TRANS;
             int[] zZ_ROWMAP = ZZ_ROWMAP;
             int[] zZ_ATTRIBUTE = ZZ_ATTRIBUTE;
             while (true)
             {
-                int num2 = zzMarkedPos;
+                int num2 = _zzMarkedPos;
                 int num3 = 0;
                 int i;
-                for (i = zzStartRead; i < num2; i++)
+                for (i = _zzStartRead; i < num2; i++)
                 {
                     switch (array[i])
                     {
@@ -435,13 +435,13 @@ namespace XNATWL.TextAreaModel
                         case '\u0085':
                         case '\u2028':
                         case '\u2029':
-                            yyline++;
-                            yycolumn = 0;
+                            _yyLine++;
+                            _yyColumn = 0;
                             num3 = 0;
                             break;
                         case '\r':
-                            yyline++;
-                            yycolumn = 0;
+                            _yyLine++;
+                            _yyColumn = 0;
                             num3 = 1;
                             break;
                         case '\n':
@@ -450,12 +450,12 @@ namespace XNATWL.TextAreaModel
                                 num3 = 0;
                                 break;
                             }
-                            yyline++;
-                            yycolumn = 0;
+                            _yyLine++;
+                            _yyColumn = 0;
                             break;
                         default:
                             num3 = 0;
-                            yycolumn++;
+                            _yyColumn++;
                             break;
                     }
                 }
@@ -466,32 +466,32 @@ namespace XNATWL.TextAreaModel
                     {
                         num4 = ((array[num2] == '\n') ? 1 : 0);
                     }
-                    else if (zzAtEOF)
+                    else if (_zzAtEOF)
                     {
                         num4 = 0;
                     }
                     else
                     {
-                        int num5 = (zzRefill() ? 1 : 0);
-                        num = zzEndRead;
-                        num2 = zzMarkedPos;
-                        array = zzBuffer;
+                        int num5 = (ZZRefill() ? 1 : 0);
+                        num = _zzEndRead;
+                        num2 = _zzMarkedPos;
+                        array = _zzBuffer;
                         num4 = ((num5 == 0 && array[num2] == '\n') ? 1 : 0);
                     }
                     if (num4 != 0)
                     {
-                        yyline--;
+                        _yyLine--;
                     }
                 }
                 int num6 = -1;
                 int num7 = num2;
                 int num8 = num7;
-                zzStartRead = num7;
+                _zzStartRead = num7;
                 num7 = num8;
                 int num9 = num7;
-                zzCurrentPos = num7;
+                _zzCurrentPos = num7;
                 i = num9;
-                zzState = zzLexicalState / 2;
+                _zzState = _zzLexicalState / 2;
                 int num11;
                 while (true)
                 {
@@ -505,18 +505,18 @@ namespace XNATWL.TextAreaModel
                     }
                     else
                     {
-                        if (zzAtEOF)
+                        if (_zzAtEOF)
                         {
                             num11 = -1;
                             break;
                         }
-                        zzCurrentPos = i;
-                        zzMarkedPos = num2;
-                        num4 = (zzRefill() ? 1 : 0);
-                        i = zzCurrentPos;
-                        num2 = zzMarkedPos;
-                        array = zzBuffer;
-                        num = zzEndRead;
+                        _zzCurrentPos = i;
+                        _zzMarkedPos = num2;
+                        num4 = (ZZRefill() ? 1 : 0);
+                        i = _zzCurrentPos;
+                        num2 = _zzMarkedPos;
+                        array = _zzBuffer;
+                        num = _zzEndRead;
                         if (num4 != 0)
                         {
                             num11 = -1;
@@ -527,16 +527,16 @@ namespace XNATWL.TextAreaModel
                         i++;
                         num11 = array3[num12];
                     }
-                    num4 = zZ_TRANS[zZ_ROWMAP[zzState] + zZ_CMAP[num11]];
+                    num4 = zZ_TRANS[zZ_ROWMAP[_zzState] + zZ_CMAP[num11]];
                     if (num4 == -1)
                     {
                         break;
                     }
-                    zzState = num4;
-                    int num5 = zZ_ATTRIBUTE[zzState];
+                    _zzState = num4;
+                    int num5 = zZ_ATTRIBUTE[_zzState];
                     if ((num5 & 1) == 1)
                     {
-                        num6 = zzState;
+                        num6 = _zzState;
                         num2 = i;
                         if ((num5 & 8) == 8)
                         {
@@ -544,7 +544,7 @@ namespace XNATWL.TextAreaModel
                         }
                     }
                 }
-                zzMarkedPos = num2;
+                _zzMarkedPos = num2;
                 switch ((num6 >= 0) ? ZZ_ACTION[num6] : num6)
                 {
                     case 12:
@@ -573,68 +573,68 @@ namespace XNATWL.TextAreaModel
                     case 6:
                         return 6;
                     case 20:
-                        yybegin(4);
-                        sb.Append('\'');
+                        YYBegin(4);
+                        _stringBuilder.Append('\'');
                         continue;
                     case 10:
                         return 11;
                     case 3:
-                        sawWhitespace = false;
+                        _sawWhitespace = false;
                         return 2;
                     case 18:
-                        yybegin(6);
-                        sb.Append('\'');
+                        YYBegin(6);
+                        _stringBuilder.Append('\'');
                         continue;
                     case 19:
-                        yybegin(8);
-                        sb.Append('"');
+                        YYBegin(8);
+                        _stringBuilder.Append('"');
                         continue;
                     case 16:
-                        append();
+                        Append();
                         continue;
                     case 4:
-                        sawWhitespace = false;
+                        _sawWhitespace = false;
                         return 1;
                     case 21:
-                        yybegin(4);
-                        sb.Append('"');
+                        YYBegin(4);
+                        _stringBuilder.Append('"');
                         continue;
                     case 9:
                         return 9;
                     case 2:
-                        sawWhitespace = true;
+                        _sawWhitespace = true;
                         continue;
                     case 15:
-                        yybegin(0);
+                        YYBegin(0);
                         return 8;
                     case 17:
-                        yybegin(2);
+                        YYBegin(2);
                         return 10;
                     case 14:
-                        yybegin(4);
-                        sb.Length = 0;
+                        YYBegin(4);
+                        _stringBuilder.Length = 0;
                         return 9;
                     case 7:
                         return 5;
                     case 11:
-                        yybegin(2);
+                        YYBegin(2);
                         return 7;
                     case 13:
                         return 1;
                     case 1:
-                        unexpected();
+                        Unexpected();
                         continue;
                     case 5:
                         return 3;
                     case 8:
                         return 4;
                 }
-                if (num11 == -1 && zzStartRead == zzCurrentPos)
+                if (num11 == -1 && _zzStartRead == _zzCurrentPos)
                 {
-                    zzAtEOF = true;
+                    _zzAtEOF = true;
                     return 0;
                 }
-                zzScanError("Error: could not match input");
+                ZZScanError("Error: could not match input");
             }
         }
     }

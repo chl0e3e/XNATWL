@@ -317,7 +317,7 @@ namespace XNATWL.Test
         private Object makeComplexTooltip()
         {
             HTMLTextAreaModel tam = new HTMLTextAreaModel();
-            tam.setHtml("Hello <img src=\"twl-logo\" alt=\"logo\"/> World");
+            tam.SetHtml("Hello <img src=\"twl-logo\" alt=\"logo\"/> World");
             TextArea ta = new TextArea(tam);
             ta.setTheme("/htmlTooltip");
             return ta;

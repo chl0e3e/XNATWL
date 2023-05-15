@@ -37,23 +37,23 @@ namespace XNATWL.TextAreaModel
     {
         public static OrderedListType DECIMAL = new OrderedListType();
 
-        protected string characterList;
+        protected string _characterList;
 
         public OrderedListType()
         {
-            this.characterList = null;
+            this._characterList = null;
         }
 
         public OrderedListType(String characterList)
         {
-            this.characterList = characterList;
+            this._characterList = characterList;
         }
 
         public virtual string Format(int nr)
         {
-            if (nr >= 1 && characterList != null)
+            if (nr >= 1 && _characterList != null)
             {
-                return TextUtil.ToCharListNumber(nr, characterList);
+                return TextUtil.ToCharListNumber(nr, _characterList);
             }
             else
             {

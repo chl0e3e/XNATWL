@@ -46,28 +46,28 @@ namespace XNATWL.TextAreaModel
         private static Selector PRE_SELECTOR = new Selector("pre", null, null, null, null);
         static StyleSheet()
         {
-            (PRE_SELECTOR.style = new CSSStyle()).Put(StyleAttribute.PREFORMATTED, true);
-            PRE_SELECTOR.score = 0x100;
+            (PRE_SELECTOR._style = new CSSStyle()).Put(StyleAttribute.PREFORMATTED, true);
+            PRE_SELECTOR._score = 0x100;
         }
 
-        private List<Selector> rules;
-        private Dictionary<Style, Object> cache;
-        private List<AtRule> atrules;
+        private List<Selector> _rules;
+        private Dictionary<Style, Object> _cache;
+        private List<AtRule> _atRules;
 
         public StyleSheet()
         {
-            this.rules = new List<Selector>();
-            this.cache = new Dictionary<Style, Object>();
+            this._rules = new List<Selector>();
+            this._cache = new Dictionary<Style, Object>();
 
-            rules.Add(PRE_SELECTOR);
+            _rules.Add(PRE_SELECTOR);
         }
 
-        public void parse(IO.FileSystemObject fso)
+        public void Parse(IO.FileSystemObject fso)
         {
             FileStream stream = File.OpenRead(fso.Path);
             try
             {
-                parse(new StreamReader(stream));
+                Parse(new StreamReader(stream));
             }
             finally
             {
@@ -75,12 +75,12 @@ namespace XNATWL.TextAreaModel
             }
         }
 
-        public void parse(String style)
+        public void Parse(String style)
         {
             Stream s = new MemoryStream(Encoding.UTF8.GetBytes(style));
             try
             {
-                parse(new StreamReader(s));
+                Parse(new StreamReader(s));
             }
             finally
             {
@@ -88,36 +88,36 @@ namespace XNATWL.TextAreaModel
             }
         }
 
-        public void parse(StreamReader r)
+        public void Parse(StreamReader r)
         {
             Parser parser = new Parser(r);
             List<Selector> selectors = new List<Selector>();
             int what;
-            while ((what = parser.yylex()) != Parser.EOF)
+            while ((what = parser.YYLex()) != Parser.EOF)
             {
                 if (what == Parser.ATRULE)
                 {
-                    parser.expect(Parser.IDENT);
-                    AtRule atrule = new AtRule(parser.yytext());
-                    parser.expect(Parser.STYLE_BEGIN);
+                    parser.Expect(Parser.IDENT);
+                    AtRule atrule = new AtRule(parser.YYText());
+                    parser.Expect(Parser.STYLE_BEGIN);
 
-                    while ((what = parser.yylex()) != Parser.STYLE_END)
+                    while ((what = parser.YYLex()) != Parser.STYLE_END)
                     {
                         if (what != Parser.IDENT)
                         {
-                            parser.unexpected();
+                            parser.Unexpected();
                         }
-                        String key = parser.yytext();
-                        parser.expect(Parser.COLON);
-                        what = parser.yylex();
+                        String key = parser.YYText();
+                        parser.Expect(Parser.COLON);
+                        what = parser.YYLex();
                         if (what != Parser.SEMICOLON && what != Parser.STYLE_END)
                         {
-                            parser.unexpected();
+                            parser.Unexpected();
                         }
-                        String value = TextUtil.trim(parser.sb.ToString(), 0);
+                        String value = TextUtil.trim(parser._stringBuilder.ToString(), 0);
                         try
                         {
-                            atrule.entries.Add(key, value);
+                            atrule._entries.Add(key, value);
                         }
                         catch (ArgumentOutOfRangeException ex)
                         {
@@ -128,11 +128,11 @@ namespace XNATWL.TextAreaModel
                         }
                     }
 
-                    if (atrules == null)
+                    if (_atRules == null)
                     {
-                        atrules = new List<AtRule>();
+                        _atRules = new List<AtRule>();
                     }
-                    atrules.Add(atrule);
+                    _atRules.Add(atrule);
                     continue;
                 }
 
@@ -143,29 +143,29 @@ namespace XNATWL.TextAreaModel
                     String className = null;
                     String pseudoClass = null;
                     String id = null;
-                    parser.sawWhitespace = false;
+                    parser._sawWhitespace = false;
                     if (what == Parser.DOT || what == Parser.HASH || what == Parser.COLON)
                     {
                         //
                     }
                     else if (what == Parser.IDENT)
                     {
-                        element = parser.yytext();
-                        what = parser.yylex();
+                        element = parser.YYText();
+                        what = parser.YYLex();
                     }
                     else if (what == Parser.STAR)
                     {
-                        what = parser.yylex();
+                        what = parser.YYLex();
                     }
                     else
                     {
-                        parser.unexpected();
+                        parser.Unexpected();
                     }
 
-                    while ((what == Parser.DOT || what == Parser.HASH || what == Parser.COLON) && !parser.sawWhitespace)
+                    while ((what == Parser.DOT || what == Parser.HASH || what == Parser.COLON) && !parser._sawWhitespace)
                     {
-                        parser.expect(Parser.IDENT);
-                        String text = parser.yytext();
+                        parser.Expect(Parser.IDENT);
+                        String text = parser.YYText();
                         if (what == Parser.DOT)
                         {
                             className = text;
@@ -178,13 +178,13 @@ namespace XNATWL.TextAreaModel
                         {
                             id = text;
                         }
-                        what = parser.yylex();
+                        what = parser.YYLex();
                     }
                     selector = new Selector(element, className, id, pseudoClass, selector);
                     if (what == Parser.GT)
                     {
-                        selector.directChild = true;
-                        what = parser.yylex();
+                        selector._directChild = true;
+                        what = parser.YYLex();
                     }
                     else if (what == Parser.COMMA || what == Parser.STYLE_BEGIN)
                     {
@@ -195,30 +195,30 @@ namespace XNATWL.TextAreaModel
                 // to ensure that the head of the selector matches the head of the
                 // style and not skip ahead we use the directChild flag
                 // this causes an offset of 1 for all scores which doesn't matter
-                selector.directChild = true;
+                selector._directChild = true;
                 selectors.Add(selector);
 
                 if (what == Parser.STYLE_BEGIN)
                 {
                     CSSStyle style = new CSSStyle();
 
-                    while ((what = parser.yylex()) != Parser.STYLE_END)
+                    while ((what = parser.YYLex()) != Parser.STYLE_END)
                     {
                         if (what != Parser.IDENT)
                         {
-                            parser.unexpected();
+                            parser.Unexpected();
                         }
-                        String key = parser.yytext();
-                        parser.expect(Parser.COLON);
-                        what = parser.yylex();
+                        String key = parser.YYText();
+                        parser.Expect(Parser.COLON);
+                        what = parser.YYLex();
                         if (what != Parser.SEMICOLON && what != Parser.STYLE_END)
                         {
-                            parser.unexpected();
+                            parser.Unexpected();
                         }
-                        String value = TextUtil.trim(parser.sb.ToString(), 0);
+                        String value = TextUtil.trim(parser._stringBuilder.ToString(), 0);
                         try
                         {
-                            style.parseCSSAttribute(key, value);
+                            style.ParseCSSAttribute(key, value);
                         }
                         catch (ArgumentOutOfRangeException ex)
                         {
@@ -233,15 +233,15 @@ namespace XNATWL.TextAreaModel
                     {
                         Style selectorStyle = style;
                         selector = selectors[i];
-                        if (selector.pseudoClass != null)
+                        if (selector._pseudoClass != null)
                         {
-                            selectorStyle = transformStyle(style, selector.pseudoClass);
+                            selectorStyle = TransformStyle(style, selector._pseudoClass);
                         }
-                        rules.Add(selector);
+                        _rules.Add(selector);
                         int score = 0;
-                        for (Selector s = selector; s != null; s = s.tail)
+                        for (Selector s = selector; s != null; s = s._tail)
                         {
-                            if (s.directChild)
+                            if (s._directChild)
                             {
                                 score += 0x1;
                             }
@@ -259,8 +259,8 @@ namespace XNATWL.TextAreaModel
                             }
                         }
                         // only needed on head
-                        selector.score = score;
-                        selector.style = selectorStyle;
+                        selector._score = score;
+                        selector._style = selectorStyle;
                     }
 
                     selectors.Clear();
@@ -272,44 +272,44 @@ namespace XNATWL.TextAreaModel
                 }
                 else
                 {
-                    parser.unexpected();
+                    parser.Unexpected();
                 }
             }
         }
 
-        public int getNumAtRules()
+        public int NumberOfAtRules()
         {
-            return (atrules != null) ? atrules.Count : 0;
+            return (_atRules != null) ? _atRules.Count : 0;
         }
 
-        public AtRule getAtRule(int idx)
+        public AtRule GetAtRule(int idx)
         {
-            if (atrules == null)
+            if (_atRules == null)
             {
                 throw new IndexOutOfRangeException();
             }
-            return atrules[idx];
+            return _atRules[idx];
         }
 
-        public void registerFonts(FontMapper fontMapper, FileSystemObject baseFso)
+        public void RegisterFonts(FontMapper fontMapper, FileSystemObject baseFso)
         {
-            if (atrules == null)
+            if (_atRules == null)
             {
                 return;
             }
-            foreach (AtRule atrule in atrules)
+            foreach (AtRule atrule in _atRules)
             {
-                if ("font-face".Equals(atrule.name))
+                if ("font-face".Equals(atrule._name))
                 {
-                    String family = atrule.get("font-family");
-                    String src = atrule.get("src");
+                    String family = atrule.Get("font-family");
+                    String src = atrule.Get("src");
 
                     if (family != null && src != null)
                     {
-                        List<string> srcs = CSSStyle.parseList(src, 0);
+                        List<string> srcs = CSSStyle.ParseList(src, 0);
                         foreach(string srcEntry in srcs)
                         {
-                            String url = CSSStyle.stripURL(srcEntry);
+                            String url = CSSStyle.StripURL(srcEntry);
                             try
                             {
                                 fontMapper.RegisterFont(family, new FileSystemObject(baseFso, url));
@@ -327,24 +327,24 @@ namespace XNATWL.TextAreaModel
 
         public void LayoutFinished()
         {
-            cache.Clear();
+            _cache.Clear();
         }
 
         public void StartLayout()
         {
-            cache.Clear();
+            _cache.Clear();
         }
 
         public Style Resolve(Style style)
         {
             Object cacheData = null;
-            if (cache.ContainsKey(style))
+            if (_cache.ContainsKey(style))
             {
-                cacheData = cache[style];
+                cacheData = _cache[style];
             }
             if (cacheData == null)
             {
-                return resolveSlow(style);
+                return ResolveSlow(style);
             }
             if (cacheData == NULL)
             {
@@ -353,16 +353,16 @@ namespace XNATWL.TextAreaModel
             return (Style)cacheData;
         }
 
-        private Style resolveSlow(Style style)
+        private Style ResolveSlow(Style style)
         {
-            Selector[] candidates = new Selector[rules.Count];
+            Selector[] candidates = new Selector[_rules.Count];
             int numCandidates = 0;
 
             // find all possible candidates
-            for (int i = 0, n = rules.Count; i < n; i++)
+            for (int i = 0, n = _rules.Count; i < n; i++)
             {
-                Selector selector = rules[i];
-                if (matches(selector, style))
+                Selector selector = _rules[i];
+                if (Matches(selector, style))
                 {
                     candidates[numCandidates++] = selector;
                 }
@@ -380,7 +380,7 @@ namespace XNATWL.TextAreaModel
             // merge all matching rules
             for (int i = 0, n = numCandidates; i < n; i++)
             {
-                Style ruleStyle = candidates[i].style;
+                Style ruleStyle = candidates[i]._style;
                 if (result == null)
                 {
                     result = ruleStyle;
@@ -396,16 +396,16 @@ namespace XNATWL.TextAreaModel
                 }
             }
 
-            putIntoCache(style, result);
+            PutIntoCache(style, result);
             return result;
         }
 
-        private void putIntoCache(Style key, Style style)
+        private void PutIntoCache(Style key, Style style)
         {
-            cache.Add(key, (style == null) ? NULL : style);
+            _cache.Add(key, (style == null) ? NULL : style);
         }
 
-        private bool matches(Selector selector, Style style)
+        private bool Matches(Selector selector, Style style)
         {
             do
             {
@@ -414,13 +414,13 @@ namespace XNATWL.TextAreaModel
                 {
                     if (selector.Matches(styleSheetKey))
                     {
-                        selector = selector.tail;
+                        selector = selector._tail;
                         if (selector == null)
                         {
                             return true;
                         }
                     }
-                    else if (selector.directChild)
+                    else if (selector._directChild)
                     {
                         return false;
                     }
@@ -430,7 +430,7 @@ namespace XNATWL.TextAreaModel
             return false;
         }
 
-        private Style transformStyle(CSSStyle style, String pseudoClass)
+        private Style TransformStyle(CSSStyle style, String pseudoClass)
         {
             Style result = new Style(style.Parent, style.StyleSheetKey);
             if ("hover".Equals(pseudoClass))
@@ -444,43 +444,43 @@ namespace XNATWL.TextAreaModel
 
         public class Selector : StyleSheetKey, IComparable<Selector>
         {
-            internal String pseudoClass;
-            internal Selector tail;
-            internal bool directChild;
-            internal Style style;
-            internal int score;
+            internal String _pseudoClass;
+            internal Selector _tail;
+            internal bool _directChild;
+            internal Style _style;
+            internal int _score;
 
             public Selector(String element, String className, String id, String pseudoClass, Selector tail) : base(element, className, id)
             {
-                this.pseudoClass = pseudoClass;
-                this.tail = tail;
+                this._pseudoClass = pseudoClass;
+                this._tail = tail;
             }
 
             public int CompareTo(Selector other)
             {
-                return this.score - other.score;
+                return this._score - other._score;
             }
         }
 
         public class AtRule : Dictionary<string, string>//<DictionaryEntry<String, String>>
         {
-            internal String name;
-            internal Dictionary<String, String> entries;
+            internal String _name;
+            internal Dictionary<String, String> _entries;
 
             public AtRule(String name)
             {
-                this.name = name;
-                this.entries = new Dictionary<String, String>();
+                this._name = name;
+                this._entries = new Dictionary<String, String>();
             }
 
-            public String getName()
+            public String GetName()
             {
-                return name;
+                return _name;
             }
 
-            public String get(String key)
+            public String Get(String key)
             {
-                return entries[key];
+                return _entries[key];
             }
         }
     }

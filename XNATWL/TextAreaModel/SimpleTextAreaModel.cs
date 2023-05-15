@@ -38,24 +38,24 @@ namespace XNATWL.TextAreaModel
     {
         public event EventHandler<TextAreaChangedEventArgs> Changed;
 
-        private Style style;
-        private Element element;
+        private Style _style;
+        private Element _element;
 
         public SimpleTextAreaModel()
         {
-            style = new Style();
+            _style = new Style();
         }
 
         public Style Style
         {
             get
             {
-                return style;
+                return _style;
             }
 
             set
             {
-                style = value;
+                _style = value;
             }
         }
 
@@ -66,8 +66,8 @@ namespace XNATWL.TextAreaModel
 
         public void SetText(string text, bool preformatted)
         {
-            Style textstyle = style.With(StyleAttribute.PREFORMATTED, preformatted);
-            this.element = new TextElement(textstyle, text);
+            Style textstyle = _style.With(StyleAttribute.PREFORMATTED, preformatted);
+            this._element = new TextElement(textstyle, text);
             if (this.Changed != null)
             {
                 this.Changed.Invoke(this, new TextAreaChangedEventArgs());
@@ -76,12 +76,12 @@ namespace XNATWL.TextAreaModel
 
         public IEnumerator<Element> GetEnumerator()
         {
-            return new List<Element> { element }.GetEnumerator();
+            return new List<Element> { _element }.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return new List<Element> { element }.GetEnumerator();
+            return new List<Element> { _element }.GetEnumerator();
         }
     }
 }

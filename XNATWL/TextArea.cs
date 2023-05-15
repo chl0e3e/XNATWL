@@ -301,7 +301,7 @@ namespace XNATWL
             //try
             {
                 StyleSheet styleSheet = new StyleSheet();
-                styleSheet.parse("p,ul{margin-bottom:1em}");
+                styleSheet.Parse("p,ul{margin-bottom:1em}");
                 setStyleClassResolver(styleSheet);
             }
             //catch (Exception ex)
@@ -678,7 +678,7 @@ namespace XNATWL
             {
                 if (curLElementUnderMouse.element is ImageElement)
                 {
-                    return ((ImageElement)curLElementUnderMouse.element).getToolTip();
+                    return ((ImageElement)curLElementUnderMouse.element).GetToolTip();
                 }
             }
             return base.getTooltipContentAt(mouseX, mouseY);
@@ -766,7 +766,7 @@ namespace XNATWL
 
         private void layoutElement(Box box, Element e)
         {
-            box.clearFloater(e.getStyle().Get(StyleAttribute.CLEAR, styleClassResolver));
+            box.clearFloater(e.GetStyle().Get(StyleAttribute.CLEAR, styleClassResolver));
 
             if (e is TextElement)
             {
@@ -828,7 +828,7 @@ namespace XNATWL
 
         private void layoutImageElement(Box box, ImageElement ie)
         {
-            Image image = selectImage(ie.getImageName());
+            Image image = selectImage(ie.GetImageName());
             if (image == null)
             {
                 return;
@@ -841,13 +841,13 @@ namespace XNATWL
 
         private void layoutWidgetElement(Box box, WidgetElement we)
         {
-            Widget widget = widgets[we.getWidgetName()];
+            Widget widget = widgets[we.GetWidgetName()];
             if (widget == null)
             {
-                WidgetResolver resolver = widgetResolvers[we.getWidgetName()];
+                WidgetResolver resolver = widgetResolvers[we.GetWidgetName()];
                 if (resolver != null)
                 {
-                    widget = resolver.resolveWidget(we.getWidgetName(), we.getWidgetParam());
+                    widget = resolver.resolveWidget(we.GetWidgetName(), we.GetWidgetParam());
                 }
                 if (widget == null)
                 {
@@ -873,7 +873,7 @@ namespace XNATWL
 
         private void layout(Box box, Element e, LElement le)
         {
-            Style style = e.getStyle();
+            Style style = e.GetStyle();
 
             FloatPosition floatPosition = style.Get(StyleAttribute.FLOAT_POSITION, styleClassResolver);
             Display display = style.Get(StyleAttribute.DISPLAY, styleClassResolver);
@@ -946,7 +946,7 @@ namespace XNATWL
             }
             else
             {
-                switch (e.getStyle().Get(StyleAttribute.HORIZONTAL_ALIGNMENT, styleClassResolver))
+                switch (e.GetStyle().Get(StyleAttribute.HORIZONTAL_ALIGNMENT, styleClassResolver))
                 {
                     case TextAreaModel.HAlignment.CENTER:
                     case TextAreaModel.HAlignment.JUSTIFY:
@@ -1233,7 +1233,7 @@ namespace XNATWL
 
         private void layoutParagraphElement(Box box, ParagraphElement pe)
         {
-            Style style = pe.getStyle();
+            Style style = pe.GetStyle();
             Font font = selectFont(style);
 
             doMarginTop(box, style);
@@ -1255,8 +1255,8 @@ namespace XNATWL
 
         private void layoutTextElement(Box box, TextElement te)
         {
-            String text = te.getText();
-            Style style = te.getStyle();
+            String text = te.GetText();
+            Style style = te.GetStyle();
             FontData fontData = createFontData(style);
             bool pre = style.Get(StyleAttribute.PREFORMATTED, styleClassResolver);
 
@@ -1388,7 +1388,7 @@ namespace XNATWL
                     }
                     if (breakWord == null)
                     {
-                        breakWord = te.getStyle().Get(StyleAttribute.BREAKWORD, styleClassResolver);
+                        breakWord = te.GetStyle().Get(StyleAttribute.BREAKWORD, styleClassResolver);
                     }
                     if ((bool)breakWord)
                     {
@@ -1469,7 +1469,7 @@ namespace XNATWL
                     if (text[idx] == '\t')
                     {
                         idx++;
-                        int tabX = box.computeNextTabStop(te.getStyle(), font);
+                        int tabX = box.computeNextTabStop(te.GetStyle(), font);
                         if (tabX < box.lineWidth)
                         {
                             box.curX = tabX;
@@ -1531,7 +1531,7 @@ namespace XNATWL
 
         private void layoutContainerElement(Box box, ContainerElement ce)
         {
-            Style style = ce.getStyle();
+            Style style = ce.GetStyle();
             doMarginTop(box, style);
             box.addAnchor(ce);
             layoutElements(box, ce);
@@ -1541,9 +1541,9 @@ namespace XNATWL
         private void layoutLinkElement(Box box, LinkElement le)
         {
             String oldHref = box.href;
-            box.href = le.getHREF();
+            box.href = le.GetHREF();
 
-            Style style = le.getStyle();
+            Style style = le.GetStyle();
             Display display = style.Get(StyleAttribute.DISPLAY, styleClassResolver);
             if (display == Display.BLOCK)
             {
@@ -1559,7 +1559,7 @@ namespace XNATWL
 
         private void layoutListElement(Box box, ListElement le)
         {
-            Style style = le.getStyle();
+            Style style = le.GetStyle();
 
             doMarginTop(box, style);
 
@@ -1592,7 +1592,7 @@ namespace XNATWL
 
         private void layoutOrderedListElement(Box box, OrderedListElement ole)
         {
-            Style style = ole.getStyle();
+            Style style = ole.GetStyle();
             FontData fontData = createFontData(style);
 
             if (fontData == null)
@@ -1603,7 +1603,7 @@ namespace XNATWL
             doMarginTop(box, style);
             LElement anchor = box.addAnchor(ole);
 
-            int start = Math.Max(1, ole.getStart());
+            int start = Math.Max(1, ole.GetStart());
             int count = ole.Count;
             OrderedListType type = style.Get(StyleAttribute.LIST_STYLE_TYPE, styleClassResolver);
 
@@ -1620,7 +1620,7 @@ namespace XNATWL
             {
                 String label = labels[i];
                 Element li = ole.ElementAt(i);
-                Style liStyle = li.getStyle();
+                Style liStyle = li.GetStyle();
                 doMarginTop(box, liStyle);
 
                 LText lt = new LText(ole, fontData, label, 0, label.Length, box.doCacheText);
@@ -1649,7 +1649,7 @@ namespace XNATWL
 
         private Box layoutBox(LClip clip, int continerWidth, int paddingLeft, int paddingRight, ContainerElement ce, String href, bool doCacheText)
         {
-            Style style = ce.getStyle();
+            Style style = ce.GetStyle();
             int paddingTop = convertToPX0(style, StyleAttribute.PADDING_TOP, continerWidth);
             int paddingBottom = convertToPX0(style, StyleAttribute.PADDING_BOTTOM, continerWidth);
             int marginBottom = convertToPX0(style, StyleAttribute.MARGIN_BOTTOM, continerWidth);
@@ -1690,7 +1690,7 @@ namespace XNATWL
         {
             box.nextLine(false);
 
-            Style style = be.getStyle();
+            Style style = be.GetStyle();
             FloatPosition floatPosition = style.Get(StyleAttribute.FLOAT_POSITION, styleClassResolver);
 
             LImage bgImage = createBGImage(box, be);
@@ -1790,10 +1790,10 @@ namespace XNATWL
         private void computeTableWidth(TableElement te,
                 int maxTableWidth, int[] columnWidth, int[] columnSpacing, bool[] columnsWithFixedWidth)
         {
-            int numColumns = te.getNumColumns();
-            int numRows = te.getNumRows();
-            int cellSpacing = te.getCellSpacing();
-            int cellPadding = te.getCellPadding();
+            int numColumns = te.GetNumColumns();
+            int numRows = te.GetNumRows();
+            int cellSpacing = te.GetCellSpacing();
+            int cellPadding = te.GetCellPadding();
 
             Dictionary<int, int> colspanWidths = null;
 
@@ -1806,11 +1806,11 @@ namespace XNATWL
 
                 for (int row = 0; row < numRows; row++)
                 {
-                    TableCellElement cell = te.getCell(row, col);
+                    TableCellElement cell = te.GetCell(row, col);
                     if (cell != null)
                     {
-                        Style cellStyle = cell.getStyle();
-                        int colspan = cell.getColspan();
+                        Style cellStyle = cell.GetStyle();
+                        int colspan = cell.GetColspan();
                         int cellWidth = convertToPX(cellStyle, StyleAttribute.WIDTH, maxTableWidth, int.MinValue);
                         if (cellWidth == int.MinValue && (colspan > 1 || !hasFixedWidth))
                         {
@@ -1905,11 +1905,11 @@ namespace XNATWL
 
         private void layoutTableElement(Box box, TableElement te)
         {
-            int numColumns = te.getNumColumns();
-            int numRows = te.getNumRows();
-            int cellSpacing = te.getCellSpacing();
-            int cellPadding = te.getCellPadding();
-            Style tableStyle = te.getStyle();
+            int numColumns = te.GetNumColumns();
+            int numRows = te.GetNumRows();
+            int cellSpacing = te.GetCellSpacing();
+            int cellPadding = te.GetCellPadding();
+            Style tableStyle = te.GetStyle();
 
             if (numColumns == 0 || numRows == 0)
             {
@@ -2013,7 +2013,7 @@ namespace XNATWL
                 }
 
                 LImage rowBGImage = null;
-                Style rowStyle = te.getRowStyle(row);
+                Style rowStyle = te.GetRowStyle(row);
                 if (rowStyle != null)
                 {
                     int marginTop = convertToPX0(rowStyle, StyleAttribute.MARGIN_TOP, tableWidth);
@@ -2041,16 +2041,16 @@ namespace XNATWL
                 for (int col = 0; col < numColumns; col++)
                 {
                     x += columnSpacing[col];
-                    TableCellElement cell = te.getCell(row, col);
+                    TableCellElement cell = te.GetCell(row, col);
                     int width = columnWidth[col];
                     if (cell != null)
                     {
-                        for (int c = 1; c < cell.getColspan(); c++)
+                        for (int c = 1; c < cell.GetColspan(); c++)
                         {
                             width += columnSpacing[col + c] + columnWidth[col + c];
                         }
 
-                        Style cellStyle = cell.getStyle();
+                        Style cellStyle = cell.GetStyle();
 
                         int paddingLeft = Math.Max(cellPadding, convertToPX0(cellStyle, StyleAttribute.PADDING_LEFT, tableWidth));
                         int paddingRight = Math.Max(cellPadding, convertToPX0(cellStyle, StyleAttribute.PADDING_RIGHT, tableWidth));
@@ -2073,7 +2073,7 @@ namespace XNATWL
 
                         layoutBox(clip, tableWidth, paddingLeft, paddingRight, cell, null, box.doCacheText);
 
-                        col += Math.Max(0, cell.getColspan() - 1);
+                        col += Math.Max(0, cell.GetColspan() - 1);
                     }
                     x += width;
                 }
@@ -2123,7 +2123,7 @@ namespace XNATWL
 
         private LImage createBGImage(Box box, Element element)
         {
-            Style style = element.getStyle();
+            Style style = element.GetStyle();
             Image image = selectImage(style, StyleAttribute.BACKGROUND_IMAGE);
             if (image == null)
             {
@@ -2478,7 +2478,7 @@ namespace XNATWL
                     for (int idx = lineStartIdx; idx < layout.Count; idx++)
                     {
                         LElement le = layout[idx];
-                        switch (le.element.getStyle().Get(StyleAttribute.VERTICAL_ALIGNMENT, textAreaW.styleClassResolver))
+                        switch (le.element.GetStyle().Get(StyleAttribute.VERTICAL_ALIGNMENT, textAreaW.styleClassResolver))
                         {
                             case TextAreaModel.VAlignment.BOTTOM:
                                 le.y = lineHeight - le.height;

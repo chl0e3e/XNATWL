@@ -41,16 +41,16 @@ namespace XNATWL.TextAreaModel
 {
     public class HTMLTextAreaModel : TextAreaModel
     {
-        private List<Element> elements;
-        private List<String> styleSheetLinks;
-        private Dictionary<String, Element> idMap;
-        private String title;
+        private List<Element> _elements;
+        private List<String> _styleSheetLinks;
+        private Dictionary<String, Element> _idMap;
+        private String _title;
 
-        private List<Style> styleStack;
-        private StringBuilder sb;
-        private int[] startLength;
+        private List<Style> _styleStack;
+        private StringBuilder _stringBuilder;
+        private int[] _startLength;
 
-        private ContainerElement curContainer;
+        private ContainerElement _curContainer;
 
         public event EventHandler<TextAreaChangedEventArgs> Changed;
 
@@ -59,12 +59,12 @@ namespace XNATWL.TextAreaModel
          */
         public HTMLTextAreaModel()
         {
-            this.elements = new List<Element>();
-            this.styleSheetLinks = new List<String>();
-            this.idMap = new Dictionary<String, Element>();
-            this.styleStack = new List<Style>();
-            this.sb = new StringBuilder();
-            this.startLength = new int[2];
+            this._elements = new List<Element>();
+            this._styleSheetLinks = new List<String>();
+            this._idMap = new Dictionary<String, Element>();
+            this._styleStack = new List<Style>();
+            this._stringBuilder = new StringBuilder();
+            this._startLength = new int[2];
         }
 
         /**
@@ -74,7 +74,7 @@ namespace XNATWL.TextAreaModel
          */
         public HTMLTextAreaModel(string html) : this()
         {
-            setHtml(html);
+            SetHtml(html);
         }
 
         /**
@@ -87,7 +87,7 @@ namespace XNATWL.TextAreaModel
          */
         public HTMLTextAreaModel(Stream r) : this()
         {
-            parseXHTML(r);
+            ParseXHTML(r);
         }
 
         /**
@@ -95,13 +95,13 @@ namespace XNATWL.TextAreaModel
          * 
          * @param html the html.
          */
-        public void setHtml(string html)
+        public void SetHtml(string html)
         {
-            if (!isXHTML(html))
+            if (!IsXHTML(html))
             {
                 html = "<html><body>" + html + "</body></html>";
             }
-            parseXHTML(new MemoryStream(Encoding.UTF8.GetBytes(html)));
+            ParseXHTML(new MemoryStream(Encoding.UTF8.GetBytes(html)));
         }
 
         /**
@@ -148,26 +148,26 @@ namespace XNATWL.TextAreaModel
          * Returns all links to CSS style sheets
          * @return an Iterable containing all hrefs
          */
-        public IEnumerable<String> getStyleSheetLinks()
+        public IEnumerable<String> GetStyleSheetLinks()
         {
-            return styleSheetLinks;
+            return _styleSheetLinks;
         }
 
         /**
          * Returns the title of this XHTML document or null if it has no title.
          * @return the title of this XHTML document or null if it has no title.
          */
-        public String getTitle()
+        public String Title()
         {
-            return title;
+            return _title;
         }
 
-        public Element getElementById(String id)
+        public Element GetElementById(String id)
         {
-            return idMap[id];
+            return _idMap[id];
         }
 
-        public void domModified()
+        public void DomModified()
         {
             this.Changed.Invoke(this, new TextAreaChangedEventArgs());
         }
@@ -176,12 +176,12 @@ namespace XNATWL.TextAreaModel
          * Parse a XHTML document. The root element must be &lt;html&gt;
          * @param reader the reader used to read the XHTML document.
          */
-        public void parseXHTML(Stream stream)
+        public void ParseXHTML(Stream stream)
         {
-            this.elements.Clear();
-            this.styleSheetLinks.Clear();
-            this.idMap.Clear();
-            this.title = null;
+            this._elements.Clear();
+            this._styleSheetLinks.Clear();
+            this._idMap.Clear();
+            this._title = null;
 
             try
             {
@@ -205,28 +205,28 @@ namespace XNATWL.TextAreaModel
                     throw new Exception("HTML does not contain a HTML tag");
                 }
 
-                styleStack.Clear();
-                styleStack.Add(new Style(null, null));
-                curContainer = null;
-                sb.Length = 0;
+                _styleStack.Clear();
+                _styleStack.Add(new Style(null, null));
+                _curContainer = null;
+                _stringBuilder.Length = 0;
 
                 while (xpp.Read() && xpp.NodeType != XmlNodeType.EndElement)
                 {
                     if ("head".Equals(xpp.Name) && !xpp.IsEmptyElement)
                     {
-                        parseHead(xpp);
+                        ParseHead(xpp);
                     }
                     else if ("body".Equals(xpp.Name))
                     {
-                        pushStyle(xpp);
-                        BlockElement be = new BlockElement(getStyle());
-                        elements.Add(be);
-                        parseContainer(xpp, be);
+                        PushStyle(xpp);
+                        BlockElement be = new BlockElement(GetStyle());
+                        _elements.Add(be);
+                        ParseContainer(xpp, be);
                     }
                 }
 
-                parseMain(xpp);
-                finishText();
+                ParseMain(xpp);
+                FinishText();
             }
             catch (Exception ex)
             {
@@ -242,17 +242,17 @@ namespace XNATWL.TextAreaModel
             }
         }
 
-        private void parseContainer(XmlReader xpp, ContainerElement container)
+        private void ParseContainer(XmlReader xpp, ContainerElement container)
         {
-            ContainerElement prevContainer = curContainer;
-            curContainer = container;
-            pushStyle(null);
-            parseMain(xpp);
-            popStyle();
-            curContainer = prevContainer;
+            ContainerElement prevContainer = _curContainer;
+            _curContainer = container;
+            PushStyle(null);
+            ParseMain(xpp);
+            PopStyle();
+            _curContainer = prevContainer;
         }
 
-        private void parseMain(XmlReader xpp)
+        private void ParseMain(XmlReader xpp)
         {
             int level = 1;
             while (level > 0 && xpp.Read())
@@ -264,12 +264,12 @@ namespace XNATWL.TextAreaModel
                         {
                             if ("head".Equals(xpp.Name))
                             {
-                                parseHead(xpp);
+                                ParseHead(xpp);
                                 break;
                             }
                             ++level;
-                            finishText();
-                            Style style = pushStyle(xpp);
+                            FinishText();
+                            Style style = PushStyle(xpp);
                             Element element;
 
                             if ("img".Equals(xpp.Name))
@@ -281,7 +281,7 @@ namespace XNATWL.TextAreaModel
                             else if ("p".Equals(xpp.Name))
                             {
                                 ParagraphElement pe = new ParagraphElement(style);
-                                parseContainer(xpp, pe);
+                                ParseContainer(xpp, pe);
                                 element = pe;
                                 --level;
                             }
@@ -294,26 +294,26 @@ namespace XNATWL.TextAreaModel
                             else if ("ul".Equals(xpp.Name))
                             {
                                 ContainerElement ce = new ContainerElement(style);
-                                parseContainer(xpp, ce);
+                                ParseContainer(xpp, ce);
                                 element = ce;
                                 --level;
                             }
                             else if ("ol".Equals(xpp.Name))
                             {
-                                element = parseOL(xpp, style);
+                                element = ParseOL(xpp, style);
                                 --level;
                             }
                             else if ("li".Equals(xpp.Name))
                             {
                                 ListElement le = new ListElement(style);
-                                parseContainer(xpp, le);
+                                ParseContainer(xpp, le);
                                 element = le;
                                 --level;
                             }
-                            else if ("div".Equals(xpp.Name) || isHeading(xpp.Name))
+                            else if ("div".Equals(xpp.Name) || IsHeading(xpp.Name))
                             {
                                 BlockElement be = new BlockElement(style);
-                                parseContainer(xpp, be);
+                                ParseContainer(xpp, be);
                                 element = be;
                                 --level;
                             }
@@ -325,13 +325,13 @@ namespace XNATWL.TextAreaModel
                                     break;
                                 }
                                 LinkElement le = new LinkElement(style, href);
-                                parseContainer(xpp, le);
+                                ParseContainer(xpp, le);
                                 element = le;
                                 --level;
                             }
                             else if ("table".Equals(xpp.Name))
                             {
-                                element = parseTable(xpp, style);
+                                element = ParseTable(xpp, style);
                                 --level;
                             }
                             else if ("br".Equals(xpp.Name))
@@ -343,30 +343,30 @@ namespace XNATWL.TextAreaModel
                                 break;
                             }
 
-                            curContainer.Add(element);
-                            registerElement(element);
+                            _curContainer.Add(element);
+                            RegisterElement(element);
                             break;
                         }
                     case XmlNodeType.EndElement:
                         {
                             --level;
-                            finishText();
-                            popStyle();
+                            FinishText();
+                            PopStyle();
                             break;
                         }
                     case XmlNodeType.Text:
                         {
-                            sb.Append(xpp.Value);
+                            _stringBuilder.Append(xpp.Value);
                             break;
                         }
                     case XmlNodeType.EntityReference:
-                        sb.Append(xpp.Value);
+                        _stringBuilder.Append(xpp.Value);
                         break;
                 }
             }
         }
 
-        private void parseHead(XmlReader xpp)
+        private void ParseHead(XmlReader xpp)
         {
             int level = 1;
             while (level > 0)
@@ -388,12 +388,12 @@ namespace XNATWL.TextAreaModel
                                         "text/css".Equals(xpp.GetAttribute("type")) &&
                                         linkhref != null)
                                 {
-                                    styleSheetLinks.Add(linkhref);
+                                    _styleSheetLinks.Add(linkhref);
                                 }
                             }
                             if ("title".Equals(xpp.Name))
                             {
-                                title = xpp.Value;
+                                _title = xpp.Value;
                                 --level;
                             }
                             break;
@@ -407,13 +407,13 @@ namespace XNATWL.TextAreaModel
             }
         }
 
-        private TableElement parseTable(XmlReader xpp, Style tableStyle)
+        private TableElement ParseTable(XmlReader xpp, Style tableStyle)
         {
             List<TableCellElement> cells = new List<TableCellElement>();
             List<Style> rowStyles = new List<Style>();
             int numColumns = 0;
-            int cellSpacing = parseInt(xpp, "cellspacing", 0);
-            int cellPadding = parseInt(xpp, "cellpadding", 0);
+            int cellSpacing = ParseInt(xpp, "cellspacing", 0);
+            int cellPadding = ParseInt(xpp, "cellpadding", 0);
 
             for (; ; )
             {
@@ -426,14 +426,14 @@ namespace XNATWL.TextAreaModel
                 {
                     case XmlNodeType.Element:
                         {
-                            pushStyle(xpp);
+                            PushStyle(xpp);
 
                             if ("td".Equals(xpp.Name) || "th".Equals(xpp.Name))
                             {
-                                int colspan = parseInt(xpp, "colspan", 1);
-                                TableCellElement cell = new TableCellElement(getStyle(), colspan);
-                                parseContainer(xpp, cell);
-                                registerElement(cell);
+                                int colspan = ParseInt(xpp, "colspan", 1);
+                                TableCellElement cell = new TableCellElement(GetStyle(), colspan);
+                                ParseContainer(xpp, cell);
+                                RegisterElement(cell);
 
                                 cells.Add(cell);
                                 for (int col = 1; col < colspan; col++)
@@ -443,13 +443,13 @@ namespace XNATWL.TextAreaModel
                             }
                             if ("tr".Equals(xpp.Name))
                             {
-                                rowStyles.Add(getStyle());
+                                rowStyles.Add(GetStyle());
                             }
                         }
                         break;
                     case XmlNodeType.EndElement:
                         {
-                            popStyle();
+                            PopStyle();
                             if ("tr".Equals(xpp.Name))
                             {
                                 if (numColumns == 0)
@@ -463,11 +463,11 @@ namespace XNATWL.TextAreaModel
                                         numColumns, rowStyles.Count, cellSpacing, cellPadding);
                                 for (int row = 0, idx = 0; row < rowStyles.Count; row++)
                                 {
-                                    tableElement.setRowStyle(row, rowStyles[row]);
+                                    tableElement.SetRowStyle(row, rowStyles[row]);
                                     for (int col = 0; col < numColumns && idx < cells.Count; col++, idx++)
                                     {
                                         TableCellElement cell = cells[idx];
-                                        tableElement.setCell(row, col, cell);
+                                        tableElement.SetCell(row, col, cell);
                                     }
                                 }
                                 return tableElement;
@@ -478,11 +478,11 @@ namespace XNATWL.TextAreaModel
             }
         }
 
-        private OrderedListElement parseOL(XmlReader xpp, Style olStyle)
+        private OrderedListElement ParseOL(XmlReader xpp, Style olStyle)
         {
-            int start = parseInt(xpp, "start", 1);
+            int start = ParseInt(xpp, "start", 1);
             OrderedListElement ole = new OrderedListElement(olStyle, start);
-            registerElement(ole);
+            RegisterElement(ole);
             for (; ; )
             {
                 if (!xpp.Read())
@@ -494,19 +494,19 @@ namespace XNATWL.TextAreaModel
                 {
                     case XmlNodeType.Element:
                         {
-                            pushStyle(xpp);
+                            PushStyle(xpp);
                             if ("li".Equals(xpp.Name))
                             {
-                                ContainerElement ce = new ContainerElement(getStyle());
-                                parseContainer(xpp, ce);
-                                registerElement(ce);
+                                ContainerElement ce = new ContainerElement(GetStyle());
+                                ParseContainer(xpp, ce);
+                                RegisterElement(ce);
                                 ole.Add(ce);
                             }
                         }
                         break;
                     case XmlNodeType.EndElement:
                         {
-                            popStyle();
+                            PopStyle();
                             if ("ol".Equals(xpp.Name))
                             {
                                 return ole;
@@ -517,20 +517,20 @@ namespace XNATWL.TextAreaModel
             }
         }
 
-        private void registerElement(Element element)
+        private void RegisterElement(Element element)
         {
-            StyleSheetKey styleSheetKey = element.getStyle().StyleSheetKey;
+            StyleSheetKey styleSheetKey = element.GetStyle().StyleSheetKey;
             if (styleSheetKey != null)
             {
                 String id = styleSheetKey.ID;
                 if (id != null)
                 {
-                    idMap.Add(id, element);
+                    _idMap.Add(id, element);
                 }
             }
         }
 
-        private static int parseInt(XmlReader xpp, String attribute, int defaultValue)
+        private static int ParseInt(XmlReader xpp, String attribute, int defaultValue)
         {
             String value = xpp.GetAttribute(attribute);
             if (value != null)
@@ -540,7 +540,7 @@ namespace XNATWL.TextAreaModel
             return defaultValue;
         }
 
-        private static bool isXHTML(String doc)
+        private static bool IsXHTML(String doc)
         {
             if (doc.Length > 5 && doc[0] == '<')
             {
@@ -549,20 +549,20 @@ namespace XNATWL.TextAreaModel
             return false;
         }
 
-        private bool isHeading(String name)
+        private bool IsHeading(String name)
         {
             return name.Length == 2 && name[0] == 'h' &&
                     (name[1] >= '0' && name[1] <= '6');
         }
 
-        private Style getStyle()
+        private Style GetStyle()
         {
-            return styleStack[styleStack.Count - 1];
+            return _styleStack[_styleStack.Count - 1];
         }
 
-        private Style pushStyle(XmlReader xpp)
+        private Style PushStyle(XmlReader xpp)
         {
-            Style parent = getStyle();
+            Style parent = GetStyle();
             StyleSheetKey key = null;
             String style = null;
 
@@ -586,39 +586,39 @@ namespace XNATWL.TextAreaModel
                 newStyle = new Style(parent, key);
             }
 
-            styleStack.Add(newStyle);
+            _styleStack.Add(newStyle);
             return newStyle;
         }
 
-        private void popStyle()
+        private void PopStyle()
         {
-            int stackSize = styleStack.Count;
+            int stackSize = _styleStack.Count;
             if (stackSize > 1)
             {
-                styleStack.RemoveAt(stackSize - 1);
+                _styleStack.RemoveAt(stackSize - 1);
             }
         }
 
-        private void finishText()
+        private void FinishText()
         {
-            if (sb.Length > 0)
+            if (_stringBuilder.Length > 0)
             {
-                Style style = getStyle();
-                TextElement e = new TextElement(style, sb.ToString());
-                registerElement(e);
-                curContainer.Add(e);
-                sb.Length = 0;
+                Style style = GetStyle();
+                TextElement e = new TextElement(style, _stringBuilder.ToString());
+                RegisterElement(e);
+                _curContainer.Add(e);
+                _stringBuilder.Length = 0;
             }
         }
 
         IEnumerator<Element> IEnumerable<Element>.GetEnumerator()
         {
-            return elements.GetEnumerator();
+            return _elements.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return elements.GetEnumerator();
+            return _elements.GetEnumerator();
         }
     }
 }

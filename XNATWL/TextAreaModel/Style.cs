@@ -35,14 +35,14 @@ namespace XNATWL.TextAreaModel
 {
     public class Style
     {
-        private Style parent;
-        private StyleSheetKey styleSheetKey;
-        private object[] values;
+        private Style _parent;
+        private StyleSheetKey _styleSheetKey;
+        private object[] _values;
 
         public Style(Style parent, StyleSheetKey styleSheetKey)
         {
-            this.parent = parent;
-            this.styleSheetKey = styleSheetKey;
+            this._parent = parent;
+            this._styleSheetKey = styleSheetKey;
         }
 
         public Style() : this(null, null)
@@ -60,14 +60,14 @@ namespace XNATWL.TextAreaModel
 
         internal Style(Style src)
         {
-            this.parent = src.parent;
-            this.styleSheetKey = src.styleSheetKey;
-            this.values = (src.values != null) ? (object[]) src.values.Clone() : null;
+            this._parent = src._parent;
+            this._styleSheetKey = src._styleSheetKey;
+            this._values = (src._values != null) ? (object[]) src._values.Clone() : null;
         }
 
         protected object RawGet(int idx)
         {
-            object[] vals = values;
+            object[] vals = _values;
             if (vals != null)
             {
                 return vals[idx];
@@ -79,7 +79,7 @@ namespace XNATWL.TextAreaModel
         {
             get
             {
-                return this.parent;
+                return this._parent;
             }
         }
 
@@ -87,7 +87,7 @@ namespace XNATWL.TextAreaModel
         {
             get
             {
-                return this.styleSheetKey;
+                return this._styleSheetKey;
             }
         }
 
@@ -97,7 +97,7 @@ namespace XNATWL.TextAreaModel
 
             if (value == null)
             {
-                if (resolver != null && styleSheetKey != null)
+                if (resolver != null && _styleSheetKey != null)
                 {
                     Style styleSheetStyle = resolver.Resolve(this);
                     if (styleSheetStyle != null)
@@ -121,7 +121,7 @@ namespace XNATWL.TextAreaModel
 
             if (value == null)
             {
-                if (resolver != null && styleSheetKey != null)
+                if (resolver != null && _styleSheetKey != null)
                 {
                     Style styleSheetStyle = resolver.Resolve(this);
                     if (styleSheetStyle != null)
@@ -143,7 +143,7 @@ namespace XNATWL.TextAreaModel
         {
             for (; ; )
             {
-                if (style.parent == null)
+                if (style._parent == null)
                 {
                     return style;
                 }
@@ -153,7 +153,7 @@ namespace XNATWL.TextAreaModel
                     return style;
                 }
 
-                if (resolver != null && style.styleSheetKey != null)
+                if (resolver != null && style._styleSheetKey != null)
                 {
                     Style styleSheetStyle = resolver.Resolve(style);
                     if (styleSheetStyle != null && styleSheetStyle.RawGet(ord) != null)
@@ -163,7 +163,7 @@ namespace XNATWL.TextAreaModel
                     }
                 }
 
-                style = style.parent;
+                style = style._parent;
             }
 
         }
@@ -180,9 +180,9 @@ namespace XNATWL.TextAreaModel
 
         protected void EnsureValues()
         {
-            if (this.values == null)
+            if (this._values == null)
             {
-                this.values = new Object[StyleAttribute.Attributes];
+                this._values = new Object[StyleAttribute.Attributes];
             }
         }
 
@@ -195,7 +195,7 @@ namespace XNATWL.TextAreaModel
 
             if (value == null)
             {
-                if (values == null)
+                if (_values == null)
                 {
                     return;
                 }
@@ -210,7 +210,7 @@ namespace XNATWL.TextAreaModel
                 this.EnsureValues();
             }
 
-            values[attribute.Ordinal] = value;
+            _values[attribute.Ordinal] = value;
         }
 
         public V Get<V>(StyleAttribute<V> attribute, StyleSheetResolver resolver)
@@ -245,17 +245,17 @@ namespace XNATWL.TextAreaModel
 
         internal void PutAll(Style src)
         {
-            if (src.values != null)
+            if (src._values != null)
             {
                 this.EnsureValues();
 
-                for (int i = 0, n = values.Length; i < n; i++)
+                for (int i = 0, n = _values.Length; i < n; i++)
                 {
-                    object value = src.values[i];
+                    object value = src._values[i];
 
                     if (value != null)
                     {
-                        this.values[i] = value;
+                        this._values[i] = value;
                     }
                 }
             }
@@ -283,11 +283,11 @@ namespace XNATWL.TextAreaModel
          */
         public Style WithoutNonInheritable()
         {
-            if (values != null)
+            if (_values != null)
             {
-                for (int i = 0, n = values.Length; i < n; i++)
+                for (int i = 0, n = _values.Length; i < n; i++)
                 {
-                    if (values[i] != null && !StyleAttribute.ATTRIBUTES[i].Inherited)
+                    if (_values[i] != null && !StyleAttribute.ATTRIBUTES[i].Inherited)
                     {
                         return this.WithoutNonInheritableCopy();
                     }
@@ -298,11 +298,11 @@ namespace XNATWL.TextAreaModel
 
         private Style WithoutNonInheritableCopy()
         {
-            Style result = new Style(parent, styleSheetKey);
+            Style result = new Style(_parent, _styleSheetKey);
 
-            for (int i = 0, n = values.Length; i < n; i++)
+            for (int i = 0, n = _values.Length; i < n; i++)
             {
-                object value = values[i];
+                object value = _values[i];
 
                 if (value != null)
                 {
@@ -318,13 +318,13 @@ namespace XNATWL.TextAreaModel
             return result;
         }
 
-        public Dictionary<StyleAttribute, object> toMap()
+        public Dictionary<StyleAttribute, object> ToMap()
         {
             Dictionary<StyleAttribute, object> result = new Dictionary<StyleAttribute, object>();
 
-            for (int ord = 0; ord < values.Length; ord++)
+            for (int ord = 0; ord < _values.Length; ord++)
             {
-                Object value = values[ord];
+                Object value = _values[ord];
                 if (value != null)
                 {
                     result.Add(StyleAttribute.ATTRIBUTES[ord], value);

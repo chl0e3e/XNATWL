@@ -17,7 +17,7 @@ namespace XNATWL.Test
         {
             HTMLTextAreaModel tam = new HTMLTextAreaModel();
             FileStream fileStream = File.OpenRead(fso.Path);
-            tam.parseXHTML(fileStream);
+            tam.ParseXHTML(fileStream);
             fileStream.Close();
 
             Button btnX = new Button("Blub!");
