@@ -42,55 +42,59 @@ namespace XNATWL
         public event EventHandler<FileSelectorFolderChangedEventArgs> FolderChanged;
         public event EventHandler<FileSelectorSelectionChangedEventArgs> SelectionChanged;
 
-        public class NamedFileFilter {
+        public class NamedFileFilter
+        {
             private String name;
             private FileFilter fileFilter;
 
-            public NamedFileFilter(String name, FileFilter fileFilter) {
+            public NamedFileFilter(String name, FileFilter fileFilter)
+            {
                 this.name = name;
                 this.fileFilter = fileFilter;
             }
-            public String getDisplayName() {
+            public String getDisplayName()
+            {
                 return name;
             }
-            public FileFilter getFileFilter() {
+            public FileFilter getFileFilter()
+            {
                 return fileFilter;
             }
         }
-    
+
         public static NamedFileFilter AllFilesFilter = new NamedFileFilter("All files", null);
 
-        private IntegerModel flags;
-        private MRUListModel<String> folderMRU;
-        MRUListModel<String> filesMRU;
+        private IntegerModel _flags;
+        private MRUListModel<String> _folderMRU;
+        MRUListModel<String> _filesMRU;
 
-        private TreeComboBox currentFolder;
-        private Label labelCurrentFolder;
-        private FileTable fileTable;
-        private ScrollPane fileTableSP;
-        private Button btnUp;
-        private Button btnHome;
-        private Button btnFolderMRU;
-        private Button btnFilesMRU;
-        private Button btnOk;
-        private Button btnCancel;
-        private Button btnRefresh;
-        private Button btnShowFolders;
-        private Button btnShowHidden;
-        private ComboBox<String> fileFilterBox;
-        private FileFiltersModel fileFiltersModel;
-        private EditFieldAutoCompletionWindow autoCompletion;
+        private TreeComboBox _currentFolder;
+        private Label _labelCurrentFolder;
+        private FileTable _fileTable;
+        private ScrollPane _fileTableSP;
+        private Button _btnUp;
+        private Button _btnHome;
+        private Button _btnFolderMRU;
+        private Button _btnFilesMRU;
+        private Button _btnOk;
+        private Button _btnCancel;
+        private Button _btnRefresh;
+        private Button _btnShowFolders;
+        private Button _btnShowHidden;
+        private ComboBox<String> _fileFilterBox;
+        private FileFiltersModel _fileFiltersModel;
+        private EditFieldAutoCompletionWindow _autoCompletion;
 
-        private bool allowFolderSelection;
-        private NamedFileFilter activeFileFilter;
+        private bool _allowFolderSelection;
+        private NamedFileFilter _activeFileFilter;
 
-        FileSystemModel fsm;
-        private FileSystemTreeModel model;
+        FileSystemModel _fileSystemModel;
+        private FileSystemTreeModel _model;
 
-        private Widget userWidgetBottom;
-        private Widget userWidgetRight;
+        private Widget _userWidgetBottom;
+        private Widget _userWidgetRight;
 
-        private Object fileToSelectOnSetCurrentNode;
+        private Object _fileToSelectOnSetCurrentNode;
 
         /**
          * Create a FileSelector without persistent state
@@ -101,16 +105,16 @@ namespace XNATWL
 
         class FileSelectorPathResolver : TreeComboBox.PathResolver
         {
-            private FileSelector fileSelector;
+            private FileSelector _fileSelector;
 
             public FileSelectorPathResolver(FileSelector fileSelector)
             {
-                this.fileSelector = fileSelector;
+                this._fileSelector = fileSelector;
             }
 
-            public TreeTableNode resolvePath(TreeTableModel model, string path)
+            public TreeTableNode ResolvePath(TreeTableModel model, string path)
             {
-                return this.fileSelector.resolvePath(path);
+                return this._fileSelector.ResolvePath(path);
             }
         }
 
@@ -123,243 +127,243 @@ namespace XNATWL
 
             if (prefs != null)
             {
-                flags = new PersistentIntegerModel(prefs, prefsKey + "_Flags", 0, 0xFFFF, 0);
-                folderMRU = new PersistentMRUListModel<String>(10, typeof(String), prefs, prefsKey + "_foldersMRU");
-                filesMRU = new PersistentMRUListModel<String>(20, typeof(String), prefs, prefsKey + "_filesMRU");
+                _flags = new PersistentIntegerModel(prefs, prefsKey + "_Flags", 0, 0xFFFF, 0);
+                _folderMRU = new PersistentMRUListModel<String>(10, typeof(String), prefs, prefsKey + "_foldersMRU");
+                _filesMRU = new PersistentMRUListModel<String>(20, typeof(String), prefs, prefsKey + "_filesMRU");
             }
             else
             {
-                flags = new SimpleIntegerModel(0, 0xFFFF, 0);
-                folderMRU = new SimpleMRUListModel<String>(10);
-                filesMRU = new SimpleMRUListModel<String>(20);
+                _flags = new SimpleIntegerModel(0, 0xFFFF, 0);
+                _folderMRU = new SimpleMRUListModel<String>(10);
+                _filesMRU = new SimpleMRUListModel<String>(20);
             }
 
-            currentFolder = new TreeComboBox();
-            currentFolder.setTheme("currentFolder");
-            fileTable = new FileTable();
-            fileTable.setTheme("fileTable");
-            fileTable.SelectionChanged += (sender, e) =>
+            _currentFolder = new TreeComboBox();
+            _currentFolder.SetTheme("currentFolder");
+            _fileTable = new FileTable();
+            _fileTable.SetTheme("fileTable");
+            _fileTable.SelectionChanged += (sender, e) =>
             {
-                this.selectionChanged();
+                this.SetAndFireSelectionChanged();
             };
 
-            btnUp = new Button();
-            btnUp.setTheme("buttonUp");
-            btnUp.Action += (sender, e) =>
+            _btnUp = new Button();
+            _btnUp.SetTheme("buttonUp");
+            _btnUp.Action += (sender, e) =>
             {
-                goOneLevelUp();
+                GoOneLevelUp();
             };
 
-            btnHome = new Button();
-            btnHome.setTheme("buttonHome");
-            btnHome.Action += (sender, e) =>
+            _btnHome = new Button();
+            _btnHome.SetTheme("buttonHome");
+            _btnHome.Action += (sender, e) =>
             {
-                goHome();
+                GoHome();
             };
 
-            btnFolderMRU = new Button();
-            btnFolderMRU.setTheme("buttonFoldersMRU");
-            btnFolderMRU.Action += (sender, e) =>
+            _btnFolderMRU = new Button();
+            _btnFolderMRU.SetTheme("buttonFoldersMRU");
+            _btnFolderMRU.Action += (sender, e) =>
             {
-                showFolderMRU();
+                ShowFolderMRU();
             };
 
-            btnFilesMRU = new Button();
-            btnFilesMRU.setTheme("buttonFilesMRU");
+            _btnFilesMRU = new Button();
+            _btnFilesMRU.SetTheme("buttonFilesMRU");
 
-            btnFilesMRU.Action += (sender, e) =>
+            _btnFilesMRU.Action += (sender, e) =>
             {
-                showFilesMRU();
+                ShowFilesMRU();
             };
 
-            btnOk = new Button();
-            btnOk.setTheme("buttonOk");
-            btnOk.Action += (sender, e) =>
+            _btnOk = new Button();
+            _btnOk.SetTheme("buttonOk");
+            _btnOk.Action += (sender, e) =>
             {
-                acceptSelection();
+                AcceptSelection();
             };
 
-            btnCancel = new Button();
-            btnCancel.setTheme("buttonCancel");
-            btnCancel.Action += (sender, e) =>
+            _btnCancel = new Button();
+            _btnCancel.SetTheme("buttonCancel");
+            _btnCancel.Action += (sender, e) =>
             {
-                fireCanceled();
+                FireCancelled();
             };
 
-            currentFolder.setPathResolver(new FileSelectorPathResolver(this));
-            currentFolder.SelectedNodeChanged += (sender, e) =>
+            _currentFolder.SetPathResolver(new FileSelectorPathResolver(this));
+            _currentFolder.SelectedNodeChanged += (sender, e) =>
             {
-                setCurrentNode(e.Node, e.PreviousChildNode);
+                SetCurrentNode(e.Node, e.PreviousChildNode);
             };
 
-            autoCompletion = new EditFieldAutoCompletionWindow(currentFolder.getEditField());
+            _autoCompletion = new EditFieldAutoCompletionWindow(_currentFolder.GetEditField());
             //autoCompletion.setUseInvokeAsync(true);
-            currentFolder.getEditField().setAutoCompletionWindow(autoCompletion);
+            _currentFolder.GetEditField().SetAutoCompletionWindow(_autoCompletion);
 
-            fileTable.setAllowMultiSelection(true);
-            fileTable.DoubleClick += (sender, e) =>
+            _fileTable.SetAllowMultiSelection(true);
+            _fileTable.DoubleClick += (sender, e) =>
             {
-                this.acceptSelection();
+                this.AcceptSelection();
             };
 
-            activeFileFilter = AllFilesFilter;
-            fileFiltersModel = new FileFiltersModel();
-            fileFilterBox = new ComboBox<String>(fileFiltersModel);
-            fileFilterBox.setTheme("fileFiltersBox");
-            fileFilterBox.setComputeWidthFromModel(true);
-            fileFilterBox.setVisible(false);
-            fileFilterBox.SelectionChanged += (sender, e) =>
+            _activeFileFilter = AllFilesFilter;
+            _fileFiltersModel = new FileFiltersModel();
+            _fileFilterBox = new ComboBox<String>(_fileFiltersModel);
+            _fileFilterBox.SetTheme("fileFiltersBox");
+            _fileFilterBox.SetComputeWidthFromModel(true);
+            _fileFilterBox.SetVisible(false);
+            _fileFilterBox.SelectionChanged += (sender, e) =>
             {
-                fileFilterChanged();
+                FileFilterChanged();
             };
 
-            labelCurrentFolder = new Label("Folder");
-            labelCurrentFolder.setLabelFor(currentFolder);
+            _labelCurrentFolder = new Label("Folder");
+            _labelCurrentFolder.SetLabelFor(_currentFolder);
 
-            fileTableSP = new ScrollPane(fileTable);
+            _fileTableSP = new ScrollPane(_fileTable);
 
 
-            btnRefresh = new Button();
-            btnRefresh.setTheme("buttonRefresh");
-            btnRefresh.Action += BtnRefresh_Action;
+            _btnRefresh = new Button();
+            _btnRefresh.SetTheme("buttonRefresh");
+            _btnRefresh.Action += BtnRefresh_Action;
 
-            btnShowFolders = new Button(new ToggleButtonModel(new BitFieldBooleanModel(flags, 0), true));
-            btnShowFolders.setTheme("buttonShowFolders");
-            btnShowFolders.Action += BtnRefresh_Action;
+            _btnShowFolders = new Button(new ToggleButtonModel(new BitFieldBooleanModel(_flags, 0), true));
+            _btnShowFolders.SetTheme("buttonShowFolders");
+            _btnShowFolders.Action += BtnRefresh_Action;
 
-            btnShowHidden = new Button(new ToggleButtonModel(new BitFieldBooleanModel(flags, 1), false));
-            btnShowHidden.setTheme("buttonShowHidden");
-            btnShowHidden.Action += BtnRefresh_Action;
+            _btnShowHidden = new Button(new ToggleButtonModel(new BitFieldBooleanModel(_flags, 1), false));
+            _btnShowHidden.SetTheme("buttonShowHidden");
+            _btnShowHidden.Action += BtnRefresh_Action;
 
-            addActionMapping("goOneLevelUp", "goOneLevelUp");
-            addActionMapping("acceptSelection", "acceptSelection");
+            AddActionMapping("goOneLevelUp", "GoOneLevelUp");
+            AddActionMapping("acceptSelection", "AcceptSelection");
         }
 
         private void BtnRefresh_Action(object sender, ButtonActionEventArgs e)
         {
-            this.refreshFileTable();
+            this.RefreshFileTable();
         }
 
-        protected void createLayout()
+        protected void CreateLayout()
         {
-            setHorizontalGroup(null);
-            setVerticalGroup(null);
-            removeAllChildren();
+            SetHorizontalGroup(null);
+            SetVerticalGroup(null);
+            RemoveAllChildren();
 
-            add(fileTableSP);
-            add(fileFilterBox);
-            add(btnOk);
-            add(btnCancel);
-            add(btnRefresh);
-            add(btnShowFolders);
-            add(btnShowHidden);
-            add(labelCurrentFolder);
-            add(currentFolder);
-            add(btnFolderMRU);
-            add(btnUp);
+            Add(_fileTableSP);
+            Add(_fileFilterBox);
+            Add(_btnOk);
+            Add(_btnCancel);
+            Add(_btnRefresh);
+            Add(_btnShowFolders);
+            Add(_btnShowHidden);
+            Add(_labelCurrentFolder);
+            Add(_currentFolder);
+            Add(_btnFolderMRU);
+            Add(_btnUp);
 
-            Group hCurrentFolder = createSequentialGroup()
-                    .addWidget(labelCurrentFolder)
-                    .addWidget(currentFolder)
-                    .addWidget(btnFolderMRU)
-                    .addWidget(btnUp)
-                    .addWidget(btnHome);
-            Group vCurrentFolder = createParallelGroup()
-                    .addWidget(labelCurrentFolder)
-                    .addWidget(currentFolder)
-                    .addWidget(btnFolderMRU)
-                    .addWidget(btnUp)
-                    .addWidget(btnHome);
+            Group hCurrentFolder = CreateSequentialGroup()
+                    .AddWidget(_labelCurrentFolder)
+                    .AddWidget(_currentFolder)
+                    .AddWidget(_btnFolderMRU)
+                    .AddWidget(_btnUp)
+                    .AddWidget(_btnHome);
+            Group vCurrentFolder = CreateParallelGroup()
+                    .AddWidget(_labelCurrentFolder)
+                    .AddWidget(_currentFolder)
+                    .AddWidget(_btnFolderMRU)
+                    .AddWidget(_btnUp)
+                    .AddWidget(_btnHome);
 
-            Group hButtonGroup = createSequentialGroup()
-                    .addWidget(btnRefresh)
-                    .addGap(MEDIUM_GAP)
-                    .addWidget(btnShowFolders)
-                    .addWidget(btnShowHidden)
-                    .addWidget(fileFilterBox)
-                    .addGap("buttonBarLeft")
-                    .addWidget(btnFilesMRU)
-                    .addGap("buttonBarSpacer")
-                    .addWidget(btnOk)
-                    .addGap("buttonBarSpacer")
-                    .addWidget(btnCancel)
-                    .addGap("buttonBarRight");
-            Group vButtonGroup = createParallelGroup()
-                    .addWidget(btnRefresh)
-                    .addWidget(btnShowFolders)
-                    .addWidget(btnShowHidden)
-                    .addWidget(fileFilterBox)
-                    .addWidget(btnFilesMRU)
-                    .addWidget(btnOk)
-                    .addWidget(btnCancel);
+            Group hButtonGroup = CreateSequentialGroup()
+                    .AddWidget(_btnRefresh)
+                    .AddGap(MEDIUM_GAP)
+                    .AddWidget(_btnShowFolders)
+                    .AddWidget(_btnShowHidden)
+                    .AddWidget(_fileFilterBox)
+                    .AddGap("buttonBarLeft")
+                    .AddWidget(_btnFilesMRU)
+                    .AddGap("buttonBarSpacer")
+                    .AddWidget(_btnOk)
+                    .AddGap("buttonBarSpacer")
+                    .AddWidget(_btnCancel)
+                    .AddGap("buttonBarRight");
+            Group vButtonGroup = CreateParallelGroup()
+                    .AddWidget(_btnRefresh)
+                    .AddWidget(_btnShowFolders)
+                    .AddWidget(_btnShowHidden)
+                    .AddWidget(_fileFilterBox)
+                    .AddWidget(_btnFilesMRU)
+                    .AddWidget(_btnOk)
+                    .AddWidget(_btnCancel);
 
-            Group horz = createParallelGroup()
-                    .addGroup(hCurrentFolder)
-                    .addWidget(fileTableSP);
+            Group horz = CreateParallelGroup()
+                    .AddGroup(hCurrentFolder)
+                    .AddWidget(_fileTableSP);
 
-            Group vert = createSequentialGroup()
-                    .addGroup(vCurrentFolder)
-                    .addWidget(fileTableSP);
+            Group vert = CreateSequentialGroup()
+                    .AddGroup(vCurrentFolder)
+                    .AddWidget(_fileTableSP);
 
-            if (userWidgetBottom != null)
+            if (_userWidgetBottom != null)
             {
-                horz.addWidget(userWidgetBottom);
-                vert.addWidget(userWidgetBottom);
+                horz.AddWidget(_userWidgetBottom);
+                vert.AddWidget(_userWidgetBottom);
             }
 
-            if (userWidgetRight != null)
+            if (_userWidgetRight != null)
             {
-                horz = createParallelGroup().addGroup(createSequentialGroup()
-                        .addGroup(horz)
-                        .addWidget(userWidgetRight));
-                vert = createSequentialGroup().addGroup(createParallelGroup()
-                        .addGroup(vert)
-                        .addWidget(userWidgetRight));
+                horz = CreateParallelGroup().AddGroup(CreateSequentialGroup()
+                        .AddGroup(horz)
+                        .AddWidget(_userWidgetRight));
+                vert = CreateSequentialGroup().AddGroup(CreateParallelGroup()
+                        .AddGroup(vert)
+                        .AddWidget(_userWidgetRight));
             }
 
-            setHorizontalGroup(horz.addGroup(hButtonGroup));
-            setVerticalGroup(vert.addGroup(vButtonGroup));
+            SetHorizontalGroup(horz.AddGroup(hButtonGroup));
+            SetVerticalGroup(vert.AddGroup(vButtonGroup));
         }
 
-        protected override void afterAddToGUI(GUI gui)
+        protected override void AfterAddToGUI(GUI gui)
         {
-            base.afterAddToGUI(gui);
-            createLayout();
+            base.AfterAddToGUI(gui);
+            CreateLayout();
         }
 
-        public FileSystemModel getFileSystemModel()
+        public FileSystemModel GetFileSystemModel()
         {
-            return fsm;
+            return _fileSystemModel;
         }
 
-        public void setFileSystemModel(FileSystemModel fsm)
+        public void SetFileSystemModel(FileSystemModel fsm)
         {
-            this.fsm = fsm;
+            this._fileSystemModel = fsm;
             if (fsm == null)
             {
-                model = null;
-                currentFolder.setModel(null);
-                fileTable.setCurrentFolder(null, null);
-                autoCompletion.setDataSource(null);
+                _model = null;
+                _currentFolder.SetModel(null);
+                _fileTable.SetCurrentFolder(null, null);
+                _autoCompletion.SetDataSource(null);
             }
             else
             {
-                model = new FileSystemTreeModel(fsm);
-                model.SetSorter(new NameSorter(fsm));
-                currentFolder.setModel(model);
-                currentFolder.setSeparator(fsm.Separator);
-                autoCompletion.setDataSource(new FileSystemAutoCompletionDataSource(fsm,
+                _model = new FileSystemTreeModel(fsm);
+                _model.SetSorter(new NameSorter(fsm));
+                _currentFolder.SetModel(_model);
+                _currentFolder.SetSeparator(fsm.Separator);
+                _autoCompletion.SetDataSource(new FileSystemAutoCompletionDataSource(fsm,
                         FolderFilter.Instance));
-                if (!gotoFolderFromMRU(0) && !goHome())
+                if (!GotoFolderFromMRU(0) && !GoHome())
                 {
-                    setCurrentNode(model);
+                    SetCurrentNode(_model);
                 }
             }
         }
 
-        public bool getAllowMultiSelection()
+        public bool GetAllowMultiSelection()
         {
-            return fileTable.getAllowMultiSelection();
+            return _fileTable.GetAllowMultiSelection();
         }
 
         /**
@@ -369,14 +373,14 @@ namespace XNATWL
          *
          * @param allowMultiSelection true if multiple files can be selected.
          */
-        public void setAllowMultiSelection(bool allowMultiSelection)
+        public void SetAllowMultiSelection(bool allowMultiSelection)
         {
-            fileTable.setAllowMultiSelection(allowMultiSelection);
+            _fileTable.SetAllowMultiSelection(allowMultiSelection);
         }
 
-        public bool getAllowFolderSelection()
+        public bool GetAllowFolderSelection()
         {
-            return allowFolderSelection;
+            return _allowFolderSelection;
         }
 
         /**
@@ -387,15 +391,15 @@ namespace XNATWL
          *
          * @param allowFolderSelection true if folders can be selected
          */
-        public void setAllowFolderSelection(bool allowFolderSelection)
+        public void SetAllowFolderSelection(bool allowFolderSelection)
         {
-            this.allowFolderSelection = allowFolderSelection;
-            selectionChanged();
+            this._allowFolderSelection = allowFolderSelection;
+            SetAndFireSelectionChanged();
         }
 
-        public bool getAllowHorizontalScrolling()
+        public bool GetAllowHorizontalScrolling()
         {
-            return fileTableSP.getFixed() != ScrollPane.Fixed.HORIZONTAL;
+            return _fileTableSP.GetFixed() != ScrollPane.Fixed.HORIZONTAL;
         }
 
         /**
@@ -405,48 +409,48 @@ namespace XNATWL
          * 
          * @param allowHorizontalScrolling true if horizontal scrolling is allowed
          */
-        public void setAllowHorizontalScrolling(bool allowHorizontalScrolling)
+        public void SetAllowHorizontalScrolling(bool allowHorizontalScrolling)
         {
-            fileTableSP.setFixed(allowHorizontalScrolling
+            _fileTableSP.SetFixed(allowHorizontalScrolling
                     ? ScrollPane.Fixed.NONE
                     : ScrollPane.Fixed.HORIZONTAL);
         }
 
-        public Widget getUserWidgetBottom()
+        public Widget GetUserWidgetBottom()
         {
-            return userWidgetBottom;
+            return _userWidgetBottom;
         }
 
-        public void setUserWidgetBottom(Widget userWidgetBottom)
+        public void SetUserWidgetBottom(Widget userWidgetBottom)
         {
-            this.userWidgetBottom = userWidgetBottom;
-            createLayout();
+            this._userWidgetBottom = userWidgetBottom;
+            CreateLayout();
         }
 
-        public Widget getUserWidgetRight()
+        public Widget GetUserWidgetRight()
         {
-            return userWidgetRight;
+            return _userWidgetRight;
         }
 
-        public void setUserWidgetRight(Widget userWidgetRight)
+        public void SetUserWidgetRight(Widget userWidgetRight)
         {
-            this.userWidgetRight = userWidgetRight;
-            createLayout();
+            this._userWidgetRight = userWidgetRight;
+            CreateLayout();
         }
 
-        public FileTable getFileTable()
+        public FileTable GetFileTable()
         {
-            return fileTable;
+            return _fileTable;
         }
 
-        public void setOkButtonEnabled(bool enabled)
+        public void SetOkButtonEnabled(bool enabled)
         {
-            btnOk.setEnabled(enabled);
+            _btnOk.SetEnabled(enabled);
         }
 
-        public Object getCurrentFolder()
+        public Object GetCurrentFolder()
         {
-            Object node = currentFolder.getCurrentNode();
+            Object node = _currentFolder.GetCurrentNode();
             if (node is FolderNode)
             {
                 return ((FolderNode)node).Folder;
@@ -457,34 +461,34 @@ namespace XNATWL
             }
         }
 
-        public bool setCurrentFolder(Object folder)
+        public bool SetCurrentFolder(Object folder)
         {
-            FolderNode node = model.NodeForFolder(folder);
+            FolderNode node = _model.NodeForFolder(folder);
             if (node != null)
             {
-                setCurrentNode(node);
+                SetCurrentNode(node);
                 return true;
             }
             return false;
         }
 
-        public bool selectFile(Object file)
+        public bool SelectFile(Object file)
         {
-            if (fsm == null)
+            if (_fileSystemModel == null)
             {
                 return false;
             }
-            Object parent = fsm.Parent(file);
-            if (setCurrentFolder(parent))
+            Object parent = _fileSystemModel.Parent(file);
+            if (SetCurrentFolder(parent))
             {
-                return fileTable.setSelection(file);
+                return _fileTable.SetSelection(file);
             }
             return false;
         }
 
-        public void clearSelection()
+        public void ClearSelection()
         {
-            fileTable.clearSelection();
+            _fileTable.ClearSelection();
         }
 
         /**
@@ -496,130 +500,130 @@ namespace XNATWL
          * @throws NullPointerException if filter is null
          * @see #AllFilesFilter
          */
-        public void addFileFilter(NamedFileFilter filter)
+        public void AddFileFilter(NamedFileFilter filter)
         {
             if (filter == null)
             {
                 throw new NullReferenceException("filter");
             }
-            fileFiltersModel.addFileFilter(filter);
-            fileFilterBox.setVisible(fileFiltersModel.getNumEntries() > 0);
-            if (fileFilterBox.getSelected() < 0)
+            _fileFiltersModel.AddFileFilter(filter);
+            _fileFilterBox.SetVisible(_fileFiltersModel.GetNumEntries() > 0);
+            if (_fileFilterBox.GetSelected() < 0)
             {
-                fileFilterBox.setSelected(0);
+                _fileFilterBox.SetSelected(0);
             }
         }
 
-        public void removeFileFilter(NamedFileFilter filter)
+        public void RemoveFileFilter(NamedFileFilter filter)
         {
             if (filter == null)
             {
                 throw new NullReferenceException("filter");
             }
-            fileFiltersModel.removeFileFilter(filter);
-            if (fileFiltersModel.getNumEntries() == 0)
+            _fileFiltersModel.RemoveFileFilter(filter);
+            if (_fileFiltersModel.GetNumEntries() == 0)
             {
-                fileFilterBox.setVisible(false);
-                setFileFilter(AllFilesFilter);
+                _fileFilterBox.SetVisible(false);
+                SetFileFilter(AllFilesFilter);
             }
         }
 
-        public void removeAllFileFilters()
+        public void RemoveAllFileFilters()
         {
-            fileFiltersModel.removeAll();
-            fileFilterBox.setVisible(false);
-            setFileFilter(AllFilesFilter);
+            _fileFiltersModel.RemoveAll();
+            _fileFilterBox.SetVisible(false);
+            SetFileFilter(AllFilesFilter);
         }
 
-        public void setFileFilter(NamedFileFilter filter)
+        public void SetFileFilter(NamedFileFilter filter)
         {
             if (filter == null)
             {
                 throw new ArgumentNullException("filter");
             }
-            int idx = fileFiltersModel.findFilter(filter);
+            int idx = _fileFiltersModel.FindFilter(filter);
             if (idx < 0)
             {
                 throw new ArgumentOutOfRangeException("filter not registered");
             }
-            fileFilterBox.setSelected(idx);
+            _fileFilterBox.SetSelected(idx);
         }
 
-        public NamedFileFilter getFileFilter()
+        public NamedFileFilter GetFileFilter()
         {
-            return activeFileFilter;
+            return _activeFileFilter;
         }
 
-        public bool getShowFolders()
+        public bool GetShowFolders()
         {
-            return btnShowFolders.getModel().Selected;
+            return _btnShowFolders.GetModel().Selected;
         }
 
-        public void setShowFolders(bool showFolders)
+        public void SetShowFolders(bool showFolders)
         {
-            btnShowFolders.getModel().Selected = showFolders;
+            _btnShowFolders.GetModel().Selected = showFolders;
         }
 
-        public bool getShowHidden()
+        public bool GetShowHidden()
         {
-            return btnShowHidden.getModel().Selected;
+            return _btnShowHidden.GetModel().Selected;
         }
 
-        public void setShowHidden(bool showHidden)
+        public void SetShowHidden(bool showHidden)
         {
-            btnShowHidden.getModel().Selected = showHidden;
+            _btnShowHidden.GetModel().Selected = showHidden;
         }
 
-        public void goOneLevelUp()
+        public void GoOneLevelUp()
         {
-            TreeTableNode node = currentFolder.getCurrentNode();
+            TreeTableNode node = _currentFolder.GetCurrentNode();
             TreeTableNode parent = node.Parent;
             if (parent != null)
             {
-                setCurrentNode(parent, node);
+                SetCurrentNode(parent, node);
             }
         }
 
-        public bool goHome()
+        public bool GoHome()
         {
-            if (fsm != null)
+            if (_fileSystemModel != null)
             {
-                Object folder = fsm.SpecialFolder(DotNetFileSystemModel.USERPROFILE_FOLDER);
+                Object folder = _fileSystemModel.SpecialFolder(DotNetFileSystemModel.USERPROFILE_FOLDER);
                 if (folder != null)
                 {
-                    return setCurrentFolder(folder);
+                    return SetCurrentFolder(folder);
                 }
             }
             return false;
         }
 
-        public void acceptSelection()
+        public void AcceptSelection()
         {
-            FileTable.Entry[] selection = fileTable.getSelection();
+            FileTable.Entry[] selection = _fileTable.GetSelection();
             if (selection.Length == 1)
             {
                 FileTable.Entry entry = selection[0];
-                if (entry != null && entry.isFolder)
+                if (entry != null && entry.IsFolder)
                 {
-                    setCurrentFolder(entry.obj);
+                    SetCurrentFolder(entry.Obj);
                     return;
                 }
             }
-            fireAcceptCallback(selection);
+            FireAcceptCallback(selection);
         }
 
-        void fileFilterChanged()
+        void FileFilterChanged()
         {
-            int idx = fileFilterBox.getSelected();
+            int idx = _fileFilterBox.GetSelected();
             if (idx >= 0)
             {
-                NamedFileFilter filter = fileFiltersModel.getFileFilter(idx);
-                activeFileFilter = filter;
-                fileTable.setFileFilter(filter.getFileFilter());
+                NamedFileFilter filter = _fileFiltersModel.GetFileFilter(idx);
+                _activeFileFilter = filter;
+                _fileTable.SetFileFilter(filter.getFileFilter());
             }
         }
 
-        void fireAcceptCallback(FileTable.Entry[] selection)
+        void FireAcceptCallback(FileTable.Entry[] selection)
         {
             if (this.FilesSelected != null)
             {
@@ -627,18 +631,18 @@ namespace XNATWL
                 for (int i = 0; i < selection.Length; i++)
                 {
                     FileTable.Entry e = selection[i];
-                    if (e.isFolder && !allowFolderSelection)
+                    if (e.IsFolder && !_allowFolderSelection)
                     {
                         return;
                     }
-                    objects[i] = e.obj;
+                    objects[i] = e.Obj;
                 }
-                addToMRU(selection);
+                AddToMRU(selection);
                 this.FilesSelected.Invoke(this, new FileSelectorFilesSelectedEventArgs(objects));
             }
         }
 
-        void fireCanceled()
+        void FireCancelled()
         {
             if (this.Cancelled != null)
             {
@@ -646,14 +650,14 @@ namespace XNATWL
             }
         }
 
-        void selectionChanged()
+        void SetAndFireSelectionChanged()
         {
             bool foldersSelected = false;
             bool filesSelected = false;
-            FileTable.Entry[] selection = fileTable.getSelection();
+            FileTable.Entry[] selection = _fileTable.GetSelection();
             foreach (FileTable.Entry entry in selection)
             {
-                if (entry.isFolder)
+                if (entry.IsFolder)
                 {
                     foldersSelected = true;
                 }
@@ -662,13 +666,13 @@ namespace XNATWL
                     filesSelected = true;
                 }
             }
-            if (allowFolderSelection)
+            if (_allowFolderSelection)
             {
-                btnOk.setEnabled(filesSelected || foldersSelected);
+                _btnOk.SetEnabled(filesSelected || foldersSelected);
             }
             else
             {
-                btnOk.setEnabled(filesSelected && !foldersSelected);
+                _btnOk.SetEnabled(filesSelected && !foldersSelected);
             }
 
             if (this.SelectionChanged != null)
@@ -677,50 +681,50 @@ namespace XNATWL
             }
         }
 
-        protected void setCurrentNode(TreeTableNode node, TreeTableNode childToSelect)
+        protected void SetCurrentNode(TreeTableNode node, TreeTableNode childToSelect)
         {
             if (childToSelect is FolderNode)
             {
-                fileToSelectOnSetCurrentNode = ((FolderNode)childToSelect).Folder;
+                _fileToSelectOnSetCurrentNode = ((FolderNode)childToSelect).Folder;
             }
-            setCurrentNode(node);
+            SetCurrentNode(node);
         }
 
-        protected void setCurrentNode(TreeTableNode node)
+        protected void SetCurrentNode(TreeTableNode node)
         {
-            currentFolder.setCurrentNode(node);
-            refreshFileTable();
+            _currentFolder.SetCurrentNode(node);
+            RefreshFileTable();
             if (this.FolderChanged != null)
             {
-                Object curFolder = getCurrentFolder();
+                Object curFolder = GetCurrentFolder();
                 this.FolderChanged.Invoke(this, new FileSelectorFolderChangedEventArgs(curFolder));
             }
-            if (fileToSelectOnSetCurrentNode != null)
+            if (_fileToSelectOnSetCurrentNode != null)
             {
-                fileTable.setSelection(fileToSelectOnSetCurrentNode);
-                fileToSelectOnSetCurrentNode = null;
+                _fileTable.SetSelection(_fileToSelectOnSetCurrentNode);
+                _fileToSelectOnSetCurrentNode = null;
             }
         }
 
-        void refreshFileTable()
+        void RefreshFileTable()
         {
-            fileTable.setShowFolders(btnShowFolders.getModel().Selected);
-            fileTable.setShowHidden(btnShowHidden.getModel().Selected);
-            fileTable.setCurrentFolder(fsm, getCurrentFolder());
+            _fileTable.SetShowFolders(_btnShowFolders.GetModel().Selected);
+            _fileTable.SetShowHidden(_btnShowHidden.GetModel().Selected);
+            _fileTable.SetCurrentFolder(_fileSystemModel, GetCurrentFolder());
         }
 
-        TreeTableNode resolvePath(String path)
+        TreeTableNode ResolvePath(String path)
         {
-            Object obj = fsm.FileByPath(path);
-            fileToSelectOnSetCurrentNode = null;
+            Object obj = _fileSystemModel.FileByPath(path);
+            _fileToSelectOnSetCurrentNode = null;
             if (obj != null)
             {
-                if (fsm.IsFile(obj))
+                if (_fileSystemModel.IsFile(obj))
                 {
-                    fileToSelectOnSetCurrentNode = obj;
-                    obj = fsm.Parent(obj);
+                    _fileToSelectOnSetCurrentNode = obj;
+                    obj = _fileSystemModel.Parent(obj);
                 }
-                FolderNode node = model.NodeForFolder(obj);
+                FolderNode node = _model.NodeForFolder(obj);
                 if (node != null)
                 {
                     return node;
@@ -729,101 +733,101 @@ namespace XNATWL
             throw new ArgumentException("Could not resolve: " + path);
         }
 
-        void showFolderMRU()
+        void ShowFolderMRU()
         {
             PopupWindow popup = new PopupWindow(this);
-            ListBox<String> listBox = new ListBox<String>(folderMRU);
-            popup.setTheme("fileselector-folderMRUpopup");
-            popup.add(listBox);
-            if (popup.openPopup())
+            ListBox<String> listBox = new ListBox<String>(_folderMRU);
+            popup.SetTheme("fileselector-folderMRUpopup");
+            popup.Add(listBox);
+            if (popup.OpenPopup())
             {
-                popup.setInnerSize(getInnerWidth() * 2 / 3, getInnerHeight() * 2 / 3);
-                popup.setPosition(btnFolderMRU.getX() - popup.getWidth(), btnFolderMRU.getY());
+                popup.SetInnerSize(GetInnerWidth() * 2 / 3, GetInnerHeight() * 2 / 3);
+                popup.SetPosition(_btnFolderMRU.GetX() - popup.GetWidth(), _btnFolderMRU.GetY());
                 listBox.Callback += (sender, e) =>
                 {
                     if (ListBox<String>.CallbackReason_ActionRequested(e.Reason))
                     {
-                        popup.closePopup();
-                        int idx = listBox.getSelected();
+                        popup.ClosePopup();
+                        int idx = listBox.GetSelected();
                         if (idx >= 0)
                         {
-                            gotoFolderFromMRU(idx);
+                            GotoFolderFromMRU(idx);
                         }
                     }
                 };
             }
         }
 
-        void showFilesMRU()
+        void ShowFilesMRU()
         {
             PopupWindow popup = new PopupWindow(this);
             DialogLayout layout = new DialogLayout();
-            ListBox<String> listBox = new ListBox<String>(filesMRU);
+            ListBox<String> listBox = new ListBox<String>(_filesMRU);
             Button popupBtnOk = new Button();
             Button popupBtnCancel = new Button();
-            popupBtnOk.setTheme("buttonOk");
-            popupBtnCancel.setTheme("buttonCancel");
-            popup.setTheme("fileselector-filesMRUpopup");
-            popup.add(layout);
-            layout.add(listBox);
-            layout.add(popupBtnOk);
-            layout.add(popupBtnCancel);
+            popupBtnOk.SetTheme("buttonOk");
+            popupBtnCancel.SetTheme("buttonCancel");
+            popup.SetTheme("fileselector-filesMRUpopup");
+            popup.Add(layout);
+            layout.Add(listBox);
+            layout.Add(popupBtnOk);
+            layout.Add(popupBtnCancel);
 
-            DialogLayout.Group hBtnGroup = layout.createSequentialGroup()
-                    .addGap().addWidget(popupBtnOk).addWidget(popupBtnCancel);
-            DialogLayout.Group vBtnGroup = layout.createParallelGroup()
-                    .addWidget(popupBtnOk).addWidget(popupBtnCancel);
-            layout.setHorizontalGroup(layout.createParallelGroup().addWidget(listBox).addGroup(hBtnGroup));
-            layout.setVerticalGroup(layout.createSequentialGroup().addWidget(listBox).addGroup(vBtnGroup));
+            DialogLayout.Group hBtnGroup = layout.CreateSequentialGroup()
+                    .AddGap().AddWidget(popupBtnOk).AddWidget(popupBtnCancel);
+            DialogLayout.Group vBtnGroup = layout.CreateParallelGroup()
+                    .AddWidget(popupBtnOk).AddWidget(popupBtnCancel);
+            layout.SetHorizontalGroup(layout.CreateParallelGroup().AddWidget(listBox).AddGroup(hBtnGroup));
+            layout.SetVerticalGroup(layout.CreateSequentialGroup().AddWidget(listBox).AddGroup(vBtnGroup));
 
-            if (popup.openPopup())
+            if (popup.OpenPopup())
             {
-                popup.setInnerSize(getInnerWidth() * 2 / 3, getInnerHeight() * 2 / 3);
-                popup.setPosition(getInnerX() + (getInnerWidth() - popup.getWidth()) / 2, btnFilesMRU.getY() - popup.getHeight());
+                popup.SetInnerSize(GetInnerWidth() * 2 / 3, GetInnerHeight() * 2 / 3);
+                popup.SetPosition(GetInnerX() + (GetInnerWidth() - popup.GetWidth()) / 2, _btnFilesMRU.GetY() - popup.GetHeight());
 
                 popupBtnOk.Action += (sender, e) =>
                 {
-                    int idx = listBox.getSelected();
+                    int idx = listBox.GetSelected();
                     if (idx >= 0)
                     {
-                        Object obj = fsm.FileByPath(filesMRU.EntryAt(idx));
+                        Object obj = _fileSystemModel.FileByPath(_filesMRU.EntryAt(idx));
                         if (obj != null)
                         {
-                            popup.closePopup();
-                            fireAcceptCallback(new FileTable.Entry[] {
-                                    new FileTable.Entry(fsm, obj, fsm.Parent(obj) == null)
+                            popup.ClosePopup();
+                            FireAcceptCallback(new FileTable.Entry[] {
+                                    new FileTable.Entry(_fileSystemModel, obj, _fileSystemModel.Parent(obj) == null)
                                 });
                         }
                         else
                         {
-                            filesMRU.RemoveAt(idx);
+                            _filesMRU.RemoveAt(idx);
                         }
                     }
                 };
 
                 popupBtnCancel.Action += (sender, e) =>
                 {
-                    popup.closePopup();
+                    popup.ClosePopup();
                 };
 
                 listBox.Callback += (sender, e) =>
                 {
                     if (ListBox<String>.CallbackReason_ActionRequested(e.Reason))
                     {
-                        int idx = listBox.getSelected();
+                        int idx = listBox.GetSelected();
                         if (idx >= 0)
                         {
-                            Object obj = fsm.FileByPath(filesMRU.EntryAt(idx));
+                            Object obj = _fileSystemModel.FileByPath(_filesMRU.EntryAt(idx));
                             if (obj != null)
                             {
-                                popup.closePopup();
-                                fireAcceptCallback(new FileTable.Entry[] {
-                                    new FileTable.Entry(fsm, obj, fsm.Parent(obj) == null)
+                                popup.ClosePopup();
+                                FireAcceptCallback(new FileTable.Entry[] {
+                                    new FileTable.Entry(_fileSystemModel, obj, _fileSystemModel.Parent(obj) == null)
                                 });
                             }
                             else
                             {
-                                filesMRU.RemoveAt(idx);
+                                _filesMRU.RemoveAt(idx);
                             }
                         }
                     }
@@ -831,38 +835,38 @@ namespace XNATWL
             }
         }
 
-        private void addToMRU(FileTable.Entry[] selection)
+        private void AddToMRU(FileTable.Entry[] selection)
         {
             foreach (FileTable.Entry entry in selection)
             {
-                filesMRU.Add(entry.getPath());
+                _filesMRU.Add(entry.GetPath());
             }
-            folderMRU.Add(fsm.PathOf(getCurrentFolder()));
+            _folderMRU.Add(_fileSystemModel.PathOf(GetCurrentFolder()));
         }
 
-        bool gotoFolderFromMRU(int idx)
+        bool GotoFolderFromMRU(int idx)
         {
-            if (idx >= folderMRU.Entries)
+            if (idx >= _folderMRU.Entries)
             {
                 return false;
             }
-            String path = folderMRU.EntryAt(idx);
+            String path = _folderMRU.EntryAt(idx);
             try
             {
-                TreeTableNode node = resolvePath(path);
-                setCurrentNode(node);
+                TreeTableNode node = ResolvePath(path);
+                SetCurrentNode(node);
                 return true;
             }
             catch (ArgumentException ex)
             {
-                folderMRU.RemoveAt(idx);
+                _folderMRU.RemoveAt(idx);
                 return false;
             }
         }
 
         public class FileFiltersModel : SimpleListModel<String>
         {
-            private List<NamedFileFilter> filters = new List<NamedFileFilter>();
+            private List<NamedFileFilter> _filters = new List<NamedFileFilter>();
 
             public override event EventHandler<ListSubsetChangedEventArgs> EntriesInserted;
             public override event EventHandler<ListSubsetChangedEventArgs> EntriesDeleted;
@@ -873,51 +877,51 @@ namespace XNATWL
             {
                 get
                 {
-                    return filters.Count;
+                    return _filters.Count;
                 }
             }
 
-            public NamedFileFilter getFileFilter(int index)
+            public NamedFileFilter GetFileFilter(int index)
             {
-                return filters[index];
+                return _filters[index];
             }
 
-            public int getNumEntries()
+            public int GetNumEntries()
             {
-                return filters.Count;
+                return _filters.Count;
             }
 
-            public void addFileFilter(NamedFileFilter filter)
+            public void AddFileFilter(NamedFileFilter filter)
             {
-                int index = filters.Count;
-                filters.Add(filter);
+                int index = _filters.Count;
+                _filters.Add(filter);
                 this.EntriesInserted.Invoke(this, new ListSubsetChangedEventArgs(index, index));
             }
 
-            public void removeFileFilter(NamedFileFilter filter)
+            public void RemoveFileFilter(NamedFileFilter filter)
             {
-                int idx = filters.IndexOf(filter);
+                int idx = _filters.IndexOf(filter);
                 if (idx >= 0)
                 {
-                    filters.RemoveAt(idx);
+                    _filters.RemoveAt(idx);
                     this.EntriesDeleted.Invoke(this, new ListSubsetChangedEventArgs(idx, idx));
                 }
             }
 
-            public int findFilter(NamedFileFilter filter)
+            public int FindFilter(NamedFileFilter filter)
             {
-                return filters.IndexOf(filter);
+                return _filters.IndexOf(filter);
             }
 
-            protected internal void removeAll()
+            protected internal void RemoveAll()
             {
-                filters.Clear();
+                _filters.Clear();
                 this.AllChanged.Invoke(this, new ListAllChangedEventArgs());
             }
 
             public override string EntryAt(int index)
             {
-                NamedFileFilter filter = getFileFilter(index);
+                NamedFileFilter filter = GetFileFilter(index);
                 return filter.getDisplayName();
             }
         }
@@ -928,8 +932,8 @@ namespace XNATWL
          */
         public class NameSorter : IComparer<object>
         {
-            private FileSystemModel fsm;
-            private IComparer<String> nameComparator;
+            private FileSystemModel _fileSystemModel;
+            private IComparer<String> _nameComparator;
 
             /**
              * Creates a new comparator which uses {@code NaturalSortComparator.stringComparator} to sort the names
@@ -937,8 +941,8 @@ namespace XNATWL
              */
             public NameSorter(FileSystemModel fsm)
             {
-                this.fsm = fsm;
-                this.nameComparator = Comparer<string>.Default;
+                this._fileSystemModel = fsm;
+                this._nameComparator = Comparer<string>.Default;
             }
 
             /**
@@ -948,13 +952,13 @@ namespace XNATWL
              */
             public NameSorter(FileSystemModel fsm, IComparer<String> nameComparator)
             {
-                this.fsm = fsm;
-                this.nameComparator = nameComparator;
+                this._fileSystemModel = fsm;
+                this._nameComparator = nameComparator;
             }
 
             public int Compare(Object o1, Object o2)
             {
-                return nameComparator.Compare(fsm.NameOf(o1), fsm.NameOf(o2));
+                return _nameComparator.Compare(_fileSystemModel.NameOf(o1), _fileSystemModel.NameOf(o2));
             }
         }
     }

@@ -35,336 +35,334 @@ using XNATWL.Utils;
 
 namespace XNATWL
 {
-
     public class WheelWidget<T> : Widget
     {
         public interface ItemRenderer
         {
-            Widget getRenderWidget(Object data);
+            Widget GetRenderWidget(Object data);
         }
 
-        private TypeMapping itemRenderer;
-        private R renderer;
-        private Runnable timerCB;
+        private TypeMapping _itemRenderer;
+        private R _renderer;
 
-        protected int itemHeight;
-        protected int numVisibleItems;
-        protected Image selectedOverlay;
+        protected int _itemHeight;
+        protected int _numVisibleItems;
+        protected Image _selectedOverlay;
 
         private static int TIMER_INTERVAL = 30;
         private static int MIN_SPEED = 3;
         private static int MAX_SPEED = 100;
 
-        protected Timer timer;
-        protected int dragStartY;
-        protected long lastDragTime;
-        protected long lastDragDelta;
-        protected int lastDragDist;
-        protected bool hasDragStart;
-        protected bool dragActive;
-        protected int scrollOffset;
-        protected int scrollAmount;
+        protected Timer _timer;
+        protected int _dragStartY;
+        protected long _lastDragTime;
+        protected long _lastDragDelta;
+        protected int _lastDragDist;
+        protected bool _hasDragStart;
+        protected bool _dragActive;
+        protected int _scrollOffset;
+        protected int _scrollAmount;
 
-        protected ListModel<T> model;
-        protected IntegerModel selectedModel;
-        protected int selected;
-        protected bool cyclic;
+        protected ListModel<T> _model;
+        protected IntegerModel _selectedModel;
+        protected int _selected;
+        protected bool _cyclic;
 
         public WheelWidget()
         {
-            this.itemRenderer = new TypeMapping();
-            this.renderer = new R(this);
+            this._itemRenderer = new TypeMapping();
+            this._renderer = new R(this);
 
-            itemRenderer.SetByType(typeof(String), new StringItemRenderer());
+            _itemRenderer.SetByType(typeof(String), new StringItemRenderer());
 
-            base.insertChild(renderer, 0);
-            setCanAcceptKeyboardFocus(true);
+            base.InsertChild(_renderer, 0);
+            SetCanAcceptKeyboardFocus(true);
         }
 
         public WheelWidget(ListModel<T> model) : this()
         {
-            this.model = model;
+            this._model = model;
         }
 
-        public ListModel<T> getModel()
+        public ListModel<T> GetModel()
         {
-            return model;
+            return _model;
         }
 
-        public void setModel(ListModel<T> model)
+        public void SetModel(ListModel<T> model)
         {
-            removeListener();
-            this.model = model;
-            addListener();
-            invalidateLayout();
+            RemoveListener();
+            this._model = model;
+            AddListener();
+            InvalidateLayout();
         }
 
-        public IntegerModel getSelectedModel()
+        public IntegerModel GetSelectedModel()
         {
-            return selectedModel;
+            return _selectedModel;
         }
 
-        public void setSelectedModel(IntegerModel selectedModel)
+        public void SetSelectedModel(IntegerModel selectedModel)
         {
-            removeSelectedListener();
-            this.selectedModel = selectedModel;
-            addSelectedListener();
+            RemoveSelectedListener();
+            this._selectedModel = selectedModel;
+            AddSelectedListener();
         }
 
-        public int getSelected()
+        public int GetSelected()
         {
-            return selected;
+            return _selected;
         }
 
-        public void setSelected(int selected)
+        public void SetSelected(int selected)
         {
-            int oldSelected = this.selected;
+            int oldSelected = this._selected;
             if (oldSelected != selected)
             {
-                this.selected = selected;
-                if (selectedModel != null)
+                this._selected = selected;
+                if (_selectedModel != null)
                 {
-                    selectedModel.Value = selected;
+                    _selectedModel.Value = selected;
                 }
-                firePropertyChange("selected", oldSelected, selected);
+                FirePropertyChange("selected", oldSelected, selected);
             }
         }
 
-        public bool isCyclic()
+        public bool IsCyclic()
         {
-            return cyclic;
+            return _cyclic;
         }
 
-        public void setCyclic(bool cyclic)
+        public void SetCyclic(bool cyclic)
         {
-            this.cyclic = cyclic;
+            this._cyclic = cyclic;
         }
 
-        public int getItemHeight()
+        public int GetItemHeight()
         {
-            return itemHeight;
+            return _itemHeight;
         }
 
-        public int getNumVisibleItems()
+        public int GetNumVisibleItems()
         {
-            return numVisibleItems;
+            return _numVisibleItems;
         }
 
-        public bool removeItemRenderer(Type clazz)
+        public bool RemoveItemRenderer(Type clazz)
         {
-            if (itemRenderer.RemoveByType(clazz))
+            if (_itemRenderer.RemoveByType(clazz))
             {
-                base.removeAllChildren();
-                invalidateLayout();
+                base.RemoveAllChildren();
+                InvalidateLayout();
                 return true;
             }
             return false;
         }
 
-        public void registerItemRenderer(Type clazz, ItemRenderer value)
+        public void RegisterItemRenderer(Type clazz, ItemRenderer value)
         {
-            itemRenderer.SetByType(clazz, value);
-            invalidateLayout();
+            _itemRenderer.SetByType(clazz, value);
+            InvalidateLayout();
         }
 
-        public void scroll(int amount)
+        public void Scroll(int amount)
         {
-            scrollInt(amount);
-            scrollAmount = 0;
+            ScrollInt(amount);
+            _scrollAmount = 0;
         }
 
-        protected void scrollInt(int amount)
+        protected void ScrollInt(int amount)
         {
-            int pos = selected;
-            int half = itemHeight / 2;
+            int pos = _selected;
+            int half = _itemHeight / 2;
 
-            scrollOffset += amount;
-            while (scrollOffset >= half)
+            _scrollOffset += amount;
+            while (_scrollOffset >= half)
             {
-                scrollOffset -= itemHeight;
+                _scrollOffset -= _itemHeight;
                 pos++;
             }
-            while (scrollOffset <= -half)
+            while (_scrollOffset <= -half)
             {
-                scrollOffset += itemHeight;
+                _scrollOffset += _itemHeight;
                 pos--;
             }
 
-            if (!cyclic)
+            if (!_cyclic)
             {
-                int n = getNumEntries();
+                int n = GetNumEntries();
                 if (n > 0)
                 {
                     while (pos >= n)
                     {
                         pos--;
-                        scrollOffset += itemHeight;
+                        _scrollOffset += _itemHeight;
                     }
                 }
                 while (pos < 0)
                 {
                     pos++;
-                    scrollOffset -= itemHeight;
+                    _scrollOffset -= _itemHeight;
                 }
-                scrollOffset = Math.Max(-itemHeight, Math.Min(itemHeight, scrollOffset));
+                _scrollOffset = Math.Max(-_itemHeight, Math.Min(_itemHeight, _scrollOffset));
             }
 
-            setSelected(pos);
+            SetSelected(pos);
 
-            if (scrollOffset == 0 && scrollAmount == 0)
+            if (_scrollOffset == 0 && _scrollAmount == 0)
             {
-                stopTimer();
+                StopTimer();
             }
             else
             {
-                startTimer();
+                StartTimer();
             }
         }
 
-        public void autoScroll(int dir)
+        public void AutoScroll(int dir)
         {
             if (dir != 0)
             {
-                if (scrollAmount != 0 && Math.Sign(scrollAmount) != Math.Sign(dir))
+                if (_scrollAmount != 0 && Math.Sign(_scrollAmount) != Math.Sign(dir))
                 {
-                    scrollAmount = dir;
+                    _scrollAmount = dir;
                 }
                 else
                 {
-                    scrollAmount += dir;
+                    _scrollAmount += dir;
                 }
-                startTimer();
+                StartTimer();
             }
         }
 
-        public override int getPreferredInnerHeight()
+        public override int GetPreferredInnerHeight()
         {
-            return numVisibleItems * itemHeight;
+            return _numVisibleItems * _itemHeight;
         }
 
-        public override int getPreferredInnerWidth()
+        public override int GetPreferredInnerWidth()
         {
             int width = 0;
-            for (int i = 0, n = getNumEntries(); i < n; i++)
+            for (int i = 0, n = GetNumEntries(); i < n; i++)
             {
-                Widget w = getItemRenderer(i);
+                Widget w = GetItemRenderer(i);
                 if (w != null)
                 {
-                    width = Math.Max(width, w.getPreferredWidth());
+                    width = Math.Max(width, w.GetPreferredWidth());
                 }
             }
             return width;
         }
 
-        protected override void paintOverlay(GUI gui)
+        protected override void PaintOverlay(GUI gui)
         {
-            base.paintOverlay(gui);
+            base.PaintOverlay(gui);
 
-            if (selectedOverlay != null)
+            if (_selectedOverlay != null)
             {
-                int y = getInnerY() + itemHeight * (numVisibleItems / 2);
-                if ((numVisibleItems & 1) == 0)
+                int y = GetInnerY() + _itemHeight * (_numVisibleItems / 2);
+                if ((_numVisibleItems & 1) == 0)
                 {
-                    y -= itemHeight / 2;
+                    y -= _itemHeight / 2;
                 }
-                selectedOverlay.Draw(getAnimationState(), getX(), y, getWidth(), itemHeight);
+                _selectedOverlay.Draw(GetAnimationState(), GetX(), y, GetWidth(), _itemHeight);
             }
         }
 
-        public override bool handleEvent(Event evt)
+        public override bool HandleEvent(Event evt)
         {
-            if (evt.isMouseDragEnd() && dragActive)
+            if (evt.IsMouseDragEnd() && _dragActive)
             {
-                int absDist = Math.Abs(lastDragDist);
-                if (absDist > 3 && lastDragDelta > 0)
+                int absDist = Math.Abs(_lastDragDist);
+                if (absDist > 3 && _lastDragDelta > 0)
                 {
-                    int amount = (int)Math.Min(1000, absDist * 100 / lastDragDelta);
-                    autoScroll(amount * Math.Sign(lastDragDist));
+                    int amount = (int)Math.Min(1000, absDist * 100 / _lastDragDelta);
+                    AutoScroll(amount * Math.Sign(_lastDragDist));
                 }
 
-                hasDragStart = false;
-                dragActive = false;
+                _hasDragStart = false;
+                _dragActive = false;
                 return true;
             }
 
-            if (evt.isMouseDragEvent())
+            if (evt.IsMouseDragEvent())
             {
-                if (hasDragStart)
+                if (_hasDragStart)
                 {
-                    long time = getTime();
-                    dragActive = true;
-                    lastDragDist = dragStartY - evt.getMouseY();
-                    lastDragDelta = Math.Max(1, time - lastDragTime);
-                    scroll(lastDragDist);
-                    dragStartY = evt.getMouseY();
-                    lastDragTime = time;
-                }
-                return true;
-            }
-
-            if (base.handleEvent(evt))
-            {
-                return true;
-            }
-
-            if (evt.getEventType() == EventType.MOUSE_WHEEL)
-            {
-                autoScroll(itemHeight * evt.getMouseWheelDelta());
-                return true;
-            }
-            else if (evt.getEventType() == EventType.MOUSE_BTNDOWN)
-            {
-                if (evt.getMouseButton() == Event.MOUSE_LBUTTON)
-                {
-                    dragStartY = evt.getMouseY();
-                    lastDragTime = getTime();
-                    hasDragStart = true;
+                    long time = GetTime();
+                    _dragActive = true;
+                    _lastDragDist = _dragStartY - evt.GetMouseY();
+                    _lastDragDelta = Math.Max(1, time - _lastDragTime);
+                    Scroll(_lastDragDist);
+                    _dragStartY = evt.GetMouseY();
+                    _lastDragTime = time;
                 }
                 return true;
             }
-            else if (evt.getEventType() == EventType.MOUSE_BTNDOWN)
+
+            if (base.HandleEvent(evt))
             {
-                switch (evt.getKeyCode())
+                return true;
+            }
+
+            if (evt.GetEventType() == EventType.MOUSE_WHEEL)
+            {
+                AutoScroll(_itemHeight * evt.GetMouseWheelDelta());
+                return true;
+            }
+            else if (evt.GetEventType() == EventType.MOUSE_BTNDOWN)
+            {
+                if (evt.GetMouseButton() == Event.MOUSE_LBUTTON)
+                {
+                    _dragStartY = evt.GetMouseY();
+                    _lastDragTime = GetTime();
+                    _hasDragStart = true;
+                }
+                return true;
+            }
+            else if (evt.GetEventType() == EventType.MOUSE_BTNDOWN)
+            {
+                switch (evt.GetKeyCode())
                 {
                     case Event.KEY_UP:
-                        autoScroll(-itemHeight);
+                        AutoScroll(-_itemHeight);
                         return true;
                     case Event.KEY_DOWN:
-                        autoScroll(+itemHeight);
+                        AutoScroll(+_itemHeight);
                         return true;
                 }
                 return false;
             }
 
-            return evt.isMouseEvent();
+            return evt.IsMouseEvent();
         }
 
-        protected long getTime()
+        protected long GetTime()
         {
-            GUI gui = getGUI();
-            return (gui != null) ? gui.getCurrentTime() : 0;
+            GUI gui = GetGUI();
+            return (gui != null) ? gui.GetCurrentTime() : 0;
         }
 
-        protected int getNumEntries()
+        protected int GetNumEntries()
         {
-            return (model == null) ? 0 : model.Entries;
+            return (_model == null) ? 0 : _model.Entries;
         }
 
-        protected Widget getItemRenderer(int i)
+        protected Widget GetItemRenderer(int i)
         {
-            T item = model.EntryAt(i);
+            T item = _model.EntryAt(i);
             if (item != null)
             {
-                ItemRenderer ir = (ItemRenderer) itemRenderer.GetByType(item.GetType());
+                ItemRenderer ir = (ItemRenderer)_itemRenderer.GetByType(item.GetType());
                 if (ir != null)
                 {
-                    Widget w = ir.getRenderWidget(item);
+                    Widget w = ir.GetRenderWidget(item);
                     if (w != null)
                     {
-                        if (w.getParent() != renderer)
+                        if (w.GetParent() != _renderer)
                         {
-                            w.setVisible(false);
-                            renderer.add(w);
+                            w.SetVisible(false);
+                            _renderer.Add(w);
                         }
                         return w;
                     }
@@ -373,30 +371,30 @@ namespace XNATWL
             return null;
         }
 
-        protected void startTimer()
+        protected void StartTimer()
         {
-            if (timer != null && !timer.isRunning())
+            if (_timer != null && !_timer.IsRunning())
             {
-                timer.start();
+                _timer.Start();
             }
         }
 
-        protected void stopTimer()
+        protected void StopTimer()
         {
-            if (timer != null)
+            if (_timer != null)
             {
-                timer.stop();
+                _timer.Stop();
             }
         }
 
-        protected void onTimer()
+        protected void OnTimer()
         {
-            int amount = scrollAmount;
+            int amount = _scrollAmount;
             int newAmount = amount;
 
-            if (amount == 0 && !dragActive)
+            if (amount == 0 && !_dragActive)
             {
-                amount = -scrollOffset;
+                amount = -_scrollOffset;
             }
 
             if (amount != 0)
@@ -411,202 +409,202 @@ namespace XNATWL
                     newAmount -= dir;
                 }
 
-                scrollAmount = newAmount;
-                scrollInt(dir);
+                _scrollAmount = newAmount;
+                ScrollInt(dir);
             }
         }
 
-        protected override void layout()
+        protected override void Layout()
         {
-            layoutChildFullInnerArea(renderer);
+            LayoutChildFullInnerArea(_renderer);
         }
 
-        protected override void applyTheme(ThemeInfo themeInfo)
+        protected override void ApplyTheme(ThemeInfo themeInfo)
         {
-            base.applyTheme(themeInfo);
-            applyThemeWheel(themeInfo);
+            base.ApplyTheme(themeInfo);
+            ApplyThemeWheel(themeInfo);
         }
 
-        protected void applyThemeWheel(ThemeInfo themeInfo)
+        protected void ApplyThemeWheel(ThemeInfo themeInfo)
         {
-            itemHeight = themeInfo.GetParameter("itemHeight", 10);
-            numVisibleItems = themeInfo.GetParameter("visibleItems", 5);
-            selectedOverlay = themeInfo.GetImage("selectedOverlay");
-            invalidateLayout();
+            _itemHeight = themeInfo.GetParameter("itemHeight", 10);
+            _numVisibleItems = themeInfo.GetParameter("visibleItems", 5);
+            _selectedOverlay = themeInfo.GetImage("selectedOverlay");
+            InvalidateLayout();
         }
 
-        protected override void afterAddToGUI(GUI gui)
+        protected override void AfterAddToGUI(GUI gui)
         {
-            base.afterAddToGUI(gui);
-            addListener();
-            addSelectedListener();
-            timer = gui.createTimer();
-            timer.Tick += (sender, e) =>
+            base.AfterAddToGUI(gui);
+            AddListener();
+            AddSelectedListener();
+            _timer = gui.CreateTimer();
+            _timer.Tick += (sender, e) =>
             {
-                onTimer();
+                OnTimer();
             };
-            timer.setDelay(TIMER_INTERVAL);
-            timer.setContinuous(true);
+            _timer.SetDelay(TIMER_INTERVAL);
+            _timer.SetContinuous(true);
         }
 
-        protected override void beforeRemoveFromGUI(GUI gui)
+        protected override void BeforeRemoveFromGUI(GUI gui)
         {
-            timer.stop();
-            timer = null;
-            removeListener();
-            removeSelectedListener();
-            base.beforeRemoveFromGUI(gui);
+            _timer.Stop();
+            _timer = null;
+            RemoveListener();
+            RemoveSelectedListener();
+            base.BeforeRemoveFromGUI(gui);
         }
 
-        public override void insertChild(Widget child, int index)
-        {
-            throw new InvalidOperationException();
-        }
-
-        public override void removeAllChildren()
+        public override void InsertChild(Widget child, int index)
         {
             throw new InvalidOperationException();
         }
 
-        public override Widget removeChild(int index)
+        public override void RemoveAllChildren()
         {
             throw new InvalidOperationException();
         }
 
-        private void addListener()
+        public override Widget RemoveChild(int index)
         {
-            if (model != null)
+            throw new InvalidOperationException();
+        }
+
+        private void AddListener()
+        {
+            if (_model != null)
             {
-                this.model.AllChanged += Model_AllChanged;
-                this.model.EntriesChanged += Model_EntriesChanged;
-                this.model.EntriesDeleted += Model_EntriesDeleted;
-                this.model.EntriesInserted += Model_EntriesInserted;
+                this._model.AllChanged += Model_AllChanged;
+                this._model.EntriesChanged += Model_EntriesChanged;
+                this._model.EntriesDeleted += Model_EntriesDeleted;
+                this._model.EntriesInserted += Model_EntriesInserted;
             }
         }
 
-        private void removeListener()
+        private void RemoveListener()
         {
-            if (model != null)
+            if (_model != null)
             {
-                this.model.AllChanged -= Model_AllChanged;
-                this.model.EntriesChanged -= Model_EntriesChanged;
-                this.model.EntriesDeleted -= Model_EntriesDeleted;
-                this.model.EntriesInserted -= Model_EntriesInserted;
+                this._model.AllChanged -= Model_AllChanged;
+                this._model.EntriesChanged -= Model_EntriesChanged;
+                this._model.EntriesDeleted -= Model_EntriesDeleted;
+                this._model.EntriesInserted -= Model_EntriesInserted;
             }
         }
 
         private void Model_EntriesInserted(object sender, ListSubsetChangedEventArgs e)
         {
-            this.entriesInserted(e.First, e.Last);
+            this.EntriesInserted(e.First, e.Last);
         }
 
         private void Model_EntriesDeleted(object sender, ListSubsetChangedEventArgs e)
         {
-            this.entriesDeleted(e.First, e.Last);
+            this.EntriesDeleted(e.First, e.Last);
         }
 
         private void Model_EntriesChanged(object sender, ListSubsetChangedEventArgs e)
         {
-            invalidateLayout();
+            InvalidateLayout();
         }
 
         private void Model_AllChanged(object sender, ListAllChangedEventArgs e)
         {
-            invalidateLayout();
+            InvalidateLayout();
         }
 
-        private void addSelectedListener()
+        private void AddSelectedListener()
         {
-            if (selectedModel != null)
+            if (_selectedModel != null)
             {
-                this.selectedModel.Changed += SelectedModel_Changed;
-                syncSelected();
+                this._selectedModel.Changed += SelectedModel_Changed;
+                SyncSelected();
             }
         }
 
         private void SelectedModel_Changed(object sender, IntegerChangedEventArgs e)
         {
-            syncSelected();
+            SyncSelected();
         }
 
-        private void removeSelectedListener()
+        private void RemoveSelectedListener()
         {
-            if (selectedModel != null)
+            if (_selectedModel != null)
             {
-                this.selectedModel.Changed -= SelectedModel_Changed;
+                this._selectedModel.Changed -= SelectedModel_Changed;
             }
         }
 
-        void syncSelected()
+        void SyncSelected()
         {
-            setSelected(selectedModel.Value);
+            SetSelected(_selectedModel.Value);
         }
 
-        void entriesDeleted(int first, int last)
+        void EntriesDeleted(int first, int last)
         {
-            if (selected > first)
+            if (_selected > first)
             {
-                if (selected > last)
+                if (_selected > last)
                 {
-                    setSelected(selected - (last - first + 1));
+                    SetSelected(_selected - (last - first + 1));
                 }
                 else
                 {
-                    setSelected(first);
+                    SetSelected(first);
                 }
             }
-            invalidateLayout();
+            InvalidateLayout();
         }
 
-        void entriesInserted(int first, int last)
+        void EntriesInserted(int first, int last)
         {
-            if (selected >= first)
+            if (_selected >= first)
             {
-                setSelected(selected + (last - first + 1));
+                SetSelected(_selected + (last - first + 1));
             }
-            invalidateLayout();
+            InvalidateLayout();
         }
 
         class R : Widget
         {
-            private WheelWidget<T> wheelWidget;
+            private WheelWidget<T> _wheelWidget;
 
             public R(WheelWidget<T> wheelWidget)
             {
-                this.wheelWidget = wheelWidget;
-                setTheme("");
-                setClip(true);
+                this._wheelWidget = wheelWidget;
+                SetTheme("");
+                SetClip(true);
             }
 
-            protected override void paintWidget(GUI gui)
+            protected override void PaintWidget(GUI gui)
             {
-                if (this.wheelWidget.model == null)
+                if (this._wheelWidget._model == null)
                 {
                     return;
                 }
 
-                int width = getInnerWidth();
-                int x = getInnerX();
-                int y = getInnerY();
+                int width = GetInnerWidth();
+                int x = GetInnerX();
+                int y = GetInnerY();
 
-                int numItems = this.wheelWidget.model.Entries;
-                int numDraw = this.wheelWidget.numVisibleItems;
-                int startIdx = this.wheelWidget.selected - this.wheelWidget.numVisibleItems / 2;
+                int numItems = this._wheelWidget._model.Entries;
+                int numDraw = this._wheelWidget._numVisibleItems;
+                int startIdx = this._wheelWidget._selected - this._wheelWidget._numVisibleItems / 2;
 
                 if ((numDraw & 1) == 0)
                 {
-                    y -= this.wheelWidget.itemHeight / 2;
+                    y -= this._wheelWidget._itemHeight / 2;
                     numDraw++;
                 }
 
-                if (this.wheelWidget.scrollOffset > 0)
+                if (this._wheelWidget._scrollOffset > 0)
                 {
-                    y -= this.wheelWidget.scrollOffset;
+                    y -= this._wheelWidget._scrollOffset;
                     numDraw++;
                 }
-                if (this.wheelWidget.scrollOffset < 0)
+                if (this._wheelWidget._scrollOffset < 0)
                 {
-                    y -= this.wheelWidget.itemHeight + this.wheelWidget.scrollOffset;
+                    y -= this._wheelWidget._itemHeight + this._wheelWidget._scrollOffset;
                     numDraw++;
                     startIdx--;
                 }
@@ -618,7 +616,7 @@ namespace XNATWL
                     bool breakAndContinue = false;
                     while (idx < 0)
                     {
-                        if (!this.wheelWidget.cyclic)
+                        if (!this._wheelWidget._cyclic)
                         {
                             breakAndContinue = true;
                             break;
@@ -633,7 +631,7 @@ namespace XNATWL
 
                     while (idx >= numItems)
                     {
-                        if (!this.wheelWidget.cyclic)
+                        if (!this._wheelWidget._cyclic)
                         {
                             breakAndContinue = true;
                             break;
@@ -646,22 +644,22 @@ namespace XNATWL
                         continue;
                     }
 
-                    Widget w = this.wheelWidget.getItemRenderer(idx);
+                    Widget w = this._wheelWidget.GetItemRenderer(idx);
                     if (w != null)
                     {
-                        w.setSize(width, this.wheelWidget.itemHeight);
-                        w.setPosition(x, y + i * this.wheelWidget.itemHeight);
-                        w.validateLayout();
-                        paintChild(gui, w);
+                        w.SetSize(width, this._wheelWidget._itemHeight);
+                        w.SetPosition(x, y + i * this._wheelWidget._itemHeight);
+                        w.ValidateLayout();
+                        PaintChild(gui, w);
                     }
                 }
             }
 
-            public override void invalidateLayout()
+            public override void InvalidateLayout()
             {
             }
 
-            protected override void sizeChanged()
+            protected override void SizeChanged()
             {
             }
         }
@@ -670,16 +668,16 @@ namespace XNATWL
         {
             public StringItemRenderer()
             {
-                setCache(false);
+                SetCache(false);
             }
 
-            public Widget getRenderWidget(Object data)
+            public Widget GetRenderWidget(Object data)
             {
-                setText(data.ToString());
+                SetText(data.ToString());
                 return this;
             }
 
-            protected override void sizeChanged()
+            protected override void SizeChanged()
             {
             }
         }

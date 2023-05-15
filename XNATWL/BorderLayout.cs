@@ -36,8 +36,8 @@ namespace XNATWL
 
     public class BorderLayout : Widget
     {
-        private Dictionary<Location, Widget> widgets;
-        private int hgap, vgap;
+        private Dictionary<Location, Widget> _widgets;
+        private int _hGap, _vGap;
 
         /**
          * The location of a widget in the BorderLayout.
@@ -49,7 +49,7 @@ namespace XNATWL
 
         public BorderLayout()
         {
-            widgets = new Dictionary<BorderLayout.Location, Widget>();
+            _widgets = new Dictionary<BorderLayout.Location, Widget>();
         }
 
         /**
@@ -60,31 +60,27 @@ namespace XNATWL
          * @param widget the widget to add
          * @param location the location to set the widget to
          */
-        public void add(Widget widget, Location location)
+        public void Add(Widget widget, Location location)
         {
             if (widget == null)
             {
                 throw new ArgumentNullException("widget is null");
             }
-            if (location == null)
-            {
-                throw new ArgumentNullException("location is null");
-            }
-            if (widgets.ContainsKey(location))
+
+            if (_widgets.ContainsKey(location))
             {
                 throw new ArgumentOutOfRangeException("a widget was already added to that location: " + location);
             }
 
-            widgets.Add(location, widget);
+            _widgets.Add(location, widget);
             try
             {
-                base.insertChild(widget, getNumChildren());
+                base.InsertChild(widget, GetNumChildren());
             }
             catch (Exception e)
             {
-                removeChild(location);
+                RemoveChild(location);
             }
-
         }
 
         /**
@@ -92,13 +88,9 @@ namespace XNATWL
          * @return the child at the specific
          * <code>location</code> or null if there is no child.
          */
-        public Widget getChild(Location location)
+        public Widget GetChild(Location location)
         {
-            if (location == null)
-            {
-                throw new ArgumentNullException("location is null");
-            }
-            return widgets[location];
+            return _widgets[location];
         }
 
         /**
@@ -108,17 +100,13 @@ namespace XNATWL
          * @param location the location to remove
          * @return the removed widget or null if there is no child.
          */
-        public Widget removeChild(Location location)
+        public Widget RemoveChild(Location location)
         {
-            if (location == null)
-            {
-                throw new ArgumentNullException("location is null");
-            }
-            Widget w = widgets[location];
-            widgets.Remove(location);
+            Widget w = _widgets[location];
+            _widgets.Remove(location);
             if (w != null)
             {
-                removeChild(w);
+                RemoveChild(w);
             }
 
             return w;
@@ -127,9 +115,9 @@ namespace XNATWL
         /**
          * Adds the widget to the center location of the layout.
          */
-        public override void add(Widget child)
+        public override void Add(Widget child)
         {
-            add(child, Location.CENTER);
+            Add(child, Location.CENTER);
         }
 
         /**
@@ -137,187 +125,191 @@ namespace XNATWL
          *
          * @throws UnsupportedOperationException
          */
-        public override void insertChild(Widget child, int index)
+        public override void InsertChild(Widget child, int index)
         {
             throw new InvalidOperationException("insert child is not supported by the BorderLayout");
         }
 
-        protected override void childRemoved(Widget exChild)
+        protected override void ChildRemoved(Widget exChild)
         {
-            foreach (Location loc in widgets.Keys)
+            foreach (Location loc in _widgets.Keys)
             {
-                if (widgets[loc] == exChild)
+                if (_widgets[loc] == exChild)
                 {
-                    widgets.Remove(loc);
+                    _widgets.Remove(loc);
                     break;
                 }
             }
-            base.childRemoved(exChild);
+            base.ChildRemoved(exChild);
         }
 
-        protected override void allChildrenRemoved()
+        protected override void AllChildrenRemoved()
         {
-            widgets.Clear();
-            base.allChildrenRemoved();
+            _widgets.Clear();
+            base.AllChildrenRemoved();
         }
 
-        protected override void applyTheme(ThemeInfo themeInfo)
+        protected override void ApplyTheme(ThemeInfo themeInfo)
         {
-            hgap = themeInfo.GetParameter("hgap", 0);
-            vgap = themeInfo.GetParameter("vgap", 0);
+            _hGap = themeInfo.GetParameter("hgap", 0);
+            _vGap = themeInfo.GetParameter("vgap", 0);
 
-            base.applyTheme(themeInfo);
+            base.ApplyTheme(themeInfo);
         }
 
-        protected override void layout()
+        protected override void Layout()
         {
-            int top = getInnerY();
-            int bottom = getInnerBottom();
-            int left = getInnerX();
-            int right = getInnerRight();
+            int top = GetInnerY();
+            int bottom = GetInnerBottom();
+            int left = GetInnerX();
+            int right = GetInnerRight();
             Widget w;
 
-            if ((w = widgets[Location.NORTH]) != null)
+            if ((w = _widgets[Location.NORTH]) != null)
             {
-                w.setPosition(left, top);
-                w.setSize(Math.Max(right - left, 0), Math.Max(w.getPreferredHeight(), 0));
-                top += w.getPreferredHeight() + vgap;
+                w.SetPosition(left, top);
+                w.SetSize(Math.Max(right - left, 0), Math.Max(w.GetPreferredHeight(), 0));
+                top += w.GetPreferredHeight() + _vGap;
             }
-            if ((w = widgets[Location.SOUTH]) != null)
+            if ((w = _widgets[Location.SOUTH]) != null)
             {
-                w.setPosition(left, bottom - w.getPreferredHeight());
-                w.setSize(Math.Max(right - left, 0), Math.Max(w.getPreferredHeight(), 0));
-                bottom -= w.getPreferredHeight() + vgap;
+                w.SetPosition(left, bottom - w.GetPreferredHeight());
+                w.SetSize(Math.Max(right - left, 0), Math.Max(w.GetPreferredHeight(), 0));
+                bottom -= w.GetPreferredHeight() + _vGap;
             }
-            if ((w = widgets[Location.EAST]) != null)
+            if ((w = _widgets[Location.EAST]) != null)
             {
-                w.setPosition(right - w.getPreferredWidth(), top);
-                w.setSize(Math.Max(w.getPreferredWidth(), 0), Math.Max(bottom - top, 0));
-                right -= w.getPreferredWidth() + hgap;
+                w.SetPosition(right - w.GetPreferredWidth(), top);
+                w.SetSize(Math.Max(w.GetPreferredWidth(), 0), Math.Max(bottom - top, 0));
+                right -= w.GetPreferredWidth() + _hGap;
             }
-            if ((w = widgets[Location.WEST]) != null)
+            if ((w = _widgets[Location.WEST]) != null)
             {
-                w.setPosition(left, top);
-                w.setSize(Math.Max(w.getPreferredWidth(), 0), Math.Max(bottom - top, 0));
-                left += w.getPreferredWidth() + hgap;
+                w.SetPosition(left, top);
+                w.SetSize(Math.Max(w.GetPreferredWidth(), 0), Math.Max(bottom - top, 0));
+                left += w.GetPreferredWidth() + _hGap;
             }
-            if ((w = widgets[Location.CENTER]) != null)
+            if ((w = _widgets[Location.CENTER]) != null)
             {
-                w.setPosition(left, top);
-                w.setSize(Math.Max(right - left, 0), Math.Max(bottom - top, 0));
+                w.SetPosition(left, top);
+                w.SetSize(Math.Max(right - left, 0), Math.Max(bottom - top, 0));
             }
         }
 
-        public override int getMinWidth()
+        public override int GetMinWidth()
         {
-            return computeMinWidth();
+            return ComputeMinWidth();
         }
 
-        public override int getMinHeight()
+        public override int GetMinHeight()
         {
-            return computeMinHeight();
+            return ComputeMinHeight();
         }
 
-        public override int getPreferredInnerWidth()
+        public override int GetPreferredInnerWidth()
         {
-            return computePrefWidth();
+            return ComputePrefWidth();
         }
 
-        public override int getPreferredInnerHeight()
+        public override int GetPreferredInnerHeight()
         {
-            return computePrefHeight();
+            return ComputePrefHeight();
         }
 
-        private int computeMinWidth()
+        private int ComputeMinWidth()
         {
             int size = 0;
 
-            size += getChildMinWidth(widgets[Location.EAST], hgap);
-            size += getChildMinWidth(widgets[Location.WEST], hgap);
-            size += getChildMinWidth(widgets[Location.CENTER], 0);
+            size += GetChildMinWidth(_widgets[Location.EAST], _hGap);
+            size += GetChildMinWidth(_widgets[Location.WEST], _hGap);
+            size += GetChildMinWidth(_widgets[Location.CENTER], 0);
 
-            size = Math.Max(size, getChildMinWidth(widgets[Location.NORTH], 0));
-            size = Math.Max(size, getChildMinWidth(widgets[Location.SOUTH], 0));
+            size = Math.Max(size, GetChildMinWidth(_widgets[Location.NORTH], 0));
+            size = Math.Max(size, GetChildMinWidth(_widgets[Location.SOUTH], 0));
 
             return size;
         }
 
-        private int computeMinHeight()
+        private int ComputeMinHeight()
         {
             int size = 0;
 
-            size = Math.Max(size, getChildMinHeight(widgets[Location.EAST], 0));
-            size = Math.Max(size, getChildMinHeight(widgets[Location.WEST], 0));
-            size = Math.Max(size, getChildMinHeight(widgets[Location.CENTER], 0));
+            size = Math.Max(size, GetChildMinHeight(_widgets[Location.EAST], 0));
+            size = Math.Max(size, GetChildMinHeight(_widgets[Location.WEST], 0));
+            size = Math.Max(size, GetChildMinHeight(_widgets[Location.CENTER], 0));
 
-            size += getChildMinHeight(widgets[Location.NORTH], vgap);
-            size += getChildMinHeight(widgets[Location.SOUTH], vgap);
+            size += GetChildMinHeight(_widgets[Location.NORTH], _vGap);
+            size += GetChildMinHeight(_widgets[Location.SOUTH], _vGap);
 
             return size;
         }
 
-        private int computePrefWidth()
+        private int ComputePrefWidth()
         {
             int size = 0;
 
-            size += getChildPrefWidth(widgets[Location.EAST], hgap);
-            size += getChildPrefWidth(widgets[Location.WEST], hgap);
-            size += getChildPrefWidth(widgets[Location.CENTER], 0);
+            size += GetChildPrefWidth(_widgets[Location.EAST], _hGap);
+            size += GetChildPrefWidth(_widgets[Location.WEST], _hGap);
+            size += GetChildPrefWidth(_widgets[Location.CENTER], 0);
 
-            size = Math.Max(size, getChildPrefWidth(widgets[Location.NORTH], 0));
-            size = Math.Max(size, getChildPrefWidth(widgets[Location.SOUTH], 0));
+            size = Math.Max(size, GetChildPrefWidth(_widgets[Location.NORTH], 0));
+            size = Math.Max(size, GetChildPrefWidth(_widgets[Location.SOUTH], 0));
 
             return size;
         }
 
-        private int computePrefHeight()
+        private int ComputePrefHeight()
         {
             int size = 0;
 
-            size = Math.Max(size, getChildPrefHeight(widgets[Location.EAST], 0));
-            size = Math.Max(size, getChildPrefHeight(widgets[Location.WEST], 0));
-            size = Math.Max(size, getChildPrefHeight(widgets[Location.CENTER], 0));
+            size = Math.Max(size, GetChildPrefHeight(_widgets[Location.EAST], 0));
+            size = Math.Max(size, GetChildPrefHeight(_widgets[Location.WEST], 0));
+            size = Math.Max(size, GetChildPrefHeight(_widgets[Location.CENTER], 0));
 
-            size += getChildPrefHeight(widgets[Location.NORTH], vgap);
-            size += getChildPrefHeight(widgets[Location.SOUTH], vgap);
+            size += GetChildPrefHeight(_widgets[Location.NORTH], _vGap);
+            size += GetChildPrefHeight(_widgets[Location.SOUTH], _vGap);
 
             return size;
         }
 
         // return 0 since a child of the BorderLayout can be null
-        private int getChildMinWidth(Widget w, int gap)
+        private int GetChildMinWidth(Widget w, int gap)
         {
             if (w != null)
             {
-                return w.getMinWidth() + gap;
+                return w.GetMinWidth() + gap;
             }
+
             return 0;
         }
 
-        private int getChildMinHeight(Widget w, int gap)
+        private int GetChildMinHeight(Widget w, int gap)
         {
             if (w != null)
             {
-                return w.getMinHeight() + gap;
+                return w.GetMinHeight() + gap;
             }
+
             return 0;
         }
 
-        private int getChildPrefWidth(Widget w, int gap)
+        private int GetChildPrefWidth(Widget w, int gap)
         {
             if (w != null)
             {
-                return computeSize(w.getMinWidth(), w.getPreferredWidth(), w.getMaxWidth()) + gap;
+                return ComputeSize(w.GetMinWidth(), w.GetPreferredWidth(), w.GetMaxWidth()) + gap;
             }
+
             return 0;
         }
 
-        private int getChildPrefHeight(Widget w, int gap)
+        private int GetChildPrefHeight(Widget w, int gap)
         {
             if (w != null)
             {
-                return computeSize(w.getMinHeight(), w.getPreferredHeight(), w.getMaxHeight()) + gap;
+                return ComputeSize(w.GetMinHeight(), w.GetPreferredHeight(), w.GetMaxHeight()) + gap;
             }
+
             return 0;
         }
     }

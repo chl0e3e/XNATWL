@@ -316,7 +316,7 @@ namespace XNATWL.TextAreaModel
                             }
                             catch (IOException ex)
                             {
-                                Logger.GetLogger(typeof(StyleSheet)).log(Level.SEVERE,
+                                Logger.GetLogger(typeof(StyleSheet)).Log(Level.SEVERE,
                                         "Could not register font: " + url, ex);
                             }
                         }

@@ -34,43 +34,50 @@ namespace XNATWL
 {
     public class DesktopArea : Widget
     {
-        public DesktopArea() {
-            setFocusKeyEnabled(false);
+        public DesktopArea()
+        {
+            SetFocusKeyEnabled(false);
         }
 
-        protected override void keyboardFocusChildChanged(Widget child) {
-            base.keyboardFocusChildChanged(child);
-            if(child != null) {
-                int fromIdx = getChildIndex(child);
+        protected override void KeyboardFocusChildChanged(Widget child)
+        {
+            base.KeyboardFocusChildChanged(child);
+            if (child != null)
+            {
+                int fromIdx = GetChildIndex(child);
                 System.Diagnostics.Debug.Assert(fromIdx >= 0);
-                int numChildren = getNumChildren();
-                if(fromIdx < numChildren - 1) {
-                    moveChild(fromIdx, numChildren - 1);
+                int numChildren = GetNumChildren();
+                if (fromIdx < numChildren - 1)
+                {
+                    MoveChild(fromIdx, numChildren - 1);
                 }
             }
         }
 
-        protected override void layout() {
+        protected override void Layout()
+        {
             // make sure that all children are still inside
-            restrictChildrenToInnerArea();
+            RestrictChildrenToInnerArea();
         }
 
-        protected void restrictChildrenToInnerArea() {
-            int top = getInnerY();
-            int left = getInnerX();
-            int right = getInnerRight();
-            int bottom = getInnerBottom();
-            int width = Math.Max(0, right-left);
-            int height = Math.Max(0, bottom-top);
+        protected void RestrictChildrenToInnerArea()
+        {
+            int top = GetInnerY();
+            int left = GetInnerX();
+            int right = GetInnerRight();
+            int bottom = GetInnerBottom();
+            int width = Math.Max(0, right - left);
+            int height = Math.Max(0, bottom - top);
 
-            for(int i=0,n=getNumChildren() ; i<n ; i++) {
-                Widget w = getChild(i);
-                w.setSize(
-                        Math.Min(Math.Max(width, w.getMinWidth()), w.getWidth()),
-                        Math.Min(Math.Max(height, w.getMinHeight()), w.getHeight()));
-                w.setPosition(
-                        Math.Max(left, Math.Min(right - w.getWidth(), w.getX())),
-                        Math.Max(top, Math.Min(bottom - w.getHeight(), w.getY())));
+            for (int i = 0, n = GetNumChildren(); i < n; i++)
+            {
+                Widget w = GetChild(i);
+                w.SetSize(
+                        Math.Min(Math.Max(width, w.GetMinWidth()), w.GetWidth()),
+                        Math.Min(Math.Max(height, w.GetMinHeight()), w.GetHeight()));
+                w.SetPosition(
+                        Math.Max(left, Math.Min(right - w.GetWidth(), w.GetX())),
+                        Math.Max(top, Math.Min(bottom - w.GetHeight(), w.GetY())));
             }
         }
 

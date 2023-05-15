@@ -43,7 +43,7 @@ namespace XNATWL.Theme
             this._parameters = new List<Object>();
         }
 
-        public int getSize()
+        public int GetSize()
         {
             return _parameters.Count;
         }
@@ -186,7 +186,7 @@ namespace XNATWL.Theme
 
         protected void WrongParameterType(int idx, Type expectedType, Type foundType)
         {
-            DebugHook.getDebugHook().wrongParameterType(this, idx, expectedType, foundType, GetParentDescription());
+            DebugHook.getDebugHook().WrongParameterType(this, idx, expectedType, foundType, GetParentDescription());
         }
     }
 }

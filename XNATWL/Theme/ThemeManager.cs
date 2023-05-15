@@ -251,7 +251,7 @@ namespace XNATWL.Theme
                     {
                         return null;
                     }
-                    DebugHook.getDebugHook().usingFallbackTheme(themePath);
+                    DebugHook.getDebugHook().UsingFallbackTheme(themePath);
                 }
             }
             while (info != null && ++start < themePath.Length)
@@ -262,7 +262,7 @@ namespace XNATWL.Theme
             }
             if (info == null && warn)
             {
-                DebugHook.getDebugHook().missingTheme(themePath);
+                DebugHook.getDebugHook().MissingTheme(themePath);
             }
             return info;
         }
@@ -277,7 +277,7 @@ namespace XNATWL.Theme
             Image img = _imageManager.GetImage(name);
             if (img == null)
             {
-                DebugHook.getDebugHook().missingImage(name);
+                DebugHook.getDebugHook().MissingImage(name);
             }
             return img;
         }
@@ -362,7 +362,7 @@ namespace XNATWL.Theme
                     }
                     catch (ThemeException ex)
                     {
-                        ex.addIncludedBy(baseFso, xmlp.GetLineNumber(), xmlp.GetColumnNumber());
+                        ex.AddIncludedBy(baseFso, xmlp.GetLineNumber(), xmlp.GetColumnNumber());
                         throw ex;
                     }
                     xmlp.NextTag();
@@ -435,7 +435,7 @@ namespace XNATWL.Theme
 
         private InputMap ParseInputMap(XMLParser xmlp, string name, ThemeInfoImpl parent)
         {
-            InputMap baseMap = InputMap.empty();
+            InputMap baseMap = InputMap.Empty();
             if (xmlp.ParseBoolFromAttribute("merge", false))
             {
                 if (parent == null)
@@ -455,13 +455,13 @@ namespace XNATWL.Theme
             string baseName = xmlp.GetAttributeValue(null, "ref");
             if (baseName != null)
             {
-                baseMap = baseMap.addKeyStrokes(GetInputMap(xmlp, baseName));
+                baseMap = baseMap.AddKeyStrokes(GetInputMap(xmlp, baseName));
             }
 
             xmlp.NextTag();
 
-            LinkedHashSet<KeyStroke> keyStrokes = InputMap.parseBody(xmlp);
-            InputMap im = baseMap.addKeyStrokes(keyStrokes);
+            LinkedHashSet<KeyStroke> keyStrokes = InputMap.ParseBody(xmlp);
+            InputMap im = baseMap.AddKeyStrokes(keyStrokes);
             return im;
         }
 
@@ -555,7 +555,7 @@ namespace XNATWL.Theme
                     if (type != null)
                     {
                         string value = xmlp.GetAttributeValue(i);
-                        Type dataClass = type.getDataClass();
+                        Type dataClass = type.GetDataClass();
 
                         if (dataClass == typeof(Color))
                         {

@@ -93,7 +93,7 @@ namespace XNATWL.Renderer
                     return (T) raw;
                 }
             }
-            return param.getDefaultValue();
+            return param.GetDefaultValue();
         }
 
         /**
@@ -204,17 +204,17 @@ namespace XNATWL.Renderer
                 this._ordinal = ordinal;
             }
 
-            public String getName()
+            public String GetName()
             {
                 return _name;
             }
 
-            public Type getDataClass()
+            public Type GetDataClass()
             {
                 return _dataClass;
             }
 
-            public object getDefaultValue()
+            public object GetDefaultValue()
             {
                 return _defaultValue;
             }
@@ -232,7 +232,7 @@ namespace XNATWL.Renderer
 
             }
 
-            public new T getDefaultValue()
+            public new T GetDefaultValue()
             {
                 return (T) _defaultValue;
             }

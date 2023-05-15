@@ -11,53 +11,53 @@ namespace XNATWL.Test
 {
     public class TreeTableDemoDialog1 : FadeFrame
     {
-        private ScrollPane scrollPane;
-        private Timer timer;
-        private MyNode dynamicNode;
+        private ScrollPane _scrollPane;
+        private Timer _timer;
+        private MyNode _dynamicNode;
 
         public TreeTableDemoDialog1(Preferences preferences)
         {
             MyModel m = new MyModel();
             PersistentStringModel psm = new PersistentStringModel(preferences, "demoEditField", "you can edit this");
 
-            MyNode a = m.insert("A", "1");
-            a.insert("Aa", "2");
-            a.insert("Ab", "3");
-            MyNode ac = a.insert("Ac", "4");
-            ac.insert("Ac1", "Hello");
-            ac.insert("Ac2", "World");
-            ac.insert("EditField", psm);
-            a.insert("Ad", "5");
-            MyNode b = m.insert("B", "6");
-            b.insert("Ba", "7");
-            b.insert("Bb", "8");
-            b.insert("Bc", "9");
-            dynamicNode = b.insert("Dynamic", "stuff");
-            m.insert(new SpanString("This is a very long string which will span into the next column.", 2), "Not visible");
-            m.insert("This is a very long string which will be clipped.", "This is visible");
+            MyNode a = m.Insert("A", "1");
+            a.Insert("Aa", "2");
+            a.Insert("Ab", "3");
+            MyNode ac = a.Insert("Ac", "4");
+            ac.Insert("Ac1", "Hello");
+            ac.Insert("Ac2", "World");
+            ac.Insert("EditField", psm);
+            a.Insert("Ad", "5");
+            MyNode b = m.Insert("B", "6");
+            b.Insert("Ba", "7");
+            b.Insert("Bb", "8");
+            b.Insert("Bc", "9");
+            _dynamicNode = b.Insert("Dynamic", "stuff");
+            m.Insert(new SpanString("This is a very long string which will span into the next column.", 2), "Not visible");
+            m.Insert("This is a very long string which will be clipped.", "This is visible");
 
             TreeTable t = new TreeTable(m);
-            t.setTheme("/table");
-            t.registerCellRenderer(typeof(SpanString), new SpanRenderer());
-            t.registerCellRenderer(typeof(PersistentStringModel), new EditFieldCellRenderer());
-            t.setDefaultSelectionManager();
+            t.SetTheme("/table");
+            t.RegisterCellRenderer(typeof(SpanString), new SpanRenderer());
+            t.RegisterCellRenderer(typeof(PersistentStringModel), new EditFieldCellRenderer());
+            t.SetDefaultSelectionManager();
 
-            scrollPane = new ScrollPane(t);
-            scrollPane.setTheme("/tableScrollPane");
+            _scrollPane = new ScrollPane(t);
+            _scrollPane.SetTheme("/tableScrollPane");
 
-            setTheme("scrollPaneDemoDialog1");
-            setTitle("Dynamic TreeTable");
-            add(scrollPane);
+            SetTheme("scrollPaneDemoDialog1");
+            SetTitle("Dynamic TreeTable");
+            Add(_scrollPane);
         }
 
-        protected override void afterAddToGUI(GUI gui)
+        protected override void AfterAddToGUI(GUI gui)
         {
-            base.afterAddToGUI(gui);
-            timer = gui.createTimer();
-            timer.Tick += Timer_Tick;
-            timer.setDelay(1500);
-            timer.setContinuous(true);
-            timer.start();
+            base.AfterAddToGUI(gui);
+            _timer = gui.CreateTimer();
+            _timer.Tick += Timer_Tick;
+            _timer.SetDelay(1500);
+            _timer.SetContinuous(true);
+            _timer.Start();
         }
 
         private void Timer_Tick(object sender, TimerTickEventArgs e)
@@ -66,42 +66,42 @@ namespace XNATWL.Test
             switch (state++)
             {
                 case 0:
-                    dynamicNode.insert("Counting", "3...");
+                    _dynamicNode.Insert("Counting", "3...");
                     break;
                 case 1:
-                    dynamicNode.insert("Counting", "2...");
+                    _dynamicNode.Insert("Counting", "2...");
                     break;
                 case 2:
-                    dynamicNode.insert("Counting", "1...");
+                    _dynamicNode.Insert("Counting", "1...");
                     break;
                 case 3:
-                    subNode = dynamicNode.insert("this is a", "folder");
+                    subNode = _dynamicNode.Insert("this is a", "folder");
                     break;
                 case 4:
-                    subNode.insert("first", "entry");
+                    subNode.Insert("first", "entry");
                     break;
                 case 5:
-                    subNode.insert("now starting to remove", "counter");
+                    subNode.Insert("now starting to remove", "counter");
                     break;
                 case 6:
                 case 7:
                 case 8:
-                    dynamicNode.remove(0);
+                    _dynamicNode.Remove(0);
                     break;
                 case 9:
-                    subNode.insert("last", "entry");
+                    subNode.Insert("last", "entry");
                     break;
                 case 10:
-                    dynamicNode.insert("now removing", "folder");
+                    _dynamicNode.Insert("now removing", "folder");
                     break;
                 case 11:
-                    dynamicNode.remove(0);
+                    _dynamicNode.Remove(0);
                     break;
                 case 12:
-                    dynamicNode.insert("starting", "again");
+                    _dynamicNode.Insert("starting", "again");
                     break;
                 case 13:
-                    dynamicNode.removeAll();
+                    _dynamicNode.RemoveAll();
                     state = 0;
                     break;
             }
@@ -110,31 +110,31 @@ namespace XNATWL.Test
         int state;
         MyNode subNode;
 
-        public void centerScrollPane()
+        public void CenterScrollPane()
         {
-            scrollPane.updateScrollbarSizes();
-            scrollPane.setScrollPositionX(scrollPane.getMaxScrollPosX() / 2);
-            scrollPane.setScrollPositionY(scrollPane.getMaxScrollPosY() / 2);
+            _scrollPane.UpdateScrollbarSizes();
+            _scrollPane.SetScrollPositionX(_scrollPane.GetMaxScrollPosX() / 2);
+            _scrollPane.SetScrollPositionY(_scrollPane.GetMaxScrollPosY() / 2);
         }
 
         class MyNode : AbstractTreeTableNode
         {
-            private Object str0;
-            private Object str1;
+            private Object _str0;
+            private Object _str1;
 
             public MyNode(TreeTableNode parent, Object str0, Object str1) : base(parent)
             {
-                this.str0 = str0;
-                this.str1 = str1;
+                this._str0 = str0;
+                this._str1 = str1;
                 IsLeaf = true;
             }
 
             public override Object DataAtColumn(int column)
             {
-                return (column == 0) ? str0 : str1;
+                return (column == 0) ? _str0 : _str1;
             }
 
-            public MyNode insert(Object str0, Object str1)
+            public MyNode Insert(Object str0, Object str1)
             {
                 MyNode n = new MyNode(this, str0, str1);
                 InsertChild(n, this.Children);
@@ -142,12 +142,12 @@ namespace XNATWL.Test
                 return n;
             }
 
-            public void remove(int idx)
+            public void Remove(int idx)
             {
                 RemoveChild(idx);
             }
 
-            public void removeAll()
+            public void RemoveAll()
             {
                 RemoveAllChildren();
             }
@@ -169,7 +169,7 @@ namespace XNATWL.Test
                 }
             }
 
-            public MyNode insert(Object str0, String str1)
+            public MyNode Insert(Object str0, String str1)
             {
                 MyNode n = new MyNode(this, str0, str1);
                 base.InsertChildAt(n, this.Children);
@@ -184,97 +184,96 @@ namespace XNATWL.Test
 
         class SpanString
         {
-            private String str;
-            private int span;
+            private String _str;
+            private int _span;
 
             public int Span
             {
                 get
                 {
-                    return span;
+                    return _span;
                 }
             }
 
             public SpanString(String str, int span)
             {
-                this.str = str;
-                this.span = span;
+                this._str = str;
+                this._span = span;
             }
 
             public override String ToString()
             {
-                return str;
+                return _str;
             }
         }
 
         class SpanRenderer : TreeTable.StringCellRenderer
         {
-            int span;
+            int _span;
 
-            public override void setCellData(int row, int column, Object data)
+            public override void SetCellData(int row, int column, Object data)
             {
-                base.setCellData(row, column, data);
-                span = ((SpanString)data).Span;
+                base.SetCellData(row, column, data);
+                _span = ((SpanString)data).Span;
             }
 
-            public override int getColumnSpan()
+            public override int GetColumnSpan()
             {
-                return span;
+                return _span;
             }
         }
 
         class EditFieldCellRenderer : TreeTable.CellWidgetCreator
         {
-            private StringModel model;
-            private int editFieldHeight;
+            private StringModel _model;
+            private int _editFieldHeight;
 
-            public Widget updateWidget(Widget existingWidget)
+            public Widget UpdateWidget(Widget existingWidget)
             {
                 EditField ef = (EditField)existingWidget;
                 if (ef == null)
                 {
                     ef = new EditField();
                 }
-                ef.setModel(model);
+                ef.SetModel(_model);
                 return ef;
             }
 
-            public void positionWidget(Widget widget, int x, int y, int w, int h)
+            public void PositionWidget(Widget widget, int x, int y, int w, int h)
             {
-                widget.setPosition(x, y);
-                widget.setSize(w, h);
+                widget.SetPosition(x, y);
+                widget.SetSize(w, h);
             }
 
-            public void applyTheme(ThemeInfo themeInfo)
+            public void ApplyTheme(ThemeInfo themeInfo)
             {
-                editFieldHeight = themeInfo.GetParameter("editFieldHeight", 10);
+                _editFieldHeight = themeInfo.GetParameter("editFieldHeight", 10);
             }
 
-            public String getTheme()
+            public String GetTheme()
             {
                 return "EditFieldCellRenderer";
             }
 
-            public void setCellData(int row, int column, Object data)
+            public void SetCellData(int row, int column, Object data)
             {
-                this.model = (StringModel)data;
+                this._model = (StringModel)data;
             }
 
-            public int getColumnSpan()
+            public int GetColumnSpan()
             {
                 return 1;
             }
 
-            public int getPreferredHeight()
+            public int GetPreferredHeight()
             {
-                return editFieldHeight;
+                return _editFieldHeight;
             }
 
-            public Widget getCellRenderWidget(int x, int y, int width, int height, bool isSelected)
+            public Widget GetCellRenderWidget(int x, int y, int width, int height, bool isSelected)
             {
                 return null;
             }
         }
     }
-
 }

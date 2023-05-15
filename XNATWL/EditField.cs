@@ -42,40 +42,40 @@ namespace XNATWL
         public static StateKey STATE_HOVER = StateKey.Get("hover");
         public static StateKey STATE_CURSOR_MOVED = StateKey.Get("cursorMoved");
 
-        EditFieldModel editBuffer;
-        private TextRenderer textRenderer;
-        private PasswordMasker passwordMasking;
-        private StringModel model;
-        private bool readOnly;
-        StringAttributes attributes;
+        EditFieldModel _editBuffer;
+        private TextRenderer _textRenderer;
+        private PasswordMasker _passwordMasking;
+        private StringModel _model;
+        private bool _readOnly;
+        StringAttributes _attributes;
 
-        private int cursorPos;
-        int scrollPos;
-        int selectionStart;
-        int selectionEnd;
-        int numberOfLines;
-        bool multiLine;
-        bool pendingScrollToCursor;
-        bool pendingScrollToCursorForce;
-        private int maxTextLength = short.MaxValue;
+        private int _cursorPos;
+        int _scrollPos;
+        int _selectionStart;
+        int _selectionEnd;
+        int _numberOfLines;
+        bool _multiLine;
+        bool _pendingScrollToCursor;
+        bool _pendingScrollToCursorForce;
+        private int _maxTextLength = short.MaxValue;
 
-        private int columns = 5;
-        private Image cursorImage;
-        Image selectionImage;
-        private char passwordChar;
-        private Object errorMsg;
-        private bool errorMsgFromModel;
-        private Menu popupMenu;
-        private bool textLongerThenWidget;
-        private bool forwardUnhandledKeysToCallback;
-        private bool autoCompletionOnSetText = true;
-        bool scrollToCursorOnSizeChange = true;
+        private int _columns = 5;
+        private Image _cursorImage;
+        Image _selectionImage;
+        private char _passwordChar;
+        private Object _errorMsg;
+        private bool _errorMsgFromModel;
+        private Menu _popupMenu;
+        private bool _textLongerThenWidget;
+        private bool _forwardUnhandledKeysToCallback;
+        private bool _autoCompletionOnSetText = true;
+        bool _scrollToCursorOnSizeChange = true;
 
-        private EditFieldAutoCompletionWindow autoCompletionWindow;
-        private int autoCompletionHeight = 100;
+        private EditFieldAutoCompletionWindow _autoCompletionWindow;
+        private int _autoCompletionHeight = 100;
 
-        private InfoWindow errorInfoWindow;
-        private Label errorInfoLabel;
+        private InfoWindow _errorInfoWindow;
+        private Label _errorInfoLabel;
 
         public event EventHandler<EditFieldCallbackEventArgs> Callback;
 
@@ -97,22 +97,22 @@ namespace XNATWL
                 throw new NullReferenceException("editFieldModel");
             }
 
-            this.editBuffer = editFieldModel;
-            this.textRenderer = new TextRenderer(this, getAnimationState());
-            this.passwordChar = '*';
+            this._editBuffer = editFieldModel;
+            this._textRenderer = new TextRenderer(this, GetAnimationState());
+            this._passwordChar = '*';
 
-            textRenderer.setTheme("renderer");
-            textRenderer.setClip(true);
+            _textRenderer.SetTheme("renderer");
+            _textRenderer.SetClip(true);
 
-            add(textRenderer);
-            setCanAcceptKeyboardFocus(true);
-            setDepthFocusTraversal(false);
+            Add(_textRenderer);
+            SetCanAcceptKeyboardFocus(true);
+            SetDepthFocusTraversal(false);
 
-            addActionMapping("cut", "cutToClipboard");
-            addActionMapping("copy", "copyToClipboard");
-            addActionMapping("paste", "pasteFromClipboard");
-            addActionMapping("selectAll", "selectAll");
-            addActionMapping("duplicateLineDown", "duplicateLineDown");
+            AddActionMapping("cut", "CutToClipboard");
+            AddActionMapping("copy", "CopyToClipboard");
+            AddActionMapping("paste", "PasteFromClipboard");
+            AddActionMapping("selectAll", "SelectAll");
+            AddActionMapping("duplicateLineDown", "DuplicateLineDown");
         }
 
         /**
@@ -136,9 +136,9 @@ namespace XNATWL
         }
 
 
-        public bool isForwardUnhandledKeysToCallback()
+        public bool IsForwardUnhandledKeysToCallback()
         {
-            return forwardUnhandledKeysToCallback;
+            return _forwardUnhandledKeysToCallback;
         }
 
         /**
@@ -148,14 +148,14 @@ namespace XNATWL
          *
          * @param forwardUnhandledKeysToCallback true if unhandled keys should be forwarded to the callbacks
          */
-        public void setForwardUnhandledKeysToCallback(bool forwardUnhandledKeysToCallback)
+        public void SetForwardUnhandledKeysToCallback(bool forwardUnhandledKeysToCallback)
         {
-            this.forwardUnhandledKeysToCallback = forwardUnhandledKeysToCallback;
+            this._forwardUnhandledKeysToCallback = forwardUnhandledKeysToCallback;
         }
 
-        public bool isAutoCompletionOnSetText()
+        public bool IsAutoCompletionOnSetText()
         {
-            return autoCompletionOnSetText;
+            return _autoCompletionOnSetText;
         }
 
         /**
@@ -165,22 +165,22 @@ namespace XNATWL
          * @param autoCompletionOnSetText true if setText() should trigger auto completion
          * @see #setText(java.lang.String)
          */
-        public void setAutoCompletionOnSetText(bool autoCompletionOnSetText)
+        public void SetAutoCompletionOnSetText(bool autoCompletionOnSetText)
         {
-            this.autoCompletionOnSetText = autoCompletionOnSetText;
+            this._autoCompletionOnSetText = autoCompletionOnSetText;
         }
 
-        public bool isScrollToCursorOnSizeChange()
+        public bool IsScrollToCursorOnSizeChange()
         {
-            return scrollToCursorOnSizeChange;
+            return _scrollToCursorOnSizeChange;
         }
 
-        public void setScrollToCursorOnSizeChange(bool scrollToCursorOnSizeChange)
+        public void SetScrollToCursorOnSizeChange(bool scrollToCursorOnSizeChange)
         {
-            this.scrollToCursorOnSizeChange = scrollToCursorOnSizeChange;
+            this._scrollToCursorOnSizeChange = scrollToCursorOnSizeChange;
         }
 
-        protected virtual void doCallback(int key)
+        protected virtual void DoCallback(int key)
         {
             if (this.Callback != null)
             {
@@ -188,45 +188,45 @@ namespace XNATWL
             }
         }
 
-        public bool isPasswordMasking()
+        public bool IsPasswordMasking()
         {
-            return passwordMasking != null;
+            return _passwordMasking != null;
         }
 
-        public void setPasswordMasking(bool passwordMasking)
+        public void SetPasswordMasking(bool passwordMasking)
         {
-            if (passwordMasking != isPasswordMasking())
+            if (passwordMasking != IsPasswordMasking())
             {
                 if (passwordMasking)
                 {
-                    this.passwordMasking = new PasswordMasker(editBuffer, passwordChar);
+                    this._passwordMasking = new PasswordMasker(_editBuffer, _passwordChar);
                 }
                 else
                 {
-                    this.passwordMasking = null;
+                    this._passwordMasking = null;
                 }
-                updateTextDisplay();
+                UpdateTextDisplay();
             }
         }
 
-        public char getPasswordChar()
+        public char GetPasswordChar()
         {
-            return passwordChar;
+            return _passwordChar;
         }
 
-        public void setPasswordChar(char passwordChar)
+        public void SetPasswordChar(char passwordChar)
         {
-            this.passwordChar = passwordChar;
-            if (passwordMasking != null && passwordMasking.maskingChar != passwordChar)
+            this._passwordChar = passwordChar;
+            if (_passwordMasking != null && _passwordMasking._maskingChar != passwordChar)
             {
-                passwordMasking = new PasswordMasker(editBuffer, passwordChar);
-                updateTextDisplay();
+                _passwordMasking = new PasswordMasker(_editBuffer, passwordChar);
+                UpdateTextDisplay();
             }
         }
 
-        public int getColumns()
+        public int GetColumns()
         {
-            return columns;
+            return _columns;
         }
 
         /**
@@ -236,18 +236,18 @@ namespace XNATWL
          * @param columns number of characters
          * @throws IllegalArgumentException if columns < 0
          */
-        public void setColumns(int columns)
+        public void SetColumns(int columns)
         {
             if (columns < 0)
             {
                 throw new ArgumentOutOfRangeException("columns");
             }
-            this.columns = columns;
+            this._columns = columns;
         }
 
-        public bool isMultiLine()
+        public bool IsMultiLine()
         {
-            return multiLine;
+            return _multiLine;
         }
 
         /**
@@ -260,37 +260,37 @@ namespace XNATWL
          *
          * @param multiLine true for multi line editing.
          */
-        public void setMultiLine(bool multiLine)
+        public void SetMultiLine(bool multiLine)
         {
-            this.multiLine = multiLine;
-            if (!multiLine && numberOfLines > 1)
+            this._multiLine = multiLine;
+            if (!multiLine && _numberOfLines > 1)
             {
-                setText("");
+                SetText("");
             }
         }
 
-        public StringModel getModel()
+        public StringModel GetModel()
         {
-            return model;
+            return _model;
         }
 
-        public void setModel(StringModel model)
+        public void SetModel(StringModel model)
         {
-            removeModelChangeListener();
-            if (this.model != null)
+            RemoveModelChangeListener();
+            if (this._model != null)
             {
-                this.model.Changed -= Model_Changed;
+                this._model.Changed -= Model_Changed;
             }
-            this.model = model;
-            if (getGUI() != null)
+            this._model = model;
+            if (GetGUI() != null)
             {
-                addModelChangeListener();
+                AddModelChangeListener();
             }
         }
 
         private void Model_Changed(object sender, StringChangedEventArgs e)
         {
-            modelChanged();
+            ModelChanged();
         }
 
         /**
@@ -305,391 +305,387 @@ namespace XNATWL
          * @throws NullReferenceException if text is null
          * @see #setMultiLine(bool)
          */
-        public void setText(String text)
+        public void SetText(String text)
         {
-            setText(text, false);
+            SetText(text, false);
         }
 
-        void setText(String text, bool fromModel)
+        void SetText(String text, bool fromModel)
         {
-            text = TextUtil.LimitStringLength(text, maxTextLength);
-            editBuffer.Replace(0, editBuffer.Length, text);
-            cursorPos = multiLine ? 0 : editBuffer.Length;
-            selectionStart = 0;
-            selectionEnd = 0;
-            updateSelection();
-            updateText(autoCompletionOnSetText, fromModel, Event.KEY_NONE);
-            scrollToCursor(true);
+            text = TextUtil.LimitStringLength(text, _maxTextLength);
+            _editBuffer.Replace(0, _editBuffer.Length, text);
+            _cursorPos = _multiLine ? 0 : _editBuffer.Length;
+            _selectionStart = 0;
+            _selectionEnd = 0;
+            UpdateSelection();
+            UpdateText(_autoCompletionOnSetText, fromModel, Event.KEY_NONE);
+            ScrollToCursor(true);
         }
 
-        public String getText()
+        public String GetText()
         {
-            return editBuffer.ToString();
+            return _editBuffer.ToString();
         }
 
-        public StringAttributes getStringAttributes()
+        public StringAttributes GetStringAttributes()
         {
-            if (attributes == null)
+            if (_attributes == null)
             {
-                textRenderer.setCache(false);
-                attributes = new StringAttributes(editBuffer, getAnimationState());
+                _textRenderer.SetCache(false);
+                _attributes = new StringAttributes(_editBuffer, GetAnimationState());
             }
-            return attributes;
+            return _attributes;
         }
 
-        public void disableStringAttributes()
+        public void DisableStringAttributes()
         {
-            if (attributes != null)
+            if (_attributes != null)
             {
-                attributes = null;
-            }
-        }
-
-        public String getSelectedText()
-        {
-            return editBuffer.Substring(selectionStart, selectionEnd);
-        }
-
-        public bool hasSelection()
-        {
-            return selectionStart != selectionEnd;
-        }
-
-        public int getCursorPos()
-        {
-            return cursorPos;
-        }
-
-        public int getTextLength()
-        {
-            return editBuffer.Length;
-        }
-
-        public bool isReadOnly()
-        {
-            return readOnly;
-        }
-
-        public void setReadOnly(bool readOnly)
-        {
-            if (this.readOnly != readOnly)
-            {
-                this.readOnly = readOnly;
-                this.popupMenu = null;  // popup menu depends on read only state
-                getAnimationState().setAnimationState(STATE_READONLY, readOnly);
-                firePropertyChange("readonly", !readOnly, readOnly);
+                _attributes = null;
             }
         }
 
-        public virtual void insertText(String str)
+        public String GetSelectedText()
         {
-            if (!readOnly)
+            return _editBuffer.Substring(_selectionStart, _selectionEnd);
+        }
+
+        public bool HasSelection()
+        {
+            return _selectionStart != _selectionEnd;
+        }
+
+        public int GetCursorPos()
+        {
+            return _cursorPos;
+        }
+
+        public int GetTextLength()
+        {
+            return _editBuffer.Length;
+        }
+
+        public bool IsReadOnly()
+        {
+            return _readOnly;
+        }
+
+        public void SetReadOnly(bool readOnly)
+        {
+            if (this._readOnly != readOnly)
+            {
+                this._readOnly = readOnly;
+                this._popupMenu = null;  // popup menu depends on read only state
+                GetAnimationState().SetAnimationState(STATE_READONLY, readOnly);
+                FirePropertyChange("readonly", !readOnly, readOnly);
+            }
+        }
+
+        public virtual void InsertText(String str)
+        {
+            if (!_readOnly)
             {
                 bool update = false;
-                if (hasSelection())
+                if (HasSelection())
                 {
-                    deleteSelection();
+                    DeleteSelection();
                     update = true;
                 }
-                int insertLength = Math.Min(str.Length, maxTextLength - editBuffer.Length);
+                int insertLength = Math.Min(str.Length, _maxTextLength - _editBuffer.Length);
                 if (insertLength > 0)
                 {
-                    int inserted = editBuffer.Replace(cursorPos, 0, str.Substring(0, insertLength));
+                    int inserted = _editBuffer.Replace(_cursorPos, 0, str.Substring(0, insertLength));
                     if (inserted > 0)
                     {
-                        cursorPos += inserted;
+                        _cursorPos += inserted;
                         update = true;
                     }
                 }
                 if (update)
                 {
-                    updateText(true, false, Event.KEY_NONE);
+                    UpdateText(true, false, Event.KEY_NONE);
                 }
             }
         }
 
-        public void pasteFromClipboard()
+        public void PasteFromClipboard()
         {
-            String cbText = Clipboard.getClipboard();
+            String cbText = Clipboard.GetClipboard();
             if (cbText != null)
             {
-                if (!multiLine)
+                if (!_multiLine)
                 {
                     cbText = TextUtil.StripNewLines(cbText);
                 }
-                insertText(cbText);
+                InsertText(cbText);
             }
         }
 
-        public void copyToClipboard()
+        public void CopyToClipboard()
         {
             String text;
-            if (hasSelection())
+            if (HasSelection())
             {
-                text = getSelectedText();
+                text = GetSelectedText();
             }
             else
             {
-                text = getText();
+                text = GetText();
             }
-            if (isPasswordMasking())
+            if (IsPasswordMasking())
             {
-                text = TextUtil.CreateString(passwordChar, text.Length);
+                text = TextUtil.CreateString(_passwordChar, text.Length);
             }
-            Clipboard.setClipboard(text);
+            Clipboard.SetClipboard(text);
         }
 
-        public void cutToClipboard()
+        public void CutToClipboard()
         {
             String text;
-            if (!hasSelection())
+            if (!HasSelection())
             {
-                selectAll();
+                SelectAll();
             }
-            text = getSelectedText();
-            if (!readOnly)
+            text = GetSelectedText();
+            if (!_readOnly)
             {
-                deleteSelection();
-                updateText(true, false, Event.KEY_DELETE);
+                DeleteSelection();
+                UpdateText(true, false, Event.KEY_DELETE);
             }
-            if (isPasswordMasking())
+            if (IsPasswordMasking())
             {
-                text = TextUtil.CreateString(passwordChar, text.Length);
+                text = TextUtil.CreateString(_passwordChar, text.Length);
             }
-            Clipboard.setClipboard(text);
+            Clipboard.SetClipboard(text);
         }
 
-        public void duplicateLineDown()
+        public void DuplicateLineDown()
         {
-            if (multiLine && !readOnly)
+            if (_multiLine && !_readOnly)
             {
                 int lineStart, lineEnd;
-                if (hasSelection())
+                if (HasSelection())
                 {
-                    lineStart = selectionStart;
-                    lineEnd = selectionEnd;
+                    lineStart = _selectionStart;
+                    lineEnd = _selectionEnd;
                 }
                 else
                 {
-                    lineStart = cursorPos;
-                    lineEnd = cursorPos;
+                    lineStart = _cursorPos;
+                    lineEnd = _cursorPos;
                 }
-                lineStart = computeLineStart(lineStart);
-                lineEnd = computeLineEnd(lineEnd);
-                String line = editBuffer.Substring(lineStart, lineEnd);
+                lineStart = ComputeLineStart(lineStart);
+                lineEnd = ComputeLineEnd(lineEnd);
+                String line = _editBuffer.Substring(lineStart, lineEnd);
                 line = "\n" + line;
-                editBuffer.Replace(lineEnd, 0, line);
-                setCursorPos(cursorPos + line.Length);
-                updateText(true, false, Event.KEY_NONE);
+                _editBuffer.Replace(lineEnd, 0, line);
+                SetCursorPos(_cursorPos + line.Length);
+                UpdateText(true, false, Event.KEY_NONE);
             }
         }
 
-        public int getMaxTextLength()
+        public int GetMaxTextLength()
         {
-            return maxTextLength;
+            return _maxTextLength;
         }
 
-        public void setMaxTextLength(int maxTextLength)
+        public void SetMaxTextLength(int maxTextLength)
         {
-            this.maxTextLength = maxTextLength;
+            this._maxTextLength = maxTextLength;
         }
 
-        void removeModelChangeListener()
+        void RemoveModelChangeListener()
         {
-            if (model != null)
+            if (_model != null)
             {
-                this.model.Changed -= Model_Changed;
+                this._model.Changed -= Model_Changed;
             }
         }
 
-        void addModelChangeListener()
+        void AddModelChangeListener()
         {
-            if (model != null)
+            if (_model != null)
             {
-                this.model.Changed += Model_Changed;
-                modelChanged();
+                this._model.Changed += Model_Changed;
+                ModelChanged();
             }
         }
 
-        //@Override
-        protected override void afterAddToGUI(GUI gui)
+        protected override void AfterAddToGUI(GUI gui)
         {
-            base.afterAddToGUI(gui);
-            addModelChangeListener();
+            base.AfterAddToGUI(gui);
+            AddModelChangeListener();
+        }
+
+        protected override void BeforeRemoveFromGUI(GUI gui)
+        {
+            RemoveModelChangeListener();
+            base.BeforeRemoveFromGUI(gui);
+        }
+
+        protected override void ApplyTheme(ThemeInfo themeInfo)
+        {
+            base.ApplyTheme(themeInfo);
+            ApplyThemeEditField(themeInfo);
+        }
+
+        protected void ApplyThemeEditField(ThemeInfo themeInfo)
+        {
+            _cursorImage = themeInfo.GetImage("cursor");
+            _selectionImage = themeInfo.GetImage("selection");
+            _autoCompletionHeight = themeInfo.GetParameter("autocompletion-height", 100);
+            _columns = themeInfo.GetParameter("columns", 5);
+            SetPasswordChar((char)themeInfo.GetParameter("passwordChar", '*'));
+        }
+
+        protected override void Layout()
+        {
+            LayoutChildFullInnerArea(_textRenderer);
+            CheckTextWidth();
+            LayoutInfoWindows();
         }
 
         //@Override
-        protected override void beforeRemoveFromGUI(GUI gui)
+        protected override void PositionChanged()
         {
-            removeModelChangeListener();
-            base.beforeRemoveFromGUI(gui);
+            LayoutInfoWindows();
         }
 
-        //@Override
-        protected override void applyTheme(ThemeInfo themeInfo)
+        private void LayoutInfoWindows()
         {
-            base.applyTheme(themeInfo);
-            applyThemeEditField(themeInfo);
-        }
-
-        protected void applyThemeEditField(ThemeInfo themeInfo)
-        {
-            cursorImage = themeInfo.GetImage("cursor");
-            selectionImage = themeInfo.GetImage("selection");
-            autoCompletionHeight = themeInfo.GetParameter("autocompletion-height", 100);
-            columns = themeInfo.GetParameter("columns", 5);
-            setPasswordChar((char)themeInfo.GetParameter("passwordChar", '*'));
-        }
-
-        //@Override
-        protected override void layout()
-        {
-            layoutChildFullInnerArea(textRenderer);
-            checkTextWidth();
-            layoutInfoWindows();
-        }
-
-        //@Override
-        protected override void positionChanged()
-        {
-            layoutInfoWindows();
-        }
-
-        private void layoutInfoWindows()
-        {
-            if (autoCompletionWindow != null)
+            if (_autoCompletionWindow != null)
             {
-                layoutAutocompletionWindow();
+                LayoutAutocompletionWindow();
             }
-            if (errorInfoWindow != null)
+            if (_errorInfoWindow != null)
             {
-                layoutErrorInfoWindow();
+                LayoutErrorInfoWindow();
             }
         }
 
-        private void layoutAutocompletionWindow()
+        private void LayoutAutocompletionWindow()
         {
-            int y = getBottom();
-            GUI gui = getGUI();
+            int y = GetBottom();
+            GUI gui = GetGUI();
             if (gui != null)
             {
-                if (y + autoCompletionHeight > gui.getInnerBottom())
+                if (y + _autoCompletionHeight > gui.GetInnerBottom())
                 {
-                    int ytop = getY() - autoCompletionHeight;
-                    if (ytop >= gui.getInnerY())
+                    int ytop = GetY() - _autoCompletionHeight;
+                    if (ytop >= gui.GetInnerY())
                     {
                         y = ytop;
                     }
                 }
             }
-            autoCompletionWindow.setPosition(getX(), y);
-            autoCompletionWindow.setSize(getWidth(), autoCompletionHeight);
+            _autoCompletionWindow.SetPosition(GetX(), y);
+            _autoCompletionWindow.SetSize(GetWidth(), _autoCompletionHeight);
         }
 
-        private int computeInnerWidth()
+        private int ComputeInnerWidth()
         {
-            if (columns > 0)
+            if (_columns > 0)
             {
-                Font font = getFont();
+                Font font = GetFont();
                 if (font != null)
                 {
-                    return font.ComputeTextWidth("X") * columns;
+                    return font.ComputeTextWidth("X") * _columns;
                 }
             }
             return 0;
         }
 
-        private int computeInnerHeight()
+        private int ComputeInnerHeight()
         {
-            int lineHeight = getLineHeight();
-            if (multiLine)
+            int lineHeight = GetLineHeight();
+            if (_multiLine)
             {
-                return lineHeight * numberOfLines;
+                return lineHeight * _numberOfLines;
             }
             return lineHeight;
         }
 
         //@Override
-        public override int getMinWidth()
+        public override int GetMinWidth()
         {
-            int minWidth = base.getMinWidth();
-            minWidth = Math.Max(minWidth, computeInnerWidth() + getBorderHorizontal());
+            int minWidth = base.GetMinWidth();
+            minWidth = Math.Max(minWidth, ComputeInnerWidth() + GetBorderHorizontal());
             return minWidth;
         }
 
         //@Override
-        public override int getMinHeight()
+        public override int GetMinHeight()
         {
-            int minHeight = base.getMinHeight();
-            minHeight = Math.Max(minHeight, computeInnerHeight() + getBorderVertical());
+            int minHeight = base.GetMinHeight();
+            minHeight = Math.Max(minHeight, ComputeInnerHeight() + GetBorderVertical());
             return minHeight;
         }
 
         //@Override
-        public override int getPreferredInnerWidth()
+        public override int GetPreferredInnerWidth()
         {
-            return computeInnerWidth();
+            return ComputeInnerWidth();
         }
 
         //@Override
-        public override int getPreferredInnerHeight()
+        public override int GetPreferredInnerHeight()
         {
-            return computeInnerHeight();
+            return ComputeInnerHeight();
         }
 
-        public void setErrorMessage(Object errorMsg)
+        public void SetErrorMessage(Object errorMsg)
         {
-            errorMsgFromModel = false;
-            getAnimationState().setAnimationState(STATE_ERROR, errorMsg != null);
-            if (this.errorMsg != errorMsg)
+            _errorMsgFromModel = false;
+            GetAnimationState().SetAnimationState(STATE_ERROR, errorMsg != null);
+            if (this._errorMsg != errorMsg)
             {
-                this.errorMsg = errorMsg;
-                updateTooltip();
+                this._errorMsg = errorMsg;
+                UpdateTooltip();
             }
             if (errorMsg != null)
             {
-                if (hasKeyboardFocus())
+                if (HasKeyboardFocus())
                 {
-                    openErrorInfoWindow();
+                    OpenErrorInfoWindow();
                 }
             }
-            else if (errorInfoWindow != null)
+            else if (_errorInfoWindow != null)
             {
-                errorInfoWindow.closeInfo();
+                _errorInfoWindow.CloseInfo();
             }
         }
 
         //@Override
-        public override Object getTooltipContent()
+        public override Object GetTooltipContent()
         {
-            if (errorMsg != null)
+            if (_errorMsg != null)
             {
-                return errorMsg;
+                return _errorMsg;
             }
-            Object tooltip = base.getTooltipContent();
-            if (tooltip == null && !isPasswordMasking() && textLongerThenWidget && !hasKeyboardFocus())
+            Object tooltip = base.GetTooltipContent();
+            if (tooltip == null && !IsPasswordMasking() && _textLongerThenWidget && !HasKeyboardFocus())
             {
-                tooltip = getText();
+                tooltip = GetText();
             }
             return tooltip;
         }
 
-        public void setAutoCompletionWindow(EditFieldAutoCompletionWindow window)
+        public void SetAutoCompletionWindow(EditFieldAutoCompletionWindow window)
         {
-            if (autoCompletionWindow != window)
+            if (_autoCompletionWindow != window)
             {
-                if (autoCompletionWindow != null)
+                if (_autoCompletionWindow != null)
                 {
-                    autoCompletionWindow.closeInfo();
+                    _autoCompletionWindow.CloseInfo();
                 }
 
-                autoCompletionWindow = window;
+                _autoCompletionWindow = window;
             }
         }
 
-        public EditFieldAutoCompletionWindow getAutoCompletionWindow()
+        public EditFieldAutoCompletionWindow GetAutoCompletionWindow()
         {
-            return autoCompletionWindow;
+            return _autoCompletionWindow;
         }
 
         /**
@@ -698,15 +694,15 @@ namespace XNATWL
          * @param dataSource the data source used for auto completion - can be null
          * @see EditFieldAutoCompletionWindow#EditFieldAutoCompletionWindow(de.matthiasmann.twl.EditField, de.matthiasmann.twl.model.AutoCompletionDataSource) 
          */
-        public void setAutoCompletion(AutoCompletionDataSource dataSource)
+        public void SetAutoCompletion(AutoCompletionDataSource dataSource)
         {
             if (dataSource == null)
             {
-                setAutoCompletionWindow(null);
+                SetAutoCompletionWindow(null);
             }
             else
             {
-                setAutoCompletionWindow(new EditFieldAutoCompletionWindow(this, dataSource));
+                SetAutoCompletionWindow(new EditFieldAutoCompletionWindow(this, dataSource));
             }
         }
 
@@ -731,58 +727,58 @@ namespace XNATWL
         */
 
         //@Override
-        public override bool handleEvent(Event evt)
+        public override bool HandleEvent(Event evt)
         {
-            bool selectPressed = (evt.getModifiers() & Event.MODIFIER_SHIFT) != 0;
+            bool selectPressed = (evt.GetModifiers() & Event.MODIFIER_SHIFT) != 0;
 
-            if (evt.isMouseEvent())
+            if (evt.IsMouseEvent())
             {
-                bool hover = (evt.getEventType() != EventType.MOUSE_EXITED) && isMouseInside(evt);
-                getAnimationState().setAnimationState(STATE_HOVER, hover);
+                bool hover = (evt.GetEventType() != EventType.MOUSE_EXITED) && IsMouseInside(evt);
+                GetAnimationState().SetAnimationState(STATE_HOVER, hover);
             }
 
-            if (evt.isMouseDragEvent())
+            if (evt.IsMouseDragEvent())
             {
-                if (evt.getEventType() == EventType.MOUSE_DRAGGED &&
-                        (evt.getModifiers() & Event.MODIFIER_LBUTTON) != 0)
+                if (evt.GetEventType() == EventType.MOUSE_DRAGGED &&
+                        (evt.GetModifiers() & Event.MODIFIER_LBUTTON) != 0)
                 {
-                    int newPos = getCursorPosFromMouse(evt.getMouseX(), evt.getMouseY());
-                    setCursorPos(newPos, true);
+                    int newPos = GetCursorPosFromMouse(evt.GetMouseX(), evt.GetMouseY());
+                    SetCursorPos(newPos, true);
                 }
                 return true;
             }
 
-            if (base.handleEvent(evt))
+            if (base.HandleEvent(evt))
             {
                 return true;
             }
 
-            if (autoCompletionWindow != null)
+            if (_autoCompletionWindow != null)
             {
-                if (autoCompletionWindow.handleEvent(evt))
+                if (_autoCompletionWindow.HandleEvent(evt))
                 {
                     return true;
                 }
             }
 
-            EventType type = evt.getEventType();
+            EventType type = evt.GetEventType();
             if (type == EventType.KEY_PRESSED)
             {
-                switch (evt.getKeyCode())
+                switch (evt.GetKeyCode())
                 {
                     case Event.KEY_BACK:
-                        deletePrev();
+                        DeletePrev();
                         return true;
                     case Event.KEY_DELETE:
-                        deleteNext();
+                        DeleteNext();
                         return true;
                     case Event.KEY_NUMPADENTER:
                     case Event.KEY_RETURN:
-                        if (multiLine)
+                        if (_multiLine)
                         {
-                            if (evt.hasKeyCharNoModifiers())
+                            if (evt.HasKeyCharNoModifiers())
                             {
-                                insertChar('\n');
+                                InsertChar('\n');
                             }
                             else
                             {
@@ -791,58 +787,58 @@ namespace XNATWL
                         }
                         else
                         {
-                            doCallback(Event.KEY_RETURN);
+                            DoCallback(Event.KEY_RETURN);
                         }
                         return true;
                     case Event.KEY_ESCAPE:
-                        doCallback(evt.getKeyCode());
+                        DoCallback(evt.GetKeyCode());
                         return true;
                     case Event.KEY_HOME:
-                        setCursorPos(computeLineStart(cursorPos), selectPressed);
+                        SetCursorPos(ComputeLineStart(_cursorPos), selectPressed);
                         return true;
                     case Event.KEY_END:
-                        setCursorPos(computeLineEnd(cursorPos), selectPressed);
+                        SetCursorPos(ComputeLineEnd(_cursorPos), selectPressed);
                         return true;
                     case Event.KEY_LEFT:
-                        moveCursor(-1, selectPressed);
+                        MoveCursor(-1, selectPressed);
                         return true;
                     case Event.KEY_RIGHT:
-                        moveCursor(+1, selectPressed);
+                        MoveCursor(+1, selectPressed);
                         return true;
                     case Event.KEY_UP:
-                        if (multiLine)
+                        if (_multiLine)
                         {
-                            moveCursorY(-1, selectPressed);
+                            MoveCursorY(-1, selectPressed);
                             return true;
                         }
                         break;
                     case Event.KEY_DOWN:
-                        if (multiLine)
+                        if (_multiLine)
                         {
-                            moveCursorY(+1, selectPressed);
+                            MoveCursorY(+1, selectPressed);
                             return true;
                         }
                         break;
                     case Event.KEY_TAB:
                         return false;
                     default:
-                        if (evt.hasKeyCharNoModifiers())
+                        if (evt.HasKeyCharNoModifiers())
                         {
-                            insertChar(evt.getKeyChar());
+                            InsertChar(evt.GetKeyChar());
                             return true;
                         }
                         break;
                 }
-                if (forwardUnhandledKeysToCallback)
+                if (_forwardUnhandledKeysToCallback)
                 {
-                    doCallback(evt.getKeyCode());
+                    DoCallback(evt.GetKeyCode());
                     return true;
                 }
                 return false;
             }
-            else if (evt.getEventType() == EventType.KEY_RELEASED)
+            else if (evt.GetEventType() == EventType.KEY_RELEASED)
             {
-                switch (evt.getKeyCode())
+                switch (evt.GetKeyCode())
                 {
                     case Event.KEY_BACK:
                     case Event.KEY_DELETE:
@@ -855,76 +851,76 @@ namespace XNATWL
                     case Event.KEY_RIGHT:
                         return true;
                     default:
-                        return evt.hasKeyCharNoModifiers() || forwardUnhandledKeysToCallback;
+                        return evt.HasKeyCharNoModifiers() || _forwardUnhandledKeysToCallback;
                 }
             }
-            else if (evt.getEventType() == EventType.MOUSE_BTNUP)
+            else if (evt.GetEventType() == EventType.MOUSE_BTNUP)
             {
-                if (evt.getMouseButton() == Event.MOUSE_RBUTTON && isMouseInside(evt))
+                if (evt.GetMouseButton() == Event.MOUSE_RBUTTON && IsMouseInside(evt))
                 {
-                    showPopupMenu(evt);
+                    ShowPopupMenu(evt);
                     return true;
                 }
             }
-            else if (evt.getEventType() == EventType.MOUSE_BTNDOWN)
+            else if (evt.GetEventType() == EventType.MOUSE_BTNDOWN)
             {
-                if (evt.getMouseButton() == Event.MOUSE_LBUTTON && isMouseInside(evt))
+                if (evt.GetMouseButton() == Event.MOUSE_LBUTTON && IsMouseInside(evt))
                 {
-                    int newPos = getCursorPosFromMouse(evt.getMouseX(), evt.getMouseY());
-                    setCursorPos(newPos, selectPressed);
-                    scrollPos = textRenderer.lastScrollPos;
+                    int newPos = GetCursorPosFromMouse(evt.GetMouseX(), evt.GetMouseY());
+                    SetCursorPos(newPos, selectPressed);
+                    _scrollPos = _textRenderer._lastScrollPos;
                     return true;
                 }
             }
-            else if (evt.getEventType() == EventType.MOUSE_CLICKED)
+            else if (evt.GetEventType() == EventType.MOUSE_CLICKED)
             {
-                if (evt.getMouseClickCount() == 2)
+                if (evt.GetMouseClickCount() == 2)
                 {
-                    int newPos = getCursorPosFromMouse(evt.getMouseX(), evt.getMouseY());
-                    selectWordFromMouse(newPos);
-                    this.cursorPos = selectionStart;
-                    scrollToCursor(false);
-                    this.cursorPos = selectionEnd;
-                    scrollToCursor(false);
+                    int newPos = GetCursorPosFromMouse(evt.GetMouseX(), evt.GetMouseY());
+                    SelectWordFromMouse(newPos);
+                    this._cursorPos = _selectionStart;
+                    ScrollToCursor(false);
+                    this._cursorPos = _selectionEnd;
+                    ScrollToCursor(false);
                     return true;
                 }
-                if (evt.getMouseClickCount() == 3)
+                if (evt.GetMouseClickCount() == 3)
                 {
-                    selectAll();
+                    SelectAll();
                     return true;
                 }
             }
-            else if (evt.getEventType() == EventType.MOUSE_WHEEL)
+            else if (evt.GetEventType() == EventType.MOUSE_WHEEL)
             {
                 return false;
             }
 
-            return evt.isMouseEvent();
+            return evt.IsMouseEvent();
         }
 
-        protected void showPopupMenu(Event evt)
+        protected void ShowPopupMenu(Event evt)
         {
-            if (popupMenu == null)
+            if (_popupMenu == null)
             {
-                popupMenu = createPopupMenu();
+                _popupMenu = CreatePopupMenu();
             }
-            if (popupMenu != null)
+            if (_popupMenu != null)
             {
-                popupMenu.openPopupMenu(this, evt.getMouseX(), evt.getMouseY());
+                _popupMenu.OpenPopupMenu(this, evt.GetMouseX(), evt.GetMouseY());
             }
         }
 
-        protected Menu createPopupMenu()
+        protected Menu CreatePopupMenu()
         {
             Menu menu = new Menu();
-            if (!readOnly)
+            if (!_readOnly)
             {
-                menu.add("cut", new ActionCallback(this, "cut").run);
+                menu.Add("cut", new ActionCallback(this, "cut").Run);
             }
-            menu.add("copy", new ActionCallback(this, "copy").run);
-            if (!readOnly)
+            menu.Add("copy", new ActionCallback(this, "copy").Run);
+            if (!_readOnly)
             {
-                menu.add("paste", new ActionCallback(this, "paste").run);
+                menu.Add("paste", new ActionCallback(this, "paste").Run);
                 //menu.add("clear", new Runnable()
                 //{
                 //public void run()
@@ -936,321 +932,323 @@ namespace XNATWL
                 // }
                 //});
             }
-            menu.addSpacer();
-            menu.add("select all", new ActionCallback(this, "selectAll").run);
+            menu.AddSpacer();
+            menu.Add("select all", new ActionCallback(this, "selectAll").Run);
             return menu;
         }
 
-        private void updateText(bool bUpdateAutoCompletion, bool fromModel, int key)
+        private void UpdateText(bool bUpdateAutoCompletion, bool fromModel, int key)
         {
-            if (model != null && !fromModel)
+            if (_model != null && !fromModel)
             {
                 try
                 {
-                    model.Value = getText();
-                    if (errorMsgFromModel)
+                    _model.Value = GetText();
+                    if (_errorMsgFromModel)
                     {
-                        setErrorMessage(null);
+                        SetErrorMessage(null);
                     }
                 }
                 catch (Exception ex)
                 {
-                    if (errorMsg == null || errorMsgFromModel)
+                    if (_errorMsg == null || _errorMsgFromModel)
                     {
-                        setErrorMessage(ex.Message);
-                        errorMsgFromModel = true;
+                        SetErrorMessage(ex.Message);
+                        _errorMsgFromModel = true;
                     }
                 }
             }
-            updateTextDisplay();
-            if (multiLine)
+            UpdateTextDisplay();
+            if (_multiLine)
             {
-                int numLines = textRenderer.getNumTextLines();
-                if (numberOfLines != numLines)
+                int numLines = _textRenderer.GetNumTextLines();
+                if (_numberOfLines != numLines)
                 {
-                    numberOfLines = numLines;
-                    invalidateLayout();
+                    _numberOfLines = numLines;
+                    InvalidateLayout();
                 }
             }
-            doCallback(key);
-            if (autoCompletionWindow != null && autoCompletionWindow.isOpen() || bUpdateAutoCompletion)
+            DoCallback(key);
+            if (_autoCompletionWindow != null && _autoCompletionWindow.IsOpen() || bUpdateAutoCompletion)
             {
-                updateAutoCompletion();
+                UpdateAutoCompletion();
             }
         }
 
-        private void updateTextDisplay()
+        private void UpdateTextDisplay()
         {
-            textRenderer.setCharSequence(passwordMasking != null ? passwordMasking.Value : editBuffer.Value);
-            textRenderer.cacheDirty = true;
-            checkTextWidth();
-            scrollToCursor(false);
+            _textRenderer.SetCharSequence(_passwordMasking != null ? _passwordMasking.Value : _editBuffer.Value);
+            _textRenderer._cacheDirty = true;
+            CheckTextWidth();
+            ScrollToCursor(false);
         }
 
-        private void checkTextWidth()
+        private void CheckTextWidth()
         {
-            textLongerThenWidget = textRenderer.getPreferredWidth() > textRenderer.getWidth();
+            _textLongerThenWidget = _textRenderer.GetPreferredWidth() > _textRenderer.GetWidth();
         }
 
-        protected void moveCursor(int dir, bool select)
+        protected void MoveCursor(int dir, bool select)
         {
-            setCursorPos(cursorPos + dir, select);
+            SetCursorPos(_cursorPos + dir, select);
         }
 
-        protected void moveCursorY(int dir, bool select)
+        protected void MoveCursorY(int dir, bool select)
         {
-            if (multiLine)
+            if (_multiLine)
             {
-                int x = computeRelativeCursorPositionX(cursorPos);
+                int x = ComputeRelativeCursorPositionX(_cursorPos);
                 int lineStart;
                 if (dir < 0)
                 {
-                    lineStart = computeLineStart(cursorPos);
+                    lineStart = ComputeLineStart(_cursorPos);
                     if (lineStart == 0)
                     {
-                        setCursorPos(0, select);
+                        SetCursorPos(0, select);
                         return;
                     }
-                    lineStart = computeLineStart(lineStart - 1);
+                    lineStart = ComputeLineStart(lineStart - 1);
                 }
                 else
                 {
-                    lineStart = Math.Min(computeLineEnd(cursorPos) + 1, editBuffer.Length);
+                    lineStart = Math.Min(ComputeLineEnd(_cursorPos) + 1, _editBuffer.Length);
                 }
-                setCursorPos(computeCursorPosFromX(x, lineStart), select);
+                SetCursorPos(ComputeCursorPosFromX(x, lineStart), select);
             }
         }
 
-        protected internal void setCursorPos(int pos, bool select)
+        protected internal void SetCursorPos(int pos, bool select)
         {
-            pos = Math.Max(0, Math.Min(editBuffer.Length, pos));
+            pos = Math.Max(0, Math.Min(_editBuffer.Length, pos));
+
             if (!select)
             {
-                bool hadSelection = hasSelection();
-                selectionStart = pos;
-                selectionEnd = pos;
+                bool hadSelection = HasSelection();
+                _selectionStart = pos;
+                _selectionEnd = pos;
                 if (hadSelection)
                 {
-                    updateSelection();
+                    UpdateSelection();
                 }
             }
-            if (this.cursorPos != pos)
+
+            if (this._cursorPos != pos)
             {
                 if (select)
                 {
-                    if (hasSelection())
+                    if (HasSelection())
                     {
-                        if (cursorPos == selectionStart)
+                        if (_cursorPos == _selectionStart)
                         {
-                            selectionStart = pos;
+                            _selectionStart = pos;
                         }
                         else
                         {
-                            selectionEnd = pos;
+                            _selectionEnd = pos;
                         }
                     }
                     else
                     {
-                        selectionStart = cursorPos;
-                        selectionEnd = pos;
+                        _selectionStart = _cursorPos;
+                        _selectionEnd = pos;
                     }
-                    if (selectionStart > selectionEnd)
+                    if (_selectionStart > _selectionEnd)
                     {
-                        int t = selectionStart;
-                        selectionStart = selectionEnd;
-                        selectionEnd = t;
+                        int t = _selectionStart;
+                        _selectionStart = _selectionEnd;
+                        _selectionEnd = t;
                     }
-                    updateSelection();
+                    UpdateSelection();
                 }
 
-                if (this.cursorPos != pos)
+                if (this._cursorPos != pos)
                 {
-                    getAnimationState().resetAnimationTime(STATE_CURSOR_MOVED);
+                    GetAnimationState().ResetAnimationTime(STATE_CURSOR_MOVED);
                 }
-                this.cursorPos = pos;
-                scrollToCursor(false);
-                updateAutoCompletion();
+                this._cursorPos = pos;
+                ScrollToCursor(false);
+                UpdateAutoCompletion();
             }
         }
 
-        protected void updateSelection()
+        protected void UpdateSelection()
         {
-            if (attributes != null)
+            if (_attributes != null)
             {
-                attributes.RemoveAnimationState(TextWidget.STATE_TEXT_SELECTION);
-                attributes.SetAnimationState(TextWidget.STATE_TEXT_SELECTION,
-                        selectionStart, selectionEnd, true);
-                attributes.Optimize();
-                textRenderer.cacheDirty = true;
+                _attributes.RemoveAnimationState(TextWidget.STATE_TEXT_SELECTION);
+                _attributes.SetAnimationState(TextWidget.STATE_TEXT_SELECTION,
+                        _selectionStart, _selectionEnd, true);
+                _attributes.Optimize();
+                _textRenderer._cacheDirty = true;
             }
         }
 
-        public void setCursorPos(int pos)
+        public void SetCursorPos(int pos)
         {
-            if (pos < 0 || pos > editBuffer.Length)
+            if (pos < 0 || pos > _editBuffer.Length)
             {
                 throw new ArgumentOutOfRangeException("pos");
             }
-            setCursorPos(pos, false);
+            SetCursorPos(pos, false);
         }
 
-        public void selectAll()
+        public void SelectAll()
         {
-            selectionStart = 0;
-            selectionEnd = editBuffer.Length;
-            updateSelection();
+            _selectionStart = 0;
+            _selectionEnd = _editBuffer.Length;
+            UpdateSelection();
         }
 
-        public void setSelection(int start, int end)
+        public void SetSelection(int start, int end)
         {
-            if (start < 0 || start > end || end > editBuffer.Length)
+            if (start < 0 || start > end || end > _editBuffer.Length)
             {
                 throw new ArgumentOutOfRangeException();
             }
-            selectionStart = start;
-            selectionEnd = end;
-            updateSelection();
+            _selectionStart = start;
+            _selectionEnd = end;
+            UpdateSelection();
         }
 
-        protected void selectWordFromMouse(int index)
+        protected void SelectWordFromMouse(int index)
         {
-            selectionStart = index;
-            selectionEnd = index;
-            while (selectionStart > 0 && !Char.IsWhiteSpace(editBuffer.CharAt(selectionStart - 1)))
+            _selectionStart = index;
+            _selectionEnd = index;
+            while (_selectionStart > 0 && !Char.IsWhiteSpace(_editBuffer.CharAt(_selectionStart - 1)))
             {
-                selectionStart--;
+                _selectionStart--;
             }
-            while (selectionEnd < editBuffer.Length && !Char.IsWhiteSpace(editBuffer.CharAt(selectionEnd)))
+            while (_selectionEnd < _editBuffer.Length && !Char.IsWhiteSpace(_editBuffer.CharAt(_selectionEnd)))
             {
-                selectionEnd++;
+                _selectionEnd++;
             }
-            updateSelection();
+            UpdateSelection();
         }
 
-        protected void scrollToCursor(bool force)
+        protected void ScrollToCursor(bool force)
         {
-            int renderWidth = textRenderer.getWidth() - 5;
+            int renderWidth = _textRenderer.GetWidth() - 5;
             if (renderWidth <= 0)
             {
-                pendingScrollToCursor = true;
-                pendingScrollToCursorForce = force;
+                _pendingScrollToCursor = true;
+                _pendingScrollToCursorForce = force;
                 return;
             }
-            pendingScrollToCursor = false;
-            int xpos = computeRelativeCursorPositionX(cursorPos);
-            if (xpos < scrollPos + 5)
+            _pendingScrollToCursor = false;
+            int xpos = ComputeRelativeCursorPositionX(_cursorPos);
+            if (xpos < _scrollPos + 5)
             {
-                scrollPos = Math.Max(0, xpos - 5);
+                _scrollPos = Math.Max(0, xpos - 5);
             }
-            else if (force || xpos - scrollPos > renderWidth)
+            else if (force || xpos - _scrollPos > renderWidth)
             {
-                scrollPos = Math.Max(0, xpos - renderWidth);
+                _scrollPos = Math.Max(0, xpos - renderWidth);
             }
-            if (multiLine)
+            if (_multiLine)
             {
-                ScrollPane sp = ScrollPane.getContainingScrollPane(this);
+                ScrollPane sp = ScrollPane.GetContainingScrollPane(this);
                 if (sp != null)
                 {
-                    int lineHeight = getLineHeight();
-                    int lineY = computeLineNumber(cursorPos) * lineHeight;
-                    sp.validateLayout();
-                    sp.scrollToAreaY(lineY, lineHeight, lineHeight / 2);
+                    int lineHeight = GetLineHeight();
+                    int lineY = ComputeLineNumber(_cursorPos) * lineHeight;
+                    sp.ValidateLayout();
+                    sp.ScrollToAreaY(lineY, lineHeight, lineHeight / 2);
                 }
             }
         }
 
-        protected virtual void insertChar(char ch)
+        protected virtual void InsertChar(char ch)
         {
             // don't add control characters
-            if (!readOnly && (!Char.IsControl(ch) || (multiLine && ch == '\n')))
+            if (!_readOnly && (!Char.IsControl(ch) || (_multiLine && ch == '\n')))
             {
                 bool update = false;
-                if (hasSelection())
+                if (HasSelection())
                 {
-                    deleteSelection();
+                    DeleteSelection();
                     update = true;
                 }
-                if (editBuffer.Length < maxTextLength)
+                if (_editBuffer.Length < _maxTextLength)
                 {
-                    if (editBuffer.Replace(cursorPos, 0, ch))
+                    if (_editBuffer.Replace(_cursorPos, 0, ch))
                     {
-                        cursorPos++;
+                        _cursorPos++;
                         update = true;
                     }
                 }
                 if (update)
                 {
-                    updateText(true, false, Event.KEY_NONE);
+                    UpdateText(true, false, Event.KEY_NONE);
                 }
             }
         }
 
-        protected void deletePrev()
+        protected void DeletePrev()
         {
-            if (!readOnly)
+            if (!_readOnly)
             {
-                if (hasSelection())
+                if (HasSelection())
                 {
-                    deleteSelection();
-                    updateText(true, false, Event.KEY_DELETE);
+                    DeleteSelection();
+                    UpdateText(true, false, Event.KEY_DELETE);
                 }
-                else if (cursorPos > 0)
+                else if (_cursorPos > 0)
                 {
-                    --cursorPos;
-                    deleteNext();
+                    --_cursorPos;
+                    DeleteNext();
                 }
             }
         }
 
-        protected void deleteNext()
+        protected void DeleteNext()
         {
-            if (!readOnly)
+            if (!_readOnly)
             {
-                if (hasSelection())
+                if (HasSelection())
                 {
-                    deleteSelection();
-                    updateText(true, false, Event.KEY_DELETE);
+                    DeleteSelection();
+                    UpdateText(true, false, Event.KEY_DELETE);
                 }
-                else if (cursorPos < editBuffer.Length)
+                else if (_cursorPos < _editBuffer.Length)
                 {
-                    if (editBuffer.Replace(cursorPos, 1, "") >= 0)
+                    if (_editBuffer.Replace(_cursorPos, 1, "") >= 0)
                     {
-                        updateText(true, false, Event.KEY_DELETE);
+                        UpdateText(true, false, Event.KEY_DELETE);
                     }
                 }
             }
         }
 
-        protected void deleteSelection()
+        protected void DeleteSelection()
         {
-            if (editBuffer.Replace(selectionStart, selectionEnd - selectionStart, "") >= 0)
+            if (_editBuffer.Replace(_selectionStart, _selectionEnd - _selectionStart, "") >= 0)
             {
-                setCursorPos(selectionStart, false);
+                SetCursorPos(_selectionStart, false);
             }
         }
 
-        protected void modelChanged()
+        protected void ModelChanged()
         {
-            String modelText = model.Value;
-            if (editBuffer.Length != modelText.Length || !getText().Equals(modelText))
+            String modelText = _model.Value;
+            if (_editBuffer.Length != modelText.Length || !GetText().Equals(modelText))
             {
-                setText(modelText, true);
+                SetText(modelText, true);
             }
         }
 
-        protected bool hasFocusOrPopup()
+        protected bool HasFocusOrPopup()
         {
-            return hasKeyboardFocus() || hasOpenPopups();
+            return HasKeyboardFocus() || HasOpenPopups();
         }
 
-        protected Font getFont()
+        protected Font GetFont()
         {
-            return textRenderer.getFont();
+            return _textRenderer.GetFont();
         }
 
-        protected int getLineHeight()
+        protected int GetLineHeight()
         {
-            Font font = getFont();
+            Font font = GetFont();
             if (font != null)
             {
                 return font.LineHeight;
@@ -1258,9 +1256,9 @@ namespace XNATWL
             return 0;
         }
 
-        protected int computeLineNumber(int cursorPos)
+        protected int ComputeLineNumber(int cursorPos)
         {
-            EditFieldModel eb = this.editBuffer;
+            EditFieldModel eb = this._editBuffer;
             int lineNr = 0;
             for (int i = 0; i < cursorPos; i++)
             {
@@ -1272,13 +1270,13 @@ namespace XNATWL
             return lineNr;
         }
 
-        protected int computeLineStart(int cursorPos)
+        protected int ComputeLineStart(int cursorPos)
         {
-            if (!multiLine)
+            if (!_multiLine)
             {
                 return 0;
             }
-            EditFieldModel eb = this.editBuffer;
+            EditFieldModel eb = this._editBuffer;
             while (cursorPos > 0 && eb.CharAt(cursorPos - 1) != '\n')
             {
                 cursorPos--;
@@ -1286,11 +1284,11 @@ namespace XNATWL
             return cursorPos;
         }
 
-        protected int computeLineEnd(int cursorPos)
+        protected int ComputeLineEnd(int cursorPos)
         {
-            EditFieldModel eb = this.editBuffer;
+            EditFieldModel eb = this._editBuffer;
             int endIndex = eb.Length;
-            if (!multiLine)
+            if (!_multiLine)
             {
                 return endIndex;
             }
@@ -1301,41 +1299,41 @@ namespace XNATWL
             return cursorPos;
         }
 
-        protected int computeRelativeCursorPositionX(int cursorPos)
+        protected int ComputeRelativeCursorPositionX(int cursorPos)
         {
             int lineStart = 0;
-            if (multiLine)
+            if (_multiLine)
             {
-                lineStart = computeLineStart(cursorPos);
+                lineStart = ComputeLineStart(cursorPos);
             }
-            return textRenderer.computeRelativeCursorPositionX(lineStart, cursorPos);
+            return _textRenderer.ComputeRelativeCursorPositionX(lineStart, cursorPos);
         }
 
-        protected int computeRelativeCursorPositionY(int cursorPos)
+        protected int ComputeRelativeCursorPositionY(int cursorPos)
         {
-            if (multiLine)
+            if (_multiLine)
             {
-                return getLineHeight() * computeLineNumber(cursorPos);
+                return GetLineHeight() * ComputeLineNumber(cursorPos);
             }
             return 0;
         }
 
-        protected int getCursorPosFromMouse(int x, int y)
+        protected int GetCursorPosFromMouse(int x, int y)
         {
-            Font font = getFont();
+            Font font = GetFont();
             if (font != null)
             {
-                x -= textRenderer.lastTextX;
+                x -= _textRenderer._lastTextX;
                 int lineStart = 0;
-                int lineEnd = editBuffer.Length;
-                if (multiLine)
+                int lineEnd = _editBuffer.Length;
+                if (_multiLine)
                 {
-                    y -= textRenderer.computeTextY();
+                    y -= _textRenderer.ComputeTextY();
                     int lineHeight = font.LineHeight;
                     int endIndex = lineEnd;
                     for (; ; )
                     {
-                        lineEnd = computeLineEnd(lineStart);
+                        lineEnd = ComputeLineEnd(lineStart);
 
                         if (lineStart >= endIndex || y < lineHeight)
                         {
@@ -1346,7 +1344,7 @@ namespace XNATWL
                         y -= lineHeight;
                     }
                 }
-                return computeCursorPosFromX(x, lineStart, lineEnd);
+                return ComputeCursorPosFromX(x, lineStart, lineEnd);
             }
             else
             {
@@ -1354,287 +1352,281 @@ namespace XNATWL
             }
         }
 
-        protected int computeCursorPosFromX(int x, int lineStart)
+        protected int ComputeCursorPosFromX(int x, int lineStart)
         {
-            return computeCursorPosFromX(x, lineStart, computeLineEnd(lineStart));
+            return ComputeCursorPosFromX(x, lineStart, ComputeLineEnd(lineStart));
         }
 
-        protected int computeCursorPosFromX(int x, int lineStart, int lineEnd)
+        protected int ComputeCursorPosFromX(int x, int lineStart, int lineEnd)
         {
-            Font font = getFont();
+            Font font = GetFont();
             if (font != null)
             {
                 return lineStart + font.ComputeVisibleGlyphs(
-                        (passwordMasking != null) ? passwordMasking.Value : editBuffer.Value,
+                        (_passwordMasking != null) ? _passwordMasking.Value : _editBuffer.Value,
                         lineStart, lineEnd, x + font.SpaceWidth / 2);
             }
             return lineStart;
         }
 
         //@Override
-        protected override void paintOverlay(GUI gui)
+        protected override void PaintOverlay(GUI gui)
         {
-            if (cursorImage != null && hasFocusOrPopup())
+            if (_cursorImage != null && HasFocusOrPopup())
             {
-                int xpos = textRenderer.lastTextX + computeRelativeCursorPositionX(cursorPos);
-                int ypos = textRenderer.computeTextY() + computeRelativeCursorPositionY(cursorPos);
-                cursorImage.Draw(getAnimationState(), xpos, ypos, cursorImage.Width, getLineHeight());
+                int xpos = _textRenderer._lastTextX + ComputeRelativeCursorPositionX(_cursorPos);
+                int ypos = _textRenderer.ComputeTextY() + ComputeRelativeCursorPositionY(_cursorPos);
+                _cursorImage.Draw(GetAnimationState(), xpos, ypos, _cursorImage.Width, GetLineHeight());
             }
-            base.paintOverlay(gui);
+            base.PaintOverlay(gui);
         }
 
-        private void openErrorInfoWindow()
+        private void OpenErrorInfoWindow()
         {
-            if (autoCompletionWindow == null || !autoCompletionWindow.isOpen())
+            if (_autoCompletionWindow == null || !_autoCompletionWindow.IsOpen())
             {
-                if (errorInfoWindow == null)
+                if (_errorInfoWindow == null)
                 {
-                    errorInfoLabel = new Label();
-                    errorInfoLabel.setClip(true);
-                    errorInfoWindow = new InfoWindow(this);
-                    errorInfoWindow.setTheme("editfield-errorinfowindow");
-                    errorInfoWindow.add(errorInfoLabel);
+                    _errorInfoLabel = new Label();
+                    _errorInfoLabel.SetClip(true);
+                    _errorInfoWindow = new InfoWindow(this);
+                    _errorInfoWindow.SetTheme("editfield-errorinfowindow");
+                    _errorInfoWindow.Add(_errorInfoLabel);
                 }
-                errorInfoLabel.setText(errorMsg.ToString());
-                errorInfoWindow.openInfo();
-                layoutErrorInfoWindow();
+                _errorInfoLabel.SetText(_errorMsg.ToString());
+                _errorInfoWindow.OpenInfo();
+                LayoutErrorInfoWindow();
             }
         }
 
-        private void layoutErrorInfoWindow()
+        private void LayoutErrorInfoWindow()
         {
-            int x = getX();
-            int width = getWidth();
+            int x = GetX();
+            int width = GetWidth();
 
-            Widget container = errorInfoWindow.getParent();
+            Widget container = _errorInfoWindow.GetParent();
             if (container != null)
             {
-                width = Math.Max(width, computeSize(
-                        errorInfoWindow.getMinWidth(),
-                        errorInfoWindow.getPreferredWidth(),
-                        errorInfoWindow.getMaxWidth()));
-                int popupMaxRight = container.getInnerRight();
+                width = Math.Max(width, ComputeSize(
+                        _errorInfoWindow.GetMinWidth(),
+                        _errorInfoWindow.GetPreferredWidth(),
+                        _errorInfoWindow.GetMaxWidth()));
+                int popupMaxRight = container.GetInnerRight();
                 if (x + width > popupMaxRight)
                 {
-                    x = popupMaxRight - Math.Min(width, container.getInnerWidth());
+                    x = popupMaxRight - Math.Min(width, container.GetInnerWidth());
                 }
-                errorInfoWindow.setSize(width, errorInfoWindow.getPreferredHeight());
-                errorInfoWindow.setPosition(x, getBottom());
+                _errorInfoWindow.SetSize(width, _errorInfoWindow.GetPreferredHeight());
+                _errorInfoWindow.SetPosition(x, GetBottom());
             }
         }
 
-        //@Override
-        protected override void keyboardFocusGained()
+        protected override void KeyboardFocusGained()
         {
-            if (errorMsg != null)
+            if (_errorMsg != null)
             {
-                openErrorInfoWindow();
+                OpenErrorInfoWindow();
             }
             else
             {
-                updateAutoCompletion();
+                UpdateAutoCompletion();
             }
         }
 
-        //@Override
-        protected override void keyboardFocusLost()
+        protected override void KeyboardFocusLost()
         {
-            base.keyboardFocusLost();
-            if (errorInfoWindow != null)
+            base.KeyboardFocusLost();
+            if (_errorInfoWindow != null)
             {
-                errorInfoWindow.closeInfo();
+                _errorInfoWindow.CloseInfo();
             }
-            if (autoCompletionWindow != null)
+            if (_autoCompletionWindow != null)
             {
-                autoCompletionWindow.closeInfo();
+                _autoCompletionWindow.CloseInfo();
             }
         }
 
-        protected void updateAutoCompletion()
+        protected void UpdateAutoCompletion()
         {
-            if (autoCompletionWindow != null)
+            if (_autoCompletionWindow != null)
             {
-                autoCompletionWindow.updateAutoCompletion();
+                _autoCompletionWindow.UpdateAutoCompletion();
             }
         }
 
         internal class TextRenderer : TextWidget
         {
-            internal int lastTextX;
-            internal int lastScrollPos;
-            internal AttributedStringFontCache cache;
-            internal bool cacheDirty;
-            internal EditField editField;
+            internal int _lastTextX;
+            internal int _lastScrollPos;
+            internal AttributedStringFontCache _cache;
+            internal bool _cacheDirty;
+            internal EditField _editField;
 
             protected internal TextRenderer(EditField editField, AnimationState animState) : base(animState)
             {
-                this.editField = editField;
+                this._editField = editField;
             }
 
-            //@Override
-            protected override void paintWidget(GUI gui)
+            protected override void PaintWidget(GUI gui)
             {
-                if (this.editField.pendingScrollToCursor)
+                if (this._editField._pendingScrollToCursor)
                 {
-                    this.editField.scrollToCursor(this.editField.pendingScrollToCursorForce);
+                    this._editField.ScrollToCursor(this._editField._pendingScrollToCursorForce);
                 }
-                lastScrollPos = this.editField.hasFocusOrPopup() ? this.editField.scrollPos : 0;
-                lastTextX = computeTextX();
-                Font font = getFont();
-                if (this.editField.attributes != null && font is Font2) {
-                    paintWithAttributes((Font2)font);
+                _lastScrollPos = this._editField.HasFocusOrPopup() ? this._editField._scrollPos : 0;
+                _lastTextX = ComputeTextX();
+                Font font = GetFont();
+                if (this._editField._attributes != null && font is Font2) {
+                    PaintWithAttributes((Font2)font);
                 }
-                else if (this.editField.hasSelection() && this.editField.hasFocusOrPopup())
+                else if (this._editField.HasSelection() && this._editField.HasFocusOrPopup())
                 {
-                    if (this.editField.multiLine)
+                    if (this._editField._multiLine)
                     {
-                        paintMultiLineWithSelection();
+                        PaintMultiLineWithSelection();
                     }
                     else
                     {
-                        paintWithSelection(0, this.editField.editBuffer.Length, computeTextY());
+                        PaintWithSelection(0, this._editField._editBuffer.Length, ComputeTextY());
                     }
                 }
                 else
                 {
-                    paintLabelText(getAnimationState());
+                    PaintLabelText(GetAnimationState());
                 }
             }
 
-            protected void paintWithSelection(int lineStart, int lineEnd, int yoff)
+            protected void PaintWithSelection(int lineStart, int lineEnd, int yoff)
             {
-                int selStart = this.editField.selectionStart;
-                int selEnd = this.editField.selectionEnd;
-                if (this.editField.selectionImage != null && selEnd > lineStart && selStart <= lineEnd)
+                int selStart = this._editField._selectionStart;
+                int selEnd = this._editField._selectionEnd;
+                if (this._editField._selectionImage != null && selEnd > lineStart && selStart <= lineEnd)
                 {
-                    int xpos0 = lastTextX + computeRelativeCursorPositionX(lineStart, selStart);
-                    int xpos1 = (lineEnd < selEnd) ? getInnerRight() :
-                            lastTextX + computeRelativeCursorPositionX(lineStart, Math.Min(lineEnd, selEnd));
-                    this.editField.selectionImage.Draw(getAnimationState(), xpos0, yoff,
-                            xpos1 - xpos0, getFont().LineHeight);
+                    int xpos0 = _lastTextX + ComputeRelativeCursorPositionX(lineStart, selStart);
+                    int xpos1 = (lineEnd < selEnd) ? GetInnerRight() :
+                            _lastTextX + ComputeRelativeCursorPositionX(lineStart, Math.Min(lineEnd, selEnd));
+                    this._editField._selectionImage.Draw(GetAnimationState(), xpos0, yoff,
+                            xpos1 - xpos0, GetFont().LineHeight);
                 }
 
-                paintWithSelection(getAnimationState(), selStart, selEnd, lineStart, lineEnd, yoff);
+                PaintWithSelection(GetAnimationState(), selStart, selEnd, lineStart, lineEnd, yoff);
             }
 
-            protected void paintMultiLineWithSelection()
+            protected void PaintMultiLineWithSelection()
             {
-                EditFieldModel eb = this.editField.editBuffer;
+                EditFieldModel eb = this._editField._editBuffer;
                 int lineStart = 0;
                 int endIndex = eb.Length;
-                int yoff = computeTextY();
-                int lineHeight = this.editField.getLineHeight();
+                int yoff = ComputeTextY();
+                int lineHeight = this._editField.GetLineHeight();
                 while (lineStart < endIndex)
                 {
-                    int lineEnd = this.editField.computeLineEnd(lineStart);
+                    int lineEnd = this._editField.ComputeLineEnd(lineStart);
 
-                    paintWithSelection(lineStart, lineEnd, yoff);
+                    PaintWithSelection(lineStart, lineEnd, yoff);
 
                     yoff += lineHeight;
                     lineStart = lineEnd + 1;
                 }
             }
 
-            protected void paintMultiLineSelectionBackground()
+            protected void PaintMultiLineSelectionBackground()
             {
-                int lineHeight = this.editField.getLineHeight();
-                int lineStart = this.editField.computeLineStart(this.editField.selectionStart);
-                int lineNumber = this.editField.computeLineNumber(lineStart);
-                int endIndex = this.editField.selectionEnd;
-                int yoff = computeTextY() + lineHeight * lineNumber;
-                int xstart = lastTextX + computeRelativeCursorPositionX(lineStart, this.editField.selectionStart);
+                int lineHeight = this._editField.GetLineHeight();
+                int lineStart = this._editField.ComputeLineStart(this._editField._selectionStart);
+                int lineNumber = this._editField.ComputeLineNumber(lineStart);
+                int endIndex = this._editField._selectionEnd;
+                int yoff = ComputeTextY() + lineHeight * lineNumber;
+                int xstart = _lastTextX + ComputeRelativeCursorPositionX(lineStart, this._editField._selectionStart);
                 while (lineStart < endIndex)
                 {
-                    int lineEnd = this.editField.computeLineEnd(lineStart);
+                    int lineEnd = this._editField.ComputeLineEnd(lineStart);
                     int xend;
 
                     if (lineEnd < endIndex)
                     {
-                        xend = getInnerRight();
+                        xend = GetInnerRight();
                     }
                     else
                     {
-                        xend = lastTextX + computeRelativeCursorPositionX(lineStart, endIndex);
+                        xend = _lastTextX + ComputeRelativeCursorPositionX(lineStart, endIndex);
                     }
 
-                    this.editField.selectionImage.Draw(getAnimationState(), xstart, yoff, xend - xstart, lineHeight);
+                    this._editField._selectionImage.Draw(GetAnimationState(), xstart, yoff, xend - xstart, lineHeight);
 
                     yoff += lineHeight;
                     lineStart = lineEnd + 1;
-                    xstart = getInnerX();
+                    xstart = GetInnerX();
                 }
             }
 
-            protected void paintWithAttributes(Font2 font)
+            protected void PaintWithAttributes(Font2 font)
             {
-                if (this.editField.selectionEnd > this.editField.selectionStart && this.editField.selectionImage != null)
+                if (this._editField._selectionEnd > this._editField._selectionStart && this._editField._selectionImage != null)
                 {
-                    paintMultiLineSelectionBackground();
+                    PaintMultiLineSelectionBackground();
                 }
-                if (cache == null || cacheDirty)
+                if (_cache == null || _cacheDirty)
                 {
-                    cacheDirty = false;
-                    if (this.editField.multiLine)
+                    _cacheDirty = false;
+                    if (this._editField._multiLine)
                     {
-                        cache = font.CacheMultiLineText(cache, this.editField.attributes);
+                        _cache = font.CacheMultiLineText(_cache, this._editField._attributes);
                     }
                     else
                     {
-                        cache = font.CacheText(cache, this.editField.attributes);
+                        _cache = font.CacheText(_cache, this._editField._attributes);
                     }
                 }
-                int y = computeTextY();
-                if (cache != null)
+                int y = ComputeTextY();
+                if (_cache != null)
                 {
-                    cache.Draw(lastTextX, y);
+                    _cache.Draw(_lastTextX, y);
                 }
-                else if (this.editField.multiLine)
+                else if (this._editField._multiLine)
                 {
-                    font.DrawMultiLineText(lastTextX, y, this.editField.attributes);
+                    font.DrawMultiLineText(_lastTextX, y, this._editField._attributes);
                 }
                 else
                 {
-                    font.DrawText(lastTextX, y, this.editField.attributes);
+                    font.DrawText(_lastTextX, y, this._editField._attributes);
                 }
             }
 
-            //@Override
-            protected override void sizeChanged()
+            protected override void SizeChanged()
             {
-                if (this.editField.scrollToCursorOnSizeChange)
+                if (this._editField._scrollToCursorOnSizeChange)
                 {
-                    this.editField.scrollToCursor(true);
+                    this._editField.ScrollToCursor(true);
                 }
             }
 
-            //@Override
-            protected override int computeTextX()
+            protected override int ComputeTextX()
             {
-                int x = getInnerX();
-                int pos = getAlignment().getHPosition();
+                int x = GetInnerX();
+                int pos = GetAlignment().GetHPosition();
                 if (pos > 0)
                 {
-                    x += Math.Max(0, getInnerWidth() - computeTextWidth()) * pos / 2;
+                    x += Math.Max(0, GetInnerWidth() - ComputeTextWidth()) * pos / 2;
                 }
-                return x - lastScrollPos;
+                return x - _lastScrollPos;
             }
 
-            //@Override
-            public override void destroy()
+            public override void Destroy()
             {
-                base.destroy();
-                if (cache != null)
+                base.Destroy();
+                if (_cache != null)
                 {
-                    cache.Dispose();
-                    cache = null;
+                    _cache.Dispose();
+                    _cache = null;
                 }
             }
         }
 
         public class PasswordMasker : CharSequence
         {
-            CharSequence baseSeq;
-            internal char maskingChar;
+            CharSequence _baseSeq;
+            internal char _maskingChar;
 
             public string Value
             {
@@ -1653,24 +1645,24 @@ namespace XNATWL
             {
                 get
                 {
-                    return baseSeq.Length;
+                    return _baseSeq.Length;
                 }
             }
 
             public PasswordMasker(CharSequence baseSeq, char maskingChar)
             {
-                this.baseSeq = baseSeq;
-                this.maskingChar = maskingChar;
+                this._baseSeq = baseSeq;
+                this._maskingChar = maskingChar;
             }
 
-            public CharSequence subSequence(int start, int end)
+            public CharSequence Subsequence(int start, int end)
             {
                 throw new InvalidOperationException("Not supported.");
             }
 
             public char CharAt(int index)
             {
-                return maskingChar;
+                return _maskingChar;
             }
 
             public string SubSequence(int start, int end)

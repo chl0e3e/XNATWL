@@ -36,8 +36,8 @@ namespace XNATWL
 {
     public class DatePickerComboBox : ComboBoxBase
     {
-        private ComboboxLabel label;
-        private DatePicker datePicker;
+        private ComboboxLabel _label;
+        private DatePicker _datePicker;
 
         public DatePickerComboBox() : this(CultureInfo.CurrentCulture, DateTimeFormatInfo.CurrentInfo)
         {
@@ -52,85 +52,85 @@ namespace XNATWL
 
         public DatePickerComboBox(CultureInfo cultureInfo, DateTimeFormatInfo info)
         {
-            label = new ComboboxLabel(this, getAnimationState());
-            label.setTheme("display");
-            label.Clicked += (sender, e) =>
+            _label = new ComboboxLabel(this, GetAnimationState());
+            _label.SetTheme("display");
+            _label.Clicked += (sender, e) =>
             {
-                openPopup();
+                OpenPopup();
             };
 
-            datePicker = new DatePicker(cultureInfo, info);
-            datePicker.CalendarChanged += (sender, e) =>
+            _datePicker = new DatePicker(cultureInfo, info);
+            _datePicker.CalendarChanged += (sender, e) =>
             {
-                updateLabel();
+                UpdateLabel();
             };
 
-            popup.add(datePicker);
-            popup.setTheme("datepickercomboboxPopup");
+            _popup.Add(_datePicker);
+            _popup.SetTheme("datepickercomboboxPopup");
 
-            button.getModel().State += (sender, e) =>
+            _button.GetModel().State += (sender, e) =>
             {
-                updateHover();
+                UpdateHover();
             };
 
-            add(label);
+            Add(_label);
         }
 
-        public void setModel(DateModel model)
+        public void SetModel(DateModel model)
         {
-            datePicker.setModel(model);
+            _datePicker.SetModel(model);
         }
 
-        public DateModel getModel()
+        public DateModel GetModel()
         {
-            return datePicker.getModel();
+            return _datePicker.GetModel();
         }
 
-        public void setDateFormat(CultureInfo cultureInfo, DateTimeFormatInfo info)
+        public void SetDateFormat(CultureInfo cultureInfo, DateTimeFormatInfo info)
         {
-            datePicker.setDateFormat(cultureInfo, info);
+            _datePicker.SetDateFormat(cultureInfo, info);
         }
 
-        public DateTimeFormatInfo getDateFormat()
+        public DateTimeFormatInfo GetDateFormat()
         {
-            return datePicker.getDateFormatInfo();
+            return _datePicker.GetDateFormatInfo();
         }
 
-        public CultureInfo getLocale()
+        public CultureInfo GetLocale()
         {
-            return datePicker.getLocale();
+            return _datePicker.GetLocale();
         }
 
-        protected override Widget getLabel()
+        protected override Widget GetLabel()
         {
-            return label;
+            return _label;
         }
 
-        protected DatePicker getDatePicker()
+        protected DatePicker GetDatePicker()
         {
-            return datePicker;
+            return _datePicker;
         }
 
-        protected override void setPopupSize()
+        protected override void SetPopupSize()
         {
-            int minWidth = popup.getMinWidth();
-            int minHeight = popup.getMinHeight();
-            int popupWidth = computeSize(minWidth,
-                    popup.getPreferredWidth(),
-                    popup.getMaxWidth());
-            int popupHeight = computeSize(minHeight,
-                    popup.getPreferredHeight(),
-                    popup.getMaxHeight());
-            Widget container = popup.getParent();
-            int popupMaxRight = container.getInnerRight();
-            int popupMaxBottom = container.getInnerBottom();
-            int x = getX();
-            int y = getBottom();
+            int minWidth = _popup.GetMinWidth();
+            int minHeight = _popup.GetMinHeight();
+            int popupWidth = ComputeSize(minWidth,
+                    _popup.GetPreferredWidth(),
+                    _popup.GetMaxWidth());
+            int popupHeight = ComputeSize(minHeight,
+                    _popup.GetPreferredHeight(),
+                    _popup.GetMaxHeight());
+            Widget container = _popup.GetParent();
+            int popupMaxRight = container.GetInnerRight();
+            int popupMaxBottom = container.GetInnerBottom();
+            int x = GetX();
+            int y = GetBottom();
             if (x + popupWidth > popupMaxRight)
             {
-                if (getRight() - popupWidth >= container.getInnerX())
+                if (GetRight() - popupWidth >= container.GetInnerX())
                 {
-                    x = getRight() - popupWidth;
+                    x = GetRight() - popupWidth;
                 }
                 else
                 {
@@ -139,9 +139,9 @@ namespace XNATWL
             }
             if (y + popupHeight > popupMaxBottom)
             {
-                if (getY() - popupHeight >= container.getInnerY())
+                if (GetY() - popupHeight >= container.GetInnerY())
                 {
-                    y = getY() - popupHeight;
+                    y = GetY() - popupHeight;
                 }
                 else
                 {
@@ -150,58 +150,57 @@ namespace XNATWL
             }
             popupWidth = Math.Min(popupWidth, popupMaxRight - x);
             popupHeight = Math.Min(popupHeight, popupMaxBottom - y);
-            popup.setPosition(x, y);
-            popup.setSize(popupWidth, popupHeight);
+            _popup.SetPosition(x, y);
+            _popup.SetSize(popupWidth, popupHeight);
         }
 
-        protected void updateLabel()
+        protected void UpdateLabel()
         {
-            label.setText(datePicker.formatDate());
+            _label.SetText(_datePicker.FormatDate());
         }
 
-        void updateHover()
+        void UpdateHover()
         {
-            getAnimationState().setAnimationState(Label.STATE_HOVER,
-                    label.hover || button.getModel().Hover);
+            GetAnimationState().SetAnimationState(Label.STATE_HOVER,
+                    _label._hover || _button.GetModel().Hover);
         }
 
         protected class ComboboxLabel : Label
         {
-            protected internal bool hover;
+            protected internal bool _hover;
 
-            private DatePickerComboBox datePickerComboBox;
+            private DatePickerComboBox _datePickerComboBox;
 
             public ComboboxLabel(DatePickerComboBox datePickerComboBox, AnimationState animState) : base(animState)
             {
-                this.datePickerComboBox = datePickerComboBox;
-                setAutoSize(false);
-                setClip(true);
-                setTheme("display");
+                this._datePickerComboBox = datePickerComboBox;
+                SetAutoSize(false);
+                SetClip(true);
+                SetTheme("display");
             }
 
-            public override int getPreferredInnerHeight()
+            public override int GetPreferredInnerHeight()
             {
-                int prefHeight = base.getPreferredInnerHeight();
-                if (getFont() != null)
+                int prefHeight = base.GetPreferredInnerHeight();
+                if (GetFont() != null)
                 {
-                    prefHeight = Math.Max(prefHeight, getFont().LineHeight);
+                    prefHeight = Math.Max(prefHeight, GetFont().LineHeight);
                 }
                 return prefHeight;
             }
 
-            protected override void handleMouseHover(Event evt)
+            protected override void HandleMouseHover(Event evt)
             {
-                if (evt.isMouseEvent())
+                if (evt.IsMouseEvent())
                 {
-                    bool newHover = evt.getEventType() != EventType.MOUSE_EXITED;
-                    if (newHover != hover)
+                    bool newHover = evt.GetEventType() != EventType.MOUSE_EXITED;
+                    if (newHover != _hover)
                     {
-                        hover = newHover;
-                        this.datePickerComboBox.updateHover();
+                        _hover = newHover;
+                        this._datePickerComboBox.UpdateHover();
                     }
                 }
             }
         }
     }
-
 }

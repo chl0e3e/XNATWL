@@ -42,18 +42,18 @@ namespace XNATWL
 
         private static int NOT_CACHED = -1;
 
-        private Font font;
-        private FontCache cache;
-        private string text;
-        private int cachedTextWidth = NOT_CACHED;
-        private int numTextLines;
-        private bool useCache = true;
-        private bool cacheDirty;
-        private Alignment alignment = Alignment.TOPLEFT;
+        private Font _font;
+        private FontCache _cache;
+        private string _text;
+        private int _cachedTextWidth = NOT_CACHED;
+        private int _numTextLines;
+        private bool _useCache = true;
+        private bool _cacheDirty;
+        private Alignment _alignment = Alignment.TOPLEFT;
 
         public TextWidget() : this(null, false)
         {
-            
+
         }
 
         /**
@@ -63,7 +63,7 @@ namespace XNATWL
          */
         public TextWidget(AnimationState animState) : this(animState, false)
         {
-            
+
         }
 
         /**
@@ -74,26 +74,26 @@ namespace XNATWL
          */
         public TextWidget(AnimationState animState, bool inherit) : base(animState, inherit)
         {
-            this.text = "";
+            this._text = "";
         }
 
-        public Font getFont()
+        public Font GetFont()
         {
-            return font;
+            return _font;
         }
 
-        public virtual void setFont(Font font)
+        public virtual void SetFont(Font font)
         {
-            if (cache != null)
+            if (_cache != null)
             {
-                cache.Dispose();
-                cache = null;
+                _cache.Dispose();
+                _cache = null;
             }
-            this.font = font;
-            this.cachedTextWidth = NOT_CACHED;
-            if (useCache)
+            this._font = font;
+            this._cachedTextWidth = NOT_CACHED;
+            if (_useCache)
             {
-                this.cacheDirty = true;
+                this._cacheDirty = true;
             }
         }
 
@@ -104,190 +104,187 @@ namespace XNATWL
          *
          * @param text The CharSequence to display
          */
-        public void setCharSequence(string text)
+        public void SetCharSequence(string text)
         {
             if (text == null)
             {
                 throw new NullReferenceException("text");
             }
-            this.text = text;
-            this.cachedTextWidth = NOT_CACHED;
-            this.numTextLines = TextUtil.CountNumLines(text);
-            this.cacheDirty = true;
-            getAnimationState().resetAnimationTime(STATE_TEXT_CHANGED);
+            this._text = text;
+            this._cachedTextWidth = NOT_CACHED;
+            this._numTextLines = TextUtil.CountNumLines(text);
+            this._cacheDirty = true;
+            GetAnimationState().ResetAnimationTime(STATE_TEXT_CHANGED);
         }
 
-        protected string getCharSequence()
+        protected string GetCharSequence()
         {
-            return text;
+            return _text;
         }
 
-        public bool hasText()
+        public bool HasText()
         {
-            return numTextLines > 0;
+            return _numTextLines > 0;
         }
 
-        public bool isMultilineText()
+        public bool IsMultilineText()
         {
-            return numTextLines > 1;
+            return _numTextLines > 1;
         }
 
-        public int getNumTextLines()
+        public int GetNumTextLines()
         {
-            return numTextLines;
+            return _numTextLines;
         }
 
-        public Alignment getAlignment()
+        public Alignment GetAlignment()
         {
-            return alignment;
+            return _alignment;
         }
 
-        public void setAlignment(Alignment alignment)
+        public void SetAlignment(Alignment alignment)
         {
             if (alignment == null)
             {
                 throw new NullReferenceException("alignment");
             }
-            if (this.alignment != alignment)
+            if (this._alignment != alignment)
             {
-                this.alignment = alignment;
-                this.cacheDirty = true;
+                this._alignment = alignment;
+                this._cacheDirty = true;
             }
         }
 
-        public bool isCache()
+        public bool IsCache()
         {
-            return useCache;
+            return _useCache;
         }
 
-        public void setCache(bool cache)
+        public void SetCache(bool cache)
         {
-            if (this.useCache != cache)
+            if (this._useCache != cache)
             {
-                this.useCache = cache;
-                this.cacheDirty = true;
+                this._useCache = cache;
+                this._cacheDirty = true;
             }
         }
 
-        protected void applyThemeTextWidget(ThemeInfo themeInfo)
+        protected void ApplyThemeTextWidget(ThemeInfo themeInfo)
         {
-            setFont(themeInfo.GetFont("font"));
-            setAlignment(themeInfo.GetParameterValue<Alignment>("textAlignment", false, typeof(Alignment), Alignment.TOPLEFT));
+            SetFont(themeInfo.GetFont("font"));
+            SetAlignment(themeInfo.GetParameterValue<Alignment>("textAlignment", false, typeof(Alignment), Alignment.TOPLEFT));
         }
 
-        //@Override
-        protected override void applyTheme(ThemeInfo themeInfo)
+        protected override void ApplyTheme(ThemeInfo themeInfo)
         {
-            base.applyTheme(themeInfo);
-            applyThemeTextWidget(themeInfo);
+            base.ApplyTheme(themeInfo);
+            ApplyThemeTextWidget(themeInfo);
         }
 
-        //@Override
-        public override void destroy()
+        public override void Destroy()
         {
-            if (cache != null)
+            if (_cache != null)
             {
-                cache.Dispose();
-                cache = null;
+                _cache.Dispose();
+                _cache = null;
             }
-            base.destroy();
+            base.Destroy();
         }
 
-        protected virtual int computeTextX()
+        protected virtual int ComputeTextX()
         {
-            int x = getInnerX();
-            int pos = alignment.getHPosition();
+            int x = GetInnerX();
+            int pos = _alignment.GetHPosition();
             if (pos > 0)
             {
-                return x + (getInnerWidth() - computeTextWidth()) * pos / 2;
+                return x + (GetInnerWidth() - ComputeTextWidth()) * pos / 2;
             }
             return x;
         }
 
-        protected virtual internal int computeTextY()
+        protected virtual internal int ComputeTextY()
         {
-            int y = getInnerY();
-            int pos = alignment.getVPosition();
+            int y = GetInnerY();
+            int pos = _alignment.GetVPosition();
             if (pos > 0)
             {
-                return y + (getInnerHeight() - computeTextHeight()) * pos / 2;
+                return y + (GetInnerHeight() - ComputeTextHeight()) * pos / 2;
             }
             return y;
         }
 
-        //@Override
-        protected override void paintWidget(GUI gui)
+        protected override void PaintWidget(GUI gui)
         {
-            paintLabelText(getAnimationState());
+            PaintLabelText(GetAnimationState());
         }
 
-        protected void paintLabelText(AnimationState animState)
+        protected void PaintLabelText(AnimationState animState)
         {
-            if (cacheDirty)
+            if (_cacheDirty)
             {
-                updateCache();
+                UpdateCache();
             }
-            if (hasText() && font != null)
+            if (HasText() && _font != null)
             {
-                int x = computeTextX();
-                int y = computeTextY();
+                int x = ComputeTextX();
+                int y = ComputeTextY();
 
-                paintTextAt(animState, x, y);
+                PaintTextAt(animState, x, y);
             }
         }
 
-        protected void paintTextAt(AnimationState animState, int x, int y)
+        protected void PaintTextAt(AnimationState animState, int x, int y)
         {
-            if (cache != null)
+            if (_cache != null)
             {
-                cache.Draw(animState, x, y);
+                _cache.Draw(animState, x, y);
             }
-            else if (numTextLines > 1)
+            else if (_numTextLines > 1)
             {
-                font.DrawMultiLineText(animState, x, y, text, computeTextWidth(), alignment.getFontHAlignment());
+                _font.DrawMultiLineText(animState, x, y, _text, ComputeTextWidth(), _alignment.GetFontHAlignment());
             }
             else
             {
-                font.DrawText((Renderer.AnimationState)animState, x, y, text);
+                _font.DrawText((Renderer.AnimationState)animState, x, y, _text);
             }
         }
 
-        protected void paintWithSelection(AnimationState animState, int start, int end)
+        protected void PaintWithSelection(AnimationState animState, int start, int end)
         {
-            paintWithSelection(animState, start, end, 0, text.Length, computeTextY());
+            PaintWithSelection(animState, start, end, 0, _text.Length, ComputeTextY());
         }
 
-        protected void paintWithSelection(AnimationState animState, int start, int end, int lineStart, int lineEnd, int y)
+        protected void PaintWithSelection(AnimationState animState, int start, int end, int lineStart, int lineEnd, int y)
         {
-            if (cacheDirty)
+            if (_cacheDirty)
             {
-                updateCache();
+                UpdateCache();
             }
-            if (hasText() && font != null)
+            if (HasText() && _font != null)
             {
-                int x = computeTextX();
+                int x = ComputeTextX();
 
-                start = limit(start, lineStart, lineEnd);
-                end = limit(end, lineStart, lineEnd);
+                start = Limit(start, lineStart, lineEnd);
+                end = Limit(end, lineStart, lineEnd);
 
                 if (start > lineStart)
                 {
-                    x += font.DrawText(animState, x, y, text, lineStart, start);
+                    x += _font.DrawText(animState, x, y, _text, lineStart, start);
                 }
                 if (end > start)
                 {
-                    animState.setAnimationState(STATE_TEXT_SELECTION, true);
-                    x += font.DrawText(animState, x, y, text, start, end);
-                    animState.setAnimationState(STATE_TEXT_SELECTION, false);
+                    animState.SetAnimationState(STATE_TEXT_SELECTION, true);
+                    x += _font.DrawText(animState, x, y, _text, start, end);
+                    animState.SetAnimationState(STATE_TEXT_SELECTION, false);
                 }
                 if (end < lineEnd)
                 {
-                    font.DrawText(animState, x, y, text, end, lineEnd);
+                    _font.DrawText(animState, x, y, _text, end, lineEnd);
                 }
             }
         }
 
-        private static int limit(int value, int min, int max)
+        private static int Limit(int value, int min, int max)
         {
             if (value < min)
             {
@@ -300,104 +297,101 @@ namespace XNATWL
             return value;
         }
 
-        //@Override
-        public override int getPreferredInnerWidth()
+        public override int GetPreferredInnerWidth()
         {
-            int prefWidth = base.getPreferredInnerWidth();
-            if (hasText() && font != null)
+            int prefWidth = base.GetPreferredInnerWidth();
+            if (HasText() && _font != null)
             {
-                prefWidth = Math.Max(prefWidth, computeTextWidth());
+                prefWidth = Math.Max(prefWidth, ComputeTextWidth());
             }
             return prefWidth;
         }
 
-        //@Override
-        public override int getPreferredInnerHeight()
+        public override int GetPreferredInnerHeight()
         {
-            int prefHeight = base.getPreferredInnerHeight();
-            if (hasText() && font != null)
+            int prefHeight = base.GetPreferredInnerHeight();
+            if (HasText() && _font != null)
             {
-                prefHeight = Math.Max(prefHeight, computeTextHeight());
+                prefHeight = Math.Max(prefHeight, ComputeTextHeight());
             }
             return prefHeight;
         }
 
-        public int computeRelativeCursorPositionX(int charIndex)
+        public int ComputeRelativeCursorPositionX(int charIndex)
         {
-            return computeRelativeCursorPositionX(0, charIndex);
+            return ComputeRelativeCursorPositionX(0, charIndex);
         }
 
-        public int computeRelativeCursorPositionX(int startIndex, int charIndex)
+        public int ComputeRelativeCursorPositionX(int startIndex, int charIndex)
         {
-            if (font != null && charIndex > startIndex)
+            if (_font != null && charIndex > startIndex)
             {
-                return font.ComputeTextWidth(text, startIndex, charIndex);
+                return _font.ComputeTextWidth(_text, startIndex, charIndex);
             }
             return 0;
         }
 
-        public int computeTextWidth()
+        public int ComputeTextWidth()
         {
-            if (font != null)
+            if (_font != null)
             {
-                if (cachedTextWidth == NOT_CACHED || cacheDirty)
+                if (_cachedTextWidth == NOT_CACHED || _cacheDirty)
                 {
-                    if (numTextLines > 1)
+                    if (_numTextLines > 1)
                     {
-                        cachedTextWidth = font.ComputeMultiLineTextWidth(text);
+                        _cachedTextWidth = _font.ComputeMultiLineTextWidth(_text);
                     }
                     else
                     {
-                        cachedTextWidth = font.ComputeTextWidth(text);
+                        _cachedTextWidth = _font.ComputeTextWidth(_text);
                     }
                 }
-                return cachedTextWidth;
+                return _cachedTextWidth;
             }
             return 0;
         }
 
-        public int computeTextHeight()
+        public int ComputeTextHeight()
         {
-            if (font != null)
+            if (_font != null)
             {
-                return Math.Max(1, numTextLines) * font.LineHeight;
+                return Math.Max(1, _numTextLines) * _font.LineHeight;
             }
             return 0;
         }
 
-        private void updateCache()
+        private void UpdateCache()
         {
-            cacheDirty = false;
-            if (useCache && hasText() && font != null)
+            _cacheDirty = false;
+            if (_useCache && HasText() && _font != null)
             {
-                if (numTextLines > 1)
+                if (_numTextLines > 1)
                 {
-                    cache = font.CacheMultiLineText(cache, text,
-                            font.ComputeMultiLineTextWidth(text),
-                            alignment.getFontHAlignment());
+                    _cache = _font.CacheMultiLineText(_cache, _text,
+                            _font.ComputeMultiLineTextWidth(_text),
+                            _alignment.GetFontHAlignment());
                 }
                 else
                 {
-                    cache = font.CacheText(cache, text);
+                    _cache = _font.CacheText(_cache, _text);
                 }
-                if (cache != null)
+                if (_cache != null)
                 {
-                    cachedTextWidth = cache.Width;
+                    _cachedTextWidth = _cache.Width;
                 }
             }
             else
             {
-                destroy();
+                Destroy();
             }
         }
 
-        protected virtual void handleMouseHover(Event evt)
+        protected virtual void HandleMouseHover(Event evt)
         {
-            if (evt.isMouseEvent() && !hasSharedAnimationState())
+            if (evt.IsMouseEvent() && !HasSharedAnimationState())
             {
-                getAnimationState().setAnimationState(STATE_HOVER, evt.getEventType() != EventType.MOUSE_EXITED);
+                GetAnimationState().SetAnimationState(STATE_HOVER, evt.GetEventType() != EventType.MOUSE_EXITED);
             }
         }
     }
-
 }

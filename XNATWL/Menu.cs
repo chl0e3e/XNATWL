@@ -50,7 +50,7 @@ namespace XNATWL
              * 
              * @param menu the {@code Menu} which for which a popup will be opened
              */
-            void menuOpening(Menu menu);
+            void MenuOpening(Menu menu);
 
             /**
              * Called after a popup has been opened.
@@ -59,7 +59,7 @@ namespace XNATWL
              * @param menu the {@code Menu} which has been opened
              * @see #menuOpening(de.matthiasmann.twl.Menu) 
              */
-            void menuOpened(Menu menu);
+            void MenuOpened(Menu menu);
 
             /**
              * Called after a popup has been closed.
@@ -67,13 +67,13 @@ namespace XNATWL
              * 
              * @param menu the {@code Menu} which has been closed
              */
-            void menuClosed(Menu menu);
+            void MenuClosed(Menu menu);
         }
 
-        private List<MenuElement> elements = new List<MenuElement>();
-        private TypeMapping classAlignments = new TypeMapping();
-        private String popupTheme;
-        private Listener[] listeners;
+        private List<MenuElement> _elements = new List<MenuElement>();
+        private TypeMapping _classAlignments = new TypeMapping();
+        private String _popupTheme;
+        private Listener[] _listeners;
 
         /**
          * Creates a new menu without name.
@@ -115,20 +115,20 @@ namespace XNATWL
          * Returns the theme which is used when this menu is displayed as popup/sub menu.
          * @return the popup theme
          */
-        public String getPopupTheme()
+        public String GetPopupTheme()
         {
-            return popupTheme;
+            return _popupTheme;
         }
 
         /**
          * Sets the theme which is used when this menun is displayed as popup/sub menu.
          * @param popupTheme the popup theme
          */
-        public void setPopupTheme(String popupTheme)
+        public void SetPopupTheme(String popupTheme)
         {
-            String oldPopupTheme = this.popupTheme;
-            this.popupTheme = popupTheme;
-            firePropertyChange("popupTheme", oldPopupTheme, this.popupTheme);
+            String oldPopupTheme = this._popupTheme;
+            this._popupTheme = popupTheme;
+            FirePropertyChange("popupTheme", oldPopupTheme, this._popupTheme);
         }
 
         /**
@@ -138,7 +138,7 @@ namespace XNATWL
          * @param clazz the class for which a default alignment should be set
          * @param value the alignment
          */
-        public void setClassAlignment(Type clazz, Alignment value)
+        public void SetClassAlignment(Type clazz, Alignment value)
         {
             if (value == null)
             {
@@ -146,11 +146,11 @@ namespace XNATWL
             }
             if (value == Alignment.FILL)
             {
-                classAlignments.RemoveByType(clazz);
+                _classAlignments.RemoveByType(clazz);
             }
             else
             {
-                classAlignments.SetByType(clazz, value);
+                _classAlignments.SetByType(clazz, value);
             }
         }
 
@@ -161,9 +161,9 @@ namespace XNATWL
          * @param clazz the menu element class
          * @return the alignment
          */
-        public Alignment getClassAlignment(Type clazz)
+        public Alignment GetClassAlignment(Type clazz)
         {
-            Alignment alignment = (Alignment) classAlignments.GetByType(clazz);
+            Alignment alignment = (Alignment) _classAlignments.GetByType(clazz);
             if (alignment == null)
             {
                 return Alignment.FILL;
@@ -178,26 +178,26 @@ namespace XNATWL
          * @throws IndexOutOfBoundsException if index is invalid
          * @see #getNumElements()
          */
-        public MenuElement get(int index)
+        public MenuElement Get(int index)
         {
-            return elements[index];
+            return _elements[index];
         }
 
         /**
          * Returns the number of menu elements in this menu.
          * @return the number of menu elements
          */
-        public int getNumElements()
+        public int GetNumElements()
         {
-            return elements.Count;
+            return _elements.Count;
         }
 
         /**
          * Removes all menu elements
          */
-        public void clear()
+        public void Clear()
         {
-            elements.Clear();
+            _elements.Clear();
         }
 
         /**
@@ -207,9 +207,9 @@ namespace XNATWL
          * @param e the menu element
          * @return this
          */
-        public Menu add(MenuElement e)
+        public Menu Add(MenuElement e)
         {
-            elements.Add(e);
+            _elements.Add(e);
             return this;
         }
 
@@ -221,9 +221,9 @@ namespace XNATWL
          * @param cb the callback when the menu action has been selected
          * @return this
          */
-        public Menu add(String name, Action cb)
+        public Menu Add(String name, Action cb)
         {
-            return add(new MenuAction(name, cb));
+            return Add(new MenuAction(name, cb));
         }
 
         /**
@@ -234,9 +234,9 @@ namespace XNATWL
          * @param model the bool model which is displayed/modified by the menu checkbox
          * @return this
          */
-        public Menu add(String name, BooleanModel model)
+        public Menu Add(String name, BooleanModel model)
         {
-            return add(new MenuCheckbox(name, model));
+            return Add(new MenuCheckbox(name, model));
         }
 
         /**
@@ -245,9 +245,9 @@ namespace XNATWL
          *
          * @return this
          */
-        public Menu addSpacer()
+        public Menu AddSpacer()
         {
-            return add(new MenuSpacer());
+            return Add(new MenuSpacer());
         }
 
         /**
@@ -256,12 +256,12 @@ namespace XNATWL
          * @param container the container for the menu widgets.
          * @see #createMenuBar()
          */
-        public void createMenuBar(Widget container)
+        public void CreateMenuBar(Widget container)
         {
-            MenuManager mm = createMenuManager(container, true);
-            foreach (Widget w in createWidgets(mm, 0))
+            MenuManager mm = CreateMenuManager(container, true);
+            foreach (Widget w in CreateWidgets(mm, 0))
             {
-                container.add(w);
+                container.Add(w);
             }
         }
 
@@ -271,31 +271,31 @@ namespace XNATWL
          *
          * @return the menu bar conatiner
          */
-        public Widget createMenuBar()
+        public Widget CreateMenuBar()
         {
             DialogLayout l = new DialogLayout();
-            setWidgetTheme(l, "menubar");
+            SetWidgetTheme(l, "menubar");
 
-            MenuManager mm = createMenuManager(l, true);
-            Widget[] widgets = createWidgets(mm, 0);
+            MenuManager mm = CreateMenuManager(l, true);
+            Widget[] widgets = CreateWidgets(mm, 0);
 
-            l.setHorizontalGroup(l.createSequentialGroup().addWidgetsWithGap("menuitem", widgets));
-            l.setVerticalGroup(l.createParallelGroup(widgets));
+            l.SetHorizontalGroup(l.CreateSequentialGroup().AddWidgetsWithGap("menuitem", widgets));
+            l.SetVerticalGroup(l.CreateParallelGroup(widgets));
 
-            for (int i = 0, n = elements.Count; i < n; i++)
+            for (int i = 0, n = _elements.Count; i < n; i++)
             {
-                MenuElement e = elements[i];
+                MenuElement e = _elements[i];
 
-                Alignment alignment = e.getAlignment();
+                Alignment alignment = e.GetAlignment();
                 if (alignment == null)
                 {
-                    alignment = getClassAlignment(e.GetType());
+                    alignment = GetClassAlignment(e.GetType());
                 }
 
-                l.setWidgetAlignment(widgets[i], alignment);
+                l.SetWidgetAlignment(widgets[i], alignment);
             }
 
-            l.getHorizontalGroup().addGap();
+            l.GetHorizontalGroup().AddGap();
             return l;
         }
 
@@ -307,10 +307,10 @@ namespace XNATWL
          * @return the MenuManager which manages this popup
          * @see MenuManager#closePopup() 
          */
-        public MenuManager openPopupMenu(Widget parent)
+        public MenuManager OpenPopupMenu(Widget parent)
         {
-            MenuManager mm = createMenuManager(parent, false);
-            mm.openSubMenu(0, this, parent, true);
+            MenuManager mm = CreateMenuManager(parent, false);
+            mm.OpenSubMenu(0, this, parent, true);
             return mm;
         }
 
@@ -323,148 +323,148 @@ namespace XNATWL
          * @return the MenuManager which manages this popup
          * @see MenuManager#closePopup()
          */
-        public MenuManager openPopupMenu(Widget parent, int x, int y)
+        public MenuManager OpenPopupMenu(Widget parent, int x, int y)
         {
-            MenuManager mm = createMenuManager(parent, false);
-            Widget popup = mm.openSubMenu(0, this, parent, false);
+            MenuManager mm = CreateMenuManager(parent, false);
+            Widget popup = mm.OpenSubMenu(0, this, parent, false);
             if (popup != null)
             {
-                popup.setPosition(x, y);
+                popup.SetPosition(x, y);
             }
             return mm;
         }
 
         //@Override
-        protected internal override Widget createMenuWidget(MenuManager mm, int level)
+        protected internal override Widget CreateMenuWidget(MenuManager mm, int level)
         {
             SubMenuBtn smb = new SubMenuBtn(this, mm, level);
-            setWidgetTheme(smb, "submenu");
+            SetWidgetTheme(smb, "submenu");
             return smb;
         }
 
-        protected MenuManager createMenuManager(Widget parent, bool isMenuBar)
+        protected MenuManager CreateMenuManager(Widget parent, bool isMenuBar)
         {
             return new MenuManager(parent, isMenuBar);
         }
 
-        protected Widget[] createWidgets(MenuManager mm, int level)
+        protected Widget[] CreateWidgets(MenuManager mm, int level)
         {
-            Widget[] widgets = new Widget[elements.Count];
-            for (int i = 0, n = elements.Count; i < n; i++)
+            Widget[] widgets = new Widget[_elements.Count];
+            for (int i = 0, n = _elements.Count; i < n; i++)
             {
-                MenuElement e = elements[i];
-                widgets[i] = e.createMenuWidget(mm, level);
+                MenuElement e = _elements[i];
+                widgets[i] = e.CreateMenuWidget(mm, level);
             }
             return widgets;
         }
 
-        internal DialogLayout createPopup(MenuManager mm, int level, Widget btn)
+        internal DialogLayout CreatePopup(MenuManager mm, int level, Widget btn)
         {
-            if (listeners != null)
+            if (_listeners != null)
             {
-                foreach (Listener l in listeners)
+                foreach (Listener l in _listeners)
                 {
-                    l.menuOpening(this);
+                    l.MenuOpening(this);
                 }
             }
 
-            Widget[] widgets = createWidgets(mm, level);
+            Widget[] widgets = CreateWidgets(mm, level);
             MenuPopup popup = new MenuPopup(btn, level, this);
-            if (popupTheme != null)
+            if (_popupTheme != null)
             {
-                popup.setTheme(popupTheme);
+                popup.SetTheme(_popupTheme);
             }
-            popup.setHorizontalGroup(popup.createParallelGroup(widgets));
-            popup.setVerticalGroup(popup.createSequentialGroup().addWidgetsWithGap("menuitem", widgets));
+            popup.SetHorizontalGroup(popup.CreateParallelGroup(widgets));
+            popup.SetVerticalGroup(popup.CreateSequentialGroup().AddWidgetsWithGap("menuitem", widgets));
             return popup;
         }
 
-        void fireMenuOpened()
+        void FireMenuOpened()
         {
-            if (listeners != null)
+            if (_listeners != null)
             {
-                foreach (Listener l in listeners)
+                foreach (Listener l in _listeners)
                 {
-                    l.menuOpened(this);
+                    l.MenuOpened(this);
                 }
             }
         }
 
-        void fireMenuClosed()
+        void FireMenuClosed()
         {
-            if (listeners != null)
+            if (_listeners != null)
             {
-                foreach (Listener l in listeners)
+                foreach (Listener l in _listeners)
                 {
-                    l.menuClosed(this);
+                    l.MenuClosed(this);
                 }
             }
         }
 
         public IEnumerator<MenuElement> GetEnumerator()
         {
-            return elements.GetEnumerator();
+            return _elements.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return elements.GetEnumerator();
+            return _elements.GetEnumerator();
         }
 
         internal class MenuPopup : DialogLayout
         {
-            private Widget btn;
-            private Menu menu;
-            internal int level;
+            private Widget _btn;
+            private Menu _menu;
+            internal int _level;
 
             public MenuPopup(Widget btn, int level, Menu menu)
             {
-                this.btn = btn;
-                this.menu = menu;
-                this.level = level;
+                this._btn = btn;
+                this._menu = menu;
+                this._level = level;
             }
 
             //@Override
-            protected override void afterAddToGUI(GUI gui)
+            protected override void AfterAddToGUI(GUI gui)
             {
-                base.afterAddToGUI(gui);
-                menu.fireMenuOpened();
-                btn.getAnimationState().setAnimationState(STATE_HAS_OPEN_MENUS, true);
+                base.AfterAddToGUI(gui);
+                _menu.FireMenuOpened();
+                _btn.GetAnimationState().SetAnimationState(STATE_HAS_OPEN_MENUS, true);
             }
 
             //@Override
-            protected override void beforeRemoveFromGUI(GUI gui)
+            protected override void BeforeRemoveFromGUI(GUI gui)
             {
-                btn.getAnimationState().setAnimationState(STATE_HAS_OPEN_MENUS, false);
-                menu.fireMenuClosed();
-                base.beforeRemoveFromGUI(gui);
+                _btn.GetAnimationState().SetAnimationState(STATE_HAS_OPEN_MENUS, false);
+                _menu.FireMenuClosed();
+                base.BeforeRemoveFromGUI(gui);
             }
 
             //@Override
-            public override bool handleEvent(Event evt)
+            public override bool HandleEvent(Event evt)
             {
-                return base.handleEvent(evt) || evt.isMouseEventNoWheel();
+                return base.HandleEvent(evt) || evt.IsMouseEventNoWheel();
             }
         }
 
         internal class SubMenuBtn : MenuBtn
         {
-            private MenuManager mm;
-            private int level;
-            private Menu menu;
+            private MenuManager _mm;
+            private int _level;
+            private Menu _menu;
 
             public SubMenuBtn(Menu menu, MenuManager mm, int level) : base(menu)
             {
-                this.menu = menu;
-                this.mm = mm;
-                this.level = level;
+                this._menu = menu;
+                this._mm = mm;
+                this._level = level;
 
                 this.Action += SubMenuBtn_Action;
             }
 
             public void OpenSubMenu()
             {
-                this.mm.openSubMenu(level, this.menu, this, true);
+                this._mm.OpenSubMenu(_level, this._menu, this, true);
             }
 
             private void SubMenuBtn_Action(object sender, ButtonActionEventArgs e)

@@ -36,7 +36,7 @@ namespace XNATWL
 {
     public class MenuCheckbox : MenuElement
     {
-        private BooleanModel model;
+        private BooleanModel _model;
 
         public MenuCheckbox()
         {
@@ -44,24 +44,24 @@ namespace XNATWL
 
         public MenuCheckbox(BooleanModel model)
         {
-            this.model = model;
+            this._model = model;
         }
 
         public MenuCheckbox(String name, BooleanModel model) : base(name)
         {
-            this.model = model;
+            this._model = model;
         }
 
-        public BooleanModel getModel()
+        public BooleanModel GetModel()
         {
-            return model;
+            return _model;
         }
 
-        public void setModel(BooleanModel model)
+        public void SetModel(BooleanModel model)
         {
-            BooleanModel oldModel = this.model;
-            this.model = model;
-            firePropertyChange("model", oldModel, model);
+            BooleanModel oldModel = this._model;
+            this._model = model;
+            FirePropertyChange("model", oldModel, model);
         }
 
         class MenuCheckBoxBtn : MenuBtn
@@ -73,21 +73,21 @@ namespace XNATWL
                 this._menuCheckBox = menuCheckBox;
             }
 
-            public void propertyChange(PropertyChangeEvent evt)
+            public override void PropertyChange(PropertyChangeEvent evt)
             {
                 base.PropertyChange(evt);
-                ((ToggleButtonModel)getModel()).setModel(this._menuCheckBox.getModel());
+                ((ToggleButtonModel)GetModel()).SetModel(this._menuCheckBox.GetModel());
             }
         }
 
         //@Override
-        protected internal override Widget createMenuWidget(MenuManager mm, int level)
+        protected internal override Widget CreateMenuWidget(MenuManager mm, int level)
         {
             MenuBtn btn = new MenuCheckBoxBtn(this, this);
-            btn.setModel(new ToggleButtonModel(getModel()));
-            setWidgetTheme(btn, "checkbox");
+            btn.SetModel(new ToggleButtonModel(GetModel()));
+            SetWidgetTheme(btn, "checkbox");
             btn.Action += (sender, e) => {
-                mm.closePopup();
+                mm.ClosePopup();
             };
 
             return btn;

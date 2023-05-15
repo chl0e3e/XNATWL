@@ -40,7 +40,6 @@ namespace XNATWL
 
     public class DatePicker : DialogLayout
     {
-
         public interface ParseHook
         {
             /**
@@ -52,7 +51,7 @@ namespace XNATWL
              * @return true if the parsing was sucessful, false if the default parsing should be executed
              * @throws ParseException if the text could not be parsed and the default parsing should be skipped
              */
-            DateTime parse(String text, DateTime time, bool update);
+            DateTime Parse(String text, DateTime time, bool update);
         }
 
         public event EventHandler<DatePickerCalendarChangedEventArgs> CalendarChanged;
@@ -60,19 +59,18 @@ namespace XNATWL
         public static StateKey STATE_PREV_MONTH = StateKey.Get("prevMonth");
         public static StateKey STATE_NEXT_MONTH = StateKey.Get("nextMonth");
 
-        private List<ToggleButton> dayButtons;
-        private MonthAdjuster monthAdjuster;
-        private Runnable modelChangedCB;
+        private List<ToggleButton> _dayButtons;
+        private MonthAdjuster _monthAdjuster;
 
-        String[] monthNamesLong;
-        String[] monthNamesShort;
-        protected internal DateTime calendar;
-        private DateTimeFormatInfo dateFormat;
-        private CultureInfo locale;
-        private ParseHook parseHook;
+        String[] _monthNamesLong;
+        String[] _monthNamesShort;
+        protected internal DateTime _calendar;
+        private DateTimeFormatInfo _dateFormat;
+        private CultureInfo _locale;
+        private ParseHook _parseHook;
 
-        private DateModel model;
-        private bool cbAdded;
+        private DateModel _model;
+        private bool _cbAdded;
 
         public DatePicker() : this(CultureInfo.CurrentCulture, DateTimeFormatInfo.CurrentInfo)
         {
@@ -88,102 +86,102 @@ namespace XNATWL
 
         public DatePicker(CultureInfo cultureInfo, DateTimeFormatInfo info)
         {
-            this.locale = cultureInfo;
-            this.dayButtons = new List<ToggleButton>();
-            this.monthAdjuster = new MonthAdjuster(this);
-            this.calendar = DateTime.Now;
+            this._locale = cultureInfo;
+            this._dayButtons = new List<ToggleButton>();
+            this._monthAdjuster = new MonthAdjuster(this);
+            this._calendar = DateTime.Now;
 
-            setDateFormat(cultureInfo, info);
+            SetDateFormat(cultureInfo, info);
         }
 
-        public DateModel getModel()
+        public DateModel GetModel()
         {
-            return model;
+            return _model;
         }
 
-        public CultureInfo getLocale()
+        public CultureInfo GetLocale()
         {
-            return this.locale;
+            return this._locale;
         }
 
-        public void setModel(DateModel model)
+        public void SetModel(DateModel model)
         {
-            if (this.model != model)
+            if (this._model != model)
             {
-                if (cbAdded && this.model != null)
+                if (_cbAdded && this._model != null)
                 {
-                    this.model.Changed -= Model_Changed;
+                    this._model.Changed -= Model_Changed;
                 }
-                this.model = model; ;
-                this.model.Changed += Model_Changed;
-                modelChanged();
+                this._model = model; ;
+                this._model.Changed += Model_Changed;
+                ModelChanged();
             }
         }
 
         private void Model_Changed(object sender, DateChangedEventArgs e)
         {
-            modelChanged();
+            ModelChanged();
         }
 
-        public DateTimeFormatInfo getDateFormatInfo()
+        public DateTimeFormatInfo GetDateFormatInfo()
         {
-            return dateFormat;
+            return _dateFormat;
         }
 
-        public void setDateFormat(CultureInfo info, DateTimeFormatInfo dateFormat)
+        public void SetDateFormat(CultureInfo info, DateTimeFormatInfo dateFormat)
         {
             if (dateFormat == null)
             {
                 throw new ArgumentNullException("dateFormat");
             }
-            if (locale == null)
+            if (_locale == null)
             {
                 throw new ArgumentNullException("locale");
             }
-            if (this.dateFormat != dateFormat)
+            if (this._dateFormat != dateFormat)
             {
                 long time = DateTime.Now.Ticks;
-                this.locale = info;
-                this.dateFormat = dateFormat;
-                this.monthNamesLong = dateFormat.MonthNames;
-                this.monthNamesShort = dateFormat.AbbreviatedMonthNames;
-                this.calendar = DateTime.Now;
+                this._locale = info;
+                this._dateFormat = dateFormat;
+                this._monthNamesLong = dateFormat.MonthNames;
+                this._monthNamesShort = dateFormat.AbbreviatedMonthNames;
+                this._calendar = DateTime.Now;
                 //calendar.setTimeInMillis(time);
-                create();
-                modelChanged();
+                Create();
+                ModelChanged();
             }
         }
 
-        public ParseHook getParseHook()
+        public ParseHook GetParseHook()
         {
-            return parseHook;
+            return _parseHook;
         }
 
-        public void setParseHook(ParseHook parseHook)
+        public void SetParseHook(ParseHook parseHook)
         {
-            this.parseHook = parseHook;
+            this._parseHook = parseHook;
         }
 
-        public String formatDate()
+        public String FormatDate()
         {
-            return calendar.ToString(this.dateFormat.LongDatePattern);
+            return _calendar.ToString(this._dateFormat.LongDatePattern);
         }
 
-        public void parseDate(String date)
+        public void ParseDate(String date)
         {
-            parseDateImpl(date, true);
+            ParseDateImpl(date, true);
         }
 
-        protected void parseDateImpl(String text, bool update)
+        protected void ParseDateImpl(String text, bool update)
         {
-            if (parseHook != null)
+            if (_parseHook != null)
             {
-                DateTime parsedDt = parseHook.parse(text, calendar, update);
+                DateTime parsedDt = _parseHook.Parse(text, _calendar, update);
                 if (parsedDt != DateTime.MinValue)
                 {
                     if (update)
                     {
-                        this.calendar = parsedDt;
+                        this._calendar = parsedDt;
                     }
                     return;
                 }
@@ -192,12 +190,12 @@ namespace XNATWL
             DateTime parsed = DateTime.Parse(text);
             if (update)
             {
-                this.calendar = parsed;
-                calendarChanged();
+                this._calendar = parsed;
+                FireCalendarChanged();
             }
 
             String lowerText = text.Trim().ToLower();
-            String[][] monthNamesStyles = new String[][] { monthNamesLong, monthNamesShort };
+            String[][] monthNamesStyles = new String[][] { _monthNamesLong, _monthNamesShort };
 
             int month = -1;
             int year = -1;
@@ -228,7 +226,7 @@ namespace XNATWL
                 year = int.Parse(lowerText);
                 if (year < 100)
                 {
-                    year = fixupSmallYear(year);
+                    year = FixupSmallYear(year);
                 }
                 hasYear = true;
             }
@@ -245,31 +243,31 @@ namespace XNATWL
             {
                 if (month >= 0)
                 {
-                    if (calendar.Month > month)
+                    if (_calendar.Month > month)
                     {
-                        calendar = calendar.AddMonths(calendar.Month - month);
+                        _calendar = _calendar.AddMonths(_calendar.Month - month);
                     }
-                    else if (calendar.Month < month)
+                    else if (_calendar.Month < month)
                     {
-                        calendar = calendar.AddMonths(month - calendar.Month);
+                        _calendar = _calendar.AddMonths(month - _calendar.Month);
                     }
                 }
                 if (hasYear)
                 {
-                    if (calendar.Year > month)
+                    if (_calendar.Year > month)
                     {
-                        calendar = calendar.AddYears(calendar.Year - year);
+                        _calendar = _calendar.AddYears(_calendar.Year - year);
                     }
-                    else if (calendar.Year < month)
+                    else if (_calendar.Year < month)
                     {
-                        calendar.AddYears(year - calendar.Year);
+                        _calendar.AddYears(year - _calendar.Year);
                     }
                 }
-                calendarChanged();
+                FireCalendarChanged();
             }
         }
 
-        private int fixupSmallYear(int year)
+        private int FixupSmallYear(int year)
         {
             int futureYear = DateTime.Now.AddYears(20).Year;
             int tripPoint = futureYear % 100;
@@ -281,24 +279,24 @@ namespace XNATWL
             return year;
         }
 
-        protected override void afterAddToGUI(GUI gui)
+        protected override void AfterAddToGUI(GUI gui)
         {
-            base.afterAddToGUI(gui);
-            if (!cbAdded && this.model != null)
+            base.AfterAddToGUI(gui);
+            if (!_cbAdded && this._model != null)
             {
-                this.model.Changed += Model_Changed;
+                this._model.Changed += Model_Changed;
             }
-            cbAdded = true;
+            _cbAdded = true;
         }
 
-        protected override void beforeRemoveFromGUI(GUI gui)
+        protected override void BeforeRemoveFromGUI(GUI gui)
         {
-            if (cbAdded && this.model != null)
+            if (_cbAdded && this._model != null)
             {
-                this.model.Changed -= Model_Changed;
+                this._model.Changed -= Model_Changed;
             }
-            cbAdded = false;
-            base.beforeRemoveFromGUI(gui);
+            _cbAdded = false;
+            base.BeforeRemoveFromGUI(gui);
         }
 
         private const DayOfWeek StartingDayOfWeek = DayOfWeek.Monday;
@@ -352,10 +350,10 @@ namespace XNATWL
             return new int[2] { minDays, maxDays };
         }
 
-        private void create()
+        private void Create()
         {
-            int[] minMaxDaysOfWeek = DisplayWeekDatesFromGivenMonthYear(this.calendar.Month, this.calendar.Year);
-            var firstDayOfMonth = new DateTime(this.calendar.Year, this.calendar.Month, 1);
+            int[] minMaxDaysOfWeek = DisplayWeekDatesFromGivenMonthYear(this._calendar.Month, this._calendar.Year);
+            var firstDayOfMonth = new DateTime(this._calendar.Year, this._calendar.Month, 1);
             var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddSeconds(-1);
             int minDay = firstDayOfMonth.Day;
             int maxDay = lastDayOfMonth.Day;
@@ -364,78 +362,78 @@ namespace XNATWL
             int daysPerWeek = maxDayOfWeek - minDayOfWeek + 1;
             int numWeeks = (maxDay - minDay + daysPerWeek * 2 - 1) / daysPerWeek;
 
-            setHorizontalGroup(null);
-            setVerticalGroup(null);
-            removeAllChildren();
-            dayButtons.Clear(); 
+            SetHorizontalGroup(null);
+            SetVerticalGroup(null);
+            RemoveAllChildren();
+            _dayButtons.Clear(); 
 
-            String[] weekDays = this.dateFormat.AbbreviatedDayNames;
+            String[] weekDays = this._dateFormat.AbbreviatedDayNames;
 
-            Group daysHorz = createSequentialGroup();
-            Group daysVert = createSequentialGroup();
+            Group daysHorz = CreateSequentialGroup();
+            Group daysVert = CreateSequentialGroup();
             Group[] daysOfWeekHorz = new Group[daysPerWeek];
-            Group daysRow = createParallelGroup();
-            daysVert.addGroup(daysRow);
+            Group daysRow = CreateParallelGroup();
+            daysVert.AddGroup(daysRow);
 
             for (int i = 0; i < daysPerWeek; i++)
             {
-                daysOfWeekHorz[i] = createParallelGroup();
-                daysHorz.addGroup(daysOfWeekHorz[i]);
+                daysOfWeekHorz[i] = CreateParallelGroup();
+                daysHorz.AddGroup(daysOfWeekHorz[i]);
 
                 Label l = new Label(weekDays[i + minDay]);
-                daysOfWeekHorz[i].addWidget(l);
-                daysRow.addWidget(l);
+                daysOfWeekHorz[i].AddWidget(l);
+                daysRow.AddWidget(l);
             }
 
             for (int week = 0; week < numWeeks; week++)
             {
-                daysRow = createParallelGroup();
-                daysVert.addGroup(daysRow);
+                daysRow = CreateParallelGroup();
+                daysVert.AddGroup(daysRow);
 
                 for (int day = 0; day < daysPerWeek; day++)
                 {
                     ToggleButton tb = new ToggleButton();
-                    tb.setTheme("daybutton");
-                    dayButtons.Add(tb);
+                    tb.SetTheme("daybutton");
+                    _dayButtons.Add(tb);
 
-                    daysOfWeekHorz[day].addWidget(tb);
-                    daysRow.addWidget(tb);
+                    daysOfWeekHorz[day].AddWidget(tb);
+                    daysRow.AddWidget(tb);
                 }
             }
 
-            setHorizontalGroup(createParallelGroup()
-                    .addWidget(monthAdjuster)
-                    .addGroup(daysHorz));
-            setVerticalGroup(createSequentialGroup()
-                    .addWidget(monthAdjuster)
-                    .addGroup(daysVert));
+            SetHorizontalGroup(CreateParallelGroup()
+                    .AddWidget(_monthAdjuster)
+                    .AddGroup(daysHorz));
+            SetVerticalGroup(CreateSequentialGroup()
+                    .AddWidget(_monthAdjuster)
+                    .AddGroup(daysVert));
         }
 
-        void modelChanged()
+        void ModelChanged()
         {
-            if (model != null)
+            if (_model != null)
             {
-                calendar = new DateTime(model.Value);
+                _calendar = new DateTime(_model.Value);
             }
-            updateDisplay();
+            UpdateDisplay();
         }
 
-        void calendarChanged()
+        void FireCalendarChanged()
         {
-            if (model != null)
+            if (_model != null)
             {
-                model.Value = calendar.Ticks;
+                _model.Value = _calendar.Ticks;
             }
-            updateDisplay();
+            UpdateDisplay();
         }
 
-        void updateDisplay()
+        void UpdateDisplay()
         {
-            monthAdjuster.Sync();
-            DateTime cal = (DateTime)new DateTime(calendar.Ticks);
+            _monthAdjuster.Sync();
+            DateTime cal = (DateTime)new DateTime(_calendar.Ticks);
 
-            int[] minMaxDaysOfWeek = DisplayWeekDatesFromGivenMonthYear(this.calendar.Month, this.calendar.Year);
-            var firstDayOfMonth = new DateTime(this.calendar.Year, this.calendar.Month, 1);
+            int[] minMaxDaysOfWeek = DisplayWeekDatesFromGivenMonthYear(this._calendar.Month, this._calendar.Year);
+            var firstDayOfMonth = new DateTime(this._calendar.Year, this._calendar.Month, 1);
             var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddSeconds(-1);
             int minDay = firstDayOfMonth.Day;
             int maxDay = lastDayOfMonth.Day;
@@ -444,8 +442,8 @@ namespace XNATWL
             int daysPerWeek = maxDayOfWeek - minDayOfWeek + 1;
             int numWeeks = (maxDay - minDay + daysPerWeek * 2 - 1) / daysPerWeek;
 
-            int day = calendar.Day;
-            int weekDay = (int) calendar.Date.DayOfWeek;
+            int day = _calendar.Day;
+            int weekDay = (int) _calendar.Date.DayOfWeek;
 
             if (weekDay > minDayOfWeek)
             {
@@ -460,55 +458,47 @@ namespace XNATWL
                 cal = cal.AddDays(-daysPerWeek);
             }
 
-            foreach (ToggleButton tb in dayButtons)
+            foreach (ToggleButton tb in _dayButtons)
             {
                 DayModel dayModel = new DayModel(day);
-                tb.setText(cal.Day.ToString());
-                tb.setModel(dayModel);
-                AnimationState animState = tb.getAnimationState();
-                animState.setAnimationState(STATE_PREV_MONTH, day < minDay);
-                animState.setAnimationState(STATE_NEXT_MONTH, day > maxDay);
-                dayModel.update();
+                tb.SetText(cal.Day.ToString());
+                tb.SetModel(dayModel);
+                AnimationState animState = tb.GetAnimationState();
+                animState.SetAnimationState(STATE_PREV_MONTH, day < minDay);
+                animState.SetAnimationState(STATE_NEXT_MONTH, day > maxDay);
+                dayModel.Update();
                 cal = cal.AddDays(1);
                 ++day;
             }
 
             if (this.CalendarChanged != null)
             {
-                this.CalendarChanged.Invoke(this, new DatePickerCalendarChangedEventArgs(calendar));
-            }
-        }
-
-        void doCallback()
-        {
-            if (this.CalendarChanged != null)
-            {
-                this.CalendarChanged.Invoke(this, new DatePickerCalendarChangedEventArgs(calendar));
+                this.CalendarChanged.Invoke(this, new DatePickerCalendarChangedEventArgs(_calendar));
             }
         }
 
         class DayModel : BooleanModel
         {
-            int day;
-            bool active;
-            DatePicker datePicker;
+            int _day;
+            bool _active;
+            DatePicker _datePicker;
 
             public DayModel(DatePicker datePicker)
             {
-                this.datePicker = datePicker;
+                this._datePicker = datePicker;
             }
 
             public bool Value {
                 get
                 {
-                    return active;
+                    return _active;
                 }
                 set
                 {
-                    if (value && !active)
+                    if (value && !_active)
                     {
-                        this.datePicker.calendar = new DateTime(this.day, this.datePicker.calendar.Month, this.datePicker.calendar.Year);
-                        this.datePicker.calendarChanged();
+                        this._datePicker._calendar = new DateTime(this._day, this._datePicker._calendar.Month, this._datePicker._calendar.Year);
+                        this._datePicker.FireCalendarChanged();
                     }
                 }
             }
@@ -517,90 +507,90 @@ namespace XNATWL
 
             protected internal DayModel(int day)
             {
-                this.day = day;
+                this._day = day;
             }
 
-            public bool getValue()
+            public bool GetValue()
             {
-                return active;
+                return _active;
             }
 
-            protected internal void update()
+            protected internal void Update()
             {
-                bool newActive = this.datePicker.calendar.Day == day;
-                if (this.active != newActive)
+                bool newActive = this._datePicker._calendar.Day == _day;
+                if (this._active != newActive)
                 {
                     var oldActive = newActive;
-                    this.active = newActive;
+                    this._active = newActive;
                     this.Changed.Invoke(this, new BooleanChangedEventArgs(oldActive, newActive));
                 }
             }
 
-            public void setValue(bool value)
+            public void SetValue(bool value)
             {
-                if (value && !active)
+                if (value && !_active)
                 {
-                    this.datePicker.calendar = new DateTime(this.day, this.datePicker.calendar.Month, this.datePicker.calendar.Year);
-                    this.datePicker.calendarChanged();
+                    this._datePicker._calendar = new DateTime(this._day, this._datePicker._calendar.Month, this._datePicker._calendar.Year);
+                    this._datePicker.FireCalendarChanged();
                 }
             }
         }
 
         class MonthAdjuster : ValueAdjuster
         {
-            private long dragStartDate;
-            DatePicker datePicker;
+            private long _dragStartDate;
+            DatePicker _datePicker;
 
             public MonthAdjuster(DatePicker datePicker)
             {
-                this.datePicker = datePicker;
+                this._datePicker = datePicker;
             }
 
-            protected override void doDecrement()
+            protected override void DoDecrement()
             {
-                this.datePicker.calendar = this.datePicker.calendar.AddMonths(-1);
-                this.datePicker.calendarChanged();
+                this._datePicker._calendar = this._datePicker._calendar.AddMonths(-1);
+                this._datePicker.FireCalendarChanged();
             }
 
-            protected override void doIncrement()
+            protected override void DoIncrement()
             {
-                this.datePicker.calendar = this.datePicker.calendar.AddMonths(1);
-                this.datePicker.calendarChanged();
+                this._datePicker._calendar = this._datePicker._calendar.AddMonths(1);
+                this._datePicker.FireCalendarChanged();
             }
 
-            protected override String formatText()
+            protected override String FormatText()
             {
-                return this.datePicker.monthNamesLong[this.datePicker.calendar.Month] + " " + this.datePicker.calendar.Year;
+                return this._datePicker._monthNamesLong[this._datePicker._calendar.Month] + " " + this._datePicker._calendar.Year;
             }
 
-            protected override void onDragCancelled()
+            protected override void OnDragCancelled()
             {
-                this.datePicker.calendar = new DateTime(dragStartDate);
-                this.datePicker.calendarChanged();
+                this._datePicker._calendar = new DateTime(_dragStartDate);
+                this._datePicker.FireCalendarChanged();
             }
 
-            protected override void onDragStart()
+            protected override void OnDragStart()
             {
-                dragStartDate = this.datePicker.calendar.Ticks;
+                _dragStartDate = this._datePicker._calendar.Ticks;
             }
 
-            protected override void onDragUpdate(int dragDelta)
+            protected override void OnDragUpdate(int dragDelta)
             {
                 dragDelta /= 5;
-                this.datePicker.calendar = new DateTime(dragStartDate);
-                this.datePicker.calendar = this.datePicker.calendar.AddMonths(dragDelta);
-                this.datePicker.calendarChanged();
+                this._datePicker._calendar = new DateTime(_dragStartDate);
+                this._datePicker._calendar = this._datePicker._calendar.AddMonths(dragDelta);
+                this._datePicker.FireCalendarChanged();
             }
 
-            protected override void onEditCanceled()
+            protected override void OnEditCanceled()
             {
             }
 
-            protected override bool onEditEnd(String text)
+            protected override bool OnEditEnd(String text)
             {
                 try
                 {
-                    this.datePicker.parseDateImpl(text, true);
+                    this._datePicker.ParseDateImpl(text, true);
                     return true;
                 }
                 catch (ParseException ex)
@@ -609,31 +599,31 @@ namespace XNATWL
                 }
             }
 
-            protected override String onEditStart()
+            protected override String OnEditStart()
             {
-                return formatText();
+                return FormatText();
             }
 
-            protected override bool shouldStartEdit(char ch)
+            protected override bool ShouldStartEdit(char ch)
             {
                 return false;
             }
 
-            protected override void syncWithModel()
+            protected override void SyncWithModel()
             {
-                setDisplayText();
+                SetDisplayText();
             }
 
             public void Sync()
             {
-                this.syncWithModel();
+                this.SyncWithModel();
             }
 
-            protected override String validateEdit(String text)
+            protected override String ValidateEdit(String text)
             {
                 try
                 {
-                    this.datePicker.parseDateImpl(text, false);
+                    this._datePicker.ParseDateImpl(text, false);
                     return null;
                 }
                 catch (ParseException ex)

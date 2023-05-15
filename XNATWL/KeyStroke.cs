@@ -42,26 +42,26 @@ namespace XNATWL
         private const int ALT = 8;
         private const int CMD = 20;  // special: CMD is LMETA so META is also set ...
 
-        private int modifier;
-        private int keyCode;
-        private char keyChar;
-        private String action;
+        private int _modifier;
+        private int _keyCode;
+        private char _keyChar;
+        private String _action;
 
         private KeyStroke(int modifier, int keyCode, char keyChar, String action)
         {
-            this.modifier = modifier;
-            this.keyCode = keyCode;
-            this.keyChar = keyChar;
-            this.action = action;
+            this._modifier = modifier;
+            this._keyCode = keyCode;
+            this._keyChar = keyChar;
+            this._action = action;
         }
 
         /**
          * Returns the action name for this key stroke
          * @return the action name
          */
-        public String getAction()
+        public String GetAction()
         {
-            return action;
+            return _action;
         }
 
         /**
@@ -69,36 +69,36 @@ namespace XNATWL
          * @return the key stroke
          * @see #parse(java.lang.String, java.lang.String)
          */
-        public String getStroke()
+        public String GetStroke()
         {
             StringBuilder sb = new StringBuilder();
-            if ((modifier & SHIFT) == SHIFT)
+            if ((_modifier & SHIFT) == SHIFT)
             {
                 sb.Append("shift ");
             }
-            if ((modifier & CTRL) == CTRL)
+            if ((_modifier & CTRL) == CTRL)
             {
                 sb.Append("ctrl ");
             }
-            if ((modifier & ALT) == ALT)
+            if ((_modifier & ALT) == ALT)
             {
                 sb.Append("alt ");
             }
-            if ((modifier & CMD) == CMD)
+            if ((_modifier & CMD) == CMD)
             {
                 sb.Append("cmd ");
             }
-            else if ((modifier & META) == META)
+            else if ((_modifier & META) == META)
             {
                 sb.Append("meta ");
             }
-            if (keyCode != Event.KEY_NONE)
+            if (_keyCode != Event.KEY_NONE)
             {
-                sb.Append(Event.getKeyNameForCode(keyCode));
+                sb.Append(Event.GetKeyNameForCode(_keyCode));
             }
             else
             {
-                sb.Append("typed ").Append(keyChar);
+                sb.Append("typed ").Append(_keyChar);
             }
             return sb.ToString();
         }
@@ -115,9 +115,9 @@ namespace XNATWL
             if (obj is KeyStroke)
             {
                 KeyStroke other = (KeyStroke)obj;
-                return (this.modifier == other.modifier) &&
-                        (this.keyCode == other.keyCode) &&
-                        (this.keyChar == other.keyChar);
+                return (this._modifier == other._modifier) &&
+                        (this._keyCode == other._keyCode) &&
+                        (this._keyChar == other._keyChar);
             }
             return false;
         }
@@ -129,9 +129,9 @@ namespace XNATWL
         public override int GetHashCode()
         {
             int hash = 5;
-            hash = 83 * hash + this.modifier;
-            hash = 83 * hash + this.keyCode;
-            hash = 83 * hash + this.keyChar;
+            hash = 83 * hash + this._modifier;
+            hash = 83 * hash + this._keyCode;
+            hash = 83 * hash + this._keyChar;
             return hash;
         }
 
@@ -156,7 +156,7 @@ namespace XNATWL
          * @throws ArgumentOutOfRangeException if the key stroke can't be parsed
          * @see Keyboard#getKeyIndex(java.lang.String)
          */
-        public static KeyStroke parse(String stroke, String action)
+        public static KeyStroke Parse(String stroke, String action)
         {
             if (stroke == null)
             {
@@ -215,7 +215,7 @@ namespace XNATWL
                 }
                 else
                 {
-                    keyCode = Event.getKeyCodeForName(strokePart.ToUpper());
+                    keyCode = Event.GetKeyCodeForName(strokePart.ToUpper());
                     if (keyCode == Event.KEY_NONE)
                     {
                         throw new ArgumentOutOfRangeException("Unknown key: " + strokePart);
@@ -240,7 +240,7 @@ namespace XNATWL
          * @return the KeyStroke for this event and action
          * @throws ArgumentOutOfRangeException if the event is not a Type.KEY_PRESSED
          */
-        public static KeyStroke fromEvent(Event @event, String action)
+        public static KeyStroke FromEvent(Event @event, String action)
         {
             if (@event == null)
             {
@@ -250,34 +250,34 @@ namespace XNATWL
             {
                 throw new ArgumentNullException("action");
             }
-            if (@event.getEventType() != EventType.KEY_PRESSED)
+            if (@event.GetEventType() != EventType.KEY_PRESSED)
             {
                 throw new ArgumentOutOfRangeException("Event is not a Type.KEY_PRESSED");
             }
-            int modifiers = convertModifier(@event);
-            return new KeyStroke(modifiers, @event.getKeyCode(), Event.CHAR_NONE, action);
+            int modifiers = ConvertModifier(@event);
+            return new KeyStroke(modifiers, @event.GetKeyCode(), Event.CHAR_NONE, action);
         }
 
-        public bool match(Event e, int mappedEventModifiers)
+        public bool Match(Event e, int mappedEventModifiers)
         {
-            if (mappedEventModifiers != modifier)
+            if (mappedEventModifiers != _modifier)
             {
                 return false;
             }
-            if (keyCode != Event.KEY_NONE && keyCode != e.getKeyCode())
+            if (_keyCode != Event.KEY_NONE && _keyCode != e.GetKeyCode())
             {
                 return false;
             }
-            if (keyChar != Event.CHAR_NONE && (!e.hasKeyChar() || keyChar != e.getKeyChar()))
+            if (_keyChar != Event.CHAR_NONE && (!e.HasKeyChar() || _keyChar != e.GetKeyChar()))
             {
                 return false;
             }
             return true;
         }
 
-        public static int convertModifier(Event @event)
+        public static int ConvertModifier(Event @event)
         {
-            int eventModifiers = @event.getModifiers();
+            int eventModifiers = @event.GetModifiers();
             int modifiers = 0;
             if ((eventModifiers & Event.MODIFIER_SHIFT) != 0)
             {

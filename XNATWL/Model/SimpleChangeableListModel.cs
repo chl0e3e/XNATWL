@@ -123,7 +123,7 @@ namespace XNATWL.Model
             return this._content.IndexOf((T) element);
         }
 
-        public void clear()
+        public void Clear()
         {
             this._content.Clear();
             this.AllChanged.Invoke(this, new ListAllChangedEventArgs());

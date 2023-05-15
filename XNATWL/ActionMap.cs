@@ -67,12 +67,12 @@ namespace XNATWL
          */
         public static int FLAG_ON_REPEAT = 4;
 
-        private List<Mapping> mappings;
-        private int numMappings;
+        private List<Mapping> _mappings;
+        private int _numMappings;
 
         public ActionMap()
         {
-            mappings = new List<Mapping>();
+            _mappings = new List<Mapping>();
         }
 
         /**
@@ -85,13 +85,13 @@ namespace XNATWL
          * @see #addMapping(java.lang.String, java.lang.Object, java.lang.reflect.Method, java.lang.Object[], int)
          * @throws NullReferenceException when either action or event is null
          */
-        public bool invoke(String action, Event evt)
+        public bool Invoke(String action, Event evt)
         {
-            foreach (Mapping mapping in mappings)
+            foreach (Mapping mapping in _mappings)
             {
-                if (mapping.key == action)
+                if (mapping._key == action)
                 {
-                    mapping.call(evt);
+                    mapping.Call(evt);
                     return true;
                 }
             }
@@ -108,13 +108,13 @@ namespace XNATWL
          * @see #addMapping(java.lang.String, java.lang.Object, java.lang.reflect.Method, java.lang.Object[], int)
          * @throws NullReferenceException when action is null
          */
-        public bool invokeDirect(String action)
+        public bool InvokeDirect(String action)
         {
-            foreach (Mapping mapping in mappings)
+            foreach (Mapping mapping in _mappings)
             {
-                if (mapping.key == action)
+                if (mapping._key == action)
                 {
-                    mapping.call();
+                    mapping.Call();
                     return true;
                 }
             }
@@ -144,7 +144,7 @@ namespace XNATWL
          * @see #FLAG_ON_RELEASE
          * @see #FLAG_ON_REPEAT
          */
-        public void addMapping(String action, Object target, String methodName, Object[] parameters, int flags)
+        public void AddMapping(String action, Object target, String methodName, Object[] parameters, int flags)
         {
             if (action == null)
             {
@@ -157,7 +157,7 @@ namespace XNATWL
                 {
                     if (ClassUtils.IsParamsCompatible(m.GetParameters(), parameters))
                     {
-                        addMappingImpl(action, target, m, parameters, flags);
+                        AddMappingImpl(action, target, m, parameters, flags);
                         return;
                     }
                 }
@@ -188,7 +188,7 @@ namespace XNATWL
          * @see #FLAG_ON_RELEASE
          * @see #FLAG_ON_REPEAT
          */
-        public void addMapping(String action, Type targetClass, String methodName, Object[] parameters, int flags)
+        public void AddMapping(String action, Type targetClass, String methodName, Object[] parameters, int flags)
         {
             if (action == null)
             {
@@ -200,7 +200,7 @@ namespace XNATWL
                 {
                     if (ClassUtils.IsParamsCompatible(m.GetParameters(), parameters))
                     {
-                        addMappingImpl(action, null, m, parameters, flags);
+                        AddMappingImpl(action, null, m, parameters, flags);
                         return;
                     }
                 }
@@ -230,7 +230,7 @@ namespace XNATWL
          * @see #FLAG_ON_RELEASE
          * @see #FLAG_ON_REPEAT
          */
-        public void addMapping(String action, Object target, MethodInfo method, Object[] parameters, int flags)
+        public void AddMapping(String action, Object target, MethodInfo method, Object[] parameters, int flags)
         {
             if (action == null)
             {
@@ -252,7 +252,7 @@ namespace XNATWL
             {
                 throw new ArgumentOutOfRangeException("Paramters don't match method");
             }
-            addMappingImpl(action, target, method, parameters, flags);
+            AddMappingImpl(action, target, method, parameters, flags);
         }
 
         /**
@@ -262,7 +262,7 @@ namespace XNATWL
          * @param target the target class
          * @see Action
          */
-        public void addMapping(Object target)
+        public void AddMapping(Object target)
         {
             foreach (MethodInfo m in target.GetType().GetMethods())
             {
@@ -282,14 +282,14 @@ namespace XNATWL
                             (action.OnPressed ? FLAG_ON_PRESSED : 0) |
                             (action.OnRelease ? FLAG_ON_RELEASE : 0) |
                             (action.OnRepeat ? FLAG_ON_REPEAT : 0);
-                    addMappingImpl(name, target, m, null, flags);
+                    AddMappingImpl(name, target, m, null, flags);
                 }
             }
         }
 
-        protected void addMappingImpl(String action, Object target, MethodInfo method, Object[] parameters, int flags)
+        protected void AddMappingImpl(String action, Object target, MethodInfo method, Object[] parameters, int flags)
         {
-            mappings.Add(new Mapping(action, target, method, parameters, flags));
+            _mappings.Add(new Mapping(action, target, method, parameters, flags));
         }
 
         public class Action : System.Attribute
@@ -324,76 +324,43 @@ namespace XNATWL
             }
         }
 
-
-        /**
-         * Annotation used for automatic handler registration
-         *
-         * @see #addMapping(java.lang.Object)
-         */
-        //@Documented
-        //@Retention(RetentionPolicy.RUNTIME)
-        //@Target(ElementType.METHOD)
-        //public @interface Action {
-        /**
-         * Optional action name. If not specified then the method name is used
-         * as action
-         * @return the action name
-         */
-        //String name() default "";
-        /**
-         * Invoke the method on first key press events
-         * @return default true
-         */
-        //bool onPressed() default true;
-        /**
-         * Invoke the method on key release events
-         * @return default false
-         */
-        //bool onRelease() default false;
-        /**
-         * Invoke the method also on repeated key press events
-         * @return default false
-         */
-        //bool onRepeat() default true;
-        //}
-
         public class Mapping
         {
-            Object target;
-            MethodInfo method;
-            Object[] parameters;
-            int flags;
-            internal string key;
+            Object _target;
+            MethodInfo _method;
+            Object[] _parameters;
+            int _flags;
+            internal string _key;
 
             internal Mapping(String key, Object target, MethodInfo method, Object[] parameters, int flags)
             {
-                this.key = key;
-                this.target = target;
-                this.method = method;
-                this.parameters = parameters;
-                this.flags = flags;
+                this._key = key;
+                this._target = target;
+                this._method = method;
+                this._parameters = parameters;
+                this._flags = flags;
             }
 
-            internal void call(Event e)
+            internal void Call(Event e)
             {
-                EventType type = e.getEventType();
-                if ((type == EventType.KEY_RELEASED && ((flags & FLAG_ON_RELEASE) != 0)) ||
-                        (type == EventType.KEY_PRESSED && ((flags & FLAG_ON_PRESSED) != 0) &&
-                        (!e.isKeyRepeated() || ((flags & FLAG_ON_REPEAT) != 0))))
+                EventType type = e.GetEventType();
+                if ((type == EventType.KEY_RELEASED && ((_flags & FLAG_ON_RELEASE) != 0)) ||
+                        (type == EventType.KEY_PRESSED && ((_flags & FLAG_ON_PRESSED) != 0) &&
+                        (!e.IsKeyRepeated() || ((_flags & FLAG_ON_REPEAT) != 0))))
                 {
-                    call();
+                    Call();
                 }
             }
 
-            internal void call()
+            internal void Call()
             {
                 try
                 {
-                    method.Invoke(target, parameters);
+                    _method.Invoke(_target, _parameters);
                 }
                 catch (Exception ex)
                 {
-                    Logger.GetLogger(typeof(ActionMap)).log(Level.SEVERE,
+                    Logger.GetLogger(typeof(ActionMap)).Log(Level.SEVERE,
                             "Exception while invoking action handler", ex);
                 }
             }

@@ -13,36 +13,36 @@ namespace XNATWL.Test
         {
         }
 
-        public void show()
+        public void Show()
         {
-            setVisible(true);
-            requestKeyboardFocus();
+            SetVisible(true);
+            RequestKeyboardFocus();
         }
 
-        public void hide()
+        public void Hide()
         {
-            if (isVisible() && getFadeDurationHide() > 0)
+            if (IsVisible() && GetFadeDurationHide() > 0)
             {
                 //MinimizeEffect minimizeEffect = new MinimizeEffect(this);
                 //minimizeEffect.setAnimationDuration(getFadeDurationHide());
                 //setRenderOffscreen(minimizeEffect);
             }
-            setVisible(false);
+            SetVisible(false);
         }
 
-        public void center(float relX, float relY)
+        public void Center(float relX, float relY)
         {
-            Widget p = getParent();
-            setPosition(
-                    p.getInnerX() + (int)((p.getInnerWidth() - getWidth()) * relX),
-                    p.getInnerY() + (int)((p.getInnerHeight() - getHeight()) * relY));
+            Widget p = GetParent();
+            SetPosition(
+                    p.GetInnerX() + (int)((p.GetInnerWidth() - GetWidth()) * relX),
+                    p.GetInnerY() + (int)((p.GetInnerHeight() - GetHeight()) * relY));
         }
 
-        public void addCloseCallback()
+        public void AddCloseCallback()
         {
             base.Closed += (sender, e) =>
             {
-                hide();
+                Hide();
             };
         }
     }

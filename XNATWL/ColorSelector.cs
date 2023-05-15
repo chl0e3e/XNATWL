@@ -44,123 +44,121 @@ namespace XNATWL
 
         /*ByteBuffer imgData;
         IntBuffer imgDataInt;*/
-        Microsoft.Xna.Framework.Color[] imgData;
+        Microsoft.Xna.Framework.Color[] _imgData;
 
-        ColorSpace colorSpace;
-        float[] colorValues;
-        ColorValueModel[] colorValueModels;
-        private bool useColorArea2D = true;
-        private bool showPreview = false;
-        private bool useLabels = true;
-        private bool showHexEditField = false;
-        private bool showNativeAdjuster = true;
-        private bool showRGBAdjuster = true;
-        private bool showAlphaAdjuster = true;
-        private Runnable[] callbacks;
-        private ColorModel model;
-        private Runnable modelCallback;
-        private bool inModelSetValue;
-        int currentColor;
-        private ARGBModel[] argbModels;
-        EditField hexColorEditField;
-        private TintAnimator previewTintAnimator;
-        private bool recreateLayout;
+        ColorSpace _colorSpace;
+        float[] _colorValues;
+        ColorValueModel[] _colorValueModels;
+        private bool _useColorArea2D = true;
+        private bool _showPreview = false;
+        private bool _useLabels = true;
+        private bool _showHexEditField = false;
+        private bool _showNativeAdjuster = true;
+        private bool _showRGBAdjuster = true;
+        private bool _showAlphaAdjuster = true;
+        private ColorModel _model;
+        private bool _inModelSetValue;
+        int _currentColor;
+        private ARGBModel[] _argbModels;
+        EditField _hexColorEditField;
+        private TintAnimator _previewTintAnimator;
+        private bool _recreateLayout;
 
         public event EventHandler<ColorSelectorColorChangedEventArgs> ColorChanged;
 
         public ColorSelector(ColorSpace colorSpace)
         {
             // allocate enough space for 2D color areas
-            this.imgData = new Microsoft.Xna.Framework.Color[IMAGE_SIZE * IMAGE_SIZE];
+            this._imgData = new Microsoft.Xna.Framework.Color[IMAGE_SIZE * IMAGE_SIZE];
 
-            currentColor = Color.WHITE.ARGB;
+            _currentColor = Color.WHITE.ARGB;
 
-            setColorSpace(colorSpace);
+            SetColorSpace(colorSpace);
         }
 
-        public ColorSpace getColorSpace()
+        public ColorSpace GetColorSpace()
         {
-            return colorSpace;
+            return _colorSpace;
         }
 
-        public void setColorSpace(ColorSpace colorModel)
+        public void SetColorSpace(ColorSpace colorModel)
         {
             if (colorModel == null)
             {
                 throw new ArgumentNullException("colorModel");
             }
-            if (this.colorSpace != colorModel)
+            if (this._colorSpace != colorModel)
             {
-                bool hasColor = this.colorSpace != null;
+                bool hasColor = this._colorSpace != null;
 
-                this.colorSpace = colorModel;
-                this.colorValues = new float[colorModel.Components];
+                this._colorSpace = colorModel;
+                this._colorValues = new float[colorModel.Components];
 
                 if (hasColor)
                 {
-                    setColorInt((int) currentColor);
+                    SetColorInt((int) _currentColor);
                 }
                 else
                 {
-                    setDefaultColor();
+                    SetDefaultColor();
                 }
 
-                recreateLayout = true;
-                invalidateLayout();
+                _recreateLayout = true;
+                InvalidateLayout();
             }
         }
 
-        public ColorModel getModel()
+        public ColorModel GetModel()
         {
-            return model;
+            return _model;
         }
 
-        public void setModel(ColorModel model)
+        public void SetModel(ColorModel model)
         {
-            if (this.model != model)
+            if (this._model != model)
             {
-                removeModelCallback();
-                this.model = model;
+                RemoveModelCallback();
+                this._model = model;
                 if (model != null)
                 {
-                    addModelCallback();
-                    modelValueChanged();
+                    AddModelCallback();
+                    ModelValueChanged();
                 }
             }
         }
 
-        public Color getColor()
+        public Color GetColor()
         {
-            return new Color(currentColor);
+            return new Color(_currentColor);
         }
 
-        public void setColor(Color color)
+        public void SetColor(Color color)
         {
-            setColorInt(color.ARGB);
-            updateModel();
+            SetColorInt(color.ARGB);
+            UpdateModel();
         }
 
-        public void setDefaultColor()
+        public void SetDefaultColor()
         {
-            currentColor = Color.WHITE.ARGB;
-            for (int i = 0; i < colorSpace.Components; i++)
+            _currentColor = Color.WHITE.ARGB;
+            for (int i = 0; i < _colorSpace.Components; i++)
             {
-                float oldValue = colorValues[i];
-                colorValues[i] = colorSpace.ComponentDefaultValueOf(i);
+                float oldValue = _colorValues[i];
+                _colorValues[i] = _colorSpace.ComponentDefaultValueOf(i);
                 //colorValueModels[i].fireCallback(oldValue, colorValues[i]);
 
-                if (colorValueModels != null && colorValueModels.Length > i && colorValueModels[i] != null)
+                if (_colorValueModels != null && _colorValueModels.Length > i && _colorValueModels[i] != null)
                 {
-                    colorValueModels[i].fireCallback(oldValue, colorValues[i]);
+                    _colorValueModels[i].FireCallback(oldValue, _colorValues[i]);
                 }
             }
-        
-            colorChanged();
+
+            FireColorChanged();
         }
 
-        public bool isUseColorArea2D()
+        public bool IsUseColorArea2D()
         {
-            return useColorArea2D;
+            return _useColorArea2D;
         }
 
         /**
@@ -174,19 +172,19 @@ namespace XNATWL
          *
          * @param useColorArea2D true if 2D areas should be used
          */
-        public void setUseColorArea2D(bool useColorArea2D)
+        public void SetUseColorArea2D(bool useColorArea2D)
         {
-            if (this.useColorArea2D != useColorArea2D)
+            if (this._useColorArea2D != useColorArea2D)
             {
-                this.useColorArea2D = useColorArea2D;
-                recreateLayout = true;
-                invalidateLayout();
+                this._useColorArea2D = useColorArea2D;
+                _recreateLayout = true;
+                InvalidateLayout();
             }
         }
 
-        public bool isShowPreview()
+        public bool IsShowPreview()
         {
-            return showPreview;
+            return _showPreview;
         }
 
         /**
@@ -195,19 +193,19 @@ namespace XNATWL
          *
          * @param showPreview true if the preview widget should be displayed
          */
-        public void setShowPreview(bool showPreview)
+        public void SetShowPreview(bool showPreview)
         {
-            if (this.showPreview != showPreview)
+            if (this._showPreview != showPreview)
             {
-                this.showPreview = showPreview;
-                recreateLayout = true;
-                invalidateLayout();
+                this._showPreview = showPreview;
+                _recreateLayout = true;
+                InvalidateLayout();
             }
         }
 
-        public bool isShowHexEditField()
+        public bool IsShowHexEditField()
         {
-            return showHexEditField;
+            return _showHexEditField;
         }
 
         /**
@@ -216,34 +214,34 @@ namespace XNATWL
          *
          * @param showHexEditField true if the edit field should be shown
          */
-        public void setShowHexEditField(bool showHexEditField)
+        public void SetShowHexEditField(bool showHexEditField)
         {
-            if (this.showHexEditField != showHexEditField)
+            if (this._showHexEditField != showHexEditField)
             {
-                this.showHexEditField = showHexEditField;
-                recreateLayout = true;
-                invalidateLayout();
+                this._showHexEditField = showHexEditField;
+                _recreateLayout = true;
+                InvalidateLayout();
             }
         }
 
-        public bool isShowAlphaAdjuster()
+        public bool IsShowAlphaAdjuster()
         {
-            return showAlphaAdjuster;
+            return _showAlphaAdjuster;
         }
 
-        public void setShowAlphaAdjuster(bool showAlphaAdjuster)
+        public void SetShowAlphaAdjuster(bool showAlphaAdjuster)
         {
-            if (this.showAlphaAdjuster != showAlphaAdjuster)
+            if (this._showAlphaAdjuster != showAlphaAdjuster)
             {
-                this.showAlphaAdjuster = showAlphaAdjuster;
-                recreateLayout = true;
-                invalidateLayout();
+                this._showAlphaAdjuster = showAlphaAdjuster;
+                _recreateLayout = true;
+                InvalidateLayout();
             }
         }
 
-        public bool isShowNativeAdjuster()
+        public bool IsShowNativeAdjuster()
         {
-            return showNativeAdjuster;
+            return _showNativeAdjuster;
         }
 
         /**
@@ -252,34 +250,34 @@ namespace XNATWL
          *
          * @param showNativeAdjuster true if the native adjuster should be displayed
          */
-        public void setShowNativeAdjuster(bool showNativeAdjuster)
+        public void SetShowNativeAdjuster(bool showNativeAdjuster)
         {
-            if (this.showNativeAdjuster != showNativeAdjuster)
+            if (this._showNativeAdjuster != showNativeAdjuster)
             {
-                this.showNativeAdjuster = showNativeAdjuster;
-                recreateLayout = true;
-                invalidateLayout();
+                this._showNativeAdjuster = showNativeAdjuster;
+                _recreateLayout = true;
+                InvalidateLayout();
             }
         }
 
-        public bool isShowRGBAdjuster()
+        public bool IsShowRGBAdjuster()
         {
-            return showRGBAdjuster;
+            return _showRGBAdjuster;
         }
 
-        public void setShowRGBAdjuster(bool showRGBAdjuster)
+        public void SetShowRGBAdjuster(bool showRGBAdjuster)
         {
-            if (this.showRGBAdjuster != showRGBAdjuster)
+            if (this._showRGBAdjuster != showRGBAdjuster)
             {
-                this.showRGBAdjuster = showRGBAdjuster;
-                recreateLayout = true;
-                invalidateLayout();
+                this._showRGBAdjuster = showRGBAdjuster;
+                _recreateLayout = true;
+                InvalidateLayout();
             }
         }
 
-        public bool isUseLabels()
+        public bool IsUseLabels()
         {
-            return useLabels;
+            return _useLabels;
         }
 
         /**
@@ -288,13 +286,13 @@ namespace XNATWL
          *
          * @param useLabels true if labels should be displayed
          */
-        public void setUseLabels(bool useLabels)
+        public void SetUseLabels(bool useLabels)
         {
-            if (this.useLabels != useLabels)
+            if (this._useLabels != useLabels)
             {
-                this.useLabels = useLabels;
-                recreateLayout = true;
-                invalidateLayout();
+                this._useLabels = useLabels;
+                _recreateLayout = true;
+                InvalidateLayout();
             }
         }
 
@@ -308,311 +306,311 @@ namespace XNATWL
             callbacks = CallbackSupport.removeCallbackFromList(callbacks, cb);
         }*/
 
-        protected void updateModel()
+        protected void UpdateModel()
         {
-            if (model != null)
+            if (_model != null)
             {
-                inModelSetValue = true;
+                _inModelSetValue = true;
                 try
                 {
-                    model.Value = getColor();
+                    _model.Value = GetColor();
                 }
                 finally
                 {
-                    inModelSetValue = false;
+                    _inModelSetValue = false;
                 }
             }
         }
 
-        protected void colorChanged()
+        protected void FireColorChanged()
         {
-            int oldV = (int)currentColor;
-            currentColor = ((currentColor & (0xFF << 24)) | colorSpace.RGB(colorValues));
+            int oldV = (int)_currentColor;
+            _currentColor = ((_currentColor & (0xFF << 24)) | _colorSpace.RGB(_colorValues));
             if (this.ColorChanged != null)
             {
                 this.ColorChanged.Invoke(this, new ColorSelectorColorChangedEventArgs());
             }
-            updateModel();
-            if (argbModels != null)
+            UpdateModel();
+            if (_argbModels != null)
             {
-                foreach (ARGBModel m in argbModels)
+                foreach (ARGBModel m in _argbModels)
                 {
-                    m.fireCallback(oldV, (int)currentColor);
+                    m.FireCallback(oldV, (int)_currentColor);
                 }
             }
-            if (previewTintAnimator != null)
+            if (_previewTintAnimator != null)
             {
-                previewTintAnimator.SetColor(getColor());
+                _previewTintAnimator.SetColor(GetColor());
             }
-            updateHexEditField();
+            UpdateHexEditField();
         }
 
-        protected void setColorInt(int argb)
+        protected void SetColorInt(int argb)
         {
-            currentColor = argb;
-            float[] oldValues = colorValues;
-            colorValues = colorSpace.FromRGB(argb & 0x00FFFFFF);
-            for (int i = 0; i < colorSpace.Components; i++)
+            _currentColor = argb;
+            float[] oldValues = _colorValues;
+            _colorValues = _colorSpace.FromRGB(argb & 0x00FFFFFF);
+            for (int i = 0; i < _colorSpace.Components; i++)
             {
-                colorValueModels[i].fireCallback(oldValues[i], colorValues[i]);
+                _colorValueModels[i].FireCallback(oldValues[i], _colorValues[i]);
             }
-            colorChanged();
+            FireColorChanged();
         }
 
-        protected int getNumComponents()
+        protected int GetNumComponents()
         {
-            return colorSpace.Components;
+            return _colorSpace.Components;
         }
 
-        protected override void layout()
+        protected override void Layout()
         {
-            if (recreateLayout)
+            if (_recreateLayout)
             {
-                createColorAreas();
+                CreateColorAreas();
             }
-            base.layout();
+            base.Layout();
         }
 
-        public override int getMinWidth()
+        public override int GetMinWidth()
         {
-            if (recreateLayout)
+            if (_recreateLayout)
             {
-                createColorAreas();
+                CreateColorAreas();
             }
-            return base.getMinWidth();
+            return base.GetMinWidth();
         }
 
-        public override int getMinHeight()
+        public override int GetMinHeight()
         {
-            if (recreateLayout)
+            if (_recreateLayout)
             {
-                createColorAreas();
+                CreateColorAreas();
             }
-            return base.getMinHeight();
+            return base.GetMinHeight();
         }
 
-        public override int getPreferredInnerWidth()
+        public override int GetPreferredInnerWidth()
         {
-            if (recreateLayout)
+            if (_recreateLayout)
             {
-                createColorAreas();
+                CreateColorAreas();
             }
-            return base.getPreferredInnerWidth();
+            return base.GetPreferredInnerWidth();
         }
 
-        public override int getPreferredInnerHeight()
+        public override int GetPreferredInnerHeight()
         {
-            if (recreateLayout)
+            if (_recreateLayout)
             {
-                createColorAreas();
+                CreateColorAreas();
             }
-            return base.getPreferredInnerHeight();
+            return base.GetPreferredInnerHeight();
         }
 
-        protected void createColorAreas()
+        protected void CreateColorAreas()
         {
-            recreateLayout = false;
-            setVerticalGroup(null); // stop layout engine while we create new rules
-            removeAllChildren();
+            _recreateLayout = false;
+            SetVerticalGroup(null); // stop layout engine while we create new rules
+            RemoveAllChildren();
 
             // recreate models to make sure that no callback is left over
-            argbModels = new ARGBModel[4];
-            argbModels[0] = new ARGBModel(this, 16);
-            argbModels[1] = new ARGBModel(this, 8);
-            argbModels[2] = new ARGBModel(this, 0);
-            argbModels[3] = new ARGBModel(this, 24);
+            _argbModels = new ARGBModel[4];
+            _argbModels[0] = new ARGBModel(this, 16);
+            _argbModels[1] = new ARGBModel(this, 8);
+            _argbModels[2] = new ARGBModel(this, 0);
+            _argbModels[3] = new ARGBModel(this, 24);
 
-            int numComponents = getNumComponents();
+            int numComponents = GetNumComponents();
 
-            Group horzAreas = createSequentialGroup().addGap();
-            Group vertAreas = createParallelGroup();
+            Group horzAreas = CreateSequentialGroup().AddGap();
+            Group vertAreas = CreateParallelGroup();
 
             Group horzLabels = null;
-            Group horzAdjuster = createParallelGroup();
-            Group horzControlls = createSequentialGroup();
+            Group horzAdjuster = CreateParallelGroup();
+            Group horzControlls = CreateSequentialGroup();
 
-            if (useLabels)
+            if (_useLabels)
             {
-                horzLabels = createParallelGroup();
-                horzControlls.addGroup(horzLabels);
+                horzLabels = CreateParallelGroup();
+                horzControlls.AddGroup(horzLabels);
             }
-            horzControlls.addGroup(horzAdjuster);
+            horzControlls.AddGroup(horzAdjuster);
 
             Group[] vertAdjuster = new Group[4 + numComponents];
             int numAdjuters = 0;
 
             for (int i = 0; i < vertAdjuster.Length; i++)
             {
-                vertAdjuster[i] = createParallelGroup();
+                vertAdjuster[i] = CreateParallelGroup();
             }
 
-            colorValueModels = new ColorValueModel[numComponents];
+            _colorValueModels = new ColorValueModel[numComponents];
             for (int componentI = 0; componentI < numComponents; componentI++)
             {
-                colorValueModels[componentI] = new ColorValueModel(this, componentI);
+                _colorValueModels[componentI] = new ColorValueModel(this, componentI);
 
-                if (showNativeAdjuster)
+                if (_showNativeAdjuster)
                 {
-                    ValueAdjusterFloat vaf = new ValueAdjusterFloat(colorValueModels[componentI]);
+                    ValueAdjusterFloat vaf = new ValueAdjusterFloat(_colorValueModels[componentI]);
 
-                    if (useLabels)
+                    if (_useLabels)
                     {
-                        Label label = new Label(colorSpace.ComponentNameOf(componentI));
-                        label.setLabelFor(vaf);
-                        horzLabels.addWidget(label);
-                        vertAdjuster[numAdjuters].addWidget(label);
+                        Label label = new Label(_colorSpace.ComponentNameOf(componentI));
+                        label.SetLabelFor(vaf);
+                        horzLabels.AddWidget(label);
+                        vertAdjuster[numAdjuters].AddWidget(label);
                     }
                     else
                     {
-                        vaf.setDisplayPrefix(colorSpace.ComponentShortNameOf(componentI) + ": ");
-                        vaf.setTooltipContent(colorSpace.ComponentNameOf(componentI));
+                        vaf.SetDisplayPrefix(_colorSpace.ComponentShortNameOf(componentI) + ": ");
+                        vaf.SetTooltipContent(_colorSpace.ComponentNameOf(componentI));
                     }
 
-                    horzAdjuster.addWidget(vaf);
-                    vertAdjuster[numAdjuters].addWidget(vaf);
+                    horzAdjuster.AddWidget(vaf);
+                    vertAdjuster[numAdjuters].AddWidget(vaf);
                     numAdjuters++;
                 }
             }
 
-            for (int i = 0; i < argbModels.Length; i++)
+            for (int i = 0; i < _argbModels.Length; i++)
             {
-                if ((i == 3 && showAlphaAdjuster) || (i < 3 && showRGBAdjuster))
+                if ((i == 3 && _showAlphaAdjuster) || (i < 3 && _showRGBAdjuster))
                 {
-                    ValueAdjusterInt vai = new ValueAdjusterInt(argbModels[i]);
+                    ValueAdjusterInt vai = new ValueAdjusterInt(_argbModels[i]);
 
-                    if (useLabels)
+                    if (_useLabels)
                     {
                         Label label = new Label(RGBA_NAMES[i]);
-                        label.setLabelFor(vai);
-                        horzLabels.addWidget(label);
-                        vertAdjuster[numAdjuters].addWidget(label);
+                        label.SetLabelFor(vai);
+                        horzLabels.AddWidget(label);
+                        vertAdjuster[numAdjuters].AddWidget(label);
                     }
                     else
                     {
-                        vai.setDisplayPrefix(RGBA_PREFIX[i]);
-                        vai.setTooltipContent(RGBA_NAMES[i]);
+                        vai.SetDisplayPrefix(RGBA_PREFIX[i]);
+                        vai.SetTooltipContent(RGBA_NAMES[i]);
                     }
 
-                    horzAdjuster.addWidget(vai);
-                    vertAdjuster[numAdjuters].addWidget(vai);
+                    horzAdjuster.AddWidget(vai);
+                    vertAdjuster[numAdjuters].AddWidget(vai);
                     numAdjuters++;
                 }
             }
 
             int component = 0;
 
-            if (useColorArea2D)
+            if (_useColorArea2D)
             {
                 for (; component + 1 < numComponents; component += 2)
                 {
                     ColorArea2D area = new ColorArea2D(this, component, component + 1);
-                    area.setTooltipContent(colorSpace.ComponentNameOf(component) +
-                            " / " + colorSpace.ComponentNameOf(component + 1));
+                    area.SetTooltipContent(_colorSpace.ComponentNameOf(component) +
+                            " / " + _colorSpace.ComponentNameOf(component + 1));
 
-                    horzAreas.addWidget(area);
-                    vertAreas.addWidget(area);
+                    horzAreas.AddWidget(area);
+                    vertAreas.AddWidget(area);
                 }
             }
 
             for (; component < numComponents; component++)
             {
                 ColorArea1D area = new ColorArea1D(this, component);
-                area.setTooltipContent(colorSpace.ComponentNameOf(component));
+                area.SetTooltipContent(_colorSpace.ComponentNameOf(component));
 
-                horzAreas.addWidget(area);
-                vertAreas.addWidget(area);
+                horzAreas.AddWidget(area);
+                vertAreas.AddWidget(area);
             }
 
-            if (showHexEditField && hexColorEditField == null)
+            if (_showHexEditField && _hexColorEditField == null)
             {
-                createHexColorEditField();
+                CreateHexColorEditField();
             }
 
-            if (showPreview)
+            if (_showPreview)
             {
-                if (previewTintAnimator == null)
+                if (_previewTintAnimator == null)
                 {
-                    previewTintAnimator = new TintAnimator(this, getColor());
+                    _previewTintAnimator = new TintAnimator(this, GetColor());
                 }
 
                 Widget previewArea = new Widget();
-                previewArea.setTheme("colorarea");
-                previewArea.setTintAnimator(previewTintAnimator);
+                previewArea.SetTheme("colorarea");
+                previewArea.GetTintAnimator(_previewTintAnimator);
 
                 Widget preview = new Container();
-                preview.setTheme("preview");
-                preview.add(previewArea);
+                preview.SetTheme("preview");
+                preview.Add(previewArea);
 
                 Label label = new Label();
-                label.setTheme("previewLabel");
-                label.setLabelFor(preview);
+                label.SetTheme("previewLabel");
+                label.SetLabelFor(preview);
 
-                Group horz = createParallelGroup();
-                Group vert = createSequentialGroup();
+                Group horz = CreateParallelGroup();
+                Group vert = CreateSequentialGroup();
 
-                horzAreas.addGroup(horz.addWidget(label).addWidget(preview));
-                vertAreas.addGroup(vert.addGap().addWidget(label).addWidget(preview));
+                horzAreas.AddGroup(horz.AddWidget(label).AddWidget(preview));
+                vertAreas.AddGroup(vert.AddGap().AddWidget(label).AddWidget(preview));
 
-                if (showHexEditField)
+                if (_showHexEditField)
                 {
-                    horz.addWidget(hexColorEditField);
-                    vert.addGap().addWidget(hexColorEditField);
+                    horz.AddWidget(_hexColorEditField);
+                    vert.AddGap().AddWidget(_hexColorEditField);
                 }
             }
 
-            Group horzMainGroup = createParallelGroup()
-                    .addGroup(horzAreas.addGap())
-                    .addGroup(horzControlls);
-            Group vertMainGroup = createSequentialGroup()
-                    .addGroup(vertAreas);
+            Group horzMainGroup = CreateParallelGroup()
+                    .AddGroup(horzAreas.AddGap())
+                    .AddGroup(horzControlls);
+            Group vertMainGroup = CreateSequentialGroup()
+                    .AddGroup(vertAreas);
 
             for (int i = 0; i < numAdjuters; i++)
             {
-                vertMainGroup.addGroup(vertAdjuster[i]);
+                vertMainGroup.AddGroup(vertAdjuster[i]);
             }
 
-            if (showHexEditField)
+            if (_showHexEditField)
             {
-                if (hexColorEditField == null)
+                if (_hexColorEditField == null)
                 {
-                    createHexColorEditField();
+                    CreateHexColorEditField();
                 }
 
-                if (!showPreview)
+                if (!_showPreview)
                 {
-                    horzMainGroup.addWidget(hexColorEditField);
-                    vertMainGroup.addWidget(hexColorEditField);
+                    horzMainGroup.AddWidget(_hexColorEditField);
+                    vertMainGroup.AddWidget(_hexColorEditField);
                 }
 
-                updateHexEditField();
+                UpdateHexEditField();
             }
-            setHorizontalGroup(horzMainGroup);
-            setVerticalGroup(vertMainGroup.addGap());
+            SetHorizontalGroup(horzMainGroup);
+            SetVerticalGroup(vertMainGroup.AddGap());
         }
 
-        protected override void afterAddToGUI(GUI gui)
+        protected override void AfterAddToGUI(GUI gui)
         {
-            base.afterAddToGUI(gui);
-            addModelCallback();
+            base.AfterAddToGUI(gui);
+            AddModelCallback();
         }
 
-        protected override void beforeRemoveFromGUI(GUI gui)
+        protected override void BeforeRemoveFromGUI(GUI gui)
         {
-            removeModelCallback();
-            base.beforeRemoveFromGUI(gui);
+            RemoveModelCallback();
+            base.BeforeRemoveFromGUI(gui);
         }
 
-        private void removeModelCallback()
+        private void RemoveModelCallback()
         {
-            if (model != null)
+            if (_model != null)
             {
-                model.Changed -= Model_Changed;
+                _model.Changed -= Model_Changed;
             }
         }
 
-        private void addModelCallback()
+        private void AddModelCallback()
         {
-            if (model != null && getGUI() != null)
+            if (_model != null && GetGUI() != null)
             {
                 /*if(modelCallback == null) {
                     modelCallback = new Runnable() {
@@ -621,35 +619,35 @@ namespace XNATWL
                         }
                     };
                 }*/
-                model.Changed += Model_Changed;
+                _model.Changed += Model_Changed;
             }
         }
 
         private void Model_Changed(object sender, ColorChangedEventArgs e)
         {
-            modelValueChanged();
+            ModelValueChanged();
         }
 
         class HexColorEditField : EditField
         {
-            protected override void insertChar(char ch)
+            protected override void InsertChar(char ch)
             {
-                if (isValid(ch))
+                if (IsValid(ch))
                 {
-                    base.insertChar(ch);
+                    base.InsertChar(ch);
                 }
             }
 
-            public override void insertText(String str)
+            public override void InsertText(String str)
             {
                 for (int i = 0, n = str.Length; i < n; i++)
                 {
-                    if (!isValid(str[i]))
+                    if (!IsValid(str[i]))
                     {
                         StringBuilder sb = new StringBuilder(str);
                         for (int j = n; j-- >= i;)
                         {
-                            if (!isValid(sb[j]))
+                            if (!IsValid(sb[j]))
                             {
                                 sb.Remove(j, 1);
                             }
@@ -658,59 +656,60 @@ namespace XNATWL
                         break;
                     }
                 }
-                base.insertText(str);
+
+                base.InsertText(str);
             }
 
-            private bool isValid(char ch)
+            private bool IsValid(char ch)
             {
                 int digit = CharUtil.Digit(ch, 16);
                 return digit >= 0 && digit < 16;
             }
         }
 
-        private void createHexColorEditField()
+        private void CreateHexColorEditField()
         {
-            hexColorEditField = new HexColorEditField();
-            hexColorEditField.setTheme("hexColorEditField");
-            hexColorEditField.setColumns(8);
-            hexColorEditField.Callback += (sender, e) =>
+            _hexColorEditField = new HexColorEditField();
+            _hexColorEditField.SetTheme("hexColorEditField");
+            _hexColorEditField.SetColumns(8);
+            _hexColorEditField.Callback += (sender, e) =>
             {
                 if (e.Key == Event.KEY_ESCAPE)
                 {
-                    updateHexEditField();
+                    UpdateHexEditField();
                     return;
                 }
                 Color color = null;
                 try
                 {
-                    color = Color.Parse("#" + hexColorEditField.getText());
-                    hexColorEditField.setErrorMessage(null);
+                    color = Color.Parse("#" + _hexColorEditField.GetText());
+                    _hexColorEditField.SetErrorMessage(null);
                 }
                 catch (Exception ex)
                 {
-                    hexColorEditField.setErrorMessage("Invalid color format");
+                    _hexColorEditField.SetErrorMessage("Invalid color format");
                 }
                 if (e.Key == Event.KEY_RETURN && color != null)
                 {
-                    setColor(color);
+                    SetColor(color);
                 }
             };
         }
 
-        void updateHexEditField()
+        void UpdateHexEditField()
         {
-            if (hexColorEditField != null)
+            if (_hexColorEditField != null)
             {
-                hexColorEditField.setText(String.Format("{0:x8}", currentColor));
+                _hexColorEditField.SetText(String.Format("{0:x8}", _currentColor));
             }
         }
 
-        void modelValueChanged()
+        void ModelValueChanged()
         {
-            if (!inModelSetValue && model != null)
+            if (!_inModelSetValue && _model != null)
             {
                 // don't call updateModel here
-                setColorInt(model.Value.ARGB);
+                SetColorInt(_model.Value.ARGB);
             }
         }
 
@@ -718,27 +717,27 @@ namespace XNATWL
 
         protected internal class ColorValueModel : AbstractFloatModel
         {
-            private int component;
-            private ColorSelector colorSelector;
+            private int _component;
+            private ColorSelector _colorSelector;
 
             protected internal ColorValueModel(ColorSelector colorSelector, int component)
             {
-                this.colorSelector = colorSelector;
-                this.component = component;
+                this._colorSelector = colorSelector;
+                this._component = component;
             }
 
             public override float Value
             {
                 get
                 {
-                    return this.colorSelector.colorValues[component];
+                    return this._colorSelector._colorValues[_component];
                 }
                 set
                 {
-                    float oldValue = this.colorSelector.colorValues[component];
-                    this.colorSelector.colorValues[component] = value;
-                    this.Changed.Invoke(this.colorSelector, new FloatChangedEventArgs(oldValue, value));
-                    this.colorSelector.colorChanged();
+                    float oldValue = this._colorSelector._colorValues[_component];
+                    this._colorSelector._colorValues[_component] = value;
+                    this.Changed.Invoke(this._colorSelector, new FloatChangedEventArgs(oldValue, value));
+                    this._colorSelector.FireColorChanged();
                 }
             }
 
@@ -746,7 +745,7 @@ namespace XNATWL
             {
                 get
                 {
-                    return this.colorSelector.colorSpace.ComponentMinValueOf(component);
+                    return this._colorSelector._colorSpace.ComponentMinValueOf(_component);
                 }
             }
 
@@ -754,48 +753,48 @@ namespace XNATWL
             {
                 get
                 {
-                    return this.colorSelector.colorSpace.ComponentMaxValueOf(component);
+                    return this._colorSelector._colorSpace.ComponentMaxValueOf(_component);
                 }
             }
 
             public override event EventHandler<FloatChangedEventArgs> Changed;
 
-            protected internal void fireCallback(float oldValue, float newValue)
+            protected internal void FireCallback(float oldValue, float newValue)
             {
-                this.Changed.Invoke(this.colorSelector, new FloatChangedEventArgs(oldValue, newValue));
+                this.Changed.Invoke(this._colorSelector, new FloatChangedEventArgs(oldValue, newValue));
             }
         }
 
         protected internal class ARGBModel : AbstractIntegerModel
         {
-            private int startBit;
-            private ColorSelector colorSelector;
+            private int _startBit;
+            private ColorSelector _colorSelector;
 
             protected internal ARGBModel(ColorSelector colorSelector, int startBit)
             {
-                this.colorSelector = colorSelector;
-                this.startBit = startBit;
+                this._colorSelector = colorSelector;
+                this._startBit = startBit;
             }
 
             public override int Value
             {
                 get
                 {
-                    return (int)(this.colorSelector.currentColor >> startBit) & 255;
+                    return (int)(this._colorSelector._currentColor >> _startBit) & 255;
                 }
 
                 set
                 {
-                    string x = this.colorSelector.currentColor.ToString("X");
+                    string x = this._colorSelector._currentColor.ToString("X");
 
-                    int xy = ~(255 << startBit);
+                    int xy = ~(255 << _startBit);
                     System.Diagnostics.Debug.WriteLine("a:  " + xy.ToString("X"));
-                    int xyy = this.colorSelector.currentColor & xy;
+                    int xyy = this._colorSelector._currentColor & xy;
                     System.Diagnostics.Debug.WriteLine("ya:  " + xyy.ToString("X"));
-                    int xy4 = (value << startBit);
+                    int xy4 = (value << _startBit);
                     System.Diagnostics.Debug.WriteLine("xy4:  " + xy4.ToString("X"));
-                    this.colorSelector.setColorInt((int)((this.colorSelector.currentColor & xy) | (value << startBit)));
-                    string x2 = this.colorSelector.currentColor.ToString("X");
+                    this._colorSelector.SetColorInt((int)((this._colorSelector._currentColor & xy) | (value << _startBit)));
+                    string x2 = this._colorSelector._currentColor.ToString("X");
                     System.Diagnostics.Debug.WriteLine("x:  " + x + " | x2: " + x2);
                 }
             }
@@ -818,223 +817,223 @@ namespace XNATWL
 
             public override event EventHandler<IntegerChangedEventArgs> Changed;
 
-            protected internal void fireCallback(int oldV, int newV)
+            protected internal void FireCallback(int oldV, int newV)
             {
-                this.Changed.Invoke(this.colorSelector, new IntegerChangedEventArgs(oldV, newV));
+                this.Changed.Invoke(this._colorSelector, new IntegerChangedEventArgs(oldV, newV));
             }
         }
 
         protected internal abstract class ColorArea : Widget
         {
-            protected internal DynamicImage img;
-            protected internal Image cursorImage;
-            protected internal bool needsUpdate;
+            protected internal DynamicImage _img;
+            protected internal Image _cursorImage;
+            protected internal bool _needsUpdate;
 
-            protected override void applyTheme(ThemeInfo themeInfo)
+            protected override void ApplyTheme(ThemeInfo themeInfo)
             {
-                base.applyTheme(themeInfo);
-                cursorImage = themeInfo.GetImage("cursor");
+                base.ApplyTheme(themeInfo);
+                _cursorImage = themeInfo.GetImage("cursor");
             }
 
-            public abstract void createImage(GUI gui);
-            public abstract void updateImage();
-            public abstract void handleMouse(int x, int y);
+            public abstract void CreateImage(GUI gui);
+            public abstract void UpdateImage();
+            public abstract void HandleMouse(int x, int y);
 
-            protected override void paintWidget(GUI gui)
+            protected override void PaintWidget(GUI gui)
             {
-                if (img == null)
+                if (_img == null)
                 {
-                    createImage(gui);
-                    needsUpdate = true;
+                    CreateImage(gui);
+                    _needsUpdate = true;
                 }
-                if (img != null)
+                if (_img != null)
                 {
-                    if (needsUpdate)
+                    if (_needsUpdate)
                     {
-                        updateImage();
+                        UpdateImage();
                     }
-                    img.Draw(getAnimationState(), getInnerX(), getInnerY(), getInnerWidth(), getInnerHeight());
+                    _img.Draw(GetAnimationState(), GetInnerX(), GetInnerY(), GetInnerWidth(), GetInnerHeight());
                 }
             }
 
-            public override void destroy()
+            public override void Destroy()
             {
-                base.destroy();
-                if (img != null)
+                base.Destroy();
+                if (_img != null)
                 {
-                    img.Dispose();
-                    img = null;
+                    _img.Dispose();
+                    _img = null;
                 }
             }
 
-            public override bool handleEvent(Event evt)
+            public override bool HandleEvent(Event evt)
             {
-                if (evt.getEventType() == EventType.MOUSE_BTNDOWN || evt.getEventType() == EventType.MOUSE_DRAGGED)
+                if (evt.GetEventType() == EventType.MOUSE_BTNDOWN || evt.GetEventType() == EventType.MOUSE_DRAGGED)
                 {
-                    handleMouse(evt.getMouseX() - getInnerX(), evt.getMouseY() - getInnerY());
+                    HandleMouse(evt.GetMouseX() - GetInnerX(), evt.GetMouseY() - GetInnerY());
                     return true;
                 }
-                else if (evt.getEventType() == EventType.MOUSE_WHEEL)
+                else if (evt.GetEventType() == EventType.MOUSE_WHEEL)
                 {
                     return false;
                 }
                 else
                 {
-                    if (evt.isMouseEvent())
+                    if (evt.IsMouseEvent())
                     {
                         return true;
                     }
                 }
 
-                return base.handleEvent(evt);
+                return base.HandleEvent(evt);
             }
 
-            public void run()
+            public void Run()
             {
-                needsUpdate = true;
+                _needsUpdate = true;
             }
         }
 
         protected internal class ColorArea1D : ColorArea
         {
-            int component;
-            private ColorSelector colorSelector;
+            int _component;
+            private ColorSelector _colorSelector;
 
             protected internal ColorArea1D(ColorSelector colorSelector, int component)
             {
-                this.colorSelector = colorSelector;
-                this.component = component;
+                this._colorSelector = colorSelector;
+                this._component = component;
 
-                for (int i = 0, n = this.colorSelector.getNumComponents(); i < n; i++)
+                for (int i = 0, n = this._colorSelector.GetNumComponents(); i < n; i++)
                 {
                     if (i != component)
                     {
-                        this.colorSelector.colorValueModels[i].Changed += ColorArea1D_Changed;
+                        this._colorSelector._colorValueModels[i].Changed += ColorArea1D_Changed;
                     }
                 }
             }
 
             private void ColorArea1D_Changed(object sender, FloatChangedEventArgs e)
             {
-                this.run();
+                this.Run();
             }
 
-            protected override void paintWidget(GUI gui)
+            protected override void PaintWidget(GUI gui)
             {
-                base.paintWidget(gui);
-                if (cursorImage != null)
+                base.PaintWidget(gui);
+                if (_cursorImage != null)
                 {
-                    float minValue = this.colorSelector.colorSpace.ComponentMinValueOf(component);
-                    float maxValue = this.colorSelector.colorSpace.ComponentMaxValueOf(component);
-                    int pos = (int)((this.colorSelector.colorValues[component] - maxValue) * (getInnerHeight() - 1) / (minValue - maxValue) + 0.5f);
-                    cursorImage.Draw(getAnimationState(), getInnerX(), getInnerY() + pos, getInnerWidth(), 1);
+                    float minValue = this._colorSelector._colorSpace.ComponentMinValueOf(_component);
+                    float maxValue = this._colorSelector._colorSpace.ComponentMaxValueOf(_component);
+                    int pos = (int)((this._colorSelector._colorValues[_component] - maxValue) * (GetInnerHeight() - 1) / (minValue - maxValue) + 0.5f);
+                    _cursorImage.Draw(GetAnimationState(), GetInnerX(), GetInnerY() + pos, GetInnerWidth(), 1);
                 }
             }
 
-            public override void createImage(GUI gui)
+            public override void CreateImage(GUI gui)
             {
-                img = gui.getRenderer().CreateDynamicImage(1, IMAGE_SIZE);
+                _img = gui.GetRenderer().CreateDynamicImage(1, IMAGE_SIZE);
             }
 
-            public override void updateImage()
+            public override void UpdateImage()
             {
-                float[] temp = (float[]) this.colorSelector.colorValues.Clone();
-                Microsoft.Xna.Framework.Color[] buf = this.colorSelector.imgData;
-                ColorSpace cs = this.colorSelector.colorSpace;
+                float[] temp = (float[]) this._colorSelector._colorValues.Clone();
+                Microsoft.Xna.Framework.Color[] buf = this._colorSelector._imgData;
+                ColorSpace cs = this._colorSelector._colorSpace;
 
-                float x = cs.ComponentMaxValueOf(component);
-                float dx = (cs.ComponentMinValueOf(component) - x) / (IMAGE_SIZE - 1);
+                float x = cs.ComponentMaxValueOf(_component);
+                float dx = (cs.ComponentMinValueOf(_component) - x) / (IMAGE_SIZE - 1);
 
                 for (int i = 0; i < IMAGE_SIZE; i++)
                 {
-                    temp[component] = x;
+                    temp[_component] = x;
                     Color twlColor = new Color(cs.RGB(temp));
                     buf[i] = new Microsoft.Xna.Framework.Color(twlColor.RedF, twlColor.GreenF, twlColor.BlueF);
                     x += dx;
                 }
 
-                img.Update(buf);
-                needsUpdate = false;
+                _img.Update(buf);
+                _needsUpdate = false;
             }
 
-            public override void handleMouse(int x, int y)
+            public override void HandleMouse(int x, int y)
             {
-                float minValue = this.colorSelector.colorSpace.ComponentMinValueOf(component);
-                float maxValue = this.colorSelector.colorSpace.ComponentMaxValueOf(component);
-                int innerHeight = getInnerHeight();
+                float minValue = this._colorSelector._colorSpace.ComponentMinValueOf(_component);
+                float maxValue = this._colorSelector._colorSpace.ComponentMaxValueOf(_component);
+                int innerHeight = GetInnerHeight();
                 int pos = Math.Max(0, Math.Min(innerHeight, y));
                 float value = maxValue + (minValue - maxValue) * pos / innerHeight;
-                this.colorSelector.colorValueModels[component].Value = value;
+                this._colorSelector._colorValueModels[_component].Value = value;
             }
         }
 
         protected internal class ColorArea2D : ColorArea
         {
-            private int componentX;
-            private int componentY;
+            private int _componentX;
+            private int _componentY;
 
-            private ColorSelector colorSelector;
+            private ColorSelector _colorSelector;
 
             protected internal ColorArea2D(ColorSelector colorSelector, int componentX, int componentY)
             {
-                this.colorSelector = colorSelector;
+                this._colorSelector = colorSelector;
 
-                this.componentX = componentX;
-                this.componentY = componentY;
+                this._componentX = componentX;
+                this._componentY = componentY;
 
-                for (int i = 0, n = this.colorSelector.getNumComponents(); i < n; i++)
+                for (int i = 0, n = this._colorSelector.GetNumComponents(); i < n; i++)
                 {
                     if (i != componentX && i != componentY)
                     {
-                        this.colorSelector.colorValueModels[i].Changed += ColorArea2D_Changed;
+                        this._colorSelector._colorValueModels[i].Changed += ColorArea2D_Changed;
                     }
                 }
             }
 
             private void ColorArea2D_Changed(object sender, FloatChangedEventArgs e)
             {
-                this.run();
+                this.Run();
             }
 
-            protected override void paintWidget(GUI gui)
+            protected override void PaintWidget(GUI gui)
             {
-                base.paintWidget(gui);
-                if (cursorImage != null)
+                base.PaintWidget(gui);
+                if (_cursorImage != null)
                 {
-                    float minValueX = this.colorSelector.colorSpace.ComponentMinValueOf(componentX);
-                    float maxValueX = this.colorSelector.colorSpace.ComponentMaxValueOf(componentX);
-                    float minValueY = this.colorSelector.colorSpace.ComponentMinValueOf(componentY);
-                    float maxValueY = this.colorSelector.colorSpace.ComponentMaxValueOf(componentY);
-                    int posX = (int)((this.colorSelector.colorValues[componentX] - maxValueX) * (getInnerWidth() - 1) / (minValueX - maxValueX) + 0.5f);
-                    int posY = (int)((this.colorSelector.colorValues[componentY] - maxValueY) * (getInnerHeight() - 1) / (minValueY - maxValueY) + 0.5f);
-                    cursorImage.Draw(getAnimationState(), getInnerX() + posX, getInnerY() + posY, 1, 1);
+                    float minValueX = this._colorSelector._colorSpace.ComponentMinValueOf(_componentX);
+                    float maxValueX = this._colorSelector._colorSpace.ComponentMaxValueOf(_componentX);
+                    float minValueY = this._colorSelector._colorSpace.ComponentMinValueOf(_componentY);
+                    float maxValueY = this._colorSelector._colorSpace.ComponentMaxValueOf(_componentY);
+                    int posX = (int)((this._colorSelector._colorValues[_componentX] - maxValueX) * (GetInnerWidth() - 1) / (minValueX - maxValueX) + 0.5f);
+                    int posY = (int)((this._colorSelector._colorValues[_componentY] - maxValueY) * (GetInnerHeight() - 1) / (minValueY - maxValueY) + 0.5f);
+                    _cursorImage.Draw(GetAnimationState(), GetInnerX() + posX, GetInnerY() + posY, 1, 1);
                 }
             }
 
-            public override void createImage(GUI gui)
+            public override void CreateImage(GUI gui)
             {
-                img = gui.getRenderer().CreateDynamicImage(IMAGE_SIZE, IMAGE_SIZE);
+                _img = gui.GetRenderer().CreateDynamicImage(IMAGE_SIZE, IMAGE_SIZE);
             }
 
-            public override void updateImage()
+            public override void UpdateImage()
             {
-                float[] temp = (float[])this.colorSelector.colorValues.Clone();
-                Microsoft.Xna.Framework.Color[] buf = this.colorSelector.imgData;
-                ColorSpace cs = this.colorSelector.colorSpace;
+                float[] temp = (float[])this._colorSelector._colorValues.Clone();
+                Microsoft.Xna.Framework.Color[] buf = this._colorSelector._imgData;
+                ColorSpace cs = this._colorSelector._colorSpace;
 
-                float x0 = cs.ComponentMaxValueOf(componentX);
-                float dx = (cs.ComponentMinValueOf(componentX) - x0) / (IMAGE_SIZE - 1);
+                float x0 = cs.ComponentMaxValueOf(_componentX);
+                float dx = (cs.ComponentMinValueOf(_componentX) - x0) / (IMAGE_SIZE - 1);
 
-                float y = cs.ComponentMaxValueOf(componentY);
-                float dy = (cs.ComponentMinValueOf(componentY) - y) / (IMAGE_SIZE - 1);
+                float y = cs.ComponentMaxValueOf(_componentY);
+                float dy = (cs.ComponentMinValueOf(_componentY) - y) / (IMAGE_SIZE - 1);
 
                 for (int i = 0, idx = 0; i < IMAGE_SIZE; i++)
                 {
-                    temp[componentY] = y;
+                    temp[_componentY] = y;
                     float x = x0;
                     for (int j = 0; j < IMAGE_SIZE; j++)
                     {
-                        temp[componentX] = x;
+                        temp[_componentX] = x;
                         Color twlColor = new Color(cs.RGB(temp));
                         buf[idx++] = new Microsoft.Xna.Framework.Color(twlColor.RedF, twlColor.GreenF, twlColor.BlueF);
                         x += dx;
@@ -1042,24 +1041,24 @@ namespace XNATWL
                     y += dy;
                 }
 
-                img.Update(buf);
-                needsUpdate = false;
+                _img.Update(buf);
+                _needsUpdate = false;
             }
 
-            public override void handleMouse(int x, int y)
+            public override void HandleMouse(int x, int y)
             {
-                float minValueX = this.colorSelector.colorSpace.ComponentMinValueOf(componentX);
-                float maxValueX = this.colorSelector.colorSpace.ComponentMaxValueOf(componentX);
-                float minValueY = this.colorSelector.colorSpace.ComponentMinValueOf(componentY);
-                float maxValueY = this.colorSelector.colorSpace.ComponentMaxValueOf(componentY);
-                int innerWidtht = getInnerWidth();
-                int innerHeight = getInnerHeight();
+                float minValueX = this._colorSelector._colorSpace.ComponentMinValueOf(_componentX);
+                float maxValueX = this._colorSelector._colorSpace.ComponentMaxValueOf(_componentX);
+                float minValueY = this._colorSelector._colorSpace.ComponentMinValueOf(_componentY);
+                float maxValueY = this._colorSelector._colorSpace.ComponentMaxValueOf(_componentY);
+                int innerWidtht = GetInnerWidth();
+                int innerHeight = GetInnerHeight();
                 int posX = Math.Max(0, Math.Min(innerWidtht, x));
                 int posY = Math.Max(0, Math.Min(innerHeight, y));
                 float valueX = maxValueX + (minValueX - maxValueX) * posX / innerWidtht;
                 float valueY = maxValueY + (minValueY - maxValueY) * posY / innerHeight;
-                this.colorSelector.colorValueModels[componentX].Value = valueX;
-                this.colorSelector.colorValueModels[componentY].Value = valueY;
+                this._colorSelector._colorValueModels[_componentX].Value = valueX;
+                this._colorSelector._colorValueModels[_componentY].Value = valueY;
             }
         }
     }

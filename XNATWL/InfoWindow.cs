@@ -32,64 +32,77 @@ using System;
 
 namespace XNATWL
 {
-    public class InfoWindow : Container {
+    public class InfoWindow : Container
+    {
+        private Widget _owner;
 
-        private Widget owner;
-
-        public InfoWindow(Widget owner) {
-            if(owner == null) {
+        public InfoWindow(Widget owner)
+        {
+            if (owner == null)
+            {
                 throw new NullReferenceException("owner");
             }
-        
-            this.owner = owner;
+
+            this._owner = owner;
         }
 
-        public Widget getOwner() {
-            return owner;
+        public Widget GetOwner()
+        {
+            return _owner;
         }
 
-        public bool isOpen() {
-            return getParent() != null;
+        public bool IsOpen()
+        {
+            return GetParent() != null;
         }
-    
-        public bool openInfo() {
-            if(getParent() != null) {
+
+        public bool OpenInfo()
+        {
+            if (GetParent() != null)
+            {
                 return true;
             }
-            if(isParentInfoWindow(owner)) {
+            if (IsParentInfoWindow(_owner))
+            {
                 return false;
             }
-            GUI gui = owner.getGUI();
-            if(gui != null) {
-                gui.openInfo(this);
-                focusFirstChild();
+            GUI gui = _owner.GetGUI();
+            if (gui != null)
+            {
+                gui.OpenInfo(this);
+                FocusFirstChild();
                 return true;
             }
             return false;
         }
 
-        public void closeInfo() {
-            GUI gui = getGUI();
-            if(gui != null) {
-                gui.closeInfo(this);
+        public void CloseInfo()
+        {
+            GUI gui = GetGUI();
+            if (gui != null)
+            {
+                gui.CloseInfo(this);
             }
         }
 
         /**
          * Called after the info window has been closed
          */
-        protected internal virtual void infoWindowClosed() {
+        protected internal virtual void InfoWindowClosed()
+        {
         }
 
-        private static bool isParentInfoWindow(Widget w) {
-            while(w != null) {
-                if(w is InfoWindow) {
+        private static bool IsParentInfoWindow(Widget w)
+        {
+            while (w != null)
+            {
+                if (w is InfoWindow)
+                {
                     return true;
                 }
-                w = w.getParent();
+                w = w.GetParent();
             }
             return false;
         }
     }
-
 }

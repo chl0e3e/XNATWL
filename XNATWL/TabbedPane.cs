@@ -43,89 +43,89 @@ namespace XNATWL
 
         public enum TabPosition
         {
-            TOP,
-            LEFT,
-            RIGHT,
-            BOTTOM
+            Top,
+            Left,
+            Right,
+            Bottom
         }
 
         public bool TabPosition_Horz(TabPosition tabPosition)
         {
             switch (tabPosition)
             {
-                case TabPosition.TOP:
+                case TabPosition.Top:
                     return true;
-                case TabPosition.LEFT:
+                case TabPosition.Left:
                     return false;
-                case TabPosition.RIGHT:
+                case TabPosition.Right:
                     return true;
-                case TabPosition.BOTTOM:
+                case TabPosition.Bottom:
                     return false;
             }
 
             return true;
         }
 
-        private List<Tab> tabs;
-        private BoxLayout tabBox;
-        private Widget tabBoxClip;
-        private Container container;
-        Container innerContainer;
+        private List<Tab> _tabs;
+        private BoxLayout _tabBox;
+        private Widget _tabBoxClip;
+        private Container _container;
+        Container _innerContainer;
 
-        DialogLayout scrollControlls;
-        Button btnScrollLeft;
-        Button btnScrollRight;
+        DialogLayout _scrollControls;
+        Button _btnScrollLeft;
+        Button _btnScrollRight;
 
-        bool bScrollTabs;
-        int tabScrollPosition;
-        TabPosition tabPosition;
-        Tab activeTab;
+        bool _bScrollTabs;
+        int _tabScrollPosition;
+        TabPosition _tabPosition;
+        Tab _activeTab;
 
         public TabbedPane()
         {
-            this.tabs = new List<Tab>();
-            this.tabBox = new BoxLayout();
-            this.tabBoxClip = new Widget();
-            this.container = new Container();
-            this.innerContainer = new Container();
-            this.tabPosition = TabPosition.TOP;
+            this._tabs = new List<Tab>();
+            this._tabBox = new BoxLayout();
+            this._tabBoxClip = new Widget();
+            this._container = new Container();
+            this._innerContainer = new Container();
+            this._tabPosition = TabPosition.Top;
 
-            tabBox.setTheme("tabbox");
-            tabBoxClip.setTheme("");
-            innerContainer.setTheme("");
-            innerContainer.setClip(true);
+            _tabBox.SetTheme("tabbox");
+            _tabBoxClip.SetTheme("");
+            _innerContainer.SetTheme("");
+            _innerContainer.SetClip(true);
 
-            tabBoxClip.add(tabBox);
-            container.add(innerContainer);
+            _tabBoxClip.Add(_tabBox);
+            _container.Add(_innerContainer);
 
-            base.insertChild(container, 0);
-            base.insertChild(tabBoxClip, 1);
+            base.InsertChild(_container, 0);
+            base.InsertChild(_tabBoxClip, 1);
 
-            addActionMapping("nextTab", "cycleTabs", +1);
-            addActionMapping("prevTab", "cycleTabs", -1);
-            setCanAcceptKeyboardFocus(false);
+            AddActionMapping("nextTab", "CycleTabs", +1);
+            AddActionMapping("prevTab", "CycleTabs", -1);
+            SetCanAcceptKeyboardFocus(false);
         }
 
-        public TabPosition getTabPosition()
+        public TabPosition GetTabPosition()
         {
-            return tabPosition;
+            return _tabPosition;
         }
 
-        public void setTabPosition(TabPosition tabPosition)
+        public void SetTabPosition(TabPosition tabPosition)
         {
-            if (this.tabPosition != tabPosition)
+            if (this._tabPosition != tabPosition)
             {
-                this.tabPosition = tabPosition;
-                tabBox.setDirection(TabPosition_Horz(tabPosition)
-                        ? BoxLayout.Direction.HORIZONTAL
-                        : BoxLayout.Direction.VERTICAL);
-                invalidateLayout();
+                this._tabPosition = tabPosition;
+                _tabBox.SetDirection(TabPosition_Horz(tabPosition)
+                        ? BoxLayout.Direction.Horizontal
+                        : BoxLayout.Direction.Vertical);
+                InvalidateLayout();
             }
         }
 
-        public bool isScrollTabs()
+        public bool IsScrollTabs()
         {
-            return bScrollTabs;
+            return _bScrollTabs;
         }
 
         /**
@@ -138,153 +138,153 @@ namespace XNATWL
          *
          * @param scrollTabs true if tabs should scroll
          */
-        public void setScrollTabs(bool scrollTabs)
+        public void SetScrollTabs(bool scrollTabs)
         {
-            if (this.bScrollTabs != scrollTabs)
+            if (this._bScrollTabs != scrollTabs)
             {
-                this.bScrollTabs = scrollTabs;
+                this._bScrollTabs = scrollTabs;
 
-                if (scrollControlls == null && scrollTabs)
+                if (_scrollControls == null && scrollTabs)
                 {
-                    createScrollControlls();
+                    CreateScrollControls();
                 }
 
-                tabBoxClip.setClip(scrollTabs);
-                if (scrollControlls != null)
+                _tabBoxClip.SetClip(scrollTabs);
+                if (_scrollControls != null)
                 {
-                    scrollControlls.setVisible(scrollTabs);
+                    _scrollControls.SetVisible(scrollTabs);
                 }
-                invalidateLayout();
+                InvalidateLayout();
             }
         }
 
-        public Tab addTab(String title, Widget pane)
+        public Tab AddTab(String title, Widget pane)
         {
             Tab tab = new Tab(this);
-            tab.setTitle(title);
-            tab.setPane(pane);
-            tabBox.add(tab.button);
-            tabs.Add(tab);
+            tab.SetTitle(title);
+            tab.SetPane(pane);
+            _tabBox.Add(tab._button);
+            _tabs.Add(tab);
 
-            if (tabs.Count == 1)
+            if (_tabs.Count == 1)
             {
-                setActiveTab(tab);
+                SetActiveTab(tab);
             }
-            updateTabStates();
+            UpdateTabStates();
             return tab;
         }
 
-        public Tab getActiveTab()
+        public Tab GetActiveTab()
         {
-            return activeTab;
+            return _activeTab;
         }
 
-        public void setActiveTab(Tab tab)
+        public void SetActiveTab(Tab tab)
         {
             if (tab != null)
             {
-                validateTab(tab);
+                ValidateTab(tab);
             }
 
-            if (activeTab != tab)
+            if (_activeTab != tab)
             {
-                Tab prevTab = activeTab;
-                activeTab = tab;
+                Tab prevTab = _activeTab;
+                _activeTab = tab;
 
                 if (prevTab != null)
                 {
-                    prevTab.doCallback();
+                    prevTab.DoCallback();
                 }
                 if (tab != null)
                 {
-                    tab.doCallback();
+                    tab.DoCallback();
                 }
 
-                if (bScrollTabs)
+                if (_bScrollTabs)
                 {
-                    validateLayout();
+                    ValidateLayout();
 
                     int pos, end, size;
-                    if (TabPosition_Horz(tabPosition))
+                    if (TabPosition_Horz(_tabPosition))
                     {
-                        pos = tab.button.getX() - tabBox.getX();
-                        end = tab.button.getWidth() + pos;
-                        size = tabBoxClip.getWidth();
+                        pos = tab._button.GetX() - _tabBox.GetX();
+                        end = tab._button.GetWidth() + pos;
+                        size = _tabBoxClip.GetWidth();
                     }
                     else
                     {
-                        pos = tab.button.getY() - tabBox.getY();
-                        end = tab.button.getHeight() + pos;
-                        size = tabBoxClip.getHeight();
+                        pos = tab._button.GetY() - _tabBox.GetY();
+                        end = tab._button.GetHeight() + pos;
+                        size = _tabBoxClip.GetHeight();
                     }
                     int border = (size + 19) / 20;
                     pos -= border;
                     end += border;
-                    if (pos < tabScrollPosition)
+                    if (pos < _tabScrollPosition)
                     {
-                        setScrollPos(pos);
+                        SetScrollPos(pos);
                     }
-                    else if (end > tabScrollPosition + size)
+                    else if (end > _tabScrollPosition + size)
                     {
-                        setScrollPos(end - size);
+                        SetScrollPos(end - size);
                     }
                 }
 
-                if (tab != null && tab.pane != null)
+                if (tab != null && tab._pane != null)
                 {
-                    tab.pane.requestKeyboardFocus();
+                    tab._pane.RequestKeyboardFocus();
                 }
             }
         }
 
-        public void removeTab(Tab tab)
+        public void RemoveTab(Tab tab)
         {
-            validateTab(tab);
+            ValidateTab(tab);
 
-            int idx = (tab == activeTab) ? tabs.IndexOf(tab) : -1;
-            tab.setPane(null);
-            tabBox.removeChild(tab.button);
-            tabs.Remove(tab);
+            int idx = (tab == _activeTab) ? _tabs.IndexOf(tab) : -1;
+            tab.SetPane(null);
+            _tabBox.RemoveChild(tab._button);
+            _tabs.Remove(tab);
 
-            if (idx >= 0 && tabs.Count != 0)
+            if (idx >= 0 && _tabs.Count != 0)
             {
-                setActiveTab(tabs[Math.Min(tabs.Count - 1, idx)]);
+                SetActiveTab(_tabs[Math.Min(_tabs.Count - 1, idx)]);
             }
-            updateTabStates();
+            UpdateTabStates();
         }
 
-        public void removeAllTabs()
+        public void RemoveAllTabs()
         {
-            innerContainer.removeAllChildren();
-            tabBox.removeAllChildren();
-            tabs.Clear();
-            activeTab = null;
+            _innerContainer.RemoveAllChildren();
+            _tabBox.RemoveAllChildren();
+            _tabs.Clear();
+            _activeTab = null;
         }
 
-        public int getNumTabs()
+        public int GetNumTabs()
         {
-            return tabs.Count;
+            return _tabs.Count;
         }
 
-        public Tab getTab(int index)
+        public Tab GetTab(int index)
         {
-            return tabs[index];
+            return _tabs[index];
         }
 
-        public int getActiveTabIndex()
+        public int GetActiveTabIndex()
         {
-            if (tabs.Count == 0)
+            if (_tabs.Count == 0)
             {
                 return -1;
             }
-            return tabs.IndexOf(activeTab);
+            return _tabs.IndexOf(_activeTab);
         }
 
-        public void cycleTabs(int direction)
+        public void CycleTabs(int direction)
         {
-            if (tabs.Count != 0)
+            if (_tabs.Count != 0)
             {
-                int idx = tabs.IndexOf(activeTab);
+                int idx = _tabs.IndexOf(_activeTab);
                 if (idx < 0)
                 {
                     idx = 0;
@@ -292,102 +292,102 @@ namespace XNATWL
                 else
                 {
                     idx += direction;
-                    idx %= tabs.Count;
-                    idx += tabs.Count;
-                    idx %= tabs.Count;
+                    idx %= _tabs.Count;
+                    idx += _tabs.Count;
+                    idx %= _tabs.Count;
                 }
-                setActiveTab(tabs[idx]);
+                SetActiveTab(_tabs[idx]);
             }
         }
 
-        public override int getMinWidth()
+        public override int GetMinWidth()
         {
             int minWidth;
-            if (TabPosition_Horz(tabPosition))
+            if (TabPosition_Horz(_tabPosition))
             {
                 int tabBoxWidth;
-                if (bScrollTabs)
+                if (_bScrollTabs)
                 {
-                    tabBoxWidth = tabBox.getBorderHorizontal() +
-                            BoxLayout.computeMinWidthVertical(tabBox) +
-                            scrollControlls.getPreferredWidth();
+                    tabBoxWidth = _tabBox.GetBorderHorizontal() +
+                            BoxLayout.ComputeMinWidthVertical(_tabBox) +
+                            _scrollControls.GetPreferredWidth();
                 }
                 else
                 {
-                    tabBoxWidth = tabBox.getMinWidth();
+                    tabBoxWidth = _tabBox.GetMinWidth();
                 }
-                minWidth = Math.Max(container.getMinWidth(), tabBoxWidth);
+                minWidth = Math.Max(_container.GetMinWidth(), tabBoxWidth);
             }
             else
             {
-                minWidth = container.getMinWidth() + tabBox.getMinWidth();
+                minWidth = _container.GetMinWidth() + _tabBox.GetMinWidth();
             }
-            return Math.Max(base.getMinWidth(), minWidth + getBorderHorizontal());
+            return Math.Max(base.GetMinWidth(), minWidth + GetBorderHorizontal());
         }
 
-        public override int getMinHeight()
+        public override int GetMinHeight()
         {
             int minHeight;
-            if (TabPosition_Horz(tabPosition))
+            if (TabPosition_Horz(_tabPosition))
             {
-                minHeight = container.getMinHeight() + tabBox.getMinHeight();
+                minHeight = _container.GetMinHeight() + _tabBox.GetMinHeight();
             }
             else
             {
-                minHeight = Math.Max(container.getMinHeight(), tabBox.getMinHeight());
+                minHeight = Math.Max(_container.GetMinHeight(), _tabBox.GetMinHeight());
             }
-            return Math.Max(base.getMinHeight(), minHeight + getBorderVertical());
+            return Math.Max(base.GetMinHeight(), minHeight + GetBorderVertical());
         }
 
-        public override int getPreferredInnerWidth()
+        public override int GetPreferredInnerWidth()
         {
-            if (TabPosition_Horz(tabPosition))
+            if (TabPosition_Horz(_tabPosition))
             {
                 int tabBoxWidth;
-                if (bScrollTabs)
+                if (_bScrollTabs)
                 {
-                    tabBoxWidth = tabBox.getBorderHorizontal() +
-                            BoxLayout.computePreferredWidthVertical(tabBox) +
-                            scrollControlls.getPreferredWidth();
+                    tabBoxWidth = _tabBox.GetBorderHorizontal() +
+                            BoxLayout.ComputePreferredWidthVertical(_tabBox) +
+                            _scrollControls.GetPreferredWidth();
                 }
                 else
                 {
-                    tabBoxWidth = tabBox.getPreferredWidth();
+                    tabBoxWidth = _tabBox.GetPreferredWidth();
                 }
-                return Math.Max(container.getPreferredWidth(), tabBoxWidth);
+                return Math.Max(_container.GetPreferredWidth(), tabBoxWidth);
             }
             else
             {
-                return container.getPreferredWidth() + tabBox.getPreferredWidth();
+                return _container.GetPreferredWidth() + _tabBox.GetPreferredWidth();
             }
         }
 
-        public override int getPreferredInnerHeight()
+        public override int GetPreferredInnerHeight()
         {
-            if (TabPosition_Horz(tabPosition))
+            if (TabPosition_Horz(_tabPosition))
             {
-                return container.getPreferredHeight() + tabBox.getPreferredHeight();
+                return _container.GetPreferredHeight() + _tabBox.GetPreferredHeight();
             }
             else
             {
-                return Math.Max(container.getPreferredHeight(), tabBox.getPreferredHeight());
+                return Math.Max(_container.GetPreferredHeight(), _tabBox.GetPreferredHeight());
             }
         }
 
-        protected override void layout()
+        protected override void Layout()
         {
             int scrollCtrlsWidth = 0;
             int scrollCtrlsHeight = 0;
-            int tabBoxWidth = tabBox.getPreferredWidth();
-            int tabBoxHeight = tabBox.getPreferredHeight();
+            int tabBoxWidth = _tabBox.GetPreferredWidth();
+            int tabBoxHeight = _tabBox.GetPreferredHeight();
 
-            if (bScrollTabs)
+            if (_bScrollTabs)
             {
-                scrollCtrlsWidth = scrollControlls.getPreferredWidth();
-                scrollCtrlsHeight = scrollControlls.getPreferredHeight();
+                scrollCtrlsWidth = _scrollControls.GetPreferredWidth();
+                scrollCtrlsHeight = _scrollControls.GetPreferredHeight();
             }
 
-            if (TabPosition_Horz(tabPosition))
+            if (TabPosition_Horz(_tabPosition))
             {
                 tabBoxHeight = Math.Max(scrollCtrlsHeight, tabBoxHeight);
             }
@@ -396,152 +396,152 @@ namespace XNATWL
                 tabBoxWidth = Math.Max(scrollCtrlsWidth, tabBoxWidth);
             }
 
-            tabBox.setSize(tabBoxWidth, tabBoxHeight);
+            _tabBox.SetSize(tabBoxWidth, tabBoxHeight);
 
-            switch (tabPosition)
+            switch (_tabPosition)
             {
-                case TabPosition.TOP:
-                    tabBoxClip.setPosition(getInnerX(), getInnerY());
-                    tabBoxClip.setSize(Math.Max(0, getInnerWidth() - scrollCtrlsWidth), tabBoxHeight);
-                    container.setSize(getInnerWidth(), Math.Max(0, getInnerHeight() - tabBoxHeight));
-                    container.setPosition(getInnerX(), tabBoxClip.getBottom());
+                case TabPosition.Top:
+                    _tabBoxClip.SetPosition(GetInnerX(), GetInnerY());
+                    _tabBoxClip.SetSize(Math.Max(0, GetInnerWidth() - scrollCtrlsWidth), tabBoxHeight);
+                    _container.SetSize(GetInnerWidth(), Math.Max(0, GetInnerHeight() - tabBoxHeight));
+                    _container.SetPosition(GetInnerX(), _tabBoxClip.GetBottom());
                     break;
 
-                case TabPosition.LEFT:
-                    tabBoxClip.setPosition(getInnerX(), getInnerY());
-                    tabBoxClip.setSize(tabBoxWidth, Math.Max(0, getInnerHeight() - scrollCtrlsHeight));
-                    container.setSize(Math.Max(0, getInnerWidth() - tabBoxWidth), getInnerHeight());
-                    container.setPosition(tabBoxClip.getRight(), getInnerY());
+                case TabPosition.Left:
+                    _tabBoxClip.SetPosition(GetInnerX(), GetInnerY());
+                    _tabBoxClip.SetSize(tabBoxWidth, Math.Max(0, GetInnerHeight() - scrollCtrlsHeight));
+                    _container.SetSize(Math.Max(0, GetInnerWidth() - tabBoxWidth), GetInnerHeight());
+                    _container.SetPosition(_tabBoxClip.GetRight(), GetInnerY());
                     break;
 
-                case TabPosition.RIGHT:
-                    tabBoxClip.setPosition(getInnerX() - tabBoxWidth, getInnerY());
-                    tabBoxClip.setSize(tabBoxWidth, Math.Max(0, getInnerHeight() - scrollCtrlsHeight));
-                    container.setSize(Math.Max(0, getInnerWidth() - tabBoxWidth), getInnerHeight());
-                    container.setPosition(getInnerX(), getInnerY());
+                case TabPosition.Right:
+                    _tabBoxClip.SetPosition(GetInnerX() - tabBoxWidth, GetInnerY());
+                    _tabBoxClip.SetSize(tabBoxWidth, Math.Max(0, GetInnerHeight() - scrollCtrlsHeight));
+                    _container.SetSize(Math.Max(0, GetInnerWidth() - tabBoxWidth), GetInnerHeight());
+                    _container.SetPosition(GetInnerX(), GetInnerY());
                     break;
 
-                case TabPosition.BOTTOM:
-                    tabBoxClip.setPosition(getInnerX(), getInnerY() - tabBoxHeight);
-                    tabBoxClip.setSize(Math.Max(0, getInnerWidth() - scrollCtrlsWidth), tabBoxHeight);
-                    container.setSize(getInnerWidth(), Math.Max(0, getInnerHeight() - tabBoxHeight));
-                    container.setPosition(getInnerX(), getInnerY());
+                case TabPosition.Bottom:
+                    _tabBoxClip.SetPosition(GetInnerX(), GetInnerY() - tabBoxHeight);
+                    _tabBoxClip.SetSize(Math.Max(0, GetInnerWidth() - scrollCtrlsWidth), tabBoxHeight);
+                    _container.SetSize(GetInnerWidth(), Math.Max(0, GetInnerHeight() - tabBoxHeight));
+                    _container.SetPosition(GetInnerX(), GetInnerY());
                     break;
             }
 
-            if (scrollControlls != null)
+            if (_scrollControls != null)
             {
-                if (TabPosition_Horz(tabPosition))
+                if (TabPosition_Horz(_tabPosition))
                 {
-                    scrollControlls.setPosition(tabBoxClip.getRight(), tabBoxClip.getY());
-                    scrollControlls.setSize(scrollCtrlsWidth, tabBoxHeight);
+                    _scrollControls.SetPosition(_tabBoxClip.GetRight(), _tabBoxClip.GetY());
+                    _scrollControls.SetSize(scrollCtrlsWidth, tabBoxHeight);
                 }
                 else
                 {
-                    scrollControlls.setPosition(tabBoxClip.getX(), tabBoxClip.getBottom());
-                    scrollControlls.setSize(tabBoxWidth, scrollCtrlsHeight);
+                    _scrollControls.SetPosition(_tabBoxClip.GetX(), _tabBoxClip.GetBottom());
+                    _scrollControls.SetSize(tabBoxWidth, scrollCtrlsHeight);
                 }
-                setScrollPos(tabScrollPosition);
+                SetScrollPos(_tabScrollPosition);
             }
         }
 
-        private void createScrollControlls()
+        private void CreateScrollControls()
         {
-            scrollControlls = new DialogLayout();
-            scrollControlls.setTheme("scrollControls");
+            _scrollControls = new DialogLayout();
+            _scrollControls.SetTheme("scrollControls");
 
-            btnScrollLeft = new Button();
-            btnScrollLeft.setTheme("scrollLeft");
-            btnScrollLeft.Action += (sender, e) =>
+            _btnScrollLeft = new Button();
+            _btnScrollLeft.SetTheme("scrollLeft");
+            _btnScrollLeft.Action += (sender, e) =>
             {
-                scrollTabs(-1);
+                ScrollTabs(-1);
             };
 
-            btnScrollRight = new Button();
-            btnScrollRight.setTheme("scrollRight");
-            btnScrollRight.Action += (sender, e) =>
+            _btnScrollRight = new Button();
+            _btnScrollRight.SetTheme("scrollRight");
+            _btnScrollRight.Action += (sender, e) =>
             {
-                scrollTabs(1);
+                ScrollTabs(1);
             };
 
-            DialogLayout.Group horz = scrollControlls.createSequentialGroup()
-                    .addWidget(btnScrollLeft)
-                    .addGap("scrollButtons")
-                    .addWidget(btnScrollRight);
+            DialogLayout.Group horz = _scrollControls.CreateSequentialGroup()
+                    .AddWidget(_btnScrollLeft)
+                    .AddGap("scrollButtons")
+                    .AddWidget(_btnScrollRight);
 
-            DialogLayout.Group vert = scrollControlls.createParallelGroup()
-                    .addWidget(btnScrollLeft)
-                    .addWidget(btnScrollRight);
+            DialogLayout.Group vert = _scrollControls.CreateParallelGroup()
+                    .AddWidget(_btnScrollLeft)
+                    .AddWidget(_btnScrollRight);
 
-            scrollControlls.setHorizontalGroup(horz);
-            scrollControlls.setVerticalGroup(vert);
+            _scrollControls.SetHorizontalGroup(horz);
+            _scrollControls.SetVerticalGroup(vert);
 
-            base.insertChild(scrollControlls, 2);
+            base.InsertChild(_scrollControls, 2);
         }
 
-        void scrollTabs(int dir)
+        void ScrollTabs(int dir)
         {
-            dir *= Math.Max(1, tabBoxClip.getWidth() / 10);
-            setScrollPos(tabScrollPosition + dir);
+            dir *= Math.Max(1, _tabBoxClip.GetWidth() / 10);
+            SetScrollPos(_tabScrollPosition + dir);
         }
 
-        private void setScrollPos(int pos)
+        private void SetScrollPos(int pos)
         {
             int maxPos;
-            if (TabPosition_Horz(tabPosition))
+            if (TabPosition_Horz(_tabPosition))
             {
-                maxPos = tabBox.getWidth() - tabBoxClip.getWidth();
+                maxPos = _tabBox.GetWidth() - _tabBoxClip.GetWidth();
             }
             else
             {
-                maxPos = tabBox.getHeight() - tabBoxClip.getHeight();
+                maxPos = _tabBox.GetHeight() - _tabBoxClip.GetHeight();
             }
             pos = Math.Max(0, Math.Min(pos, maxPos));
-            tabScrollPosition = pos;
-            if (TabPosition_Horz(tabPosition))
+            _tabScrollPosition = pos;
+            if (TabPosition_Horz(_tabPosition))
             {
-                tabBox.setPosition(tabBoxClip.getX() - pos, tabBoxClip.getY());
+                _tabBox.SetPosition(_tabBoxClip.GetX() - pos, _tabBoxClip.GetY());
             }
             else
             {
-                tabBox.setPosition(tabBoxClip.getX(), tabBoxClip.getY() - pos);
+                _tabBox.SetPosition(_tabBoxClip.GetX(), _tabBoxClip.GetY() - pos);
             }
-            if (scrollControlls != null)
+            if (_scrollControls != null)
             {
-                btnScrollLeft.setEnabled(pos > 0);
-                btnScrollRight.setEnabled(pos < maxPos);
+                _btnScrollLeft.SetEnabled(pos > 0);
+                _btnScrollRight.SetEnabled(pos < maxPos);
             }
         }
 
-        public override void insertChild(Widget child, int index)
+        public override void InsertChild(Widget child, int index)
         {
             throw new NotImplementedException("use addTab/removeTab");
         }
 
-        public override void removeAllChildren()
+        public override void RemoveAllChildren()
         {
             throw new NotImplementedException("use addTab/removeTab");
         }
 
-        public override Widget removeChild(int index)
+        public override Widget RemoveChild(int index)
         {
             throw new NotImplementedException("use addTab/removeTab");
         }
 
-        protected void updateTabStates()
+        protected void UpdateTabStates()
         {
-            for (int i = 0, n = tabs.Count; i < n; i++)
+            for (int i = 0, n = _tabs.Count; i < n; i++)
             {
-                Tab tab = tabs[i];
-                AnimationState animationState = tab.button.getAnimationState();
-                animationState.setAnimationState(STATE_FIRST_TAB, i == 0);
-                animationState.setAnimationState(STATE_LAST_TAB, i == n - 1);
+                Tab tab = _tabs[i];
+                AnimationState animationState = tab._button.GetAnimationState();
+                animationState.SetAnimationState(STATE_FIRST_TAB, i == 0);
+                animationState.SetAnimationState(STATE_LAST_TAB, i == n - 1);
             }
         }
 
-        private void validateTab(Tab tab)
+        private void ValidateTab(Tab tab)
         {
-            if (tab.button.getParent() != tabBox)
+            if (tab._button.GetParent() != _tabBox)
             {
                 throw new ArgumentException("Invalid tab");
             }
@@ -549,83 +549,83 @@ namespace XNATWL
 
         public class Tab : BooleanModel
         {
-            protected internal TabButton button;
-            protected internal Widget pane;
-            protected internal Runnable closeCallback;
-            protected internal Object userValue;
+            protected internal TabButton _button;
+            protected internal Widget _pane;
+            protected internal Runnable _closeCallback;
+            protected internal Object _userValue;
 
-            private TabbedPane tabbedPane;
+            private TabbedPane _tabbedPane;
 
             public event EventHandler<BooleanChangedEventArgs> Changed;
 
             public Tab(TabbedPane tabbedPane)
             {
-                this.tabbedPane = tabbedPane;
-                button = new TabButton(this);
+                this._tabbedPane = tabbedPane;
+                _button = new TabButton(this);
             }
 
             public bool Value
             {
                 get
                 {
-                    return this.tabbedPane.activeTab == this;
+                    return this._tabbedPane._activeTab == this;
                 }
                 set
                 {
                     if (value)
                     {
-                        this.tabbedPane.setActiveTab(this);
+                        this._tabbedPane.SetActiveTab(this);
                     }
                 }
             }
 
-            public Widget getPane()
+            public Widget GetPane()
             {
-                return pane;
+                return _pane;
             }
 
-            public void setPane(Widget pane)
+            public void SetPane(Widget pane)
             {
-                if (this.pane != pane)
+                if (this._pane != pane)
                 {
-                    if (this.pane != null)
+                    if (this._pane != null)
                     {
-                        this.tabbedPane.innerContainer.removeChild(this.pane);
+                        this._tabbedPane._innerContainer.RemoveChild(this._pane);
                     }
-                    this.pane = pane;
+                    this._pane = pane;
                     if (pane != null)
                     {
-                        pane.setVisible(this.Value);
-                        this.tabbedPane.innerContainer.add(pane);
+                        pane.SetVisible(this.Value);
+                        this._tabbedPane._innerContainer.Add(pane);
                     }
                 }
             }
 
-            public Tab setTitle(String title)
+            public Tab SetTitle(String title)
             {
-                button.setText(title);
+                _button.SetText(title);
                 return this;
             }
 
-            public String getTitle()
+            public String GetTitle()
             {
-                return button.getText();
+                return _button.GetText();
             }
 
-            public Tab setTooltipContent(Object tooltipContent)
+            public Tab SetTooltipContent(Object tooltipContent)
             {
-                button.setTooltipContent(tooltipContent);
+                _button.SetTooltipContent(tooltipContent);
                 return this;
             }
 
-            public Object getUserValue()
+            public Object GetUserValue()
             {
-                return userValue;
+                return _userValue;
             }
 
-            public void setUserValue(Object userValue)
+            public void SetUserValue(Object userValue)
             {
-                this.userValue = userValue;
+                this._userValue = userValue;
             }
 
             /**
@@ -636,35 +636,35 @@ namespace XNATWL
              * @param theme the user theme name - can be null.
              * @return {@code this}
              */
-            public Tab setTheme(String theme)
+            public Tab SetTheme(String theme)
             {
-                button.setUserTheme(theme);
+                _button.SetUserTheme(theme);
                 return this;
             }
 
-            public Runnable getCloseCallback()
+            public Runnable GetCloseCallback()
             {
-                return closeCallback;
+                return _closeCallback;
             }
 
-            public void setCloseCallback(Runnable closeCallback)
+            public void SetCloseCallback(Runnable closeCallback)
             {
-                if (this.closeCallback != null)
+                if (this._closeCallback != null)
                 {
-                    button.removeCloseButton();
+                    _button.RemoveCloseButton();
                 }
-                this.closeCallback = closeCallback;
+                this._closeCallback = closeCallback;
                 if (closeCallback != null)
                 {
-                    button.setCloseButton(closeCallback);
+                    _button.SetCloseButton(closeCallback);
                 }
             }
 
-            protected internal void doCallback()
+            protected internal void DoCallback()
             {
-                if (pane != null)
+                if (_pane != null)
                 {
-                    pane.setVisible(this.Value);
+                    _pane.SetVisible(this.Value);
                 }
 
                 this.Changed.Invoke(this, new BooleanChangedEventArgs(this.Value, this.Value));
@@ -673,95 +673,95 @@ namespace XNATWL
 
         public class TabButton : ToggleButton
         {
-            Button closeButton;
-            Alignment closeButtonAlignment;
-            int closeButtonOffsetX;
-            int closeButtonOffsetY;
-            String userTheme;
+            Button _closeButton;
+            Alignment _closeButtonAlignment;
+            int _closeButtonOffsetX;
+            int _closeButtonOffsetY;
+            String _userTheme;
 
             public TabButton(BooleanModel model) : base(model)
             {
-                setCanAcceptKeyboardFocus(false);
-                closeButtonAlignment = Alignment.RIGHT;
+                SetCanAcceptKeyboardFocus(false);
+                _closeButtonAlignment = Alignment.RIGHT;
             }
 
-            public void setUserTheme(String userTheme)
+            public void SetUserTheme(String userTheme)
             {
-                this.userTheme = userTheme;
-                doSetTheme();
+                this._userTheme = userTheme;
+                DoSetTheme();
             }
 
-            private void doSetTheme()
+            private void DoSetTheme()
             {
-                if (userTheme != null)
+                if (_userTheme != null)
                 {
-                    setTheme(userTheme);
+                    SetTheme(_userTheme);
                 }
-                else if (closeButton != null)
+                else if (_closeButton != null)
                 {
-                    setTheme("tabbuttonWithCloseButton");
+                    SetTheme("tabbuttonWithCloseButton");
                 }
                 else
                 {
-                    setTheme("tabbutton");
+                    SetTheme("tabbutton");
                 }
-                reapplyTheme();
+                ReapplyTheme();
             }
 
-            protected override void applyTheme(ThemeInfo themeInfo)
+            protected override void ApplyTheme(ThemeInfo themeInfo)
             {
-                base.applyTheme(themeInfo);
-                if (closeButton != null)
+                base.ApplyTheme(themeInfo);
+                if (_closeButton != null)
                 {
-                    closeButtonAlignment = (Alignment) themeInfo.GetParameter("closeButtonAlignment", Alignment.RIGHT);
-                    closeButtonOffsetX = themeInfo.GetParameter("closeButtonOffsetX", 0);
-                    closeButtonOffsetY = themeInfo.GetParameter("closeButtonOffsetY", 0);
+                    _closeButtonAlignment = (Alignment)themeInfo.GetParameter("closeButtonAlignment", Alignment.RIGHT);
+                    _closeButtonOffsetX = themeInfo.GetParameter("closeButtonOffsetX", 0);
+                    _closeButtonOffsetY = themeInfo.GetParameter("closeButtonOffsetY", 0);
                 }
                 else
                 {
-                    closeButtonAlignment = Alignment.RIGHT;
-                    closeButtonOffsetX = 0;
-                    closeButtonOffsetY = 0;
+                    _closeButtonAlignment = Alignment.RIGHT;
+                    _closeButtonOffsetX = 0;
+                    _closeButtonOffsetY = 0;
                 }
             }
 
-            protected internal void setCloseButton(Runnable callback)
+            protected internal void SetCloseButton(Runnable callback)
             {
-                closeButton = new Button();
-                closeButton.setTheme("closeButton");
-                doSetTheme();
-                add(closeButton);
-                closeButton.Action += (sender, e) =>
+                _closeButton = new Button();
+                _closeButton.SetTheme("closeButton");
+                DoSetTheme();
+                Add(_closeButton);
+                _closeButton.Action += (sender, e) =>
                 {
-                    callback.run();
+                    callback.Run();
                 };
             }
 
-            protected internal void removeCloseButton()
+            protected internal void RemoveCloseButton()
             {
-                removeChild(closeButton);
-                closeButton = null;
-                doSetTheme();
+                RemoveChild(_closeButton);
+                _closeButton = null;
+                DoSetTheme();
             }
 
-            public override int getPreferredInnerHeight()
+            public override int GetPreferredInnerHeight()
             {
-                return computeTextHeight();
+                return ComputeTextHeight();
             }
 
-            public override int getPreferredInnerWidth()
+            public override int GetPreferredInnerWidth()
             {
-                return computeTextWidth();
+                return ComputeTextWidth();
             }
 
-            protected override void layout()
+            protected override void Layout()
             {
-                if (closeButton != null)
+                if (_closeButton != null)
                 {
-                    closeButton.adjustSize();
-                    closeButton.setPosition(
-                            getX() + closeButtonOffsetX + closeButtonAlignment.computePositionX(getWidth(), closeButton.getWidth()),
-                            getY() + closeButtonOffsetY + closeButtonAlignment.computePositionY(getHeight(), closeButton.getHeight()));
+                    _closeButton.AdjustSize();
+                    _closeButton.SetPosition(
+                            GetX() + _closeButtonOffsetX + _closeButtonAlignment.ComputePositionX(GetWidth(), _closeButton.GetWidth()),
+                            GetY() + _closeButtonOffsetY + _closeButtonAlignment.ComputePositionY(GetHeight(), _closeButton.GetHeight()));
                 }
             }
         }

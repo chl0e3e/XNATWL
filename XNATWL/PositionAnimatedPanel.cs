@@ -34,10 +34,10 @@ namespace XNATWL
     {
         public enum eDirection
         {
-            TOP,
-            LEFT,
-            BOTTOM,
-            RIGHT,
+            Top,
+            Left,
+            Bottom,
+            Right,
         }
     }
 }

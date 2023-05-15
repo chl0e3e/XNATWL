@@ -77,7 +77,7 @@ namespace XNATWL.Utils
             {
                 for (int keyIdx = 0; keyIdx < numKeys; keyIdx++)
                 {
-                    animationState.setAnimationState(keys[keyIdx], (matrixIdx & (1 << keyIdx)) != 0);
+                    animationState.SetAnimationState(keys[keyIdx], (matrixIdx & (1 << keyIdx)) != 0);
                 }
                 int exprIdx = 0;
                 for (; exprIdx < numExpr; exprIdx++)

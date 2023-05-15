@@ -35,20 +35,20 @@ namespace XNATWL
         /**
          * Focus transfer caused by focus key (eg TAB)
          */
-        FOCUS_KEY,
+        FocusKey,
         /**
          * Focus transfer caused by mouse down event on the widget
          */
-        MOUSE_BTNDOWN,
+        MouseBtnDown,
         /**
          * A child widget requested focus
          */
-        CHILD_FOCUSED,
+        ChildFocused,
         /**
          * {@link Widget#requestKeyboardFocus() } was invoked
          */
-        MANUAL,
+        Manual,
 
-        NONE
+        None
     }
 }

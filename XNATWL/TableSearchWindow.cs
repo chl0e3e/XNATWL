@@ -36,52 +36,52 @@ namespace XNATWL
 {
     public class TableSearchWindow : InfoWindow, TableBase.KeyboardSearchHandler
     {
-        private TableSelectionModel selectionModel;
-        private EditField searchTextField;
-        private StringBuilder searchTextBuffer;
+        private TableSelectionModel _selectionModel;
+        private EditField _searchTextField;
+        private StringBuilder _searchTextBuffer;
 
-        private String searchText;
-        private String searchTextLowercase;
-        private Timer timer;
-        private TableModel model;
-        private int column;
-        private int currentRow;
-        private bool searchStartOnly;
+        private String _searchText;
+        private String _searchTextLowercase;
+        private Timer _timer;
+        private TableModel _model;
+        private int _column;
+        private int _currentRow;
+        private bool _searchStartOnly;
 
         public TableSearchWindow(Table table, TableSelectionModel selectionModel) : base(table)
         {
-            this.selectionModel = selectionModel;
-            this.searchTextField = new EditField();
-            this.searchTextBuffer = new StringBuilder();
-            this.searchText = "";
+            this._selectionModel = selectionModel;
+            this._searchTextField = new EditField();
+            this._searchTextBuffer = new StringBuilder();
+            this._searchText = "";
 
             Label label = new Label("Search");
-            label.setLabelFor(searchTextField);
+            label.SetLabelFor(_searchTextField);
 
-            searchTextField.setReadOnly(true);
+            _searchTextField.SetReadOnly(true);
 
             DialogLayout l = new DialogLayout();
-            l.setHorizontalGroup(l.createSequentialGroup()
-                    .addWidget(label)
-                    .addWidget(searchTextField));
-            l.setVerticalGroup(l.createParallelGroup()
-                    .addWidget(label)
-                    .addWidget(searchTextField));
+            l.SetHorizontalGroup(l.CreateSequentialGroup()
+                    .AddWidget(label)
+                    .AddWidget(_searchTextField));
+            l.SetVerticalGroup(l.CreateParallelGroup()
+                    .AddWidget(label)
+                    .AddWidget(_searchTextField));
 
-            add(l);
+            Add(l);
         }
 
-        public Table getTable()
+        public Table GetTable()
         {
-            return (Table)getOwner();
+            return (Table)GetOwner();
         }
 
-        public TableModel getModel()
+        public TableModel GetModel()
         {
-            return model;
+            return _model;
         }
 
-        public void setModel(TableModel model, int column)
+        public void SetModel(TableModel model, int column)
         {
             if (column < 0)
             {
@@ -91,38 +91,37 @@ namespace XNATWL
             {
                 throw new ArgumentOutOfRangeException("column");
             }
-            this.model = model;
-            this.column = column;
-            cancelSearch();
-
+            this._model = model;
+            this._column = column;
+            CancelSearch();
         }
 
-        public bool isActive()
+        public bool IsActive()
         {
-            return isOpen();
+            return IsOpen();
         }
 
-        public void updateInfoWindowPosition()
+        public void UpdateInfoWindowPosition()
         {
-            adjustSize();
-            setPosition(getOwner().getX(), getOwner().getBottom());
+            AdjustSize();
+            SetPosition(GetOwner().GetX(), GetOwner().GetBottom());
         }
 
-        public bool handleKeyEvent(Event evt)
+        public bool HandleKeyEvent(Event evt)
         {
-            if (model == null)
+            if (_model == null)
             {
                 return false;
             }
 
-            if (evt.isKeyPressedEvent())
+            if (evt.IsKeyPressedEvent())
             {
-                switch (evt.getKeyCode())
+                switch (evt.GetKeyCode())
                 {
                     case Event.KEY_ESCAPE:
-                        if (isOpen())
+                        if (IsOpen())
                         {
-                            cancelSearch();
+                            CancelSearch();
                             return true;
                         }
                         break;
@@ -130,46 +129,46 @@ namespace XNATWL
                         return false;
                     case Event.KEY_BACK:
                         {
-                            if (isOpen())
+                            if (IsOpen())
                             {
-                                int length = searchTextBuffer.Length;
+                                int length = _searchTextBuffer.Length;
                                 if (length > 0)
                                 {
-                                    searchTextBuffer.Length = length - 1;
-                                    updateText();
+                                    _searchTextBuffer.Length = length - 1;
+                                    UpdateText();
                                 }
-                                restartTimer();
+                                RestartTimer();
                                 return true;
                             }
                             break;
                         }
                     case Event.KEY_UP:
-                        if (isOpen())
+                        if (IsOpen())
                         {
-                            searchDir(-1);
-                            restartTimer();
+                            SearchDir(-1);
+                            RestartTimer();
                             return true;
                         }
                         break;
                     case Event.KEY_DOWN:
-                        if (isOpen())
+                        if (IsOpen())
                         {
-                            searchDir(+1);
-                            restartTimer();
+                            SearchDir(+1);
+                            RestartTimer();
                             return true;
                         }
                         break;
                     default:
-                        if (evt.hasKeyCharNoModifiers() && !Char.IsControl(evt.getKeyChar()))
+                        if (evt.HasKeyCharNoModifiers() && !Char.IsControl(evt.GetKeyChar()))
                         {
-                            if (searchTextBuffer.Length == 0)
+                            if (_searchTextBuffer.Length == 0)
                             {
-                                currentRow = Math.Max(0, getTable().getSelectionManager().getLeadRow());
-                                searchStartOnly = true;
+                                _currentRow = Math.Max(0, GetTable().GetSelectionManager().GetLeadRow());
+                                _searchStartOnly = true;
                             }
-                            searchTextBuffer.Append(evt.getKeyChar());
-                            updateText();
-                            restartTimer();
+                            _searchTextBuffer.Append(evt.GetKeyChar());
+                            UpdateText();
+                            RestartTimer();
                             return true;
                         }
                         break;
@@ -179,22 +178,22 @@ namespace XNATWL
             return false;
         }
 
-        public void cancelSearch()
+        public void CancelSearch()
         {
-            searchTextBuffer.Length = 0;
-            updateText();
-            closeInfo();
-            if (timer != null)
+            _searchTextBuffer.Length = 0;
+            UpdateText();
+            CloseInfo();
+            if (_timer != null)
             {
-                timer.stop();
+                _timer.Stop();
             }
         }
 
-        protected override void afterAddToGUI(GUI gui)
+        protected override void AfterAddToGUI(GUI gui)
         {
-            base.afterAddToGUI(gui);
-            timer = gui.createTimer();
-            timer.setDelay(3000);
+            base.AfterAddToGUI(gui);
+            _timer = gui.CreateTimer();
+            _timer.SetDelay(3000);
             /*timer.setCallback(new Runnable() {
                 public void run() {
                     cancelSearch();
@@ -202,135 +201,135 @@ namespace XNATWL
             });*/
         }
 
-        protected override void beforeRemoveFromGUI(GUI gui)
+        protected override void BeforeRemoveFromGUI(GUI gui)
         {
-            timer.stop();
-            timer = null;
+            _timer.Stop();
+            _timer = null;
 
-            base.beforeRemoveFromGUI(gui);
+            base.BeforeRemoveFromGUI(gui);
         }
 
-        private void updateText()
+        private void UpdateText()
         {
-            searchText = searchTextBuffer.ToString();
-            searchTextLowercase = null;
-            searchTextField.setText(searchText);
-            if (searchText.Length >= 0 && model != null)
+            _searchText = _searchTextBuffer.ToString();
+            _searchTextLowercase = null;
+            _searchTextField.SetText(_searchText);
+            if (_searchText.Length >= 0 && _model != null)
             {
-                if (!isOpen() && openInfo())
+                if (!IsOpen() && OpenInfo())
                 {
-                    updateInfoWindowPosition();
+                    UpdateInfoWindowPosition();
                 }
-                updateSearch();
+                UpdateSearch();
             }
         }
 
-        private void restartTimer()
+        private void RestartTimer()
         {
-            timer.stop();
-            timer.start();
+            _timer.Stop();
+            _timer.Start();
         }
 
-        private void updateSearch()
+        private void UpdateSearch()
         {
-            int numRows = model.Rows;
+            int numRows = _model.Rows;
             if (numRows == 0)
             {
                 return;
             }
-            for (int row = currentRow; row < numRows; row++)
+            for (int row = _currentRow; row < numRows; row++)
             {
-                if (checkRow(row))
+                if (CheckRow(row))
                 {
-                    setRow(row);
+                    SetRow(row);
                     return;
                 }
             }
-            if (searchStartOnly)
+            if (_searchStartOnly)
             {
-                searchStartOnly = false;
+                _searchStartOnly = false;
             }
             else
             {
-                numRows = currentRow;
+                numRows = _currentRow;
             }
             for (int row = 0; row < numRows; row++)
             {
-                if (checkRow(row))
+                if (CheckRow(row))
                 {
-                    setRow(row);
+                    SetRow(row);
                     return;
                 }
             }
-            searchTextField.setErrorMessage("'" + searchText + "' not found");
+            _searchTextField.SetErrorMessage("'" + _searchText + "' not found");
         }
 
-        private void searchDir(int dir)
+        private void SearchDir(int dir)
         {
-            int numRows = model.Rows;
+            int numRows = _model.Rows;
             if (numRows == 0)
             {
                 return;
             }
 
-            int startRow = wrap(currentRow, numRows);
+            int startRow = Wrap(_currentRow, numRows);
             int row = startRow;
 
             for (; ; )
             {
                 do
                 {
-                    row = wrap(row + dir, numRows);
-                    if (checkRow(row))
+                    row = Wrap(row + dir, numRows);
+                    if (CheckRow(row))
                     {
-                        setRow(row);
+                        SetRow(row);
                         return;
                     }
                 } while (row != startRow);
 
-                if (!searchStartOnly)
+                if (!_searchStartOnly)
                 {
                     break;
                 }
-                searchStartOnly = false;
+                _searchStartOnly = false;
             }
         }
 
-        private void setRow(int row)
+        private void SetRow(int row)
         {
-            if (currentRow != row)
+            if (_currentRow != row)
             {
-                currentRow = row;
-                getTable().scrollToRow(row);
-                if (selectionModel != null)
+                _currentRow = row;
+                GetTable().ScrollToRow(row);
+                if (_selectionModel != null)
                 {
-                    selectionModel.SetSelection(row, row);
+                    _selectionModel.SetSelection(row, row);
                 }
             }
-            searchTextField.setErrorMessage(null);
+            _searchTextField.SetErrorMessage(null);
         }
 
-        private bool checkRow(int row)
+        private bool CheckRow(int row)
         {
-            Object data = model.CellAt(row, column);
+            Object data = _model.CellAt(row, _column);
             if (data == null)
             {
                 return false;
             }
             String str = data.ToString();
-            if (searchStartOnly)
+            if (_searchStartOnly)
             {
-                return str.StartsWith(searchText);
+                return str.StartsWith(_searchText);
             }
             str = str.ToLower();
-            if (searchTextLowercase == null)
+            if (_searchTextLowercase == null)
             {
-                searchTextLowercase = searchText.ToLower();
+                _searchTextLowercase = _searchText.ToLower();
             }
-            return str.Contains(searchTextLowercase);
+            return str.Contains(_searchTextLowercase);
         }
 
-        private static int wrap(int row, int numRows)
+        private static int Wrap(int row, int numRows)
         {
             if (row < 0)
             {

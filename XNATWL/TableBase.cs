@@ -50,13 +50,13 @@ namespace XNATWL
              * Called when the CellRenderer is registered and a theme is applied.
              * @param themeInfo the theme object
              */
-            void applyTheme(ThemeInfo themeInfo);
+            void ApplyTheme(ThemeInfo themeInfo);
 
             /**
              * The theme name for this CellRenderer. Must be relative to the Table.
              * @return the theme name.
              */
-            String getTheme();
+            String GetTheme();
 
             /**
              * This method sets the row, column and the cell data.
@@ -65,7 +65,7 @@ namespace XNATWL
              * @param column the table column
              * @param data the cell data
              */
-            void setCellData(int row, int column, Object data);
+            void SetCellData(int row, int column, Object data);
 
             /**
              * Returns how many columns this cell spans. Must be >= 1.
@@ -73,7 +73,7 @@ namespace XNATWL
              * @return the column span.
              * @see #setCellData(int, int, java.lang.Object)
              */
-            int getColumnSpan();
+            int GetColumnSpan();
 
             /**
              * Returns the preferred cell height in variable row height mode.
@@ -82,7 +82,7 @@ namespace XNATWL
              * @see #setCellData(int, int, java.lang.Object)
              * @see TableBase#setVaribleRowHeight(bool)
              */
-            int getPreferredHeight();
+            int GetPreferredHeight();
 
             /**
              * Returns the widget used to render the cell or null if no rendering
@@ -102,13 +102,13 @@ namespace XNATWL
              * @return the widget used for cell rendering or null.
              * @see #setCellData(int, int, java.lang.Object)
              */
-            Widget getCellRenderWidget(int x, int y, int width, int height, bool isSelected);
+            Widget GetCellRenderWidget(int x, int y, int width, int height, bool isSelected);
         }
 
         public interface CellWidgetCreator : CellRenderer
         {
-            Widget updateWidget(Widget existingWidget);
-            void positionWidget(Widget widget, int x, int y, int w, int h);
+            Widget UpdateWidget(Widget existingWidget);
+            void PositionWidget(Widget widget, int x, int y, int w, int h);
         }
 
         public interface KeyboardSearchHandler
@@ -119,18 +119,18 @@ namespace XNATWL
              * @param evt the key event
              * @return true if the event was handled
              */
-            bool handleKeyEvent(Event evt);
+            bool HandleKeyEvent(Event evt);
 
             /**
              * Returns true if the search is active.
              * @return true if the search is active.
              */
-            bool isActive();
+            bool IsActive();
 
             /**
              * Called when the table position ot size has changed.
              */
-            void updateInfoWindowPosition();
+            void UpdateInfoWindowPosition();
         }
 
         public interface DragListener
@@ -143,25 +143,25 @@ namespace XNATWL
              * @param evt the mouse event which started the drag
              * @return true if the drag should start, false if it should be canceled
              */
-            bool dragStarted(int row, int col, Event evt);
+            bool DragStarted(int row, int col, Event evt);
 
             /**
              * Mouse dragging in progress
              * @param evt the MOUSE_DRAGGED event
              * @return the mouse cursor to display
              */
-            MouseCursor dragged(Event evt);
+            MouseCursor Dragged(Event evt);
 
             /**
              * Mouse dragging stopped
              * @param evt the event which stopped the mouse drag
              */
-            void dragStopped(Event evt);
+            void DragStopped(Event evt);
 
             /**
              * Called when the mouse drag is canceled (eg by pressing ESCAPE)
              */
-            void dragCanceled();
+            void DragCancelled();
         }
 
 
@@ -180,94 +180,94 @@ namespace XNATWL
         public static StateKey STATE_SORT_ASCENDING = StateKey.Get("sortAscending");
         public static StateKey STATE_SORT_DESCENDING = StateKey.Get("sortDescending");
 
-        private StringCellRenderer stringCellRenderer;
-        private RemoveCellWidgets removeCellWidgetsFunction;
-        private InsertCellWidgets insertCellWidgetsFunction;
-        private CellWidgetContainer cellWidgetContainer;
+        private StringCellRenderer _stringCellRenderer;
+        private RemoveCellWidgets _removeCellWidgetsFunction;
+        private InsertCellWidgets _insertCellWidgetsFunction;
+        private CellWidgetContainer _cellWidgetContainer;
 
-        protected TypeMapping cellRenderers;
-        protected SparseGrid widgetGrid;
-        protected ColumnSizeSequence columnModel;
-        protected TableColumnHeaderModel columnHeaderModel;
-        protected SizeSequence rowModel;
-        protected bool hasCellWidgetCreators;
-        protected ColumnHeader[] columnHeaders;
-        protected CellRenderer[] columnDefaultCellRenderer;
-        protected TableSelectionManager selectionManager;
-        protected KeyboardSearchHandler keyboardSearchHandler;
-        protected DragListener dragListener;
+        protected TypeMapping _cellRenderers;
+        protected SparseGrid _widgetGrid;
+        protected ColumnSizeSequence _columnModel;
+        protected TableColumnHeaderModel _columnHeaderModel;
+        protected SizeSequence _rowModel;
+        protected bool _hasCellWidgetCreators;
+        protected ColumnHeader[] _columnHeaders;
+        protected CellRenderer[] _columnDefaultCellRenderer;
+        protected TableSelectionManager _selectionManager;
+        protected KeyboardSearchHandler _keyboardSearchHandler;
+        protected DragListener _dragListener;
 
-        protected Image imageColumnDivider;
-        protected Image imageRowBackground;
-        protected Image imageRowOverlay;
-        protected Image imageRowDropMarker;
-        protected ThemeInfo tableBaseThemeInfo;
-        protected int columnHeaderHeight;
-        protected int columnDividerDragableDistance;
-        protected MouseCursor columnResizeCursor;
-        protected MouseCursor normalCursor;
-        protected MouseCursor dragNotPossibleCursor;
-        protected bool ensureColumnHeaderMinWidth;
+        protected Image _imageColumnDivider;
+        protected Image _imageRowBackground;
+        protected Image _imageRowOverlay;
+        protected Image _imageRowDropMarker;
+        protected ThemeInfo _tableBaseThemeInfo;
+        protected int _columnHeaderHeight;
+        protected int _columnDividerDraggableDistance;
+        protected MouseCursor _columnResizeCursor;
+        protected MouseCursor _normalCursor;
+        protected MouseCursor _dragNotPossibleCursor;
+        protected bool _ensureColumnHeaderMinWidth;
 
-        protected int numRows;
-        protected int numColumns;
-        protected int rowHeight = 32;
-        protected int defaultColumnWidth = 256;
-        protected bool bAutoSizeAllRows;
-        protected bool bUpdateAllCellWidgets;
-        protected bool bUpdateAllColumnWidth;
+        protected int _numRows;
+        protected int _numColumns;
+        protected int _rowHeight = 32;
+        protected int _defaultColumnWidth = 256;
+        protected bool _bAutoSizeAllRows;
+        protected bool _bUpdateAllCellWidgets;
+        protected bool _bUpdateAllColumnWidth;
 
-        protected int scrollPosX;
-        protected int scrollPosY;
+        protected int _scrollPosX;
+        protected int _scrollPosY;
 
-        protected int firstVisibleRow;
-        protected int firstVisibleColumn;
-        protected int lastVisibleRow;
-        protected int lastVisibleColumn;
-        protected bool firstRowPartialVisible;
-        protected bool lastRowPartialVisible;
+        protected int _firstVisibleRow;
+        protected int _firstVisibleColumn;
+        protected int _lastVisibleRow;
+        protected int _lastVisibleColumn;
+        protected bool _firstRowPartialVisible;
+        protected bool _lastRowPartialVisible;
 
-        protected int dropMarkerRow = -1;
-        protected bool dropMarkerBeforeRow;
+        protected int _dropMarkerRow = -1;
+        protected bool _dropMarkerBeforeRow;
 
         protected static int LAST_MOUSE_Y_OUTSIDE = int.MinValue;
 
-        protected int lastMouseY = LAST_MOUSE_Y_OUTSIDE;
-        protected int lastMouseRow = -1;
-        protected int lastMouseColumn = -1;
+        protected int _lastMouseY = LAST_MOUSE_Y_OUTSIDE;
+        protected int _lastMouseRow = -1;
+        protected int _lastMouseColumn = -1;
 
         protected TableBase()
         {
-            this.cellRenderers = new TypeMapping();
-            this.stringCellRenderer = new StringCellRenderer();
-            this.widgetGrid = new SparseGrid(32);
-            this.removeCellWidgetsFunction = new RemoveCellWidgets(this);
-            this.insertCellWidgetsFunction = new InsertCellWidgets(this);
-            this.columnModel = new ColumnSizeSequence(this);
-            this.columnDefaultCellRenderer = new CellRenderer[8];
-            this.cellWidgetContainer = new CellWidgetContainer();
+            this._cellRenderers = new TypeMapping();
+            this._stringCellRenderer = new StringCellRenderer();
+            this._widgetGrid = new SparseGrid(32);
+            this._removeCellWidgetsFunction = new RemoveCellWidgets(this);
+            this._insertCellWidgetsFunction = new InsertCellWidgets(this);
+            this._columnModel = new ColumnSizeSequence(this);
+            this._columnDefaultCellRenderer = new CellRenderer[8];
+            this._cellWidgetContainer = new CellWidgetContainer();
 
-            base.insertChild(cellWidgetContainer, 0);
-            setCanAcceptKeyboardFocus(true);
+            base.InsertChild(_cellWidgetContainer, 0);
+            SetCanAcceptKeyboardFocus(true);
         }
 
-        public TableSelectionManager getSelectionManager()
+        public TableSelectionManager GetSelectionManager()
         {
-            return selectionManager;
+            return _selectionManager;
         }
 
-        public void setSelectionManager(TableSelectionManager selectionManager)
+        public void SetSelectionManager(TableSelectionManager selectionManager)
         {
-            if (this.selectionManager != selectionManager)
+            if (this._selectionManager != selectionManager)
             {
-                if (this.selectionManager != null)
+                if (this._selectionManager != null)
                 {
-                    this.selectionManager.setAssociatedTable(null);
+                    this._selectionManager.SetAssociatedTable(null);
                 }
-                this.selectionManager = selectionManager;
-                if (this.selectionManager != null)
+                this._selectionManager = selectionManager;
+                if (this._selectionManager != null)
                 {
-                    this.selectionManager.setAssociatedTable(this);
+                    this._selectionManager.SetAssociatedTable(this);
                 }
             }
         }
@@ -278,219 +278,220 @@ namespace XNATWL
          * @see TableRowSelectionManager
          * @see DefaultTableSelectionModel
          */
-        public void setDefaultSelectionManager()
+        public void SetDefaultSelectionManager()
         {
-            setSelectionManager(new TableRowSelectionManager());
+            SetSelectionManager(new TableRowSelectionManager());
         }
 
-        public KeyboardSearchHandler getKeyboardSearchHandler()
+        public KeyboardSearchHandler GetKeyboardSearchHandler()
         {
-            return keyboardSearchHandler;
+            return _keyboardSearchHandler;
         }
 
-        public void setKeyboardSearchHandler(KeyboardSearchHandler keyboardSearchHandler)
+        public void SetKeyboardSearchHandler(KeyboardSearchHandler keyboardSearchHandler)
         {
-            this.keyboardSearchHandler = keyboardSearchHandler;
+            this._keyboardSearchHandler = keyboardSearchHandler;
         }
 
-        public DragListener getDragListener()
+        public DragListener GetDragListener()
         {
-            return dragListener;
+            return _dragListener;
         }
 
-        public void setDragListener(DragListener dragListener)
+        public void SetDragListener(DragListener dragListener)
         {
-            cancelDragging();
-            this.dragListener = dragListener;
+            CancelDragging();
+            this._dragListener = dragListener;
         }
 
-        public bool isDropMarkerBeforeRow()
+        public bool IsDropMarkerBeforeRow()
         {
-            return dropMarkerBeforeRow;
+            return _dropMarkerBeforeRow;
         }
 
-        public int getDropMarkerRow()
+        public int GetDropMarkerRow()
         {
-            return dropMarkerRow;
+            return _dropMarkerRow;
         }
 
-        public void setDropMarker(int row, bool beforeRow)
+        public void SetDropMarker(int row, bool beforeRow)
         {
-            if (row < 0 || row > numRows)
+            if (row < 0 || row > _numRows)
             {
                 throw new ArgumentOutOfRangeException("row");
             }
-            if (row == numRows && !beforeRow)
+            if (row == _numRows && !beforeRow)
             {
                 throw new ArgumentOutOfRangeException("row");
             }
-            dropMarkerRow = row;
-            dropMarkerBeforeRow = beforeRow;
+            _dropMarkerRow = row;
+            _dropMarkerBeforeRow = beforeRow;
         }
 
-        public bool setDropMarker(Event evt)
+        public bool SetDropMarker(Event evt)
         {
-            int mouseY = evt.getMouseY();
-            if (isMouseInside(evt) && !isMouseInColumnHeader(mouseY))
+            int mouseY = evt.GetMouseY();
+            if (IsMouseInside(evt) && !IsMouseInColumnHeader(mouseY))
             {
-                mouseY -= getOffsetY();
-                int row = getRowFromPosition(mouseY);
-                if (row >= 0 && row < numRows)
+                mouseY -= GetOffsetY();
+                int row = GetRowFromPosition(mouseY);
+                if (row >= 0 && row < _numRows)
                 {
-                    int rowStart = getRowStartPosition(row);
-                    int rowEnd = getRowEndPosition(row);
+                    int rowStart = GetRowStartPosition(row);
+                    int rowEnd = GetRowEndPosition(row);
                     int margin = (rowEnd - rowStart + 2) / 4;
                     if ((mouseY - rowStart) < margin)
                     {
-                        setDropMarker(row, true);
+                        SetDropMarker(row, true);
                     }
                     else if ((rowEnd - mouseY) < margin)
                     {
-                        setDropMarker(row + 1, true);
+                        SetDropMarker(row + 1, true);
                     }
                     else
                     {
-                        setDropMarker(row, false);
+                        SetDropMarker(row, false);
                     }
                     return true;
                 }
-                else if (row == numRows)
+                else if (row == _numRows)
                 {
-                    setDropMarker(row, true);
+                    SetDropMarker(row, true);
                     return true;
                 }
             }
             return false;
         }
 
-        public void clearDropMarker()
+        public void ClearDropMarker()
         {
-            dropMarkerRow = -1;
+            _dropMarkerRow = -1;
         }
 
-        public bool isVariableRowHeight()
+        public bool IsVariableRowHeight()
         {
-            return rowModel != null;
+            return _rowModel != null;
         }
 
-        public void setVaribleRowHeight(bool varibleRowHeight)
+        public void SetVariableRowHeight(bool variableRowHeight)
         {
-            if (varibleRowHeight && rowModel == null)
+            if (variableRowHeight && _rowModel == null)
             {
-                rowModel = new RowSizeSequence(this, numRows);
-                bAutoSizeAllRows = true;
-                invalidateLayout();
+                _rowModel = new RowSizeSequence(this, _numRows);
+                _bAutoSizeAllRows = true;
+                InvalidateLayout();
             }
-            else if (!varibleRowHeight)
+            else if (!variableRowHeight)
             {
-                rowModel = null;
+                _rowModel = null;
             }
         }
 
-        public int getNumRows()
+        public int GetNumRows()
         {
-            return numRows;
+            return _numRows;
         }
 
-        public int getNumColumns()
+        public int GetNumColumns()
         {
-            return numColumns;
+            return _numColumns;
         }
 
-        public int getRowFromPosition(int y)
+        public int GetRowFromPosition(int y)
         {
             if (y >= 0)
             {
-                if (rowModel != null)
+                if (_rowModel != null)
                 {
-                    return rowModel.GetIndex(y);
+                    return _rowModel.GetIndex(y);
                 }
-                return Math.Min(numRows - 1, y / rowHeight);
+                return Math.Min(_numRows - 1, y / _rowHeight);
             }
+
             return -1;
         }
 
-        public int getRowStartPosition(int row)
+        public int GetRowStartPosition(int row)
         {
-            checkRowIndex(row);
-            if (rowModel != null)
+            CheckRowIndex(row);
+            if (_rowModel != null)
             {
-                return rowModel.GetPosition(row);
+                return _rowModel.GetPosition(row);
             }
             else
             {
-                return row * rowHeight;
+                return row * _rowHeight;
             }
         }
 
-        public int getRowHeight(int row)
+        public int GetRowHeight(int row)
         {
-            checkRowIndex(row);
-            if (rowModel != null)
+            CheckRowIndex(row);
+            if (_rowModel != null)
             {
-                return rowModel.GetSize(row);
+                return _rowModel.GetSize(row);
             }
             else
             {
-                return rowHeight;
+                return _rowHeight;
             }
         }
 
-        public int getRowEndPosition(int row)
+        public int GetRowEndPosition(int row)
         {
-            checkRowIndex(row);
-            if (rowModel != null)
+            CheckRowIndex(row);
+            if (_rowModel != null)
             {
-                return rowModel.GetPosition(row + 1);
+                return _rowModel.GetPosition(row + 1);
             }
             else
             {
-                return (row + 1) * rowHeight;
+                return (row + 1) * _rowHeight;
             }
         }
 
-        public int getColumnFromPosition(int x)
+        public int GetColumnFromPosition(int x)
         {
             if (x >= 0)
             {
-                int column = columnModel.GetIndex(x);
+                int column = _columnModel.GetIndex(x);
                 return column;
             }
             return -1;
         }
 
-        public int getColumnStartPosition(int column)
+        public int GetColumnStartPosition(int column)
         {
-            checkColumnIndex(column);
-            return columnModel.GetPosition(column);
+            CheckColumnIndex(column);
+            return _columnModel.GetPosition(column);
         }
 
-        public int getColumnWidth(int column)
+        public int GetColumnWidth(int column)
         {
-            checkColumnIndex(column);
-            return columnModel.GetSize(column);
+            CheckColumnIndex(column);
+            return _columnModel.GetSize(column);
         }
 
-        public int getColumnEndPosition(int column)
+        public int GetColumnEndPosition(int column)
         {
-            checkColumnIndex(column);
-            return columnModel.GetPosition(column + 1);
+            CheckColumnIndex(column);
+            return _columnModel.GetPosition(column + 1);
         }
 
-        public void setColumnWidth(int column, int width)
+        public void SetColumnWidth(int column, int width)
         {
-            checkColumnIndex(column);
-            columnHeaders[column].setColumnWidth(width);    // store passed width
-            if (columnModel.update(column))
+            CheckColumnIndex(column);
+            _columnHeaders[column].SetColumnWidth(width);    // store passed width
+            if (_columnModel.Update(column))
             {
-                invalidateLayout();
+                InvalidateLayout();
             }
         }
 
-        public AnimationState getColumnHeaderAnimationState(int column)
+        public AnimationState GetColumnHeaderAnimationState(int column)
         {
-            checkColumnIndex(column);
-            return columnHeaders[column].getAnimationState();
+            CheckColumnIndex(column);
+            return _columnHeaders[column].GetAnimationState();
         }
 
         /**
@@ -498,124 +499,124 @@ namespace XNATWL
          * @param sortColumn This column gets sort order indicators, all other columns not
          * @param sortOrder Which sort order. Can be null to disable the indicators
          */
-        public void setColumnSortOrderAnimationState(int sortColumn, SortOrder sortOrder)
+        public void SetColumnSortOrderAnimationState(int sortColumn, SortOrder sortOrder)
         {
-            for (int column = 0; column < numColumns; ++column)
+            for (int column = 0; column < _numColumns; ++column)
             {
-                AnimationState animState = columnHeaders[column].getAnimationState();
-                animState.setAnimationState(STATE_SORT_ASCENDING, (column == sortColumn) && (sortOrder == SortOrder.ASCENDING));
-                animState.setAnimationState(STATE_SORT_DESCENDING, (column == sortColumn) && (sortOrder == SortOrder.DESCENDING));
+                AnimationState animState = _columnHeaders[column].GetAnimationState();
+                animState.SetAnimationState(STATE_SORT_ASCENDING, (column == sortColumn) && (sortOrder == SortOrder.Ascending));
+                animState.SetAnimationState(STATE_SORT_DESCENDING, (column == sortColumn) && (sortOrder == SortOrder.Descending));
             }
         }
 
-        public void scrollToRow(int row)
+        public void ScrollToRow(int row)
         {
-            ScrollPane scrollPane = ScrollPane.getContainingScrollPane(this);
-            if (scrollPane != null && numRows > 0)
+            ScrollPane scrollPane = ScrollPane.GetContainingScrollPane(this);
+            if (scrollPane != null && _numRows > 0)
             {
-                scrollPane.validateLayout();
-                int rowStart = getRowStartPosition(row);
-                int rowEnd = getRowEndPosition(row);
+                scrollPane.ValidateLayout();
+                int rowStart = GetRowStartPosition(row);
+                int rowEnd = GetRowEndPosition(row);
                 int height = rowEnd - rowStart;
-                scrollPane.scrollToAreaY(rowStart, height, height / 2);
+                scrollPane.ScrollToAreaY(rowStart, height, height / 2);
             }
         }
 
-        public int getNumVisibleRows()
+        public int GetNumVisibleRows()
         {
-            int rows = lastVisibleRow - firstVisibleRow;
-            if (!lastRowPartialVisible)
+            int rows = _lastVisibleRow - _firstVisibleRow;
+            if (!_lastRowPartialVisible)
             {
                 rows++;
             }
             return rows;
         }
 
-        public override int getMinHeight()
+        public override int GetMinHeight()
         {
-            return Math.Max(base.getMinHeight(), columnHeaderHeight);
+            return Math.Max(base.GetMinHeight(), _columnHeaderHeight);
         }
 
-        public override int getPreferredInnerWidth()
+        public override int GetPreferredInnerWidth()
         {
-            if (getInnerWidth() == 0)
+            if (GetInnerWidth() == 0)
             {
-                return columnModel.computePreferredWidth();
+                return _columnModel.ComputePreferredWidth();
             }
-            if (bUpdateAllColumnWidth)
+            if (_bUpdateAllColumnWidth)
             {
-                updateAllColumnWidth();
+                UpdateAllColumnWidth();
             }
-            return (numColumns > 0) ? getColumnEndPosition(numColumns - 1) : 0;
+            return (_numColumns > 0) ? GetColumnEndPosition(_numColumns - 1) : 0;
         }
 
-        public override int getPreferredInnerHeight()
+        public override int GetPreferredInnerHeight()
         {
-            if (bAutoSizeAllRows)
+            if (_bAutoSizeAllRows)
             {
-                autoSizeAllRows();
+                AutoSizeAllRows();
             }
-            return columnHeaderHeight + 1 + // +1 for drop marker
-                    ((numRows > 0) ? getRowEndPosition(numRows - 1) : 0);
+            return _columnHeaderHeight + 1 + // +1 for drop marker
+                    ((_numRows > 0) ? GetRowEndPosition(_numRows - 1) : 0);
         }
 
-        public void registerCellRenderer(Type dataClass, CellRenderer cellRenderer)
+        public void RegisterCellRenderer(Type dataClass, CellRenderer cellRenderer)
         {
             if (dataClass == null)
             {
                 throw new NullReferenceException("dataClass");
             }
-            cellRenderers.SetByType(dataClass, cellRenderer);
+            _cellRenderers.SetByType(dataClass, cellRenderer);
 
             if (cellRenderer is CellWidgetCreator)
             {
-                hasCellWidgetCreators = true;
+                _hasCellWidgetCreators = true;
             }
 
             // only call it when we already have a theme
-            if (tableBaseThemeInfo != null)
+            if (_tableBaseThemeInfo != null)
             {
-                applyCellRendererTheme(cellRenderer);
+                ApplyCellRendererTheme(cellRenderer);
             }
         }
 
-        public void setScrollPosition(int scrollPosX, int scrollPosY)
+        public void SetScrollPosition(int scrollPosX, int scrollPosY)
         {
-            if (this.scrollPosX != scrollPosX || this.scrollPosY != scrollPosY)
+            if (this._scrollPosX != scrollPosX || this._scrollPosY != scrollPosY)
             {
-                this.scrollPosX = scrollPosX;
-                this.scrollPosY = scrollPosY;
-                invalidateLayoutLocally();
+                this._scrollPosX = scrollPosX;
+                this._scrollPosY = scrollPosY;
+                InvalidateLayoutLocally();
             }
         }
 
-        public void adjustScrollPosition(int row)
+        public void AdjustScrollPosition(int row)
         {
-            checkRowIndex(row);
-            ScrollPane scrollPane = ScrollPane.getContainingScrollPane(this);
-            int numVisibleRows = getNumVisibleRows();
+            CheckRowIndex(row);
+            ScrollPane scrollPane = ScrollPane.GetContainingScrollPane(this);
+            int numVisibleRows = GetNumVisibleRows();
             if (numVisibleRows >= 1 && scrollPane != null)
             {
-                if (row < firstVisibleRow || (row == firstVisibleRow && firstRowPartialVisible))
+                if (row < _firstVisibleRow || (row == _firstVisibleRow && _firstRowPartialVisible))
                 {
-                    int pos = getRowStartPosition(row);
-                    scrollPane.setScrollPositionY(pos);
+                    int pos = GetRowStartPosition(row);
+                    scrollPane.SetScrollPositionY(pos);
                 }
-                else if (row > lastVisibleRow || (row == lastVisibleRow && lastRowPartialVisible))
+                else if (row > _lastVisibleRow || (row == _lastVisibleRow && _lastRowPartialVisible))
                 {
-                    int innerHeight = Math.Max(0, getInnerHeight() - columnHeaderHeight);
-                    int pos = getRowEndPosition(row);
+                    int innerHeight = Math.Max(0, GetInnerHeight() - _columnHeaderHeight);
+                    int pos = GetRowEndPosition(row);
                     pos = Math.Max(0, pos - innerHeight);
-                    scrollPane.setScrollPositionY(pos);
+                    scrollPane.SetScrollPositionY(pos);
                 }
             }
         }
 
-        public int getAutoScrollDirection(Event evt, int autoScrollArea)
+        public int GetAutoScrollDirection(Event evt, int autoScrollArea)
         {
-            int areaY = getInnerY() + columnHeaderHeight;
-            int areaHeight = getInnerHeight() - columnHeaderHeight;
-            int mouseY = evt.getMouseY();
+            int areaY = GetInnerY() + _columnHeaderHeight;
+            int areaHeight = GetInnerHeight() - _columnHeaderHeight;
+            int mouseY = evt.GetMouseY();
             if (mouseY >= areaY && mouseY < (areaY + areaHeight))
             {
                 mouseY -= areaY;
@@ -635,22 +636,22 @@ namespace XNATWL
             return 0;
         }
 
-        public int getPageSizeX(int availableWidth)
+        public int GetPageSizeX(int availableWidth)
         {
             return availableWidth;
         }
 
-        public int getPageSizeY(int availableHeight)
+        public int GetPageSizeY(int availableHeight)
         {
-            return availableHeight - columnHeaderHeight;
+            return availableHeight - _columnHeaderHeight;
         }
 
-        public bool isFixedWidthMode()
+        public bool IsFixedWidthMode()
         {
-            ScrollPane scrollPane = ScrollPane.getContainingScrollPane(this);
+            ScrollPane scrollPane = ScrollPane.GetContainingScrollPane(this);
             if (scrollPane != null)
             {
-                if (scrollPane.getFixed() != ScrollPane.Fixed.HORIZONTAL)
+                if (scrollPane.GetFixed() != ScrollPane.Fixed.HORIZONTAL)
                 {
                     return false;
                 }
@@ -658,259 +659,260 @@ namespace XNATWL
             return true;
         }
 
-        protected void checkRowIndex(int row)
+        protected void CheckRowIndex(int row)
         {
-            if (row < 0 || row >= numRows)
+            if (row < 0 || row >= _numRows)
             {
                 throw new IndexOutOfRangeException("row");
             }
         }
 
-        protected void checkColumnIndex(int column)
+        protected void CheckColumnIndex(int column)
         {
-            if (column < 0 || column >= numColumns)
+            if (column < 0 || column >= _numColumns)
             {
                 throw new IndexOutOfRangeException("column");
             }
         }
 
-        protected void checkRowRange(int idx, int count)
+        protected void CheckRowRange(int idx, int count)
         {
-            if (idx < 0 || count < 0 || count > numRows || idx > (numRows - count))
+            if (idx < 0 || count < 0 || count > _numRows || idx > (_numRows - count))
             {
                 throw new ArgumentOutOfRangeException("row");
             }
         }
 
-        protected void checkColumnRange(int idx, int count)
+        protected void CheckColumnRange(int idx, int count)
         {
-            if (idx < 0 || count < 0 || count > numColumns || idx > (numColumns - count))
+            if (idx < 0 || count < 0 || count > _numColumns || idx > (_numColumns - count))
             {
                 throw new ArgumentOutOfRangeException("column");
             }
         }
 
-        protected override void applyTheme(ThemeInfo themeInfo)
+        protected override void ApplyTheme(ThemeInfo themeInfo)
         {
-            base.applyTheme(themeInfo);
-            applyThemeTableBase(themeInfo);
-            updateAll();
+            base.ApplyTheme(themeInfo);
+            ApplyThemeTableBase(themeInfo);
+            UpdateAll();
         }
 
-        protected void applyThemeTableBase(ThemeInfo themeInfo)
+        protected void ApplyThemeTableBase(ThemeInfo themeInfo)
         {
-            this.tableBaseThemeInfo = themeInfo;
-            this.imageColumnDivider = themeInfo.GetImage("columnDivider");
-            this.imageRowBackground = themeInfo.GetImage("row.background");
-            this.imageRowOverlay = themeInfo.GetImage("row.overlay");
-            this.imageRowDropMarker = themeInfo.GetImage("row.dropmarker");
-            this.rowHeight = themeInfo.GetParameter("rowHeight", 32);
-            this.defaultColumnWidth = themeInfo.GetParameter("columnHeaderWidth", 256);
-            this.columnHeaderHeight = themeInfo.GetParameter("columnHeaderHeight", 10);
-            this.columnDividerDragableDistance = themeInfo.GetParameter("columnDividerDragableDistance", 3);
-            this.ensureColumnHeaderMinWidth = themeInfo.GetParameter("ensureColumnHeaderMinWidth", false);
+            this._tableBaseThemeInfo = themeInfo;
+            this._imageColumnDivider = themeInfo.GetImage("columnDivider");
+            this._imageRowBackground = themeInfo.GetImage("row.background");
+            this._imageRowOverlay = themeInfo.GetImage("row.overlay");
+            this._imageRowDropMarker = themeInfo.GetImage("row.dropmarker");
+            this._rowHeight = themeInfo.GetParameter("rowHeight", 32);
+            this._defaultColumnWidth = themeInfo.GetParameter("columnHeaderWidth", 256);
+            this._columnHeaderHeight = themeInfo.GetParameter("columnHeaderHeight", 10);
+            this._columnDividerDraggableDistance = themeInfo.GetParameter("columnDividerDragableDistance", 3);
+            this._ensureColumnHeaderMinWidth = themeInfo.GetParameter("ensureColumnHeaderMinWidth", false);
 
-            foreach (CellRenderer cellRenderer in cellRenderers.GetUniqueValues())
+            foreach (CellRenderer cellRenderer in _cellRenderers.GetUniqueValues())
             {
-                applyCellRendererTheme(cellRenderer);
+                ApplyCellRendererTheme(cellRenderer);
             }
-            applyCellRendererTheme(stringCellRenderer);
-            bUpdateAllColumnWidth = true;
+            ApplyCellRendererTheme(_stringCellRenderer);
+            _bUpdateAllColumnWidth = true;
         }
 
-        protected override void applyThemeMouseCursor(ThemeInfo themeInfo)
+        protected override void ApplyThemeMouseCursor(ThemeInfo themeInfo)
         {
-            this.columnResizeCursor = themeInfo.GetMouseCursor("columnResizeCursor");
-            this.normalCursor = themeInfo.GetMouseCursor("mouseCursor");
-            this.dragNotPossibleCursor = themeInfo.GetMouseCursor("dragNotPossibleCursor");
+            this._columnResizeCursor = themeInfo.GetMouseCursor("columnResizeCursor");
+            this._normalCursor = themeInfo.GetMouseCursor("mouseCursor");
+            this._dragNotPossibleCursor = themeInfo.GetMouseCursor("dragNotPossibleCursor");
         }
 
-        protected void applyCellRendererTheme(CellRenderer cellRenderer)
+        protected void ApplyCellRendererTheme(CellRenderer cellRenderer)
         {
-            String childThemeName = cellRenderer.getTheme();
-            System.Diagnostics.Debug.Assert(!isAbsoluteTheme(childThemeName));
-            ThemeInfo childTheme = tableBaseThemeInfo.GetChildTheme(childThemeName);
+            String childThemeName = cellRenderer.GetTheme();
+            System.Diagnostics.Debug.Assert(!IsAbsoluteTheme(childThemeName));
+            ThemeInfo childTheme = _tableBaseThemeInfo.GetChildTheme(childThemeName);
             if (childTheme != null)
             {
-                cellRenderer.applyTheme(childTheme);
+                cellRenderer.ApplyTheme(childTheme);
             }
         }
 
-        public override void removeAllChildren()
+        public override void RemoveAllChildren()
         {
             throw new InvalidOperationException();
         }
 
-        protected override void childAdded(Widget child)
+        protected override void ChildAdded(Widget child)
         {
             // ignore
         }
 
-        protected override void childRemoved(Widget exChild)
+        protected override void ChildRemoved(Widget exChild)
         {
             // ignore
         }
 
-        protected int getOffsetX()
+        protected int GetOffsetX()
         {
-            return getInnerX() - scrollPosX;
+            return GetInnerX() - _scrollPosX;
         }
 
-        protected int getOffsetY()
+        protected int GetOffsetY()
         {
-            return getInnerY() - scrollPosY + columnHeaderHeight;
+            return GetInnerY() - _scrollPosY + _columnHeaderHeight;
         }
 
-        protected override void positionChanged()
+        protected override void PositionChanged()
         {
-            base.positionChanged();
-            if (keyboardSearchHandler != null)
+            base.PositionChanged();
+            if (_keyboardSearchHandler != null)
             {
-                keyboardSearchHandler.updateInfoWindowPosition();
+                _keyboardSearchHandler.UpdateInfoWindowPosition();
             }
         }
 
-        protected override void sizeChanged()
+        protected override void SizeChanged()
         {
-            base.sizeChanged();
-            if (isFixedWidthMode())
+            base.SizeChanged();
+            if (IsFixedWidthMode())
             {
-                bUpdateAllColumnWidth = true;
+                _bUpdateAllColumnWidth = true;
             }
-            if (keyboardSearchHandler != null)
+            if (_keyboardSearchHandler != null)
             {
-                keyboardSearchHandler.updateInfoWindowPosition();
+                _keyboardSearchHandler.UpdateInfoWindowPosition();
             }
         }
 
-        internal override Object getTooltipContentAt(int mouseX, int mouseY)
+        internal override Object GetTooltipContentAt(int mouseX, int mouseY)
         {
             // use cached row/column
-            if (lastMouseRow >= 0 && lastMouseRow < getNumRows() &&
-                    lastMouseColumn >= 0 && lastMouseColumn < getNumColumns())
+            if (_lastMouseRow >= 0 && _lastMouseRow < GetNumRows() &&
+                    _lastMouseColumn >= 0 && _lastMouseColumn < GetNumColumns())
             {
-                Object tooltip = getTooltipContentFromRow(lastMouseRow, lastMouseColumn);
+                Object tooltip = GetTooltipContentFromRow(_lastMouseRow, _lastMouseColumn);
                 if (tooltip != null)
                 {
                     return tooltip;
                 }
             }
-            return base.getTooltipContentAt(mouseX, mouseY);
+
+            return base.GetTooltipContentAt(mouseX, mouseY);
         }
 
-        protected override void layout()
+        protected override void Layout()
         {
-            int innerWidth = getInnerWidth();
-            int innerHeight = Math.Max(0, getInnerHeight() - columnHeaderHeight);
+            int innerWidth = GetInnerWidth();
+            int innerHeight = Math.Max(0, GetInnerHeight() - _columnHeaderHeight);
 
-            cellWidgetContainer.setPosition(getInnerX(), getInnerY() + columnHeaderHeight);
-            cellWidgetContainer.setSize(innerWidth, innerHeight);
+            _cellWidgetContainer.SetPosition(GetInnerX(), GetInnerY() + _columnHeaderHeight);
+            _cellWidgetContainer.SetSize(innerWidth, innerHeight);
 
-            if (bUpdateAllColumnWidth)
+            if (_bUpdateAllColumnWidth)
             {
-                updateAllColumnWidth();
+                UpdateAllColumnWidth();
             }
-            if (bAutoSizeAllRows)
+            if (_bAutoSizeAllRows)
             {
-                autoSizeAllRows();
+                AutoSizeAllRows();
             }
-            if (bUpdateAllCellWidgets)
+            if (_bUpdateAllCellWidgets)
             {
-                updateAllCellWidgets();
+                UpdateAllCellWidgets();
             }
 
-            int scrollEndX = scrollPosX + innerWidth;
-            int scrollEndY = scrollPosY + innerHeight;
+            int scrollEndX = _scrollPosX + innerWidth;
+            int scrollEndY = _scrollPosY + innerHeight;
 
-            int startRow = Math.Min(numRows - 1, Math.Max(0, getRowFromPosition(scrollPosY)));
-            int startColumn = Math.Min(numColumns - 1, Math.Max(0, getColumnFromPosition(scrollPosX)));
-            int endRow = Math.Min(numRows - 1, Math.Max(startRow, getRowFromPosition(scrollEndY)));
-            int endColumn = Math.Min(numColumns - 1, Math.Max(startColumn, getColumnFromPosition(scrollEndX)));
+            int startRow = Math.Min(_numRows - 1, Math.Max(0, GetRowFromPosition(_scrollPosY)));
+            int startColumn = Math.Min(_numColumns - 1, Math.Max(0, GetColumnFromPosition(_scrollPosX)));
+            int endRow = Math.Min(_numRows - 1, Math.Max(startRow, GetRowFromPosition(scrollEndY)));
+            int endColumn = Math.Min(_numColumns - 1, Math.Max(startColumn, GetColumnFromPosition(scrollEndX)));
 
-            if (numRows > 0)
+            if (_numRows > 0)
             {
-                firstRowPartialVisible = getRowStartPosition(startRow) < scrollPosY;
-                lastRowPartialVisible = getRowEndPosition(endRow) > scrollEndY;
+                _firstRowPartialVisible = GetRowStartPosition(startRow) < _scrollPosY;
+                _lastRowPartialVisible = GetRowEndPosition(endRow) > scrollEndY;
             }
             else
             {
-                firstRowPartialVisible = false;
-                lastRowPartialVisible = false;
+                _firstRowPartialVisible = false;
+                _lastRowPartialVisible = false;
             }
 
-            if (!widgetGrid.IsEmpty())
+            if (!_widgetGrid.IsEmpty())
             {
-                if (startRow > firstVisibleRow)
+                if (startRow > _firstVisibleRow)
                 {
-                    widgetGrid.Iterate(firstVisibleRow, 0, startRow - 1, numColumns, removeCellWidgetsFunction);
+                    _widgetGrid.Iterate(_firstVisibleRow, 0, startRow - 1, _numColumns, _removeCellWidgetsFunction);
                 }
-                if (endRow < lastVisibleRow)
+                if (endRow < _lastVisibleRow)
                 {
-                    widgetGrid.Iterate(endRow + 1, 0, lastVisibleRow, numColumns, removeCellWidgetsFunction);
+                    _widgetGrid.Iterate(endRow + 1, 0, _lastVisibleRow, _numColumns, _removeCellWidgetsFunction);
                 }
 
-                widgetGrid.Iterate(startRow, 0, endRow, numColumns, insertCellWidgetsFunction);
+                _widgetGrid.Iterate(startRow, 0, endRow, _numColumns, _insertCellWidgetsFunction);
             }
 
-            firstVisibleRow = startRow;
-            firstVisibleColumn = startColumn;
-            lastVisibleRow = endRow;
-            lastVisibleColumn = endColumn;
+            _firstVisibleRow = startRow;
+            _firstVisibleColumn = startColumn;
+            _lastVisibleRow = endRow;
+            _lastVisibleColumn = endColumn;
 
-            if (numColumns > 0)
+            if (_numColumns > 0)
             {
-                int offsetX = getOffsetX();
-                int colStartPos = getColumnStartPosition(0);
-                for (int i = 0; i < numColumns; i++)
+                int offsetX = GetOffsetX();
+                int colStartPos = GetColumnStartPosition(0);
+                for (int i = 0; i < _numColumns; i++)
                 {
-                    int colEndPos = getColumnEndPosition(i);
-                    Widget w = columnHeaders[i];
+                    int colEndPos = GetColumnEndPosition(i);
+                    Widget w = _columnHeaders[i];
                     if (w != null)
                     {
-                        System.Diagnostics.Debug.Assert(w.getParent() == this);
-                        w.setPosition(offsetX + colStartPos +
-                                columnDividerDragableDistance, getInnerY());
-                        w.setSize(Math.Max(0, colEndPos - colStartPos -
-                                2 * columnDividerDragableDistance), columnHeaderHeight);
-                        w.setVisible(columnHeaderHeight > 0);
-                        AnimationState animationState = w.getAnimationState();
-                        animationState.setAnimationState(STATE_FIRST_COLUMNHEADER, i == 0);
-                        animationState.setAnimationState(STATE_LAST_COLUMNHEADER, i == numColumns - 1);
+                        System.Diagnostics.Debug.Assert(w.GetParent() == this);
+                        w.SetPosition(offsetX + colStartPos +
+                                _columnDividerDraggableDistance, GetInnerY());
+                        w.SetSize(Math.Max(0, colEndPos - colStartPos -
+                                2 * _columnDividerDraggableDistance), _columnHeaderHeight);
+                        w.SetVisible(_columnHeaderHeight > 0);
+                        AnimationState animationState = w.GetAnimationState();
+                        animationState.SetAnimationState(STATE_FIRST_COLUMNHEADER, i == 0);
+                        animationState.SetAnimationState(STATE_LAST_COLUMNHEADER, i == _numColumns - 1);
                     }
                     colStartPos = colEndPos;
                 }
             }
         }
 
-        protected override void paintWidget(GUI gui)
+        protected override void PaintWidget(GUI gui)
         {
-            if (firstVisibleRow < 0 || firstVisibleRow >= numRows)
+            if (_firstVisibleRow < 0 || _firstVisibleRow >= _numRows)
             {
                 return;
             }
 
-            int innerX = getInnerX();
-            int innerY = getInnerY() + columnHeaderHeight;
-            int innerWidth = getInnerWidth();
-            int innerHeight = getInnerHeight() - columnHeaderHeight;
-            int offsetX = getOffsetX();
-            int offsetY = getOffsetY();
-            Renderer.Renderer renderer = gui.getRenderer();
+            int innerX = GetInnerX();
+            int innerY = GetInnerY() + _columnHeaderHeight;
+            int innerWidth = GetInnerWidth();
+            int innerHeight = GetInnerHeight() - _columnHeaderHeight;
+            int offsetX = GetOffsetX();
+            int offsetY = GetOffsetY();
+            Renderer.Renderer renderer = gui.GetRenderer();
 
             renderer.ClipEnter(innerX, innerY, innerWidth, innerHeight);
             try
             {
-                AnimationState animState = getAnimationState();
+                AnimationState animState = GetAnimationState();
                 int leadRow;
                 int leadColumn;
                 bool isCellSelection;
 
-                if (selectionManager != null)
+                if (_selectionManager != null)
                 {
-                    leadRow = selectionManager.getLeadRow();
-                    leadColumn = selectionManager.getLeadColumn();
-                    isCellSelection = selectionManager.getSelectionGranularity() ==
-                            TableSelectionGranularity.CELLS;
+                    leadRow = _selectionManager.GetLeadRow();
+                    leadColumn = _selectionManager.GetLeadColumn();
+                    isCellSelection = _selectionManager.GetSelectionGranularity() ==
+                            TableSelectionGranularity.Cells;
                 }
                 else
                 {
@@ -919,59 +921,59 @@ namespace XNATWL
                     isCellSelection = false;
                 }
 
-                if (imageRowBackground != null)
+                if (_imageRowBackground != null)
                 {
-                    paintRowImage(imageRowBackground, leadRow);
+                    PaintRowImage(_imageRowBackground, leadRow);
                 }
 
-                if (imageColumnDivider != null)
+                if (_imageColumnDivider != null)
                 {
-                    animState.setAnimationState(STATE_ROW_SELECTED, false);
-                    for (int col = firstVisibleColumn; col <= lastVisibleColumn; col++)
+                    animState.SetAnimationState(STATE_ROW_SELECTED, false);
+                    for (int col = _firstVisibleColumn; col <= _lastVisibleColumn; col++)
                     {
-                        int colEndPos = getColumnEndPosition(col);
+                        int colEndPos = GetColumnEndPosition(col);
                         int curX = offsetX + colEndPos;
-                        imageColumnDivider.Draw(animState, curX, innerY, 1, innerHeight);
+                        _imageColumnDivider.Draw(animState, curX, innerY, 1, innerHeight);
                     }
                 }
 
-                int rowStartPos = getRowStartPosition(firstVisibleRow);
-                for (int row = firstVisibleRow; row <= lastVisibleRow; row++)
+                int rowStartPos = GetRowStartPosition(_firstVisibleRow);
+                for (int row = _firstVisibleRow; row <= _lastVisibleRow; row++)
                 {
-                    int rowEndPos = getRowEndPosition(row);
+                    int rowEndPos = GetRowEndPosition(row);
                     int curRowHeight = rowEndPos - rowStartPos;
                     int curY = offsetY + rowStartPos;
-                    TreeTableNode rowNode = getNodeFromRow(row);
-                    bool bIsRowSelected = !isCellSelection && isRowSelected(row);
+                    TreeTableNode rowNode = GetNodeFromRow(row);
+                    bool bIsRowSelected = !isCellSelection && IsRowSelected(row);
 
-                    int colStartPos = getColumnStartPosition(firstVisibleColumn);
-                    for (int col = firstVisibleColumn; col <= lastVisibleColumn;)
+                    int colStartPos = GetColumnStartPosition(_firstVisibleColumn);
+                    for (int col = _firstVisibleColumn; col <= _lastVisibleColumn;)
                     {
-                        int colEndPos = getColumnEndPosition(col);
-                        CellRenderer cellRenderer = getCellRenderer(row, col, rowNode);
-                        bool bIsCellSelected = bIsRowSelected || isCellSelected(row, col);
+                        int colEndPos = GetColumnEndPosition(col);
+                        CellRenderer cellRenderer = GetCellRenderer(row, col, rowNode);
+                        bool bIsCellSelected = bIsRowSelected || IsCellSelected(row, col);
 
                         int curX = offsetX + colStartPos;
                         int colSpan = 1;
 
                         if (cellRenderer != null)
                         {
-                            colSpan = cellRenderer.getColumnSpan();
+                            colSpan = cellRenderer.GetColumnSpan();
                             if (colSpan > 1)
                             {
-                                colEndPos = getColumnEndPosition(Math.Max(numColumns - 1, col + colSpan - 1));
+                                colEndPos = GetColumnEndPosition(Math.Max(_numColumns - 1, col + colSpan - 1));
                             }
 
-                            Widget cellRendererWidget = cellRenderer.getCellRenderWidget(
+                            Widget cellRendererWidget = cellRenderer.GetCellRenderWidget(
                                     curX, curY, colEndPos - colStartPos, curRowHeight, bIsCellSelected);
 
                             if (cellRendererWidget != null)
                             {
-                                if (cellRendererWidget.getParent() != this)
+                                if (cellRendererWidget.GetParent() != this)
                                 {
-                                    insertCellRenderer(cellRendererWidget);
+                                    InsertCellRenderer(cellRendererWidget);
                                 }
-                                paintChild(gui, cellRendererWidget);
+                                PaintChild(gui, cellRendererWidget);
                             }
                         }
 
@@ -982,15 +984,15 @@ namespace XNATWL
                     rowStartPos = rowEndPos;
                 }
 
-                if (imageRowOverlay != null)
+                if (_imageRowOverlay != null)
                 {
-                    paintRowImage(imageRowOverlay, leadRow);
+                    PaintRowImage(_imageRowOverlay, leadRow);
                 }
 
-                if (dropMarkerRow >= 0 && dropMarkerBeforeRow && imageRowDropMarker != null)
+                if (_dropMarkerRow >= 0 && _dropMarkerBeforeRow && _imageRowDropMarker != null)
                 {
-                    int y = (rowModel != null) ? rowModel.GetPosition(dropMarkerRow) : (dropMarkerRow * rowHeight);
-                    imageRowDropMarker.Draw(animState, getOffsetX(), getOffsetY() + y, columnModel.GetEndPosition(), 1);
+                    int y = (_rowModel != null) ? _rowModel.GetPosition(_dropMarkerRow) : (_dropMarkerRow * _rowHeight);
+                    _imageRowDropMarker.Draw(animState, GetOffsetX(), GetOffsetY() + y, _columnModel.GetEndPosition(), 1);
                 }
             }
             finally
@@ -999,59 +1001,59 @@ namespace XNATWL
             }
         }
 
-        private void paintRowImage(Image img, int leadRow)
+        private void PaintRowImage(Image img, int leadRow)
         {
-            AnimationState animState = getAnimationState();
-            int x = getOffsetX();
-            int width = columnModel.GetEndPosition();
-            int offsetY = getOffsetY();
+            AnimationState animState = GetAnimationState();
+            int x = GetOffsetX();
+            int width = _columnModel.GetEndPosition();
+            int offsetY = GetOffsetY();
 
-            int rowStartPos = getRowStartPosition(firstVisibleRow);
-            for (int row = firstVisibleRow; row <= lastVisibleRow; row++)
+            int rowStartPos = GetRowStartPosition(_firstVisibleRow);
+            for (int row = _firstVisibleRow; row <= _lastVisibleRow; row++)
             {
-                int rowEndPos = getRowEndPosition(row);
+                int rowEndPos = GetRowEndPosition(row);
                 int curRowHeight = rowEndPos - rowStartPos;
                 int curY = offsetY + rowStartPos;
 
-                animState.setAnimationState(STATE_ROW_SELECTED, isRowSelected(row));
-                animState.setAnimationState(STATE_ROW_HOVER, dragActive == DRAG_INACTIVE &&
-                        lastMouseY >= curY && lastMouseY < (curY + curRowHeight));
-                animState.setAnimationState(STATE_LEAD_ROW, row == leadRow);
-                animState.setAnimationState(STATE_ROW_DROPTARGET, !dropMarkerBeforeRow && row == dropMarkerRow);
-                animState.setAnimationState(STATE_ROW_ODD, (row & 1) == 1);
+                animState.SetAnimationState(STATE_ROW_SELECTED, IsRowSelected(row));
+                animState.SetAnimationState(STATE_ROW_HOVER, _dragActive == DRAG_INACTIVE &&
+                        _lastMouseY >= curY && _lastMouseY < (curY + curRowHeight));
+                animState.SetAnimationState(STATE_LEAD_ROW, row == leadRow);
+                animState.SetAnimationState(STATE_ROW_DROPTARGET, !_dropMarkerBeforeRow && row == _dropMarkerRow);
+                animState.SetAnimationState(STATE_ROW_ODD, (row & 1) == 1);
                 img.Draw(animState, x, curY, width, curRowHeight);
 
                 rowStartPos = rowEndPos;
             }
         }
 
-        protected void insertCellRenderer(Widget widget)
+        protected void InsertCellRenderer(Widget widget)
         {
-            int posX = widget.getX();
-            int posY = widget.getY();
-            widget.setVisible(false);
-            base.insertChild(widget, base.getNumChildren());
-            widget.setPosition(posX, posY);
+            int posX = widget.GetX();
+            int posY = widget.GetY();
+            widget.SetVisible(false);
+            base.InsertChild(widget, base.GetNumChildren());
+            widget.SetPosition(posX, posY);
         }
 
-        public abstract TreeTableNode getNodeFromRow(int row);
-        public abstract Object getCellData(int row, int column, TreeTableNode node);
-        public abstract Object getTooltipContentFromRow(int row, int column);
+        public abstract TreeTableNode GetNodeFromRow(int row);
+        public abstract Object GetCellData(int row, int column, TreeTableNode node);
+        public abstract Object GetTooltipContentFromRow(int row, int column);
 
-        protected bool isRowSelected(int row)
+        protected bool IsRowSelected(int row)
         {
-            if (selectionManager != null)
+            if (_selectionManager != null)
             {
-                return selectionManager.isRowSelected(row);
+                return _selectionManager.IsRowSelected(row);
             }
             return false;
         }
 
-        protected bool isCellSelected(int row, int column)
+        protected bool IsCellSelected(int row, int column)
         {
-            if (selectionManager != null)
+            if (_selectionManager != null)
             {
-                return selectionManager.isCellSelected(row, column);
+                return _selectionManager.IsCellSelected(row, column);
             }
             return false;
         }
@@ -1063,16 +1065,16 @@ namespace XNATWL
          * @param column the column, must eb &gt;= 0
          * @param cellRenderer the CellRenderer to use or null to restore the global default
          */
-        public void setColumnDefaultCellRenderer(int column, CellRenderer cellRenderer)
+        public void SetColumnDefaultCellRenderer(int column, CellRenderer cellRenderer)
         {
-            if (column >= columnDefaultCellRenderer.Length)
+            if (column >= _columnDefaultCellRenderer.Length)
             {
-                CellRenderer[] tmp = new CellRenderer[Math.Max(column + 1, numColumns)];
-                Array.Copy(columnDefaultCellRenderer, 0, tmp, 0, columnDefaultCellRenderer.Length);
-                columnDefaultCellRenderer = tmp;
+                CellRenderer[] tmp = new CellRenderer[Math.Max(column + 1, _numColumns)];
+                Array.Copy(_columnDefaultCellRenderer, 0, tmp, 0, _columnDefaultCellRenderer.Length);
+                _columnDefaultCellRenderer = tmp;
             }
 
-            columnDefaultCellRenderer[column] = cellRenderer;
+            _columnDefaultCellRenderer[column] = cellRenderer;
         }
 
         /**
@@ -1080,192 +1082,192 @@ namespace XNATWL
          * @param column the column, must eb &gt;= 0
          * @return the previously set CellRenderer or null if non was set
          */
-        public CellRenderer getColumnDefaultCellRenderer(int column)
+        public CellRenderer GetColumnDefaultCellRenderer(int column)
         {
-            if (column < columnDefaultCellRenderer.Length)
+            if (column < _columnDefaultCellRenderer.Length)
             {
-                return columnDefaultCellRenderer[column];
+                return _columnDefaultCellRenderer[column];
             }
             return null;
         }
 
-        protected virtual CellRenderer getCellRendererNoDefault(Object data)
+        protected virtual CellRenderer GetCellRendererNoDefault(Object data)
         {
             Type dataClass = data.GetType();
-            return (CellRenderer) cellRenderers.GetByType(dataClass);
+            return (CellRenderer) _cellRenderers.GetByType(dataClass);
         }
 
-        protected CellRenderer getDefaultCellRenderer(int col)
+        protected CellRenderer GetDefaultCellRenderer(int col)
         {
-            CellRenderer cellRenderer = getColumnDefaultCellRenderer(col);
+            CellRenderer cellRenderer = GetColumnDefaultCellRenderer(col);
             if (cellRenderer == null)
             {
-                cellRenderer = stringCellRenderer;
+                cellRenderer = _stringCellRenderer;
             }
             return cellRenderer;
         }
 
-        protected virtual CellRenderer getCellRenderer(Object data, int col)
+        protected virtual CellRenderer GetCellRenderer(Object data, int col)
         {
-            CellRenderer cellRenderer = getCellRendererNoDefault(data);
+            CellRenderer cellRenderer = GetCellRendererNoDefault(data);
             if (cellRenderer == null)
             {
-                cellRenderer = getDefaultCellRenderer(col);
+                cellRenderer = GetDefaultCellRenderer(col);
             }
             return cellRenderer;
         }
 
-        protected virtual CellRenderer getCellRenderer(int row, int col, TreeTableNode node)
+        protected virtual CellRenderer GetCellRenderer(int row, int col, TreeTableNode node)
         {
-            Object data = getCellData(row, col, node);
+            Object data = GetCellData(row, col, node);
             if (data != null)
             {
-                CellRenderer cellRenderer = getCellRenderer(data, col);
-                cellRenderer.setCellData(row, col, data);
+                CellRenderer cellRenderer = GetCellRenderer(data, col);
+                cellRenderer.SetCellData(row, col, data);
                 return cellRenderer;
             }
             return null;
         }
 
-        protected int computeRowHeight(int row)
+        protected int ComputeRowHeight(int row)
         {
-            TreeTableNode rowNode = getNodeFromRow(row);
+            TreeTableNode rowNode = GetNodeFromRow(row);
             int height = 0;
-            for (int column = 0; column < numColumns; column++)
+            for (int column = 0; column < _numColumns; column++)
             {
-                CellRenderer cellRenderer = getCellRenderer(row, column, rowNode);
+                CellRenderer cellRenderer = GetCellRenderer(row, column, rowNode);
                 if (cellRenderer != null)
                 {
-                    height = Math.Max(height, cellRenderer.getPreferredHeight());
-                    column += Math.Max(cellRenderer.getColumnSpan() - 1, 0);
+                    height = Math.Max(height, cellRenderer.GetPreferredHeight());
+                    column += Math.Max(cellRenderer.GetColumnSpan() - 1, 0);
                 }
             }
             return height;
         }
 
-        protected int clampColumnWidth(int width)
+        protected int ClampColumnWidth(int width)
         {
-            return Math.Max(2 * columnDividerDragableDistance + 1, width);
+            return Math.Max(2 * _columnDividerDraggableDistance + 1, width);
         }
 
-        protected int computePreferredColumnWidth(int index)
+        protected int ComputePreferredColumnWidth(int index)
         {
-            return clampColumnWidth(columnHeaders[index].getPreferredWidth());
+            return ClampColumnWidth(_columnHeaders[index].GetPreferredWidth());
         }
 
-        protected bool autoSizeRow(int row)
+        protected bool AutoSizeRow(int row)
         {
-            int height = computeRowHeight(row);
-            return rowModel.SetSize(row, height);
+            int height = ComputeRowHeight(row);
+            return _rowModel.SetSize(row, height);
         }
 
-        protected void autoSizeAllRows()
+        protected void AutoSizeAllRows()
         {
-            if (rowModel != null)
+            if (_rowModel != null)
             {
-                rowModel.InitializeAll(numRows);
+                _rowModel.InitializeAll(_numRows);
             }
-            bAutoSizeAllRows = false;
+            _bAutoSizeAllRows = false;
         }
 
-        protected void removeCellWidget(Widget widget)
+        protected void RemoveCellWidget(Widget widget)
         {
-            int idx = cellWidgetContainer.getChildIndex(widget);
+            int idx = _cellWidgetContainer.GetChildIndex(widget);
             if (idx >= 0)
             {
-                cellWidgetContainer.removeChild(idx);
+                _cellWidgetContainer.RemoveChild(idx);
             }
         }
 
-        void insertCellWidget(int row, int column, WidgetEntry widgetEntry)
+        void InsertCellWidget(int row, int column, WidgetEntry widgetEntry)
         {
-            CellWidgetCreator cwc = (CellWidgetCreator)getCellRenderer(row, column, null);
-            Widget widget = widgetEntry.widget;
+            CellWidgetCreator cwc = (CellWidgetCreator)GetCellRenderer(row, column, null);
+            Widget widget = widgetEntry._widget;
 
             if (widget != null)
             {
-                if (widget.getParent() != cellWidgetContainer)
+                if (widget.GetParent() != _cellWidgetContainer)
                 {
-                    cellWidgetContainer.insertChild(widget, cellWidgetContainer.getNumChildren());
+                    _cellWidgetContainer.InsertChild(widget, _cellWidgetContainer.GetNumChildren());
                 }
 
-                int x = getColumnStartPosition(column);
-                int w = getColumnEndPosition(column) - x;
-                int y = getRowStartPosition(row);
-                int h = getRowEndPosition(row) - y;
+                int x = GetColumnStartPosition(column);
+                int w = GetColumnEndPosition(column) - x;
+                int y = GetRowStartPosition(row);
+                int h = GetRowEndPosition(row) - y;
 
-                cwc.positionWidget(widget, x + getOffsetX(), y + getOffsetY(), w, h);
+                cwc.PositionWidget(widget, x + GetOffsetX(), y + GetOffsetY(), w, h);
             }
         }
 
-        protected void updateCellWidget(int row, int column)
+        protected void UpdateCellWidget(int row, int column)
         {
-            WidgetEntry we = (WidgetEntry)widgetGrid.Get(row, column);
-            Widget oldWidget = (we != null) ? we.widget : null;
+            WidgetEntry we = (WidgetEntry)_widgetGrid.Get(row, column);
+            Widget oldWidget = (we != null) ? we._widget : null;
             Widget newWidget = null;
 
-            TreeTableNode rowNode = getNodeFromRow(row);
-            CellRenderer cellRenderer = getCellRenderer(row, column, rowNode);
+            TreeTableNode rowNode = GetNodeFromRow(row);
+            CellRenderer cellRenderer = GetCellRenderer(row, column, rowNode);
             if (cellRenderer is CellWidgetCreator)
             {
                 CellWidgetCreator cellWidgetCreator = (CellWidgetCreator)cellRenderer;
-                if (we != null && we.creator != cellWidgetCreator)
+                if (we != null && we._creator != cellWidgetCreator)
                 {
                     // the cellWidgetCreator has changed for this cell
                     // discard the old widget
-                    removeCellWidget(oldWidget);
+                    RemoveCellWidget(oldWidget);
                     oldWidget = null;
                 }
-                newWidget = cellWidgetCreator.updateWidget(oldWidget);
+                newWidget = cellWidgetCreator.UpdateWidget(oldWidget);
                 if (newWidget != null)
                 {
                     if (we == null)
                     {
                         we = new WidgetEntry();
-                        widgetGrid.Set(row, column, we);
+                        _widgetGrid.Set(row, column, we);
                     }
-                    we.widget = newWidget;
-                    we.creator = cellWidgetCreator;
+                    we._widget = newWidget;
+                    we._creator = cellWidgetCreator;
                 }
             }
 
             if (newWidget == null && we != null)
             {
-                widgetGrid.Remove(row, column);
+                _widgetGrid.Remove(row, column);
             }
 
             if (oldWidget != null && newWidget != oldWidget)
             {
-                removeCellWidget(oldWidget);
+                RemoveCellWidget(oldWidget);
             }
         }
 
-        protected void updateAllCellWidgets()
+        protected void UpdateAllCellWidgets()
         {
-            if (!widgetGrid.IsEmpty() || hasCellWidgetCreators)
+            if (!_widgetGrid.IsEmpty() || _hasCellWidgetCreators)
             {
-                for (int row = 0; row < numRows; row++)
+                for (int row = 0; row < _numRows; row++)
                 {
-                    for (int col = 0; col < numColumns; col++)
+                    for (int col = 0; col < _numColumns; col++)
                     {
-                        updateCellWidget(row, col);
+                        UpdateCellWidget(row, col);
                     }
                 }
             }
 
-            bUpdateAllCellWidgets = false;
+            _bUpdateAllCellWidgets = false;
         }
 
-        protected void removeAllCellWidgets()
+        protected void RemoveAllCellWidgets()
         {
-            cellWidgetContainer.removeAllChildren();
+            _cellWidgetContainer.RemoveAllChildren();
         }
 
-        protected DialogLayout.Gap getColumnMPM(int column)
+        protected DialogLayout.Gap GetColumnMPM(int column)
         {
-            if (tableBaseThemeInfo != null)
+            if (_tableBaseThemeInfo != null)
             {
-                ParameterMap columnWidthMap = tableBaseThemeInfo.GetParameterMap("columnWidths");
+                ParameterMap columnWidthMap = _tableBaseThemeInfo.GetParameterMap("columnWidths");
                 Object obj = columnWidthMap.GetParameterValue(column.ToString(), false);
                 if (obj is DialogLayout.Gap)
                 {
@@ -1279,112 +1281,112 @@ namespace XNATWL
             return null;
         }
 
-        protected ColumnHeader createColumnHeader(int column)
+        protected ColumnHeader CreateColumnHeader(int column)
         {
             ColumnHeader btn = new ColumnHeader(this);
-            btn.setTheme("columnHeader");
-            btn.setCanAcceptKeyboardFocus(false);
-            base.insertChild(btn, base.getNumChildren());
+            btn.SetTheme("columnHeader");
+            btn.SetCanAcceptKeyboardFocus(false);
+            base.InsertChild(btn, base.GetNumChildren());
             return btn;
         }
 
-        protected void updateColumnHeader(int column)
+        protected void UpdateColumnHeader(int column)
         {
-            Button columnHeader = columnHeaders[column];
-            columnHeader.setText(columnHeaderModel.ColumnHeaderTextFor(column));
-            StateKey[] states = columnHeaderModel.ColumnHeaderStates;
+            Button columnHeader = _columnHeaders[column];
+            columnHeader.SetText(_columnHeaderModel.ColumnHeaderTextFor(column));
+            StateKey[] states = _columnHeaderModel.ColumnHeaderStates;
             if (states.Length > 0)
             {
-                AnimationState animationState = columnHeader.getAnimationState();
+                AnimationState animationState = columnHeader.GetAnimationState();
                 for (int i = 0; i < states.Length; i++)
                 {
-                    animationState.setAnimationState(states[i],
-                            columnHeaderModel.ColumnHeaderStateFor(column, i));
+                    animationState.SetAnimationState(states[i],
+                            _columnHeaderModel.ColumnHeaderStateFor(column, i));
                 }
             }
         }
 
-        protected virtual void updateColumnHeaderNumbers()
+        protected virtual void UpdateColumnHeaderNumbers()
         {
-            for (int i = 0; i < columnHeaders.Length; i++)
+            for (int i = 0; i < _columnHeaders.Length; i++)
             {
-                columnHeaders[i].column = i;
+                _columnHeaders[i]._column = i;
             }
         }
 
-        private void removeColumnHeaders(int column, int count)
+        private void RemoveColumnHeaders(int column, int count)
         {
             for (int i = 0; i < count; i++)
             {
-                int idx = base.getChildIndex(columnHeaders[column + i]);
+                int idx = base.GetChildIndex(_columnHeaders[column + i]);
                 if (idx >= 0)
                 {
-                    base.removeChild(idx);
+                    base.RemoveChild(idx);
                 }
             }
         }
 
-        protected bool isMouseInColumnHeader(int y)
+        protected bool IsMouseInColumnHeader(int y)
         {
-            y -= getInnerY();
-            return y >= 0 && y < columnHeaderHeight;
+            y -= GetInnerY();
+            return y >= 0 && y < _columnHeaderHeight;
         }
 
-        protected int getColumnSeparatorUnderMouse(int x)
+        protected int GetColumnSeparatorUnderMouse(int x)
         {
-            x -= getOffsetX();
-            x += columnDividerDragableDistance;
-            int col = columnModel.GetIndex(x);
-            int dist = x - columnModel.GetPosition(col);
-            if (dist < 2 * columnDividerDragableDistance)
+            x -= GetOffsetX();
+            x += _columnDividerDraggableDistance;
+            int col = _columnModel.GetIndex(x);
+            int dist = x - _columnModel.GetPosition(col);
+            if (dist < 2 * _columnDividerDraggableDistance)
             {
                 return col - 1;
             }
             return -1;
         }
 
-        protected int getRowUnderMouse(int y)
+        protected int GetRowUnderMouse(int y)
         {
-            y -= getOffsetY();
-            int row = getRowFromPosition(y);
+            y -= GetOffsetY();
+            int row = GetRowFromPosition(y);
             return row;
         }
 
-        protected int getColumnUnderMouse(int x)
+        protected int GetColumnUnderMouse(int x)
         {
-            x -= getOffsetX();
-            int col = columnModel.GetIndex(x);
+            x -= GetOffsetX();
+            int col = _columnModel.GetIndex(x);
             return col;
         }
 
-        public override bool handleEvent(Event evt)
+        public override bool HandleEvent(Event evt)
         {
-            if (dragActive != DRAG_INACTIVE)
+            if (_dragActive != DRAG_INACTIVE)
             {
-                return handleDragEvent(evt);
+                return HandleDragEvent(evt);
             }
 
-            if (evt.isKeyEvent() &&
-                    keyboardSearchHandler != null &&
-                    keyboardSearchHandler.isActive() &&
-                    keyboardSearchHandler.handleKeyEvent(evt))
-            {
-                return true;
-            }
-
-            if (base.handleEvent(evt))
+            if (evt.IsKeyEvent() &&
+                    _keyboardSearchHandler != null &&
+                    _keyboardSearchHandler.IsActive() &&
+                    _keyboardSearchHandler.HandleKeyEvent(evt))
             {
                 return true;
             }
 
-            if (evt.isMouseEvent())
+            if (base.HandleEvent(evt))
             {
-                return handleMouseEvent(evt);
+                return true;
             }
 
-            if (evt.isKeyEvent() &&
-                    keyboardSearchHandler != null &&
-                    keyboardSearchHandler.handleKeyEvent(evt))
+            if (evt.IsMouseEvent())
+            {
+                return HandleMouseEvent(evt);
+            }
+
+            if (evt.IsKeyEvent() &&
+                    _keyboardSearchHandler != null &&
+                    _keyboardSearchHandler.HandleKeyEvent(evt))
             {
                 return true;
             }
@@ -1392,21 +1394,21 @@ namespace XNATWL
             return false;
         }
 
-        protected override bool handleKeyStrokeAction(String action, Event evt)
+        protected override bool HandleKeyStrokeAction(String action, Event evt)
         {
-            if (!base.handleKeyStrokeAction(action, evt))
+            if (!base.HandleKeyStrokeAction(action, evt))
             {
-                if (selectionManager == null)
+                if (_selectionManager == null)
                 {
                     return false;
                 }
-                if (!selectionManager.handleKeyStrokeAction(action, evt))
+                if (!_selectionManager.HandleKeyStrokeAction(action, evt))
                 {
                     return false;
                 }
             }
             // remove focus from childs
-            requestKeyboardFocus(null);
+            RequestKeyboardFocus(null);
             return true;
         }
 
@@ -1415,121 +1417,121 @@ namespace XNATWL
         protected const int DRAG_USER = 2;
         protected const int DRAG_IGNORE = 3;
 
-        protected int dragActive;
-        protected int dragColumn;
-        protected int dragStartX;
-        protected int dragStartColWidth;
-        protected int dragStartSumWidth;
-        protected MouseCursor dragCursor;
+        protected int _dragActive;
+        protected int _dragColumn;
+        protected int _dragStartX;
+        protected int _dragStartColWidth;
+        protected int _dragStartSumWidth;
+        protected MouseCursor _dragCursor;
 
-        protected void cancelDragging()
+        protected void CancelDragging()
         {
-            if (dragActive == DRAG_USER)
+            if (_dragActive == DRAG_USER)
             {
-                if (dragListener != null)
+                if (_dragListener != null)
                 {
-                    dragListener.dragCanceled();
+                    _dragListener.DragCancelled();
                 }
-                dragActive = DRAG_IGNORE;
+                _dragActive = DRAG_IGNORE;
             }
         }
 
-        protected bool handleDragEvent(Event evt)
+        protected bool HandleDragEvent(Event evt)
         {
-            if (evt.isMouseEvent())
+            if (evt.IsMouseEvent())
             {
-                return handleMouseEvent(evt);
+                return HandleMouseEvent(evt);
             }
 
-            if (evt.isKeyPressedEvent() && evt.getKeyCode() == Event.KEY_ESCAPE)
+            if (evt.IsKeyPressedEvent() && evt.GetKeyCode() == Event.KEY_ESCAPE)
             {
-                switch (dragActive)
+                switch (_dragActive)
                 {
                     case DRAG_USER:
-                        cancelDragging();
+                        CancelDragging();
                         break;
                     case DRAG_COLUMN_HEADER:
-                        columnHeaderDragged(dragStartColWidth);
-                        dragActive = DRAG_IGNORE;
+                        ColumnHeaderDragged(_dragStartColWidth);
+                        _dragActive = DRAG_IGNORE;
                         break;
                 }
-                dragCursor = null;
+                _dragCursor = null;
             }
 
             return true;
         }
 
-        void mouseLeftTableArea()
+        void MouseLeftTableArea()
         {
-            lastMouseY = LAST_MOUSE_Y_OUTSIDE;
-            lastMouseRow = -1;
-            lastMouseColumn = -1;
+            _lastMouseY = LAST_MOUSE_Y_OUTSIDE;
+            _lastMouseRow = -1;
+            _lastMouseColumn = -1;
         }
 
-        internal override Widget routeMouseEvent(Event evt)
+        internal override Widget RouteMouseEvent(Event evt)
         {
-            if (evt.getEventType() == EventType.MOUSE_EXITED)
+            if (evt.GetEventType() == EventType.MOUSE_EXITED)
             {
-                mouseLeftTableArea();
+                MouseLeftTableArea();
             }
             else
             {
-                lastMouseY = evt.getMouseY();
+                _lastMouseY = evt.GetMouseY();
             }
 
-            if (dragActive == DRAG_INACTIVE)
+            if (_dragActive == DRAG_INACTIVE)
             {
-                bool inHeader = isMouseInColumnHeader(evt.getMouseY());
+                bool inHeader = IsMouseInColumnHeader(evt.GetMouseY());
                 if (inHeader)
                 {
-                    if (lastMouseRow != -1 || lastMouseColumn != -1)
+                    if (_lastMouseRow != -1 || _lastMouseColumn != -1)
                     {
-                        lastMouseRow = -1;
-                        lastMouseColumn = -1;
-                        resetTooltip();
+                        _lastMouseRow = -1;
+                        _lastMouseColumn = -1;
+                        ResetTooltip();
                     }
                 }
                 else
                 {
-                    int row = getRowUnderMouse(evt.getMouseY());
-                    int column = getColumnUnderMouse(evt.getMouseX());
+                    int row = GetRowUnderMouse(evt.GetMouseY());
+                    int column = GetColumnUnderMouse(evt.GetMouseX());
 
-                    if (lastMouseRow != row || lastMouseColumn != column)
+                    if (_lastMouseRow != row || _lastMouseColumn != column)
                     {
-                        lastMouseRow = row;
-                        lastMouseColumn = column;
-                        resetTooltip();
+                        _lastMouseRow = row;
+                        _lastMouseColumn = column;
+                        ResetTooltip();
                     }
                 }
             }
 
-            return base.routeMouseEvent(evt);
+            return base.RouteMouseEvent(evt);
         }
 
-        protected bool handleMouseEvent(Event evt)
+        protected bool HandleMouseEvent(Event evt)
         {
-            EventType evtType = evt.getEventType();
+            EventType evtType = evt.GetEventType();
 
-            if (dragActive != DRAG_INACTIVE)
+            if (_dragActive != DRAG_INACTIVE)
             {
-                switch (dragActive)
+                switch (_dragActive)
                 {
                     case DRAG_COLUMN_HEADER:
                         {
-                            int innerWidth = getInnerWidth();
-                            if (dragColumn >= 0 && innerWidth > 0)
+                            int innerWidth = GetInnerWidth();
+                            if (_dragColumn >= 0 && innerWidth > 0)
                             {
-                                int newWidth = clampColumnWidth(evt.getMouseX() - dragStartX);
-                                columnHeaderDragged(newWidth);
+                                int newWidth = ClampColumnWidth(evt.GetMouseX() - _dragStartX);
+                                ColumnHeaderDragged(newWidth);
                             }
                             break;
                         }
                     case DRAG_USER:
                         {
-                            dragCursor = dragListener.dragged(evt);
-                            if (evt.isMouseDragEnd())
+                            _dragCursor = _dragListener.Dragged(evt);
+                            if (evt.IsMouseDragEnd())
                             {
-                                dragListener.dragStopped(evt);
+                                _dragListener.DragStopped(evt);
                             }
                             break;
                         }
@@ -1538,42 +1540,42 @@ namespace XNATWL
                     default:
                         throw new Exception("Assertion error");
                 }
-                if (evt.isMouseDragEnd())
+                if (evt.IsMouseDragEnd())
                 {
-                    dragActive = DRAG_INACTIVE;
-                    dragCursor = null;
+                    _dragActive = DRAG_INACTIVE;
+                    _dragCursor = null;
                 }
                 return true;
             }
 
-            bool inHeader = isMouseInColumnHeader(evt.getMouseY());
+            bool inHeader = IsMouseInColumnHeader(evt.GetMouseY());
             if (inHeader)
             {
-                int column = getColumnSeparatorUnderMouse(evt.getMouseX());
-                bool fixedWidthMode = isFixedWidthMode();
+                int column = GetColumnSeparatorUnderMouse(evt.GetMouseX());
+                bool fixedWidthMode = IsFixedWidthMode();
 
                 // lastMouseRow and lastMouseColumn have been updated in routeMouseEvent()
 
-                if (column >= 0 && (column < getNumColumns() - 1 || !fixedWidthMode))
+                if (column >= 0 && (column < GetNumColumns() - 1 || !fixedWidthMode))
                 {
                     if (evtType == EventType.MOUSE_BTNDOWN)
                     {
-                        dragStartColWidth = getColumnWidth(column);
-                        dragColumn = column;
-                        dragStartX = evt.getMouseX() - dragStartColWidth;
+                        _dragStartColWidth = GetColumnWidth(column);
+                        _dragColumn = column;
+                        _dragStartX = evt.GetMouseX() - _dragStartColWidth;
                         if (fixedWidthMode)
                         {
-                            for (int i = 0; i < numColumns; ++i)
+                            for (int i = 0; i < _numColumns; ++i)
                             {
-                                columnHeaders[i].setColumnWidth(getColumnWidth(i));
+                                _columnHeaders[i].SetColumnWidth(GetColumnWidth(i));
                             }
-                            dragStartSumWidth = dragStartColWidth + getColumnWidth(column + 1);
+                            _dragStartSumWidth = _dragStartColWidth + GetColumnWidth(column + 1);
                         }
                     }
 
-                    if (evt.isMouseDragEvent())
+                    if (evt.IsMouseDragEvent())
                     {
-                        dragActive = DRAG_COLUMN_HEADER;
+                        _dragActive = DRAG_COLUMN_HEADER;
                     }
                     return true;
                 }
@@ -1581,29 +1583,29 @@ namespace XNATWL
             else
             {
                 // lastMouseRow and lastMouseColumn have been updated in routeMouseEvent()
-                int row = lastMouseRow;
-                int column = lastMouseColumn;
+                int row = _lastMouseRow;
+                int column = _lastMouseColumn;
 
-                if (evt.isMouseDragEvent())
+                if (evt.IsMouseDragEvent())
                 {
-                    if (dragListener != null && dragListener.dragStarted(row, row, evt))
+                    if (_dragListener != null && _dragListener.DragStarted(row, row, evt))
                     {
-                        dragCursor = dragListener.dragged(evt);
-                        dragActive = DRAG_USER;
+                        _dragCursor = _dragListener.Dragged(evt);
+                        _dragActive = DRAG_USER;
                     }
                     else
                     {
-                        dragActive = DRAG_IGNORE;
+                        _dragActive = DRAG_IGNORE;
                     }
                     return true;
                 }
 
-                if (selectionManager != null)
+                if (_selectionManager != null)
                 {
-                    selectionManager.handleMouseEvent(row, column, evt);
+                    _selectionManager.HandleMouseEvent(row, column, evt);
                 }
 
-                if (evtType == EventType.MOUSE_CLICKED && evt.getMouseClickCount() == 2)
+                if (evtType == EventType.MOUSE_CLICKED && evt.GetMouseClickCount() == 2)
                 {
                     if (this.DoubleClick != null)
                     {
@@ -1611,7 +1613,7 @@ namespace XNATWL
                     }
                 }
 
-                if (evtType == EventType.MOUSE_BTNUP && evt.getMouseButton() == Event.MOUSE_RBUTTON)
+                if (evtType == EventType.MOUSE_BTNUP && evt.GetMouseButton() == Event.MOUSE_RBUTTON)
                 {
                     if (this.RightClick != null)
                     {
@@ -1624,53 +1626,53 @@ namespace XNATWL
             return evtType != EventType.MOUSE_WHEEL;
         }
 
-        public override MouseCursor getMouseCursor(Event evt)
+        public override MouseCursor GetMouseCursor(Event evt)
         {
-            switch (dragActive)
+            switch (_dragActive)
             {
                 case DRAG_COLUMN_HEADER:
-                    return columnResizeCursor;
+                    return _columnResizeCursor;
                 case DRAG_USER:
-                    return dragCursor;
+                    return _dragCursor;
                 case DRAG_IGNORE:
-                    return dragNotPossibleCursor;
+                    return _dragNotPossibleCursor;
             }
 
-            bool inHeader = isMouseInColumnHeader(evt.getMouseY());
+            bool inHeader = IsMouseInColumnHeader(evt.GetMouseY());
             if (inHeader)
             {
-                int column = getColumnSeparatorUnderMouse(evt.getMouseX());
-                bool fixedWidthMode = isFixedWidthMode();
+                int column = GetColumnSeparatorUnderMouse(evt.GetMouseX());
+                bool fixedWidthMode = IsFixedWidthMode();
 
                 // lastMouseRow and lastMouseColumn have been updated in routeMouseEvent()
 
-                if (column >= 0 && (column < getNumColumns() - 1 || !fixedWidthMode))
+                if (column >= 0 && (column < GetNumColumns() - 1 || !fixedWidthMode))
                 {
-                    return columnResizeCursor;
+                    return _columnResizeCursor;
                 }
             }
 
-            return normalCursor;
+            return _normalCursor;
         }
 
-        private void columnHeaderDragged(int newWidth)
+        private void ColumnHeaderDragged(int newWidth)
         {
-            if (isFixedWidthMode())
+            if (IsFixedWidthMode())
             {
-                System.Diagnostics.Debug.Assert(dragColumn+1 < numColumns);
-                newWidth = Math.Min(newWidth, dragStartSumWidth - 2 * columnDividerDragableDistance);
-                columnHeaders[dragColumn].setColumnWidth(newWidth);
-                columnHeaders[dragColumn + 1].setColumnWidth(dragStartSumWidth - newWidth);
-                bUpdateAllColumnWidth = true;
-                invalidateLayout();
+                System.Diagnostics.Debug.Assert(_dragColumn+1 < _numColumns);
+                newWidth = Math.Min(newWidth, _dragStartSumWidth - 2 * _columnDividerDraggableDistance);
+                _columnHeaders[_dragColumn].SetColumnWidth(newWidth);
+                _columnHeaders[_dragColumn + 1].SetColumnWidth(_dragStartSumWidth - newWidth);
+                _bUpdateAllColumnWidth = true;
+                InvalidateLayout();
             }
             else
             {
-                setColumnWidth(dragColumn, newWidth);
+                SetColumnWidth(_dragColumn, newWidth);
             }
         }
 
-        protected virtual void columnHeaderClicked(int column)
+        protected virtual void ColumnHeaderClicked(int column)
         {
             if (this.ColumnHeaderClick != null)
             {
@@ -1678,365 +1680,370 @@ namespace XNATWL
             }
         }
 
-        protected void updateAllColumnWidth()
+        protected void UpdateAllColumnWidth()
         {
-            if (getInnerWidth() > 0)
+            if (GetInnerWidth() > 0)
             {
-                columnModel.InitializeAll(numColumns);
-                bUpdateAllColumnWidth = false;
+                _columnModel.InitializeAll(_numColumns);
+                _bUpdateAllColumnWidth = false;
             }
         }
 
-        protected void updateAll()
+        protected void UpdateAll()
         {
-            if (!widgetGrid.IsEmpty())
+            if (!_widgetGrid.IsEmpty())
             {
-                removeAllCellWidgets();
-                widgetGrid.Clear();
+                RemoveAllCellWidgets();
+                _widgetGrid.Clear();
             }
 
-            if (rowModel != null)
+            if (_rowModel != null)
             {
-                bAutoSizeAllRows = true;
+                _bAutoSizeAllRows = true;
             }
 
-            bUpdateAllCellWidgets = true;
-            bUpdateAllColumnWidth = true;
-            invalidateLayout();
+            _bUpdateAllCellWidgets = true;
+            _bUpdateAllColumnWidth = true;
+            InvalidateLayout();
         }
 
-        protected void modelAllChanged()
+        protected void ModelAllChanged()
         {
-            if (columnHeaders != null)
+            if (_columnHeaders != null)
             {
-                removeColumnHeaders(0, columnHeaders.Length);
+                RemoveColumnHeaders(0, _columnHeaders.Length);
             }
 
-            dropMarkerRow = -1;
-            columnHeaders = new ColumnHeader[numColumns];
-            for (int i = 0; i < numColumns; i++)
+            _dropMarkerRow = -1;
+            _columnHeaders = new ColumnHeader[_numColumns];
+            for (int i = 0; i < _numColumns; i++)
             {
-                columnHeaders[i] = createColumnHeader(i);
-                updateColumnHeader(i);
+                _columnHeaders[i] = CreateColumnHeader(i);
+                UpdateColumnHeader(i);
             }
-            updateColumnHeaderNumbers();
+            UpdateColumnHeaderNumbers();
 
-            if (selectionManager != null)
+            if (_selectionManager != null)
             {
-                selectionManager.modelChanged();
+                _selectionManager.ModelChanged();
             }
 
-            updateAll();
+            UpdateAll();
         }
 
-        protected void modelRowChanged(int row)
+        protected void ModelRowChanged(int row)
         {
-            if (rowModel != null)
+            if (_rowModel != null)
             {
-                if (autoSizeRow(row))
+                if (AutoSizeRow(row))
                 {
-                    invalidateLayout();
+                    InvalidateLayout();
                 }
             }
-            for (int col = 0; col < numColumns; col++)
+            for (int col = 0; col < _numColumns; col++)
             {
-                updateCellWidget(row, col);
+                UpdateCellWidget(row, col);
             }
-            invalidateLayoutLocally();
+            InvalidateLayoutLocally();
         }
 
-        protected void modelRowsChanged(int idx, int count)
+        protected void ModelRowsChanged(int idx, int count)
         {
-            checkRowRange(idx, count);
+            CheckRowRange(idx, count);
             bool rowHeightChanged = false;
             for (int i = 0; i < count; i++)
             {
-                if (rowModel != null)
+                if (_rowModel != null)
                 {
-                    rowHeightChanged |= autoSizeRow(idx + i);
+                    rowHeightChanged |= AutoSizeRow(idx + i);
                 }
-                for (int col = 0; col < numColumns; col++)
+                for (int col = 0; col < _numColumns; col++)
                 {
-                    updateCellWidget(idx + i, col);
+                    UpdateCellWidget(idx + i, col);
                 }
             }
-            invalidateLayoutLocally();
+            InvalidateLayoutLocally();
             if (rowHeightChanged)
             {
-                invalidateLayout();
+                InvalidateLayout();
             }
         }
 
-        protected void modelCellChanged(int row, int column)
+        protected void ModelCellChanged(int row, int column)
         {
-            checkRowIndex(row);
-            checkColumnIndex(column);
-            if (rowModel != null)
+            CheckRowIndex(row);
+            CheckColumnIndex(column);
+            if (_rowModel != null)
             {
-                autoSizeRow(row);
+                AutoSizeRow(row);
             }
-            updateCellWidget(row, column);
-            invalidateLayout();
+            UpdateCellWidget(row, column);
+            InvalidateLayout();
         }
 
-        protected void modelRowsInserted(int row, int count)
+        protected void ModelRowsInserted(int row, int count)
         {
-            checkRowRange(row, count);
-            if (rowModel != null)
+            CheckRowRange(row, count);
+            if (_rowModel != null)
             {
-                rowModel.Insert(row, count);
+                _rowModel.Insert(row, count);
             }
-            if (dropMarkerRow > row || (dropMarkerRow == row && dropMarkerBeforeRow))
+            if (_dropMarkerRow > row || (_dropMarkerRow == row && _dropMarkerBeforeRow))
             {
-                dropMarkerRow += count;
+                _dropMarkerRow += count;
             }
-            if (!widgetGrid.IsEmpty() || hasCellWidgetCreators)
+            if (!_widgetGrid.IsEmpty() || _hasCellWidgetCreators)
             {
-                removeAllCellWidgets();
-                widgetGrid.InsertRows(row, count);
+                RemoveAllCellWidgets();
+                _widgetGrid.InsertRows(row, count);
 
                 for (int i = 0; i < count; i++)
                 {
-                    for (int col = 0; col < numColumns; col++)
+                    for (int col = 0; col < _numColumns; col++)
                     {
-                        updateCellWidget(row + i, col);
+                        UpdateCellWidget(row + i, col);
                     }
                 }
             }
             // invalidateLayout() before sp.setScrollPositionY() as this may cause a
             // call to invalidateLayoutLocally() which is redundant.
-            invalidateLayout();
-            if (row < getRowFromPosition(scrollPosY))
+            InvalidateLayout();
+            if (row < GetRowFromPosition(_scrollPosY))
             {
-                ScrollPane sp = ScrollPane.getContainingScrollPane(this);
+                ScrollPane sp = ScrollPane.GetContainingScrollPane(this);
                 if (sp != null)
                 {
-                    int rowsStart = getRowStartPosition(row);
-                    int rowsEnd = getRowEndPosition(row + count - 1);
-                    sp.setScrollPositionY(scrollPosY + rowsEnd - rowsStart);
+                    int rowsStart = GetRowStartPosition(row);
+                    int rowsEnd = GetRowEndPosition(row + count - 1);
+                    sp.SetScrollPositionY(_scrollPosY + rowsEnd - rowsStart);
                 }
             }
-            if (selectionManager != null)
+            if (_selectionManager != null)
             {
-                selectionManager.rowsInserted(row, count);
+                _selectionManager.RowsInserted(row, count);
             }
         }
 
-        protected void modelRowsDeleted(int row, int count)
+        protected void ModelRowsDeleted(int row, int count)
         {
-            if (row + count <= getRowFromPosition(scrollPosY))
+            if (row + count <= GetRowFromPosition(_scrollPosY))
             {
-                ScrollPane sp = ScrollPane.getContainingScrollPane(this);
+                ScrollPane sp = ScrollPane.GetContainingScrollPane(this);
                 if (sp != null)
                 {
-                    int rowsStart = getRowStartPosition(row);
-                    int rowsEnd = getRowEndPosition(row + count - 1);
-                    sp.setScrollPositionY(scrollPosY - rowsEnd + rowsStart);
+                    int rowsStart = GetRowStartPosition(row);
+                    int rowsEnd = GetRowEndPosition(row + count - 1);
+                    sp.SetScrollPositionY(_scrollPosY - rowsEnd + rowsStart);
                 }
             }
-            if (rowModel != null)
+            if (_rowModel != null)
             {
-                rowModel.Remove(row, count);
+                _rowModel.Remove(row, count);
             }
-            if (dropMarkerRow >= row)
+            if (_dropMarkerRow >= row)
             {
-                if (dropMarkerRow < (row + count))
+                if (_dropMarkerRow < (row + count))
                 {
-                    dropMarkerRow = -1;
+                    _dropMarkerRow = -1;
                 }
                 else
                 {
-                    dropMarkerRow -= count;
+                    _dropMarkerRow -= count;
                 }
             }
-            if (!widgetGrid.IsEmpty())
+            if (!_widgetGrid.IsEmpty())
             {
-                widgetGrid.Iterate(row, 0, row + count - 1, numColumns, removeCellWidgetsFunction);
-                widgetGrid.RemoveRows(row, count);
+                _widgetGrid.Iterate(row, 0, row + count - 1, _numColumns, _removeCellWidgetsFunction);
+                _widgetGrid.RemoveRows(row, count);
             }
-            if (selectionManager != null)
+            if (_selectionManager != null)
             {
-                selectionManager.rowsDeleted(row, count);
+                _selectionManager.RowsDeleted(row, count);
             }
-            invalidateLayout();
+            InvalidateLayout();
         }
 
-        protected void modelColumnsInserted(int column, int count)
+        protected void ModelColumnsInserted(int column, int count)
         {
-            checkColumnRange(column, count);
-            ColumnHeader[] newColumnHeaders = new ColumnHeader[numColumns];
-            Array.Copy(columnHeaders, 0, newColumnHeaders, 0, column);
-            Array.Copy(columnHeaders, column, newColumnHeaders, column + count,
-                    numColumns - (column + count));
+            CheckColumnRange(column, count);
+            ColumnHeader[] newColumnHeaders = new ColumnHeader[_numColumns];
+            Array.Copy(_columnHeaders, 0, newColumnHeaders, 0, column);
+            Array.Copy(_columnHeaders, column, newColumnHeaders, column + count,
+                    _numColumns - (column + count));
             for (int i = 0; i < count; i++)
             {
-                newColumnHeaders[column + i] = createColumnHeader(column + i);
+                newColumnHeaders[column + i] = CreateColumnHeader(column + i);
             }
-            columnHeaders = newColumnHeaders;
-            updateColumnHeaderNumbers();
+            _columnHeaders = newColumnHeaders;
+            UpdateColumnHeaderNumbers();
 
-            columnModel.Insert(column, count);
+            _columnModel.Insert(column, count);
 
-            if (!widgetGrid.IsEmpty() || hasCellWidgetCreators)
+            if (!_widgetGrid.IsEmpty() || _hasCellWidgetCreators)
             {
-                removeAllCellWidgets();
-                widgetGrid.InsertColumns(column, count);
+                RemoveAllCellWidgets();
+                _widgetGrid.InsertColumns(column, count);
 
-                for (int row = 0; row < numRows; row++)
+                for (int row = 0; row < _numRows; row++)
                 {
                     for (int i = 0; i < count; i++)
                     {
-                        updateCellWidget(row, column + i);
+                        UpdateCellWidget(row, column + i);
                     }
                 }
             }
-            if (column < getColumnStartPosition(scrollPosX))
+            if (column < GetColumnStartPosition(_scrollPosX))
             {
-                ScrollPane sp = ScrollPane.getContainingScrollPane(this);
+                ScrollPane sp = ScrollPane.GetContainingScrollPane(this);
                 if (sp != null)
                 {
-                    int columnsStart = getColumnStartPosition(column);
-                    int columnsEnd = getColumnEndPosition(column + count - 1);
-                    sp.setScrollPositionX(scrollPosX + columnsEnd - columnsStart);
+                    int columnsStart = GetColumnStartPosition(column);
+                    int columnsEnd = GetColumnEndPosition(column + count - 1);
+                    sp.SetScrollPositionX(_scrollPosX + columnsEnd - columnsStart);
                 }
             }
-            invalidateLayout();
+            InvalidateLayout();
         }
 
-        protected void modelColumnsDeleted(int column, int count)
+        protected void ModelColumnsDeleted(int column, int count)
         {
-            if (column + count <= getColumnStartPosition(scrollPosX))
+            if (column + count <= GetColumnStartPosition(_scrollPosX))
             {
-                ScrollPane sp = ScrollPane.getContainingScrollPane(this);
+                ScrollPane sp = ScrollPane.GetContainingScrollPane(this);
                 if (sp != null)
                 {
-                    int columnsStart = getColumnStartPosition(column);
-                    int columnsEnd = getColumnEndPosition(column + count - 1);
-                    sp.setScrollPositionY(scrollPosX - columnsEnd + columnsStart);
+                    int columnsStart = GetColumnStartPosition(column);
+                    int columnsEnd = GetColumnEndPosition(column + count - 1);
+                    sp.SetScrollPositionY(_scrollPosX - columnsEnd + columnsStart);
                 }
             }
-            columnModel.Remove(column, count);
-            if (!widgetGrid.IsEmpty())
+            _columnModel.Remove(column, count);
+            if (!_widgetGrid.IsEmpty())
             {
-                widgetGrid.Iterate(0, column, numRows, column + count - 1, removeCellWidgetsFunction);
-                widgetGrid.RemoveColumns(column, count);
+                _widgetGrid.Iterate(0, column, _numRows, column + count - 1, _removeCellWidgetsFunction);
+                _widgetGrid.RemoveColumns(column, count);
             }
 
-            removeColumnHeaders(column, count);
+            RemoveColumnHeaders(column, count);
 
-            ColumnHeader[] newColumnHeaders = new ColumnHeader[numColumns];
-            Array.Copy(columnHeaders, 0, newColumnHeaders, 0, column);
-            Array.Copy(columnHeaders, column + count, newColumnHeaders, column, numColumns - count);
-            columnHeaders = newColumnHeaders;
-            updateColumnHeaderNumbers();
+            ColumnHeader[] newColumnHeaders = new ColumnHeader[_numColumns];
+            Array.Copy(_columnHeaders, 0, newColumnHeaders, 0, column);
+            Array.Copy(_columnHeaders, column + count, newColumnHeaders, column, _numColumns - count);
+            _columnHeaders = newColumnHeaders;
+            UpdateColumnHeaderNumbers();
 
-            invalidateLayout();
+            InvalidateLayout();
         }
 
-        protected void modelColumnHeaderChanged(int column)
+        protected void ModelColumnHeaderChanged(int column)
         {
-            checkColumnIndex(column);
-            updateColumnHeader(column);
+            CheckColumnIndex(column);
+            UpdateColumnHeader(column);
         }
 
         class RowSizeSequence : SizeSequence
         {
-            private TableBase tableBase;
+            private TableBase _tableBase;
+
             public RowSizeSequence(TableBase tableBase, int initialCapacity) : base(initialCapacity)
             {
-                this.tableBase = tableBase;
+                this._tableBase = tableBase;
             }
 
             protected internal override void InitializeSizes(int index, int count)
             {
                 for (int i = 0; i < count; i++, index++)
                 {
-                    _table[index] = this.tableBase.computeRowHeight(index);
+                    _table[index] = this._tableBase.ComputeRowHeight(index);
                 }
             }
         }
 
         protected class ColumnSizeSequence : SizeSequence
         {
-            private TableBase tableBase;
+            private TableBase _tableBase;
+
             public ColumnSizeSequence(TableBase tableBase)
             {
-                this.tableBase = tableBase;
+                this._tableBase = tableBase;
             }
+
             protected internal override void InitializeSizes(int index, int count)
             {
-                bool useSprings = this.tableBase.isFixedWidthMode();
+                bool useSprings = this._tableBase.IsFixedWidthMode();
                 if (!useSprings)
                 {
                     int sum = 0;
                     for (int i = 0; i < count; i++)
                     {
-                        int width = this.tableBase.computePreferredColumnWidth(index + i);
+                        int width = this._tableBase.ComputePreferredColumnWidth(index + i);
                         _table[index + i] = width;
                         sum += width;
                     }
-                    useSprings = sum < this.tableBase.getInnerWidth();
+                    useSprings = sum < this._tableBase.GetInnerWidth();
                 }
                 if (useSprings)
                 {
-                    computeColumnHeaderLayout();
+                    ComputeColumnHeaderLayout();
                     for (int i = 0; i < count; i++)
                     {
-                        _table[index + i] = this.tableBase.clampColumnWidth(this.tableBase.columnHeaders[i].springWidth);
+                        _table[index + i] = this._tableBase.ClampColumnWidth(this._tableBase._columnHeaders[i]._springWidth);
                     }
                 }
             }
-            protected internal bool update(int index)
+
+            protected internal bool Update(int index)
             {
                 int width;
-                if (this.tableBase.isFixedWidthMode())
+                if (this._tableBase.IsFixedWidthMode())
                 {
-                    computeColumnHeaderLayout();
-                    width = this.tableBase.clampColumnWidth(this.tableBase.columnHeaders[index].springWidth);
+                    ComputeColumnHeaderLayout();
+                    width = this._tableBase.ClampColumnWidth(this._tableBase._columnHeaders[index]._springWidth);
                 }
                 else
                 {
-                    width = this.tableBase.computePreferredColumnWidth(index);
-                    if (this.tableBase.ensureColumnHeaderMinWidth)
+                    width = this._tableBase.ComputePreferredColumnWidth(index);
+                    if (this._tableBase._ensureColumnHeaderMinWidth)
                     {
-                        width = Math.Max(width, this.tableBase.columnHeaders[index].getMinWidth());
+                        width = Math.Max(width, this._tableBase._columnHeaders[index].GetMinWidth());
                     }
                 }
                 return SetSize(index, width);
             }
-            void computeColumnHeaderLayout()
+
+            void ComputeColumnHeaderLayout()
             {
-                if (this.tableBase.columnHeaders != null)
+                if (this._tableBase._columnHeaders != null)
                 {
-                    DialogLayout.SequentialGroup g = (DialogLayout.SequentialGroup)(new DialogLayout()).createSequentialGroup();
-                    foreach (ColumnHeader h in this.tableBase.columnHeaders)
+                    DialogLayout.SequentialGroup g = (DialogLayout.SequentialGroup)(new DialogLayout()).CreateSequentialGroup();
+                    foreach (ColumnHeader h in this._tableBase._columnHeaders)
                     {
-                        g.addSpring(h.spring);
+                        g.AddSpring(h._spring);
                     }
-                    g.setSize(DialogLayout.AXIS_X, 0, this.tableBase.getInnerWidth());
+                    g.SetSize(DialogLayout.AXIS_X, 0, this._tableBase.GetInnerWidth());
                 }
             }
-            protected internal int computePreferredWidth()
+            protected internal int ComputePreferredWidth()
             {
-                int count = this.tableBase.getNumColumns();
-                if (!this.tableBase.isFixedWidthMode())
+                int count = this._tableBase.GetNumColumns();
+                if (!this._tableBase.IsFixedWidthMode())
                 {
                     int sum = 0;
                     for (int i = 0; i < count; i++)
                     {
-                        int width = this.tableBase.computePreferredColumnWidth(i);
+                        int width = this._tableBase.ComputePreferredColumnWidth(i);
                         sum += width;
                     }
                     return sum;
                 }
-                if (this.tableBase.columnHeaders != null)
+                if (this._tableBase._columnHeaders != null)
                 {
-                    DialogLayout.SequentialGroup g = (DialogLayout.SequentialGroup)(new DialogLayout()).createSequentialGroup();
-                    foreach (ColumnHeader h in this.tableBase.columnHeaders)
+                    DialogLayout.SequentialGroup g = (DialogLayout.SequentialGroup)(new DialogLayout()).CreateSequentialGroup();
+                    foreach (ColumnHeader h in this._tableBase._columnHeaders)
                     {
-                        g.addSpring(h.spring);
+                        g.AddSpring(h._spring);
                     }
-                    return g.getPrefSize(DialogLayout.AXIS_X);
+                    return g.GetPrefSize(DialogLayout.AXIS_X);
                 }
                 return 0;
             }
@@ -2044,51 +2051,51 @@ namespace XNATWL
 
         class RemoveCellWidgets : SparseGrid.GridFunction
         {
-            private TableBase tableBase;
+            private TableBase _tableBase;
             public RemoveCellWidgets(TableBase tableBase)
             {
-                this.tableBase = tableBase;
+                this._tableBase = tableBase;
             }
             public void Apply(int row, int column, SparseGrid.Entry e)
             {
                 WidgetEntry widgetEntry = (WidgetEntry)e;
-                Widget widget = widgetEntry.widget;
+                Widget widget = widgetEntry._widget;
                 if (widget != null)
                 {
-                    this.tableBase.removeCellWidget(widget);
+                    this._tableBase.RemoveCellWidget(widget);
                 }
             }
         }
 
         class InsertCellWidgets : SparseGrid.GridFunction
         {
-            private TableBase tableBase;
+            private TableBase _tableBase;
             public InsertCellWidgets(TableBase tableBase)
             {
-                this.tableBase = tableBase;
+                this._tableBase = tableBase;
             }
             public void Apply(int row, int column, SparseGrid.Entry e)
             {
-                this.tableBase.insertCellWidget(row, column, (WidgetEntry)e);
+                this._tableBase.InsertCellWidget(row, column, (WidgetEntry)e);
             }
         }
 
         protected class ColumnHeader : Button
         {
-            protected internal int column;
-            private int columnWidth;
-            protected internal int springWidth;
-            private TableBase tableBase;
-            protected internal DialogLayout.Spring spring;
+            protected internal int _column;
+            private int _columnWidth;
+            protected internal int _springWidth;
+            private TableBase _tableBase;
+            protected internal DialogLayout.Spring _spring;
 
             public ColumnHeader(TableBase tableBase)
             {
-                this.tableBase = tableBase;
+                this._tableBase = tableBase;
                 this.Action += (sender, e) =>
                 {
-                    this.tableBase.columnHeaderClicked(column);
+                    this._tableBase.ColumnHeaderClicked(_column);
                 };
-                this.spring = new ColumnHeaderSpring(this);
+                this._spring = new ColumnHeaderSpring(this);
             }
 
             class ColumnHeaderSpring : DialogLayout.Spring
@@ -2099,24 +2106,24 @@ namespace XNATWL
                     this.columnHeader = columnHeader;
                 }
 
-                internal override int getMinSize(int axis)
+                internal override int GetMinSize(int axis)
                 {
-                    return this.columnHeader.tableBase.clampColumnWidth(this.columnHeader.getMinWidth());
+                    return this.columnHeader._tableBase.ClampColumnWidth(this.columnHeader.GetMinWidth());
                 }
 
-                internal override int getPrefSize(int axis)
+                internal override int GetPrefSize(int axis)
                 {
-                    return this.columnHeader.getPreferredWidth();
+                    return this.columnHeader.GetPreferredWidth();
                 }
 
-                internal override int getMaxSize(int axis)
+                internal override int GetMaxSize(int axis)
                 {
-                    return this.columnHeader.getMaxWidth();
+                    return this.columnHeader.GetMaxWidth();
                 }
 
-                internal override void setSize(int axis, int pos, int size)
+                internal override void SetSize(int axis, int pos, int size)
                 {
-                    this.columnHeader.springWidth = size;
+                    this.columnHeader._springWidth = size;
                 }
             }
 
@@ -2139,62 +2146,62 @@ namespace XNATWL
                 }
             };*/
 
-            public int getColumnWidth()
+            public int GetColumnWidth()
             {
-                return columnWidth;
+                return _columnWidth;
             }
 
-            public void setColumnWidth(int columnWidth)
+            public void SetColumnWidth(int columnWidth)
             {
-                this.columnWidth = columnWidth;
+                this._columnWidth = columnWidth;
             }
 
-            public override int getPreferredWidth()
+            public override int GetPreferredWidth()
             {
-                if (columnWidth > 0)
+                if (_columnWidth > 0)
                 {
-                    return columnWidth;
+                    return _columnWidth;
                 }
-                DialogLayout.Gap mpm = this.tableBase.getColumnMPM(column);
-                int prefWidth = (mpm != null) ? mpm.preferred : this.tableBase.defaultColumnWidth;
-                return Math.Max(prefWidth, base.getPreferredWidth());
+                DialogLayout.Gap mpm = this._tableBase.GetColumnMPM(_column);
+                int prefWidth = (mpm != null) ? mpm.Preferred : this._tableBase._defaultColumnWidth;
+                return Math.Max(prefWidth, base.GetPreferredWidth());
             }
 
-            public override int getMinWidth()
+            public override int GetMinWidth()
             {
-                DialogLayout.Gap mpm = this.tableBase.getColumnMPM(column);
-                int minWidth = (mpm != null) ? mpm.min : 0;
-                return Math.Max(minWidth, base.getPreferredWidth());
+                DialogLayout.Gap mpm = this._tableBase.GetColumnMPM(_column);
+                int minWidth = (mpm != null) ? mpm.Min : 0;
+                return Math.Max(minWidth, base.GetPreferredWidth());
             }
 
-            public override int getMaxWidth()
+            public override int GetMaxWidth()
             {
-                DialogLayout.Gap mpm = this.tableBase.getColumnMPM(column);
-                int maxWidth = (mpm != null) ? mpm.max : 32767;
+                DialogLayout.Gap mpm = this._tableBase.GetColumnMPM(_column);
+                int maxWidth = (mpm != null) ? mpm.Max : 32767;
                 return maxWidth;
             }
 
-            public override void adjustSize()
+            public override void AdjustSize()
             {
                 // don't do anything
             }
 
-            public override bool handleEvent(Event evt)
+            public override bool HandleEvent(Event evt)
             {
-                if (evt.isMouseEventNoWheel())
+                if (evt.IsMouseEventNoWheel())
                 {
-                    this.tableBase.mouseLeftTableArea();
+                    this._tableBase.MouseLeftTableArea();
                 }
-                return base.handleEvent(evt);
+                return base.HandleEvent(evt);
             }
 
-            protected override void paintWidget(GUI gui)
+            protected override void PaintWidget(GUI gui)
             {
-                Renderer.Renderer renderer = gui.getRenderer();
-                renderer.ClipEnter(getX(), getY(), getWidth(), getHeight());
+                Renderer.Renderer renderer = gui.GetRenderer();
+                renderer.ClipEnter(GetX(), GetY(), GetWidth(), GetHeight());
                 try
                 {
-                    paintLabelText(getAnimationState());
+                    PaintLabelText(GetAnimationState());
                 }
                 finally
                 {
@@ -2202,47 +2209,47 @@ namespace XNATWL
                 }
             }
 
-            public void run()
+            public void Run()
             {
-                this.tableBase.columnHeaderClicked(column);
+                this._tableBase.ColumnHeaderClicked(_column);
             }
         }
 
         class WidgetEntry : SparseGrid.Entry
         {
-            protected internal Widget widget;
-            protected internal CellWidgetCreator creator;
+            protected internal Widget _widget;
+            protected internal CellWidgetCreator _creator;
         }
 
         protected internal class CellWidgetContainer : Widget
         {
             protected internal CellWidgetContainer()
             {
-                setTheme("");
-                setClip(true);
+                SetTheme("");
+                SetClip(true);
             }
 
-            protected override void childInvalidateLayout(Widget child)
+            protected override void ChildInvalidateLayout(Widget child)
             {
                 // always ignore
             }
 
-            protected override void sizeChanged()
+            protected override void SizeChanged()
             {
                 // always ignore
             }
 
-            protected override void childAdded(Widget child)
+            protected override void ChildAdded(Widget child)
             {
                 // always ignore
             }
 
-            protected override void childRemoved(Widget exChild)
+            protected override void ChildRemoved(Widget exChild)
             {
                 // always ignore
             }
 
-            protected override void allChildrenRemoved()
+            protected override void AllChildrenRemoved()
             {
                 // always ignore
             }
@@ -2252,26 +2259,21 @@ namespace XNATWL
         {
             public StringCellRenderer()
             {
-                setCache(false);
-                setClip(true);
+                SetCache(false);
+                SetClip(true);
             }
 
-            public void applyTheme(ThemeInfo themeInfo)
+            public virtual void SetCellData(int row, int column, Object data)
             {
-                base.applyTheme(themeInfo);
+                SetCharSequence(data.ToString());
             }
 
-            public virtual void setCellData(int row, int column, Object data)
-            {
-                setCharSequence(data.ToString());
-            }
-
-            public virtual int getColumnSpan()
+            public virtual int GetColumnSpan()
             {
                 return 1;
             }
 
-            protected override void sizeChanged()
+            protected override void SizeChanged()
             {
                 // this method is overriden to prevent Widget.sizeChanged() from
                 // calling invalidateLayout().
@@ -2280,12 +2282,17 @@ namespace XNATWL
                 // or even constant relayouts and bad performance
             }
 
-            public Widget getCellRenderWidget(int x, int y, int width, int height, bool isSelected)
+            public Widget GetCellRenderWidget(int x, int y, int width, int height, bool isSelected)
             {
-                setPosition(x, y);
-                setSize(width, height);
-                getAnimationState().setAnimationState(STATE_SELECTED, isSelected);
+                SetPosition(x, y);
+                SetSize(width, height);
+                GetAnimationState().SetAnimationState(STATE_SELECTED, isSelected);
                 return this;
+            }
+
+            void CellRenderer.ApplyTheme(ThemeInfo themeInfo)
+            {
+                base.ApplyTheme(themeInfo);
             }
         }
     }

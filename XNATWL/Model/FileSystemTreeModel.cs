@@ -40,7 +40,7 @@ namespace XNATWL.Model
         private FileSystemModel _fileSystemModel;
         private bool _includeLastModified;
 
-        internal IComparer<object> sorter;
+        internal IComparer<object> _sorter;
 
         public override int Columns
         {
@@ -68,7 +68,7 @@ namespace XNATWL.Model
 
         public void SetSorter(IComparer<object> sorter)
         {
-            this.sorter = sorter;
+            this._sorter = sorter;
         }
 
         public void InsertRoots()
@@ -135,23 +135,23 @@ namespace XNATWL.Model
     {
         static FolderNode[] NO_CHILDREN = new FolderNode[0];
 
-        private TreeTableNode parent;
-        private FileSystemModel fsm;
-        Object folder;
-        FolderNode[] children;
+        private TreeTableNode _parent;
+        private FileSystemModel _fileSystemModel;
+        Object _folder;
+        FolderNode[] _children;
 
         internal FolderNode(TreeTableNode parent, FileSystemModel fsm, object folder)
         {
-            this.parent = parent;
-            this.fsm = fsm;
-            this.folder = folder;
+            this._parent = parent;
+            this._fileSystemModel = fsm;
+            this._folder = folder;
         }
 
         public object Folder
         {
             get
             {
-                return folder;
+                return _folder;
             }
         }
 
@@ -160,7 +160,7 @@ namespace XNATWL.Model
             switch (column)
             {
                 case 0:
-                    return fsm.NameOf(folder);
+                    return _fileSystemModel.NameOf(_folder);
                 case 1:
                     return LastModified;
                 default:
@@ -170,7 +170,7 @@ namespace XNATWL.Model
 
         public object TooltipContentAtColumn(int column)
         {
-            StringBuilder sb = new StringBuilder(fsm.PathOf(folder));
+            StringBuilder sb = new StringBuilder(_fileSystemModel.PathOf(_folder));
             DateTime lastModified = LastModified;
             if (lastModified != null)
             {
@@ -181,14 +181,14 @@ namespace XNATWL.Model
 
         public TreeTableNode ChildAt(int idx)
         {
-            return children[idx];
+            return _children[idx];
         }
 
         public int ChildIndexOf(TreeTableNode child)
         {
-            for (int i = 0, n = children.Length; i < n; i++)
+            for (int i = 0, n = _children.Length; i < n; i++)
             {
-                if (children[i] == child)
+                if (_children[i] == child)
                 {
                     return i;
                 }
@@ -201,12 +201,12 @@ namespace XNATWL.Model
         {
             get
             {
-                if (children == null)
+                if (_children == null)
                 {
                     CollectChilds();
                 }
 
-                return children.Length;
+                return _children.Length;
             }
         }
 
@@ -214,7 +214,7 @@ namespace XNATWL.Model
         {
             get
             {
-                return parent;
+                return _parent;
             }
         }
 
@@ -230,7 +230,7 @@ namespace XNATWL.Model
         {
             get
             {
-                TreeTableNode node = this.parent;
+                TreeTableNode node = this._parent;
                 TreeTableNode nodeParent;
 
                 while ((nodeParent = node.Parent) != null)
@@ -244,15 +244,15 @@ namespace XNATWL.Model
 
         private void CollectChilds()
         {
-            children = NO_CHILDREN;
+            _children = NO_CHILDREN;
 
             try
             {
-                Object[] subFolder = fsm.ListFolder(folder, FolderFilter.Instance);
+                Object[] subFolder = _fileSystemModel.ListFolder(_folder, FolderFilter.Instance);
 
                 if (subFolder != null && subFolder.Length > 0)
                 {
-                    IComparer<object> sorter = TreeModel.sorter;
+                    IComparer<object> sorter = TreeModel._sorter;
 
                     if (sorter != null)
                     {
@@ -262,10 +262,10 @@ namespace XNATWL.Model
                     FolderNode[] newChildren = new FolderNode[subFolder.Length];
                     for (int i = 0; i < subFolder.Length; i++)
                     {
-                        newChildren[i] = new FolderNode(this, fsm, subFolder[i]);
+                        newChildren[i] = new FolderNode(this, _fileSystemModel, subFolder[i]);
                     }
 
-                    children = newChildren;
+                    _children = newChildren;
                 }
             }
             catch (Exception ex)
@@ -278,14 +278,14 @@ namespace XNATWL.Model
         {
             get
             {
-                if (parent is FileSystemTreeModel)
+                if (_parent is FileSystemTreeModel)
                 {
                     // don't call getLastModified on roots - causes bad performance
                     // on windows when a DVD/CD/Floppy has no media inside
                     return DateTime.MinValue;
                 }
 
-                return new DateTime(fsm.LastModifiedOf(folder));
+                return new DateTime(_fileSystemModel.LastModifiedOf(_folder));
             }
         }
     }

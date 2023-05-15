@@ -37,12 +37,12 @@ namespace XNATWL
 {
     public enum ListBoxCallbackReason
     {
-        MODEL_CHANGED,
-        SET_SELECTED,
-        MOUSE_CLICK,
-        MOUSE_DOUBLE_CLICK,
-        KEYBOARD,
-        KEYBOARD_RETURN
+        ModelChanged,
+        SetSelected,
+        MouseClick,
+        MouseDoubleClick,
+        Keyboard,
+        KeyboardReturn
     }
 
     public class ListBox<T> : Widget
@@ -53,7 +53,7 @@ namespace XNATWL
 
         public static bool CallbackReason_ActionRequested(ListBoxCallbackReason listBoxCallbackReason)
         {
-            if (listBoxCallbackReason == ListBoxCallbackReason.MOUSE_DOUBLE_CLICK || listBoxCallbackReason == ListBoxCallbackReason.KEYBOARD_RETURN)
+            if (listBoxCallbackReason == ListBoxCallbackReason.MouseDoubleClick || listBoxCallbackReason == ListBoxCallbackReason.KeyboardReturn)
             {
                 return true;
             }
@@ -63,149 +63,148 @@ namespace XNATWL
 
         private static ListBoxDisplay[] EMPTY_LABELS = { };
 
-        private Scrollbar scrollbar;
-        private ListBoxDisplay[] labels;
-        private ListModel<T> model;
-        private IntegerModel selectionModel;
-        private Runnable selectionModelCallback;
-        private int cellHeight = DEFAULT_CELL_HEIGHT;
-        private int cellWidth = SINGLE_COLUMN;
-        private bool rowMajor = true;
-        private bool fixedCellWidth;
-        private bool fixedCellHeight;
-        private int minDisplayedRows = 1;
+        private Scrollbar _scrollbar;
+        private ListBoxDisplay[] _labels;
+        private ListModel<T> _model;
+        private IntegerModel _selectionModel;
+        private int _cellHeight = DEFAULT_CELL_HEIGHT;
+        private int _cellWidth = SINGLE_COLUMN;
+        private bool _rowMajor = true;
+        private bool _fixedCellWidth;
+        private bool _fixedCellHeight;
+        private int _minDisplayedRows = 1;
 
-        private int numCols = 1;
-        private int firstVisible;
-        private int selected = NO_SELECTION;
-        private int numEntries;
-        private bool needUpdate;
-        private bool inSetSelected;
+        private int _numCols = 1;
+        private int _firstVisible;
+        private int _selected = NO_SELECTION;
+        private int _numEntries;
+        private bool _needUpdate;
+        private bool _inSetSelected;
 
         public event EventHandler<ListBoxEventArgs> Callback;
         //private CallbackWithReason<?>[] callbacks;
 
         public ListBox()
         {
-            scrollbar = new Scrollbar();
-            scrollbar.PositionChanged += Scrollbar_PositionChanged;
-            labels = EMPTY_LABELS;
+            _scrollbar = new Scrollbar();
+            _scrollbar.PositionChanged += Scrollbar_PositionChanged;
+            _labels = EMPTY_LABELS;
 
-            base.insertChild(scrollbar, 0);
+            base.InsertChild(_scrollbar, 0);
 
-            setSize(200, 300);
-            setCanAcceptKeyboardFocus(true);
-            setDepthFocusTraversal(false);
+            SetSize(200, 300);
+            SetCanAcceptKeyboardFocus(true);
+            SetDepthFocusTraversal(false);
         }
 
         private void Scrollbar_PositionChanged(object sender, ScrollbarChangedPositionEventArgs e)
         {
-            this.scrollbarChanged();
+            this.ScrollbarChanged();
         }
 
         public ListBox(ListModel<T> model) : this()
         {
-            setModel(model);
+            SetModel(model);
         }
 
         public ListBox(ListSelectionModel<T> model) : this()
         {
-            setModel(model);
+            SetModel(model);
         }
 
         public ListModel<T> getModel()
         {
-            return model;
+            return _model;
         }
 
-        public void setModel(ListModel<T> model)
+        public void SetModel(ListModel<T> model)
         {
-            if (this.model != model)
+            if (this._model != model)
             {
-                if (this.model != null)
+                if (this._model != null)
                 {
-                    this.model.AllChanged -= Model_AllChanged;
-                    this.model.EntriesChanged -= Model_EntriesChanged;
-                    this.model.EntriesDeleted -= Model_EntriesDeleted;
-                    this.model.EntriesInserted -= Model_EntriesInserted;
+                    this._model.AllChanged -= Model_AllChanged;
+                    this._model.EntriesChanged -= Model_EntriesChanged;
+                    this._model.EntriesDeleted -= Model_EntriesDeleted;
+                    this._model.EntriesInserted -= Model_EntriesInserted;
                 }
 
-                this.model = model;
+                this._model = model;
 
                 if (model != null)
                 {
-                    this.model.AllChanged += Model_AllChanged;
-                    this.model.EntriesChanged += Model_EntriesChanged;
-                    this.model.EntriesDeleted += Model_EntriesDeleted;
-                    this.model.EntriesInserted += Model_EntriesInserted;
+                    this._model.AllChanged += Model_AllChanged;
+                    this._model.EntriesChanged += Model_EntriesChanged;
+                    this._model.EntriesDeleted += Model_EntriesDeleted;
+                    this._model.EntriesInserted += Model_EntriesInserted;
                 }
 
-                this.allChanged();
+                this.AllChanged();
             }
         }
 
         private void Model_EntriesInserted(object sender, ListSubsetChangedEventArgs e)
         {
-            this.entriesInserted(e.First, e.Last);
+            this.EntriesInserted(e.First, e.Last);
         }
 
         private void Model_EntriesDeleted(object sender, ListSubsetChangedEventArgs e)
         {
-            this.entriesDeleted(e.First, e.Last);
+            this.EntriesDeleted(e.First, e.Last);
         }
 
         private void Model_EntriesChanged(object sender, ListSubsetChangedEventArgs e)
         {
-            this.entriesChanged(e.First, e.Last);
+            this.EntriesChanged(e.First, e.Last);
         }
 
         private void Model_AllChanged(object sender, ListAllChangedEventArgs e)
         {
-            this.allChanged();
+            this.AllChanged();
         }
 
-        public IntegerModel getSelectionModel()
+        public IntegerModel GetSelectionModel()
         {
-            return selectionModel;
+            return _selectionModel;
         }
 
-        public void setSelectionModel(IntegerModel selectionModel)
+        public void SetSelectionModel(IntegerModel selectionModel)
         {
-            if (this.selectionModel != selectionModel)
+            if (this._selectionModel != selectionModel)
             {
-                if (this.selectionModel != null)
+                if (this._selectionModel != null)
                 {
-                    this.selectionModel.Changed -= SelectionModel_Changed;
+                    this._selectionModel.Changed -= SelectionModel_Changed;
                 }
-                this.selectionModel = selectionModel;
+                this._selectionModel = selectionModel;
                 if (selectionModel != null)
                 {
-                    this.selectionModel.Changed += SelectionModel_Changed;
-                    syncSelectionFromModel();
+                    this._selectionModel.Changed += SelectionModel_Changed;
+                    SyncSelectionFromModel();
                 }
             }
         }
 
         private void SelectionModel_Changed(object sender, IntegerChangedEventArgs e)
         {
-            this.syncSelectionFromModel();
+            this.SyncSelectionFromModel();
         }
 
-        public void setModel(ListSelectionModel<T> model)
+        public void SetModel(ListSelectionModel<T> model)
         {
-            setSelectionModel(null);
+            SetSelectionModel(null);
             if (model == null)
             {
-                setModel((ListModel<T>)null);
+                SetModel((ListModel<T>)null);
             }
             else
             {
-                setModel(model.Model);
-                setSelectionModel(model);
+                SetModel(model.Model);
+                SetSelectionModel(model);
             }
         }
 
-        private void doCallback(ListBoxCallbackReason reason)
+        private void DoCallback(ListBoxCallbackReason reason)
         {
             if (this.Callback != null)
             {
@@ -213,88 +212,88 @@ namespace XNATWL
             }
         }
 
-        public int getCellHeight()
+        public int GetCellHeight()
         {
-            return cellHeight;
+            return _cellHeight;
         }
 
-        public void setCellHeight(int cellHeight)
+        public void SetCellHeight(int cellHeight)
         {
             if (cellHeight < 1)
             {
                 throw new ArgumentOutOfRangeException("cellHeight < 1");
             }
-            this.cellHeight = cellHeight;
+            this._cellHeight = cellHeight;
         }
 
-        public int getCellWidth()
+        public int GetCellWidth()
         {
-            return cellWidth;
+            return _cellWidth;
         }
 
-        public void setCellWidth(int cellWidth)
+        public void SetCellWidth(int cellWidth)
         {
             if (cellWidth < 1 && cellWidth != SINGLE_COLUMN)
             {
                 throw new ArgumentOutOfRangeException("cellWidth < 1");
             }
-            this.cellWidth = cellWidth;
+            this._cellWidth = cellWidth;
         }
 
-        public bool isFixedCellHeight()
+        public bool IsFixedCellHeight()
         {
-            return fixedCellHeight;
+            return _fixedCellHeight;
         }
 
-        public void setFixedCellHeight(bool fixedCellHeight)
+        public void SetFixedCellHeight(bool fixedCellHeight)
         {
-            this.fixedCellHeight = fixedCellHeight;
+            this._fixedCellHeight = fixedCellHeight;
         }
 
-        public bool isFixedCellWidth()
+        public bool IsFixedCellWidth()
         {
-            return fixedCellWidth;
+            return _fixedCellWidth;
         }
 
-        public void setFixedCellWidth(bool fixedCellWidth)
+        public void SetFixedCellWidth(bool fixedCellWidth)
         {
-            this.fixedCellWidth = fixedCellWidth;
+            this._fixedCellWidth = fixedCellWidth;
         }
 
-        public bool isRowMajor()
+        public bool IsRowMajor()
         {
-            return rowMajor;
+            return _rowMajor;
         }
 
-        public void setRowMajor(bool rowMajor)
+        public void SetRowMajor(bool rowMajor)
         {
-            this.rowMajor = rowMajor;
+            this._rowMajor = rowMajor;
         }
 
-        public int getFirstVisible()
+        public int GetFirstVisible()
         {
-            return firstVisible;
+            return _firstVisible;
         }
 
-        public int getLastVisible()
+        public int GetLastVisible()
         {
-            return getFirstVisible() + labels.Length - 1;
+            return GetFirstVisible() + _labels.Length - 1;
         }
 
-        public void setFirstVisible(int firstVisible)
+        public void SetFirstVisible(int firstVisible)
         {
-            firstVisible = Math.Max(0, Math.Min(firstVisible, numEntries - 1));
-            if (this.firstVisible != firstVisible)
+            firstVisible = Math.Max(0, Math.Min(firstVisible, _numEntries - 1));
+            if (this._firstVisible != firstVisible)
             {
-                this.firstVisible = firstVisible;
-                scrollbar.setValue(firstVisible / numCols, false);
-                needUpdate = true;
+                this._firstVisible = firstVisible;
+                _scrollbar.SetValue(firstVisible / _numCols, false);
+                _needUpdate = true;
             }
         }
 
-        public int getSelected()
+        public int GetSelected()
         {
-            return selected;
+            return _selected;
         }
 
         /**
@@ -304,9 +303,9 @@ namespace XNATWL
          * @throws IllegalArgumentException if index is invalid
          * @see #setSelected(int, bool)
          */
-        public void setSelected(int selected)
+        public void SetSelected(int selected)
         {
-            setSelected(selected, true, ListBoxCallbackReason.SET_SELECTED);
+            SetSelected(selected, true, ListBoxCallbackReason.SetSelected);
         }
 
         /**
@@ -316,99 +315,101 @@ namespace XNATWL
          * @param scroll true if it should scroll to make the entry visible
          * @throws IllegalArgumentException if index is invalid
          */
-        public void setSelected(int selected, bool scroll)
+        public void SetSelected(int selected, bool scroll)
         {
-            setSelected(selected, scroll, ListBoxCallbackReason.SET_SELECTED);
+            SetSelected(selected, scroll, ListBoxCallbackReason.SetSelected);
         }
 
-        void setSelected(int selected, bool scroll, ListBoxCallbackReason reason)
+        void SetSelected(int selected, bool scroll, ListBoxCallbackReason reason)
         {
-            if (selected < NO_SELECTION || selected >= numEntries)
+            if (selected < NO_SELECTION || selected >= _numEntries)
             {
                 throw new ArgumentOutOfRangeException();
             }
+
             if (scroll)
             {
-                validateLayout();
+                ValidateLayout();
                 if (selected == NO_SELECTION)
                 {
-                    setFirstVisible(0);
+                    SetFirstVisible(0);
                 }
                 else
                 {
-                    int delta = getFirstVisible() - selected;
+                    int delta = GetFirstVisible() - selected;
                     if (delta > 0)
                     {
-                        int deltaRows = (delta + numCols - 1) / numCols;
-                        setFirstVisible(getFirstVisible() - deltaRows * numCols);
+                        int deltaRows = (delta + _numCols - 1) / _numCols;
+                        SetFirstVisible(GetFirstVisible() - deltaRows * _numCols);
                     }
                     else
                     {
-                        delta = selected - getLastVisible();
+                        delta = selected - GetLastVisible();
                         if (delta > 0)
                         {
-                            int deltaRows = (delta + numCols - 1) / numCols;
-                            setFirstVisible(getFirstVisible() + deltaRows * numCols);
+                            int deltaRows = (delta + _numCols - 1) / _numCols;
+                            SetFirstVisible(GetFirstVisible() + deltaRows * _numCols);
                         }
                     }
                 }
             }
-            if (this.selected != selected)
+
+            if (this._selected != selected)
             {
-                this.selected = selected;
-                if (selectionModel != null)
+                this._selected = selected;
+                if (_selectionModel != null)
                 {
                     try
                     {
-                        inSetSelected = true;
-                        selectionModel.Value = selected;
+                        _inSetSelected = true;
+                        _selectionModel.Value = selected;
                     }
                     finally
                     {
-                        inSetSelected = false;
+                        _inSetSelected = false;
                     }
                 }
-                needUpdate = true;
-                doCallback(reason);
+                _needUpdate = true;
+                DoCallback(reason);
             }
-            else if (CallbackReason_ActionRequested(reason) || reason == ListBoxCallbackReason.MOUSE_CLICK)
+            else if (CallbackReason_ActionRequested(reason) || reason == ListBoxCallbackReason.MouseClick)
             {
-                doCallback(reason);
+                DoCallback(reason);
             }
         }
 
-        public void scrollToSelected()
+        public void ScrollToSelected()
         {
-            setSelected(selected, true, ListBoxCallbackReason.SET_SELECTED);
+            SetSelected(_selected, true, ListBoxCallbackReason.SetSelected);
         }
 
-        public int getNumEntries()
+        public int GetNumEntries()
         {
-            return numEntries;
+            return _numEntries;
         }
 
-        public int getNumRows()
+        public int GetNumRows()
         {
-            return (numEntries + numCols - 1) / numCols;
+            return (_numEntries + _numCols - 1) / _numCols;
         }
 
-        public int getNumColumns()
+        public int GetNumColumns()
         {
-            return numCols;
+            return _numCols;
         }
 
-        public int findEntryByName(String prefix)
+        public int FindEntryByName(String prefix)
         {
-            for (int i = selected + 1; i < numEntries; i++)
+            for (int i = _selected + 1; i < _numEntries; i++)
             {
-                if (model.EntryMatchesPrefix(i, prefix))
+                if (_model.EntryMatchesPrefix(i, prefix))
                 {
                     return i;
                 }
             }
-            for (int i = 0; i < selected; i++)
+            for (int i = 0; i < _selected; i++)
             {
-                if (model.EntryMatchesPrefix(i, prefix))
+                if (_model.EntryMatchesPrefix(i, prefix))
                 {
                     return i;
                 }
@@ -424,8 +425,7 @@ namespace XNATWL
          * @param y the y coordinate
          * @return this.
          */
-        //@Override
-        public override Widget getWidgetAt(int x, int y)
+        public override Widget GetWidgetAt(int x, int y)
         {
             return this;
         }
@@ -437,132 +437,132 @@ namespace XNATWL
          * @param y the y coordinate
          * @return the index of the entry or -1.
          */
-        public int getEntryAt(int x, int y)
+        public int GetEntryAt(int x, int y)
         {
-            int n = Math.Max(labels.Length, numEntries - firstVisible);
+            int n = Math.Max(_labels.Length, _numEntries - _firstVisible);
             for (int i = 0; i < n; i++)
             {
-                if (labels[i].getWidget().isInside(x, y))
+                if (_labels[i].GetWidget().IsInside(x, y))
                 {
-                    return firstVisible + i;
+                    return _firstVisible + i;
                 }
             }
             return -1;
         }
 
-        public override void insertChild(Widget child, int index)
+        public override void InsertChild(Widget child, int index)
         {
             throw new InvalidOperationException();
         }
 
-        public override void removeAllChildren()
+        public override void RemoveAllChildren()
         {
             throw new InvalidOperationException();
         }
 
-        public override Widget removeChild(int index)
+        public override Widget RemoveChild(int index)
         {
             throw new InvalidOperationException();
         }
 
-        protected override void applyTheme(ThemeInfo themeInfo)
+        protected override void ApplyTheme(ThemeInfo themeInfo)
         {
-            base.applyTheme(themeInfo);
-            setCellHeight(themeInfo.GetParameter("cellHeight", DEFAULT_CELL_HEIGHT));
-            setCellWidth(themeInfo.GetParameter("cellWidth", SINGLE_COLUMN));
-            setRowMajor(themeInfo.GetParameter("rowMajor", true));
-            setFixedCellWidth(themeInfo.GetParameter("fixedCellWidth", false));
-            setFixedCellHeight(themeInfo.GetParameter("fixedCellHeight", false));
-            minDisplayedRows = themeInfo.GetParameter("minDisplayedRows", 1);
+            base.ApplyTheme(themeInfo);
+            SetCellHeight(themeInfo.GetParameter("cellHeight", DEFAULT_CELL_HEIGHT));
+            SetCellWidth(themeInfo.GetParameter("cellWidth", SINGLE_COLUMN));
+            SetRowMajor(themeInfo.GetParameter("rowMajor", true));
+            SetFixedCellWidth(themeInfo.GetParameter("fixedCellWidth", false));
+            SetFixedCellHeight(themeInfo.GetParameter("fixedCellHeight", false));
+            _minDisplayedRows = themeInfo.GetParameter("minDisplayedRows", 1);
         }
 
-        protected void goKeyboard(int dir)
+        protected void GoKeyboard(int dir)
         {
-            int newPos = selected + dir;
-            if (newPos >= 0 && newPos < numEntries)
+            int newPos = _selected + dir;
+            if (newPos >= 0 && newPos < _numEntries)
             {
-                setSelected(newPos, true, ListBoxCallbackReason.KEYBOARD);
+                SetSelected(newPos, true, ListBoxCallbackReason.Keyboard);
             }
         }
 
-        protected bool isSearchChar(char ch)
+        protected bool IsSearchChar(char ch)
         {
             return (ch != Event.CHAR_NONE) && Char.IsLetterOrDigit(ch);
         }
 
-        protected override void keyboardFocusGained()
+        protected override void KeyboardFocusGained()
         {
-            setLabelFocused(true);
+            SetLabelFocused(true);
         }
 
-        protected override void keyboardFocusLost()
+        protected override void KeyboardFocusLost()
         {
-            setLabelFocused(false);
+            SetLabelFocused(false);
         }
 
-        private void setLabelFocused(bool focused)
+        private void SetLabelFocused(bool focused)
         {
-            int idx = selected - firstVisible;
-            if (idx >= 0 && idx < labels.Length)
+            int idx = _selected - _firstVisible;
+            if (idx >= 0 && idx < _labels.Length)
             {
-                labels[idx].setFocused(focused);
+                _labels[idx].SetFocused(focused);
             }
         }
 
-        public override bool handleEvent(Event evt)
+        public override bool HandleEvent(Event evt)
         {
-            if (evt.getEventType() == EventType.MOUSE_WHEEL)
+            if (evt.GetEventType() == EventType.MOUSE_WHEEL)
             {
-                scrollbar.scroll(-evt.getMouseWheelDelta());
+                _scrollbar.Scroll(-evt.GetMouseWheelDelta());
                 return true;
             }
             else
-            if (evt.getEventType() == EventType.KEY_PRESSED)
+            if (evt.GetEventType() == EventType.KEY_PRESSED)
             {
-                switch (evt.getKeyCode())
+                switch (evt.GetKeyCode())
                 {
                     case Event.KEY_UP:
-                        goKeyboard(-numCols);
+                        GoKeyboard(-_numCols);
                         break;
                     case Event.KEY_DOWN:
-                        goKeyboard(numCols);
+                        GoKeyboard(_numCols);
                         break;
                     case Event.KEY_LEFT:
-                        goKeyboard(-1);
+                        GoKeyboard(-1);
                         break;
                     case Event.KEY_RIGHT:
-                        goKeyboard(1);
+                        GoKeyboard(1);
                         break;
                     case Event.KEY_PRIOR:
-                        if (numEntries > 0)
+                        if (_numEntries > 0)
                         {
-                            setSelected(Math.Max(0, selected - labels.Length),
-                                true, ListBoxCallbackReason.KEYBOARD);
+                            SetSelected(Math.Max(0, _selected - _labels.Length),
+                                true, ListBoxCallbackReason.Keyboard);
                         }
                         break;
                     case Event.KEY_NEXT:
-                        setSelected(Math.Min(numEntries - 1, selected + labels.Length),
-                                true, ListBoxCallbackReason.KEYBOARD);
+                        SetSelected(Math.Min(_numEntries - 1, _selected + _labels.Length),
+                                true, ListBoxCallbackReason.Keyboard);
                         break;
                     case Event.KEY_HOME:
-                        if (numEntries > 0)
+                        if (_numEntries > 0)
                         {
-                            setSelected(0, true, ListBoxCallbackReason.KEYBOARD);
+                            SetSelected(0, true, ListBoxCallbackReason.Keyboard);
                         }
                         break;
                     case Event.KEY_END:
-                        setSelected(numEntries - 1, true, ListBoxCallbackReason.KEYBOARD);
+                        SetSelected(_numEntries - 1, true, ListBoxCallbackReason.Keyboard);
                         break;
                     case Event.KEY_RETURN:
-                        setSelected(selected, false, ListBoxCallbackReason.KEYBOARD_RETURN);
+                        SetSelected(_selected, false, ListBoxCallbackReason.KeyboardReturn);
                         break;
                     default:
-                        if (evt.hasKeyChar() && isSearchChar(evt.getKeyChar()))
+                        if (evt.HasKeyChar() && IsSearchChar(evt.GetKeyChar()))
                         {
-                            int idx = findEntryByName(evt.getKeyChar().ToString());
+                            int idx = FindEntryByName(evt.GetKeyChar().ToString());
                             if (idx != NO_SELECTION)
                             {
-                                setSelected(idx, true, ListBoxCallbackReason.KEYBOARD);
+                                SetSelected(idx, true, ListBoxCallbackReason.Keyboard);
                             }
                             return true;
                         }
@@ -571,10 +571,10 @@ namespace XNATWL
                 return true;
             }
             else
-            if (evt.getEventType() == EventType.KEY_RELEASED)
+            if (evt.GetEventType() == EventType.KEY_RELEASED)
             {
 
-                switch (evt.getKeyCode())
+                switch (evt.GetKeyCode())
                 {
                     case Event.KEY_UP:
                     case Event.KEY_DOWN:
@@ -591,159 +591,159 @@ namespace XNATWL
             }
 
             // delegate to children (listbox, displays, etc...)
-            if (base.handleEvent(evt))
+            if (base.HandleEvent(evt))
             {
                 return true;
             }
             // eat all mouse events
-            return evt.isMouseEvent();
+            return evt.IsMouseEvent();
         }
 
-        public override int getMinWidth()
+        public override int GetMinWidth()
         {
-            return Math.Max(base.getMinWidth(), scrollbar.getMinWidth());
+            return Math.Max(base.GetMinWidth(), _scrollbar.GetMinWidth());
         }
 
-        public override int getMinHeight()
+        public override int GetMinHeight()
         {
-            int minHeight = Math.Max(base.getMinHeight(), scrollbar.getMinHeight());
-            if (minDisplayedRows > 0)
+            int minHeight = Math.Max(base.GetMinHeight(), _scrollbar.GetMinHeight());
+            if (_minDisplayedRows > 0)
             {
-                minHeight = Math.Max(minHeight, getBorderVertical() +
-                        Math.Min(numEntries, minDisplayedRows) * cellHeight);
+                minHeight = Math.Max(minHeight, GetBorderVertical() +
+                        Math.Min(_numEntries, _minDisplayedRows) * _cellHeight);
             }
             return minHeight;
         }
 
-        public override int getPreferredInnerWidth()
+        public override int GetPreferredInnerWidth()
         {
-            return Math.Max(base.getPreferredInnerWidth(), scrollbar.getPreferredWidth());
+            return Math.Max(base.GetPreferredInnerWidth(), _scrollbar.GetPreferredWidth());
         }
 
-        public override int getPreferredInnerHeight()
+        public override int GetPreferredInnerHeight()
         {
-            return Math.Max(getNumRows() * getCellHeight(), scrollbar.getPreferredHeight());
+            return Math.Max(GetNumRows() * GetCellHeight(), _scrollbar.GetPreferredHeight());
         }
 
-        protected override void paint(GUI gui)
+        protected override void Paint(GUI gui)
         {
-            if (needUpdate)
+            if (_needUpdate)
             {
-                updateDisplay();
+                UpdateDisplay();
             }
             // always update scrollbar
-            int maxFirstVisibleRow = computeMaxFirstVisibleRow();
-            scrollbar.setMinMaxValue(0, maxFirstVisibleRow);
-            scrollbar.setValue(firstVisible / numCols, false);
+            int maxFirstVisibleRow = ComputeMaxFirstVisibleRow();
+            _scrollbar.SetMinMaxValue(0, maxFirstVisibleRow);
+            _scrollbar.SetValue(_firstVisible / _numCols, false);
 
-            base.paint(gui);
+            base.Paint(gui);
         }
 
-        private int computeMaxFirstVisibleRow()
+        private int ComputeMaxFirstVisibleRow()
         {
-            int maxFirstVisibleRow = Math.Max(0, numEntries - labels.Length);
-            maxFirstVisibleRow = (maxFirstVisibleRow + numCols - 1) / numCols;
+            int maxFirstVisibleRow = Math.Max(0, _numEntries - _labels.Length);
+            maxFirstVisibleRow = (maxFirstVisibleRow + _numCols - 1) / _numCols;
             return maxFirstVisibleRow;
         }
 
-        private void updateDisplay()
+        private void UpdateDisplay()
         {
-            needUpdate = false;
+            _needUpdate = false;
 
-            if (selected >= numEntries)
+            if (_selected >= _numEntries)
             {
-                selected = NO_SELECTION;
+                _selected = NO_SELECTION;
             }
 
-            int maxFirstVisibleRow = computeMaxFirstVisibleRow();
-            int maxFirstVisible = maxFirstVisibleRow * numCols;
-            if (firstVisible > maxFirstVisible)
+            int maxFirstVisibleRow = ComputeMaxFirstVisibleRow();
+            int maxFirstVisible = maxFirstVisibleRow * _numCols;
+            if (_firstVisible > maxFirstVisible)
             {
-                firstVisible = Math.Max(0, maxFirstVisible);
+                _firstVisible = Math.Max(0, maxFirstVisible);
             }
 
-            bool hasFocus = hasKeyboardFocus();
+            bool hasFocus = HasKeyboardFocus();
 
-            for (int i = 0; i < labels.Length; i++)
+            for (int i = 0; i < _labels.Length; i++)
             {
-                ListBoxDisplay label = labels[i];
-                int cell = i + firstVisible;
-                if (cell < numEntries)
+                ListBoxDisplay label = _labels[i];
+                int cell = i + _firstVisible;
+                if (cell < _numEntries)
                 {
-                    label.setData(model.EntryAt(cell));
-                    label.setTooltipContent(model.EntryTooltipAt(cell));
+                    label.SetData(_model.EntryAt(cell));
+                    label.SetTooltipContent(_model.EntryTooltipAt(cell));
                 }
                 else
                 {
-                    label.setData(null);
-                    label.setTooltipContent(null);
+                    label.SetData(null);
+                    label.SetTooltipContent(null);
                 }
-                label.setSelected(cell == selected);
-                label.setFocused(cell == selected && hasFocus);
+                label.SetSelected(cell == _selected);
+                label.SetFocused(cell == _selected && hasFocus);
             }
         }
 
-        protected override void layout()
+        protected override void Layout()
         {
-            scrollbar.setSize(scrollbar.getPreferredWidth(), getInnerHeight());
-            scrollbar.setPosition(getInnerRight() - scrollbar.getWidth(), getInnerY());
+            _scrollbar.SetSize(_scrollbar.GetPreferredWidth(), GetInnerHeight());
+            _scrollbar.SetPosition(GetInnerRight() - _scrollbar.GetWidth(), GetInnerY());
 
-            int numRows = Math.Max(1, getInnerHeight() / cellHeight);
-            if (cellWidth != SINGLE_COLUMN)
+            int numRows = Math.Max(1, GetInnerHeight() / _cellHeight);
+            if (_cellWidth != SINGLE_COLUMN)
             {
-                numCols = Math.Max(1, (scrollbar.getX() - getInnerX()) / cellWidth);
+                _numCols = Math.Max(1, (_scrollbar.GetX() - GetInnerX()) / _cellWidth);
             }
             else
             {
-                numCols = 1;
+                _numCols = 1;
             }
-            setVisibleCells(numRows);
+            SetVisibleCells(numRows);
 
-            needUpdate = true;
+            _needUpdate = true;
         }
 
-        private void setVisibleCells(int numRows)
+        private void SetVisibleCells(int numRows)
         {
-            int visibleCells = numRows * numCols;
+            int visibleCells = numRows * _numCols;
             System.Diagnostics.Debug.Assert(visibleCells >= 1);
 
-            scrollbar.setPageSize(visibleCells);
+            _scrollbar.SetPageSize(visibleCells);
 
-            int curVisible = labels.Length;
+            int curVisible = _labels.Length;
             for (int i = curVisible; i-- > visibleCells;)
             {
-                base.removeChild(1 + i);
+                base.RemoveChild(1 + i);
             }
 
             ListBoxDisplay[] newLabels = new ListBoxDisplay[visibleCells];
-            Array.Copy(labels, 0, newLabels, 0, Math.Min(visibleCells, labels.Length));
-            labels = newLabels;
+            Array.Copy(_labels, 0, newLabels, 0, Math.Min(visibleCells, _labels.Length));
+            _labels = newLabels;
 
             for (int i = curVisible; i < visibleCells; i++)
             {
                 int cellOffset = i;
-                ListBoxDisplay lbd = createDisplay();
+                ListBoxDisplay lbd = CreateDisplay();
                 lbd.Callback += (sender, e) =>
                 {
-                    int cell = getFirstVisible() + cellOffset;
-                    if (cell < getNumEntries())
+                    int cell = GetFirstVisible() + cellOffset;
+                    if (cell < GetNumEntries())
                     {
-                        setSelected(cell, false, e.Reason);
+                        SetSelected(cell, false, e.Reason);
                     }
                 };
-                base.insertChild(lbd.getWidget(), 1 + i);
-                labels[i] = lbd;
+                base.InsertChild(lbd.GetWidget(), 1 + i);
+                _labels[i] = lbd;
             }
 
-            int innerWidth = scrollbar.getX() - getInnerX();
-            int innerHeight = getInnerHeight();
+            int innerWidth = _scrollbar.GetX() - GetInnerX();
+            int innerHeight = GetInnerHeight();
             for (int i = 0; i < visibleCells; i++)
             {
                 int row, col;
-                if (rowMajor)
+                if (_rowMajor)
                 {
-                    row = i / numCols;
-                    col = i % numCols;
+                    row = i / _numCols;
+                    col = i % _numCols;
                 }
                 else
                 {
@@ -751,33 +751,33 @@ namespace XNATWL
                     col = i / numRows;
                 }
                 int x, y, w, h;
-                if (fixedCellHeight)
+                if (_fixedCellHeight)
                 {
-                    y = row * cellHeight;
-                    h = cellHeight;
+                    y = row * _cellHeight;
+                    h = _cellHeight;
                 }
                 else
                 {
                     y = row * innerHeight / numRows;
                     h = (row + 1) * innerHeight / numRows - y;
                 }
-                if (fixedCellWidth && cellWidth != SINGLE_COLUMN)
+                if (_fixedCellWidth && _cellWidth != SINGLE_COLUMN)
                 {
-                    x = col * cellWidth;
-                    w = cellWidth;
+                    x = col * _cellWidth;
+                    w = _cellWidth;
                 }
                 else
                 {
-                    x = col * innerWidth / numCols;
-                    w = (col + 1) * innerWidth / numCols - x;
+                    x = col * innerWidth / _numCols;
+                    w = (col + 1) * innerWidth / _numCols - x;
                 }
-                Widget cell = (Widget)labels[i];
-                cell.setSize(Math.Max(0, w), Math.Max(0, h));
-                cell.setPosition(x + getInnerX(), y + getInnerY());
+                Widget cell = (Widget)_labels[i];
+                cell.SetSize(Math.Max(0, w), Math.Max(0, h));
+                cell.SetPosition(x + GetInnerX(), y + GetInnerY());
             }
         }
 
-        protected virtual ListBoxDisplay createDisplay()
+        protected virtual ListBoxDisplay CreateDisplay()
         {
             return new ListBoxLabel();
         }
@@ -787,172 +787,173 @@ namespace XNATWL
             public static StateKey STATE_SELECTED = StateKey.Get("selected");
             public static StateKey STATE_EMPTY = StateKey.Get("empty");
 
-            private bool selected;
+            private bool _selected;
             //private CallbackWithReason<?>[] callbacks;
 
             public event EventHandler<ListBoxEventArgs> Callback;
 
             public ListBoxLabel()
             {
-                setClip(true);
-                setTheme("display");
+                SetClip(true);
+                SetTheme("display");
             }
 
-            public bool isSelected()
+            public bool IsSelected()
             {
-                return selected;
+                return _selected;
             }
 
-            public void setSelected(bool selected)
+            public void SetSelected(bool selected)
             {
-                if (this.selected != selected)
+                if (this._selected != selected)
                 {
-                    this.selected = selected;
-                    getAnimationState().setAnimationState(STATE_SELECTED, selected);
+                    this._selected = selected;
+                    GetAnimationState().SetAnimationState(STATE_SELECTED, selected);
                 }
             }
 
-            public bool isFocused()
+            public bool IsFocused()
             {
-                return getAnimationState().GetAnimationState(STATE_KEYBOARD_FOCUS);
+                return GetAnimationState().GetAnimationState(STATE_KEYBOARD_FOCUS);
             }
 
-            public void setFocused(bool focused)
+            public void SetFocused(bool focused)
             {
-                getAnimationState().setAnimationState(STATE_KEYBOARD_FOCUS, focused);
+                GetAnimationState().SetAnimationState(STATE_KEYBOARD_FOCUS, focused);
             }
 
-            public void setData(Object data)
+            public void SetData(Object data)
             {
-                setCharSequence((data == null) ? "" : data.ToString());
-                getAnimationState().setAnimationState(STATE_EMPTY, data == null);
+                SetCharSequence((data == null) ? "" : data.ToString());
+                GetAnimationState().SetAnimationState(STATE_EMPTY, data == null);
             }
 
-            public Widget getWidget()
+            public Widget GetWidget()
             {
                 return this;
             }
 
-            protected void doListBoxCallback(ListBoxCallbackReason reason)
+            protected void DoListBoxCallback(ListBoxCallbackReason reason)
             {
                 this.Callback.Invoke(this, new ListBoxEventArgs(reason));
             }
 
-            protected virtual bool handleListBoxEvent(Event evt)
+            protected virtual bool HandleListBoxEvent(Event evt)
             {
-                if (evt.getEventType() == EventType.MOUSE_BTNDOWN)
+                if (evt.GetEventType() == EventType.MOUSE_BTNDOWN)
                 {
-                    if (!selected)
+                    if (!_selected)
                     {
-                        doListBoxCallback(ListBoxCallbackReason.MOUSE_CLICK);
+                        DoListBoxCallback(ListBoxCallbackReason.MouseClick);
                     }
                     return true;
                 }
-                else if (evt.getEventType() == EventType.MOUSE_CLICKED)
+                else if (evt.GetEventType() == EventType.MOUSE_CLICKED)
                 {
-                    if (selected && evt.getMouseClickCount() == 2)
+                    if (_selected && evt.GetMouseClickCount() == 2)
                     {
-                        doListBoxCallback(ListBoxCallbackReason.MOUSE_DOUBLE_CLICK);
+                        DoListBoxCallback(ListBoxCallbackReason.MouseDoubleClick);
                     }
                     return true;
                 }
+
                 return false;
             }
 
-            public override bool handleEvent(Event evt)
+            public override bool HandleEvent(Event evt)
             {
-                handleMouseHover(evt);
-                if (!evt.isMouseDragEvent())
+                HandleMouseHover(evt);
+                if (!evt.IsMouseDragEvent())
                 {
-                    if (handleListBoxEvent(evt))
+                    if (HandleListBoxEvent(evt))
                     {
                         return true;
                     }
                 }
-                if (base.handleEvent(evt))
+                if (base.HandleEvent(evt))
                 {
                     return true;
                 }
-                return evt.isMouseEventNoWheel();
+                return evt.IsMouseEventNoWheel();
             }
 
         }
 
-        void entriesInserted(int first, int last)
+        void EntriesInserted(int first, int last)
         {
             int delta = last - first + 1;
-            int prevNumEntries = numEntries;
-            numEntries += delta;
-            int fv = getFirstVisible();
-            if (fv >= first && prevNumEntries >= labels.Length)
+            int prevNumEntries = _numEntries;
+            _numEntries += delta;
+            int fv = GetFirstVisible();
+            if (fv >= first && prevNumEntries >= _labels.Length)
             {
                 fv += delta;
-                setFirstVisible(fv);
+                SetFirstVisible(fv);
             }
-            int s = getSelected();
+            int s = GetSelected();
             if (s >= first)
             {
-                setSelected(s + delta, false, ListBoxCallbackReason.MODEL_CHANGED);
+                SetSelected(s + delta, false, ListBoxCallbackReason.ModelChanged);
             }
-            if (first <= getLastVisible() && last >= fv)
+            if (first <= GetLastVisible() && last >= fv)
             {
-                needUpdate = true;
+                _needUpdate = true;
             }
         }
 
-        void entriesDeleted(int first, int last)
+        void EntriesDeleted(int first, int last)
         {
             int delta = last - first + 1;
-            numEntries -= delta;
-            int fv = getFirstVisible();
-            int lv = getLastVisible();
+            _numEntries -= delta;
+            int fv = GetFirstVisible();
+            int lv = GetLastVisible();
             if (fv > last)
             {
-                setFirstVisible(fv - delta);
+                SetFirstVisible(fv - delta);
             }
             else if (fv <= last && lv >= first)
             {
-                setFirstVisible(first);
+                SetFirstVisible(first);
             }
-            int s = getSelected();
+            int s = GetSelected();
             if (s > last)
             {
-                setSelected(s - delta, false, ListBoxCallbackReason.MODEL_CHANGED);
+                SetSelected(s - delta, false, ListBoxCallbackReason.ModelChanged);
             }
             else if (s >= first && s <= last)
             {
-                setSelected(NO_SELECTION, false, ListBoxCallbackReason.MODEL_CHANGED);
+                SetSelected(NO_SELECTION, false, ListBoxCallbackReason.ModelChanged);
             }
         }
 
-        void entriesChanged(int first, int last)
+        void EntriesChanged(int first, int last)
         {
-            int fv = getFirstVisible();
-            int lv = getLastVisible();
+            int fv = GetFirstVisible();
+            int lv = GetLastVisible();
             if (fv <= last && lv >= first)
             {
-                needUpdate = true;
+                _needUpdate = true;
             }
         }
 
-        void allChanged()
+        void AllChanged()
         {
-            numEntries = (model != null) ? model.Entries : 0;
-            setSelected(NO_SELECTION, false, ListBoxCallbackReason.MODEL_CHANGED);
-            setFirstVisible(0);
-            needUpdate = true;
+            _numEntries = (_model != null) ? _model.Entries : 0;
+            SetSelected(NO_SELECTION, false, ListBoxCallbackReason.ModelChanged);
+            SetFirstVisible(0);
+            _needUpdate = true;
         }
 
-        void scrollbarChanged()
+        void ScrollbarChanged()
         {
-            setFirstVisible(scrollbar.getValue() * numCols);
+            SetFirstVisible(_scrollbar.GetValue() * _numCols);
         }
 
-        void syncSelectionFromModel()
+        void SyncSelectionFromModel()
         {
-            if (!inSetSelected)
+            if (!_inSetSelected)
             {
-                setSelected(selectionModel.Value);
+                SetSelected(_selectionModel.Value);
             }
         }
     }

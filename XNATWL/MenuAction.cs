@@ -59,13 +59,13 @@ namespace XNATWL
             this._action = action;
         }
 
-        protected internal override Widget createMenuWidget(MenuManager mm, int level)
+        protected internal override Widget CreateMenuWidget(MenuManager mm, int level)
         {
             Button b = new MenuBtn(this);
-            setWidgetTheme(b, "button");
+            SetWidgetTheme(b, "button");
 
             b.Action += (sender, e) => {
-                mm.closePopup();
+                mm.ClosePopup();
             };
 
             if (this._action != null)

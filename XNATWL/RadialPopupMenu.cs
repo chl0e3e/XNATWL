@@ -37,52 +37,52 @@ namespace XNATWL
 {
     public class RadialPopupMenu : PopupWindow
     {
-        private List<RoundButton> buttons;
+        private List<RoundButton> _buttons;
 
-        private int radius;
-        private int buttonRadius;
-        private int mouseButton;
-        int buttonRadiusSqr;
+        private int _radius;
+        private int _buttonRadius;
+        private int _mouseButton;
+        int _buttonRadiusSqr;
 
         public RadialPopupMenu(Widget owner) : base(owner)
         {
-            this.buttons = new List<RoundButton>();
+            this._buttons = new List<RoundButton>();
         }
 
-        public int getButtonRadius()
+        public int GetButtonRadius()
         {
-            return buttonRadius;
+            return _buttonRadius;
         }
 
-        public void setButtonRadius(int buttonRadius)
+        public void SetButtonRadius(int buttonRadius)
         {
             if (buttonRadius < 0)
             {
                 throw new ArgumentOutOfRangeException("buttonRadius");
             }
-            this.buttonRadius = buttonRadius;
-            this.buttonRadiusSqr = buttonRadius * buttonRadius;
-            invalidateLayout();
+            this._buttonRadius = buttonRadius;
+            this._buttonRadiusSqr = buttonRadius * buttonRadius;
+            InvalidateLayout();
         }
 
-        public int getRadius()
+        public int GetRadius()
         {
-            return radius;
+            return _radius;
         }
 
-        public void setRadius(int radius)
+        public void SetRadius(int radius)
         {
             if (radius < 0)
             {
                 throw new ArgumentOutOfRangeException("radius");
             }
-            this.radius = radius;
-            invalidateLayout();
+            this._radius = radius;
+            InvalidateLayout();
         }
 
-        public int getMouseButton()
+        public int GetMouseButton()
         {
-            return mouseButton;
+            return _mouseButton;
         }
 
         /**
@@ -90,72 +90,72 @@ namespace XNATWL
          * The default is {@link Event#MOUSE_LBUTTON}
          * @param mouseButton the mouse button
          */
-        public void setMouseButton(int mouseButton)
+        public void SetMouseButton(int mouseButton)
         {
             if (mouseButton < Event.MOUSE_LBUTTON || mouseButton > Event.MOUSE_RBUTTON)
             {
                 throw new ArgumentOutOfRangeException("mouseButton");
             }
-            this.mouseButton = mouseButton;
-            for (int i = 0, n = buttons.Count; i < n; i++)
+            this._mouseButton = mouseButton;
+            for (int i = 0, n = _buttons.Count; i < n; i++)
             {
-                buttons[i].setMouseButton(mouseButton);
+                _buttons[i].SetMouseButton(mouseButton);
             }
         }
 
-        public Button addButton(String theme, Action cb)
+        public Button AddButton(String theme, Action cb)
         {
             RoundButton button = new RoundButton(this);
-            button.setTheme(theme);
+            button.SetTheme(theme);
             button.Action += (sender, e) =>
             {
                 cb();
             };
-            button.setMouseButton(mouseButton);
-            addButton(button);
+            button.SetMouseButton(_mouseButton);
+            AddButton(button);
             return button;
         }
 
-        public void removeButton(RoundButton btn)
+        public void RemoveButton(RoundButton btn)
         {
-            int idx = buttons.IndexOf(btn);
+            int idx = _buttons.IndexOf(btn);
             if (idx >= 0)
             {
-                buttons.RemoveAt(idx);
-                removeChild(btn);
+                _buttons.RemoveAt(idx);
+                RemoveChild(btn);
             }
         }
 
-        protected void addButton(RoundButton button)
+        protected void AddButton(RoundButton button)
         {
             if (button == null)
             {
                 throw new NullReferenceException("button");
             }
-            buttons.Add(button);
-            add(button);
+            _buttons.Add(button);
+            Add(button);
         }
 
         class MouseDrag : Runnable
         {
-            private RadialPopupMenu menu;
+            private RadialPopupMenu _menu;
             public MouseDrag(RadialPopupMenu menu)
             {
-                this.menu = menu;
+                this._menu = menu;
             }
-            public override void run()
+            public override void Run()
             {
-                this.menu.boundDragEventFinished();
+                this._menu.BoundDragEventFinished();
             }
         }
 
-        public override bool openPopup()
+        public override bool OpenPopup()
         {
-            if (base.openPopup())
+            if (base.OpenPopup())
             {
-                if (bindMouseDrag(new MouseDrag(this)))
+                if (BindMouseDrag(new MouseDrag(this)))
                 {
-                    setAllButtonsPressed();
+                    SetAllButtonsPressed();
                 }
                 return true;
             }
@@ -169,23 +169,23 @@ namespace XNATWL
          * @param centerY the Y coordinate of the popup center
          * @return true if the popup was opened
          */
-        public bool openPopupAt(int centerX, int centerY)
+        public bool OpenPopupAt(int centerX, int centerY)
         {
-            if (openPopup())
+            if (OpenPopup())
             {
-                adjustSize();
-                Widget parent = getParent();
-                int width = getWidth();
-                int height = getHeight();
-                setPosition(
-                        limit(centerX - width / 2, parent.getInnerX(), parent.getInnerRight() - width),
-                        limit(centerY - height / 2, parent.getInnerY(), parent.getInnerBottom() - height));
+                AdjustSize();
+                Widget parent = GetParent();
+                int width = GetWidth();
+                int height = GetHeight();
+                SetPosition(
+                        Limit(centerX - width / 2, parent.GetInnerX(), parent.GetInnerRight() - width),
+                        Limit(centerY - height / 2, parent.GetInnerY(), parent.GetInnerBottom() - height));
                 return true;
             }
             return false;
         }
 
-        protected static int limit(int value, int min, int max)
+        protected static int Limit(int value, int min, int max)
         {
             if (value < min)
             {
@@ -205,90 +205,90 @@ namespace XNATWL
          * @param evt the {@link Event.Type#MOUSE_BTNDOWN} event
          * @return true if the popup was opened
          */
-        public bool openPopup(Event evt)
+        public bool OpenPopup(Event evt)
         {
-            if (evt.getEventType() == EventType.MOUSE_BTNDOWN)
+            if (evt.GetEventType() == EventType.MOUSE_BTNDOWN)
             {
-                setMouseButton(evt.getMouseButton());
-                return openPopupAt(evt.getMouseX(), evt.getMouseY());
+                SetMouseButton(evt.GetMouseButton());
+                return OpenPopupAt(evt.GetMouseX(), evt.GetMouseY());
             }
             return false;
         }
 
-        public override int getPreferredInnerWidth()
+        public override int GetPreferredInnerWidth()
         {
-            return 2 * (radius + buttonRadius);
+            return 2 * (_radius + _buttonRadius);
         }
 
-        public override int getPreferredInnerHeight()
+        public override int GetPreferredInnerHeight()
         {
-            return 2 * (radius + buttonRadius);
+            return 2 * (_radius + _buttonRadius);
         }
 
-        protected override void applyTheme(ThemeInfo themeInfo)
+        protected override void ApplyTheme(ThemeInfo themeInfo)
         {
-            base.applyTheme(themeInfo);
-            applyThemeRadialPopupMenu(themeInfo);
+            base.ApplyTheme(themeInfo);
+            ApplyThemeRadialPopupMenu(themeInfo);
         }
 
-        protected void applyThemeRadialPopupMenu(ThemeInfo themeInfo)
+        protected void ApplyThemeRadialPopupMenu(ThemeInfo themeInfo)
         {
-            setRadius(themeInfo.GetParameter("radius", 40));
-            setButtonRadius(themeInfo.GetParameter("buttonRadius", 40));
+            SetRadius(themeInfo.GetParameter("radius", 40));
+            SetButtonRadius(themeInfo.GetParameter("buttonRadius", 40));
         }
 
-        protected override void layout()
+        protected override void Layout()
         {
-            layoutRadial();
+            LayoutRadial();
         }
 
-        protected void layoutRadial()
+        protected void LayoutRadial()
         {
-            int numButtons = buttons.Count;
+            int numButtons = _buttons.Count;
             if (numButtons > 0)
             {
-                int centerX = getInnerX() + getInnerWidth() / 2;
-                int centerY = getInnerY() + getInnerHeight() / 2;
+                int centerX = GetInnerX() + GetInnerWidth() / 2;
+                int centerY = GetInnerY() + GetInnerHeight() / 2;
                 float toRad = (float)(2.0 * Math.PI) / numButtons;
                 for (int i = 0; i < numButtons; i++)
                 {
                     float rad = i * toRad;
-                    int btnCenterX = centerX + (int)(radius * Math.Sin(rad));
-                    int btnCenterY = centerY - (int)(radius * Math.Cos(rad));
-                    RoundButton button = buttons[i];
-                    button.setPosition(btnCenterX - buttonRadius, btnCenterY - buttonRadius);
-                    button.setSize(2 * buttonRadius, 2 * buttonRadius);
+                    int btnCenterX = centerX + (int)(_radius * Math.Sin(rad));
+                    int btnCenterY = centerY - (int)(_radius * Math.Cos(rad));
+                    RoundButton button = _buttons[i];
+                    button.SetPosition(btnCenterX - _buttonRadius, btnCenterY - _buttonRadius);
+                    button.SetSize(2 * _buttonRadius, 2 * _buttonRadius);
                 }
             }
         }
 
-        protected void setAllButtonsPressed()
+        protected void SetAllButtonsPressed()
         {
-            for (int i = 0, n = buttons.Count; i < n; i++)
+            for (int i = 0, n = _buttons.Count; i < n; i++)
             {
-                ButtonModel model = buttons[i].getModel();
+                ButtonModel model = _buttons[i].GetModel();
                 model.Pressed = true;
                 model.Armed = model.Hover;
             }
         }
 
-        protected void boundDragEventFinished()
+        protected void BoundDragEventFinished()
         {
-            closePopup();
+            ClosePopup();
         }
 
         public class RoundButton : Button
         {
-            private RadialPopupMenu radialPopupMenu;
+            private RadialPopupMenu _radialPopupMenu;
             public RoundButton(RadialPopupMenu radialPopupMenu)
             {
-                this.radialPopupMenu = radialPopupMenu;
+                this._radialPopupMenu = radialPopupMenu;
             }
-            public override bool isInside(int x, int y)
+            public override bool IsInside(int x, int y)
             {
-                int dx = x - (getX() + getWidth() / 2);
-                int dy = y - (getY() + getHeight() / 2);
-                return dx * dx + dy * dy <= this.radialPopupMenu.buttonRadiusSqr;
+                int dx = x - (GetX() + GetWidth() / 2);
+                int dy = y - (GetY() + GetHeight() / 2);
+                return dx * dx + dy * dy <= this._radialPopupMenu._buttonRadiusSqr;
             }
         }
     }

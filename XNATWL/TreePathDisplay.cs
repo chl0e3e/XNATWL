@@ -36,76 +36,77 @@ namespace XNATWL
 {
     public abstract class TreePathDisplay : Widget
     {
-        private BoxLayout pathBox;
-        private EditField editField;
-        private String separator = "/";
-        private TreeTableNode currentNode;
-        private bool allowEdit;
+        private BoxLayout _pathBox;
+        private EditField _editField;
+        private String _separator = "/";
+        private TreeTableNode _currentNode;
+        private bool _allowEdit;
+
         public event EventHandler<TreePathElementClickedEventArgs> PathElementClicked;
 
         public TreePathDisplay()
         {
-            pathBox = new PathBox(this);
-            pathBox.setScroll(true);
-            pathBox.setClip(true);
+            _pathBox = new PathBox(this);
+            _pathBox.SetScroll(true);
+            _pathBox.SetClip(true);
 
-            editField = new PathEditField(this);
-            editField.setVisible(false);
+            _editField = new PathEditField(this);
+            _editField.SetVisible(false);
 
-            add(pathBox);
-            add(editField);
+            Add(_pathBox);
+            Add(_editField);
         }
 
-        public abstract bool resolvePath(String path);
+        public abstract bool ResolvePath(String path);
 
-        public TreeTableNode getCurrentNode()
+        public TreeTableNode GetCurrentNode()
         {
-            return currentNode;
+            return _currentNode;
         }
 
-        public void setCurrentNode(TreeTableNode currentNode)
+        public void SetCurrentNode(TreeTableNode currentNode)
         {
-            this.currentNode = currentNode;
-            rebuildPathBox();
+            this._currentNode = currentNode;
+            RebuildPathBox();
         }
 
-        public String getSeparator()
+        public String GetSeparator()
         {
-            return separator;
+            return _separator;
         }
 
-        public void setSeparator(String separator)
+        public void SetSeparator(String separator)
         {
-            this.separator = separator;
-            rebuildPathBox();
+            this._separator = separator;
+            RebuildPathBox();
         }
 
-        public bool isAllowEdit()
+        public bool IsAllowEdit()
         {
-            return allowEdit;
+            return _allowEdit;
         }
 
-        public void setAllowEdit(bool allowEdit)
+        public void SetAllowEdit(bool allowEdit)
         {
-            this.allowEdit = allowEdit;
-            rebuildPathBox();
+            this._allowEdit = allowEdit;
+            RebuildPathBox();
         }
 
-        public void setEditErrorMessage(String msg)
+        public void SetEditErrorMessage(String msg)
         {
-            editField.setErrorMessage(msg);
+            _editField.SetErrorMessage(msg);
         }
 
-        public EditField getEditField()
+        public EditField GetEditField()
         {
-            return editField;
+            return _editField;
         }
 
-        protected String getTextFromNode(TreeTableNode node)
+        protected String GetTextFromNode(TreeTableNode node)
         {
             Object data = node.DataAtColumn(0);
             String text = (data != null) ? data.ToString() : "";
-            if (text.EndsWith(separator))
+            if (text.EndsWith(_separator))
             {
                 // strip of separator
                 text = text.Substring(0, text.Length - 1);
@@ -113,74 +114,74 @@ namespace XNATWL
             return text;
         }
 
-        private void rebuildPathBox()
+        private void RebuildPathBox()
         {
-            pathBox.removeAllChildren();
-            if (currentNode != null)
+            _pathBox.RemoveAllChildren();
+            if (_currentNode != null)
             {
-                recursiveAddNode(currentNode, null);
+                RecursiveAddNode(_currentNode, null);
             }
         }
 
-        private void recursiveAddNode(TreeTableNode node, TreeTableNode child)
+        private void RecursiveAddNode(TreeTableNode node, TreeTableNode child)
         {
             if (node.Parent != null)
             {
-                recursiveAddNode(node.Parent, node);
+                RecursiveAddNode(node.Parent, node);
 
-                Button btn = new Button(getTextFromNode(node));
-                btn.setTheme("node");
+                Button btn = new Button(GetTextFromNode(node));
+                btn.SetTheme("node");
                 /*btn.addCallback(new Runnable() {
                     public void run() {
                         firePathElementClicked(node, child);
                     }
                 });*/
-                pathBox.add(btn);
+                _pathBox.Add(btn);
 
-                Label l = new Label(separator);
-                l.setTheme("separator");
-                if (allowEdit)
+                Label l = new Label(_separator);
+                l.SetTheme("separator");
+                if (_allowEdit)
                 {
                     l.Clicked += (sender, e) =>
                     {
-                        if (e.ClickType == Label.ClickType.DOUBLE_CLICK)
+                        if (e.ClickType == Label.ClickType.DoubleClick)
                         {
-                            editPath(node);
+                            EditPath(node);
                         }
                     };
                 }
-                pathBox.add(l);
+                _pathBox.Add(l);
             }
         }
 
-        void endEdit()
+        void EndEdit()
         {
-            editField.setVisible(false);
-            requestKeyboardFocus();
+            _editField.SetVisible(false);
+            RequestKeyboardFocus();
         }
 
-        void editPath(TreeTableNode cursorAfterNode)
+        void EditPath(TreeTableNode cursorAfterNode)
         {
             StringBuilder sb = new StringBuilder();
             int cursorPos = 0;
-            if (currentNode != null)
+            if (_currentNode != null)
             {
-                cursorPos = recursiveAddPath(sb, currentNode, cursorAfterNode);
+                cursorPos = RecursiveAddPath(sb, _currentNode, cursorAfterNode);
             }
-            editField.setErrorMessage(null);
-            editField.setText(sb.ToString());
-            editField.setCursorPos(cursorPos, false);
-            editField.setVisible(true); 
-            editField.requestKeyboardFocus();
+            _editField.SetErrorMessage(null);
+            _editField.SetText(sb.ToString());
+            _editField.SetCursorPos(cursorPos, false);
+            _editField.SetVisible(true); 
+            _editField.RequestKeyboardFocus();
         }
 
-        private int recursiveAddPath(StringBuilder sb, TreeTableNode node, TreeTableNode cursorAfterNode)
+        private int RecursiveAddPath(StringBuilder sb, TreeTableNode node, TreeTableNode cursorAfterNode)
         {
             int cursorPos = 0;
             if (node.Parent != null)
             {
-                cursorPos = recursiveAddPath(sb, node.Parent, cursorAfterNode);
-                sb.Append(getTextFromNode(node)).Append(separator);
+                cursorPos = RecursiveAddPath(sb, node.Parent, cursorAfterNode);
+                sb.Append(GetTextFromNode(node)).Append(_separator);
             }
             if (node == cursorAfterNode)
             {
@@ -192,50 +193,50 @@ namespace XNATWL
             }
         }
 
-        public override int getPreferredInnerWidth()
+        public override int GetPreferredInnerWidth()
         {
-            return pathBox.getPreferredWidth();
+            return _pathBox.GetPreferredWidth();
         }
 
-        public override int getPreferredInnerHeight()
+        public override int GetPreferredInnerHeight()
         {
             return Math.Max(
-                    pathBox.getPreferredHeight(),
-                    editField.getPreferredHeight());
+                    _pathBox.GetPreferredHeight(),
+                    _editField.GetPreferredHeight());
         }
 
-        public override int getMinHeight()
+        public override int GetMinHeight()
         {
-            int minInnerHeight = Math.Max(pathBox.getMinHeight(), editField.getMinHeight());
-            return Math.Max(base.getMinHeight(), minInnerHeight + getBorderVertical());
+            int minInnerHeight = Math.Max(_pathBox.GetMinHeight(), _editField.GetMinHeight());
+            return Math.Max(base.GetMinHeight(), minInnerHeight + GetBorderVertical());
         }
 
-        protected override void layout()
+        protected override void Layout()
         {
-            layoutChildFullInnerArea(pathBox);
-            layoutChildFullInnerArea(editField);
+            LayoutChildFullInnerArea(_pathBox);
+            LayoutChildFullInnerArea(_editField);
         }
 
         private class PathBox : BoxLayout
         {
             private TreePathDisplay _treePathDisplay;
-            public PathBox(TreePathDisplay treePathDisplay) : base(BoxLayout.Direction.HORIZONTAL)
+            public PathBox(TreePathDisplay treePathDisplay) : base(BoxLayout.Direction.Horizontal)
             {
                 this._treePathDisplay = treePathDisplay;
             }
 
-            public override bool handleEvent(Event evt)
+            public override bool HandleEvent(Event evt)
             {
-                if (evt.isMouseEvent())
+                if (evt.IsMouseEvent())
                 {
-                    if (evt.getEventType() == EventType.MOUSE_CLICKED && evt.getMouseClickCount() == 2)
+                    if (evt.GetEventType() == EventType.MOUSE_CLICKED && evt.GetMouseClickCount() == 2)
                     {
-                        this._treePathDisplay.editPath(this._treePathDisplay.getCurrentNode());
+                        this._treePathDisplay.EditPath(this._treePathDisplay.GetCurrentNode());
                         return true;
                     }
-                    return evt.getEventType() != EventType.MOUSE_WHEEL;
+                    return evt.GetEventType() != EventType.MOUSE_WHEEL;
                 }
-                return base.handleEvent(evt);
+                return base.HandleEvent(evt);
             }
         }
 
@@ -247,29 +248,29 @@ namespace XNATWL
                 this._treePathDisplay = treePathDisplay;
             }
 
-            protected override void keyboardFocusLost()
+            protected override void KeyboardFocusLost()
             {
-                if (!hasOpenPopups())
+                if (!HasOpenPopups())
                 {
-                    setVisible(false);
+                    SetVisible(false);
                 }
             }
 
-            protected override void doCallback(int key)
+            protected override void DoCallback(int key)
             {
                 // for auto completion
-                base.doCallback(key);
+                base.DoCallback(key);
 
                 switch (key)
                 {
                     case Event.KEY_RETURN:
-                        if (this._treePathDisplay.resolvePath(getText()))
+                        if (this._treePathDisplay.ResolvePath(GetText()))
                         {
-                            this._treePathDisplay.endEdit();
+                            this._treePathDisplay.EndEdit();
                         }
                         break;
                     case Event.KEY_ESCAPE:
-                        this._treePathDisplay.endEdit();
+                        this._treePathDisplay.EndEdit();
                         break;
                 }
             }

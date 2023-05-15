@@ -36,12 +36,12 @@ namespace XNATWL
 {
     public class SimpleDialog
     {
-        private String theme = "simpledialog";
-        private String title;
-        private Object msg;
-        private Runnable cbOk;
-        private Runnable cbCancel;
-        private bool focusCancelButton;
+        private String _theme = "simpledialog";
+        private String _title;
+        private Object _msg;
+        private Runnable _cbOk;
+        private Runnable _cbCancel;
+        private bool _focusCancelButton;
 
         public event EventHandler<SimpleDialogOKEventArgs> OK;
         public event EventHandler<SimpleDialogCancelEventArgs> Cancel;
@@ -50,18 +50,18 @@ namespace XNATWL
         {
         }
 
-        public void setTheme(String theme)
+        public void SetTheme(String theme)
         {
             if (theme == null)
             {
                 throw new NullReferenceException();
             }
-            this.theme = theme;
+            this._theme = theme;
         }
 
-        public String getTitle()
+        public String GetTitle()
         {
-            return title;
+            return _title;
         }
 
         /**
@@ -71,14 +71,14 @@ namespace XNATWL
          * 
          * @param title the title
          */
-        public void setTitle(String title)
+        public void SetTitle(String title)
         {
-            this.title = title;
+            this._title = title;
         }
 
-        public Object getMessage()
+        public Object GetMessage()
         {
-            return msg;
+            return _msg;
         }
 
         /**
@@ -89,14 +89,14 @@ namespace XNATWL
          *
          * @param msg the message object, can be null
          */
-        public void setMessage(Object msg)
+        public void SetMessage(Object msg)
         {
-            this.msg = msg;
+            this._msg = msg;
         }
 
-        public Runnable getOkCallback()
+        public Runnable GetOkCallback()
         {
-            return cbOk;
+            return _cbOk;
         }
 
         /**
@@ -105,14 +105,14 @@ namespace XNATWL
          *
          * @param cbOk the callback or null
          */
-        public void setOkCallback(Runnable cbOk)
+        public void SetOkCallback(Runnable cbOk)
         {
-            this.cbOk = cbOk;
+            this._cbOk = cbOk;
         }
 
-        public Runnable getCancelCallback()
+        public Runnable GetCancelCallback()
         {
-            return cbCancel;
+            return _cbCancel;
         }
 
         /**
@@ -121,14 +121,14 @@ namespace XNATWL
          *
          * @param cbCancel the callback or null
          */
-        public void setCancelCallback(Runnable cbCancel)
+        public void SetCancelCallback(Runnable cbCancel)
         {
-            this.cbCancel = cbCancel;
+            this._cbCancel = cbCancel;
         }
 
-        public bool isFocusCancelButton()
+        public bool IsFocusCancelButton()
         {
-            return focusCancelButton;
+            return _focusCancelButton;
         }
 
         /**
@@ -137,9 +137,9 @@ namespace XNATWL
          * 
          * @param focusCancelButton true to focus the cancel button
          */
-        public void setFocusCancelButton(bool focusCancelButton)
+        public void SetFocusCancelButton(bool focusCancelButton)
         {
-            this.focusCancelButton = focusCancelButton;
+            this._focusCancelButton = focusCancelButton;
         }
 
         /**
@@ -148,7 +148,7 @@ namespace XNATWL
          * @param owner The owner of the dialog
          * @return the PopupWindow object to close the dialog ealier
          */
-        public PopupWindow showDialog(Widget owner)
+        public PopupWindow ShowDialog(Widget owner)
         {
             if (owner == null)
             {
@@ -157,94 +157,94 @@ namespace XNATWL
 
             Widget msgWidget = null;
 
-            if (msg is Widget) {
-                msgWidget = (Widget)msg;
+            if (_msg is Widget) {
+                msgWidget = (Widget)_msg;
 
                 // remove message widget from previous owner if it's in a closed dialog
-                if (msgWidget.getParent() is DialogLayout) {
-                    if (msgWidget.getParent().getParent() is PopupWindow) {
-                        PopupWindow prevPopup = (PopupWindow)msgWidget.getParent().getParent();
-                        if (!prevPopup.isOpen())
+                if (msgWidget.GetParent() is DialogLayout) {
+                    if (msgWidget.GetParent().GetParent() is PopupWindow) {
+                        PopupWindow prevPopup = (PopupWindow)msgWidget.GetParent().GetParent();
+                        if (!prevPopup.IsOpen())
                         {
-                            msgWidget.getParent().removeChild(msgWidget);
+                            msgWidget.GetParent().RemoveChild(msgWidget);
                         }
                     }
                 }
 
-                if (msgWidget.getParent() != null)
+                if (msgWidget.GetParent() != null)
                 {
                     throw new ArgumentException("message widget alreay in use");
                 }
-            } else if (msg is String) {
-                msgWidget = new Label((String)msg);
-            } else if (msg != null)
+            } else if (_msg is String) {
+                msgWidget = new Label((String)_msg);
+            } else if (_msg != null)
             {
-                Logger.GetLogger(typeof(SimpleDialog)).log(Level.WARNING, "Unsupported message type: " + msg.GetType().FullName);
+                Logger.GetLogger(typeof(SimpleDialog)).Log(Level.WARNING, "Unsupported message type: " + _msg.GetType().FullName);
             }
 
             PopupWindow popupWindow = new PopupWindow(owner);
 
             Button btnOk = new Button("Ok");
-            btnOk.setTheme("btnOk");
+            btnOk.SetTheme("btnOk");
             btnOk.Action += BtnOk_Action;
 
-            ButtonCB btnCancelCallback = new ButtonCB(popupWindow, cbCancel);
-            popupWindow.setRequestCloseCallback(btnCancelCallback);
+            ButtonCB btnCancelCallback = new ButtonCB(popupWindow, _cbCancel);
+            popupWindow.SetRequestCloseCallback(btnCancelCallback);
 
             Button btnCancel = new Button("Cancel");
-            btnCancel.setTheme("btnCancel");
+            btnCancel.SetTheme("btnCancel");
             btnCancel.Action += BtnCancel_Action;
 
             DialogLayout layout = new DialogLayout();
-            layout.setTheme("content");
-            layout.setHorizontalGroup(layout.createParallelGroup());
-            layout.setVerticalGroup(layout.createSequentialGroup());
+            layout.SetTheme("content");
+            layout.SetHorizontalGroup(layout.CreateParallelGroup());
+            layout.SetVerticalGroup(layout.CreateSequentialGroup());
 
             String vertPrevWidget = "top";
 
-            if (title != null)
+            if (_title != null)
             {
-                Label labelTitle = new Label(title);
-                labelTitle.setTheme("title");
-                labelTitle.setLabelFor(msgWidget);
+                Label labelTitle = new Label(_title);
+                labelTitle.SetTheme("title");
+                labelTitle.SetLabelFor(msgWidget);
 
-                layout.getHorizontalGroup().addWidget(labelTitle);
-                layout.getVerticalGroup().addWidget(labelTitle);
+                layout.GetHorizontalGroup().AddWidget(labelTitle);
+                layout.GetVerticalGroup().AddWidget(labelTitle);
                 vertPrevWidget = "title";
             }
 
             if (msgWidget != null)
             {
-                layout.getHorizontalGroup().addGroup(layout.createSequentialGroup()
-                    .addGap("left-msg")
-                    .addWidget(msgWidget)
-                    .addGap("msg-right"));
-                layout.getVerticalGroup().addGap(vertPrevWidget + "-msg").addWidget(msgWidget).addGap("msg-buttons");
+                layout.GetHorizontalGroup().AddGroup(layout.CreateSequentialGroup()
+                    .AddGap("left-msg")
+                    .AddWidget(msgWidget)
+                    .AddGap("msg-right"));
+                layout.GetVerticalGroup().AddGap(vertPrevWidget + "-msg").AddWidget(msgWidget).AddGap("msg-buttons");
             }
             else
             {
-                layout.getVerticalGroup().addGap(vertPrevWidget + "-buttons");
+                layout.GetVerticalGroup().AddGap(vertPrevWidget + "-buttons");
             }
 
-            layout.getHorizontalGroup().addGroup(layout.createSequentialGroup()
-                    .addGap("left-btnOk")
-                    .addWidget(btnOk)
-                    .addGap("btnOk-btnCancel")
-                    .addWidget(btnCancel)
-                    .addGap("btnCancel-right"));
-            layout.getVerticalGroup().addGroup(layout.createParallelGroup(btnOk, btnCancel));
+            layout.GetHorizontalGroup().AddGroup(layout.CreateSequentialGroup()
+                    .AddGap("left-btnOk")
+                    .AddWidget(btnOk)
+                    .AddGap("btnOk-btnCancel")
+                    .AddWidget(btnCancel)
+                    .AddGap("btnCancel-right"));
+            layout.GetVerticalGroup().AddGroup(layout.CreateParallelGroup(btnOk, btnCancel));
 
-            popupWindow.setTheme(theme);
-            popupWindow.add(layout);
-            popupWindow.openPopupCentered();
+            popupWindow.SetTheme(_theme);
+            popupWindow.Add(layout);
+            popupWindow.OpenPopupCentered();
 
-            if (focusCancelButton)
+            if (_focusCancelButton)
             {
-                btnCancel.requestKeyboardFocus();
+                btnCancel.RequestKeyboardFocus();
             }
-            else if (msgWidget != null && msgWidget.canAcceptKeyboardFocus())
+            else if (msgWidget != null && msgWidget.CanAcceptKeyboardFocus())
             {
-                msgWidget.requestKeyboardFocus();
+                msgWidget.RequestKeyboardFocus();
             }
 
             return popupWindow;
@@ -262,21 +262,21 @@ namespace XNATWL
 
         public class ButtonCB : Runnable
         {
-            private PopupWindow popupWindow;
-            private Runnable cb;
+            private PopupWindow _popupWindow;
+            private Runnable _cb;
 
             public ButtonCB(PopupWindow popupWindow, Runnable cb)
             {
-                this.popupWindow = popupWindow;
-                this.cb = cb;
+                this._popupWindow = popupWindow;
+                this._cb = cb;
             }
 
-            public void run()
+            public override void Run()
             {
-                popupWindow.closePopup();
-                if (cb != null)
+                _popupWindow.ClosePopup();
+                if (_cb != null)
                 {
-                    cb.run();
+                    _cb.Run();
                 }
             }
         }

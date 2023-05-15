@@ -35,10 +35,10 @@ namespace XNATWL
 {
     public class AnimationState : XNATWL.Renderer.AnimationState
     {
-        private AnimationState parent;
+        private AnimationState _parent;
 
-        private State[] stateTable;
-        private GUI gui;
+        private State[] _stateTable;
+        private GUI _gui;
 
         /**
          * Create a new animation state with optional parent.
@@ -52,8 +52,8 @@ namespace XNATWL
          */
         public AnimationState(AnimationState parent, int size)
         {
-            this.parent = parent;
-            this.stateTable = new State[size];
+            this._parent = parent;
+            this._stateTable = new State[size];
         }
 
         /**
@@ -79,16 +79,16 @@ namespace XNATWL
         {
         }
 
-        public void setGUI(GUI gui)
+        public void SetGUI(GUI gui)
         {
-            this.gui = gui;
+            this._gui = gui;
 
-            long curTime = getCurrentTime();
-            foreach (State s in stateTable)
+            long curTime = GetCurrentTime();
+            foreach (State s in _stateTable)
             {
                 if (s != null)
                 {
-                    s.lastChangedTime = curTime;
+                    s.LastChangedTime = curTime;
                 }
             }
         }
@@ -102,18 +102,19 @@ namespace XNATWL
          */
         public int GetAnimationTime(StateKey stateKey)
         {
-            State state = getState(stateKey);
+            State state = GetState(stateKey);
             if (state != null)
             {
-                long a = getCurrentTime();
-                long b = state.lastChangedTime;
+                long a = GetCurrentTime();
+                long b = state.LastChangedTime;
                 return (int)Math.Min(Int32.MaxValue, a - b);
             }
-            if (parent != null)
+            if (_parent != null)
             {
-                return parent.GetAnimationTime(stateKey);
+                return _parent.GetAnimationTime(stateKey);
             }
-            return (int)getCurrentTime() & 2147483647;
+
+            return (int)GetCurrentTime() & 2147483647;
         }
 
         /**
@@ -124,15 +125,17 @@ namespace XNATWL
          */
         public bool GetAnimationState(StateKey stateKey)
         {
-            State state = getState(stateKey);
+            State state = GetState(stateKey);
             if (state != null)
             {
-                return state.active;
+                return state.Active;
             }
-            if (parent != null)
+
+            if (_parent != null)
             {
-                return parent.GetAnimationState(stateKey);
+                return _parent.GetAnimationState(stateKey);
             }
+
             return false;
         }
 
@@ -146,15 +149,17 @@ namespace XNATWL
          */
         public bool ShouldAnimateState(StateKey stateKey)
         {
-            State state = getState(stateKey);
+            State state = GetState(stateKey);
             if (state != null)
             {
-                return state.shouldAnimate;
+                return state.ShouldAnimate;
             }
-            if (parent != null)
+
+            if (_parent != null)
             {
-                return parent.ShouldAnimateState(stateKey);
+                return _parent.ShouldAnimateState(stateKey);
             }
+
             return false;
         }
 
@@ -167,9 +172,9 @@ namespace XNATWL
          * @see #setAnimationState(de.matthiasmann.twl.renderer.AnimationState.StateKey, bool)
          * @see de.matthiasmann.twl.renderer.AnimationState.StateKey#get(java.lang.String)
          */
-        public void setAnimationState(String stateName, bool active)
+        public void SetAnimationState(String stateName, bool active)
         {
-            setAnimationState(StateKey.Get(stateName), active);
+            SetAnimationState(StateKey.Get(stateName), active);
         }
 
         /**
@@ -181,14 +186,14 @@ namespace XNATWL
          * @see #getAnimationState(de.matthiasmann.twl.renderer.AnimationState.StateKey)
          * @see #resetAnimationTime(de.matthiasmann.twl.renderer.AnimationState.StateKey)
          */
-        public void setAnimationState(StateKey stateKey, bool active)
+        public void SetAnimationState(StateKey stateKey, bool active)
         {
-            State state = getOrCreate(stateKey);
-            if (state.active != active)
+            State state = GetOrCreate(stateKey);
+            if (state.Active != active)
             {
-                state.active = active;
-                state.lastChangedTime = getCurrentTime();
-                state.shouldAnimate = true;
+                state.Active = active;
+                state.LastChangedTime = GetCurrentTime();
+                state.ShouldAnimate = true;
             }
         }
 
@@ -201,9 +206,9 @@ namespace XNATWL
          * @see de.matthiasmann.twl.renderer.AnimationState.StateKey#get(java.lang.String)
          */
         //@Deprecated
-        public void resetAnimationTime(String stateName)
+        public void ResetAnimationTime(String stateName)
         {
-            resetAnimationTime(StateKey.Get(stateName));
+            ResetAnimationTime(StateKey.Get(stateName));
         }
 
         /**
@@ -214,11 +219,11 @@ namespace XNATWL
          * @see #getAnimationTime(de.matthiasmann.twl.renderer.AnimationState.StateKey)
          * @see #getShouldAnimateState(de.matthiasmann.twl.renderer.AnimationState.StateKey) 
          */
-        public void resetAnimationTime(StateKey stateKey)
+        public void ResetAnimationTime(StateKey stateKey)
         {
-            State state = getOrCreate(stateKey);
-            state.lastChangedTime = getCurrentTime();
-            state.shouldAnimate = true;
+            State state = GetOrCreate(stateKey);
+            state.LastChangedTime = GetCurrentTime();
+            state.ShouldAnimate = true;
         }
 
         /**
@@ -230,9 +235,9 @@ namespace XNATWL
          * @see de.matthiasmann.twl.renderer.AnimationState.StateKey#get(java.lang.String)
          */
         //@Deprecated
-        public void dontAnimate(String stateName)
+        public void DontAnimate(String stateName)
         {
-            dontAnimate(StateKey.Get(stateName));
+            DontAnimate(StateKey.Get(stateName));
         }
 
         /**
@@ -241,63 +246,63 @@ namespace XNATWL
          * @param stateKey the state key.
          * @see #getShouldAnimateState(de.matthiasmann.twl.renderer.AnimationState.StateKey)
          */
-        public void dontAnimate(StateKey stateKey)
+        public void DontAnimate(StateKey stateKey)
         {
-            State state = getState(stateKey);
+            State state = GetState(stateKey);
             if (state != null)
             {
-                state.shouldAnimate = false;
+                state.ShouldAnimate = false;
             }
         }
 
-        private State getState(StateKey stateKey)
+        private State GetState(StateKey stateKey)
         {
             int id = stateKey.ID;
-            if (id < stateTable.Length)
+            if (id < _stateTable.Length)
             {
-                return stateTable[id];
+                return _stateTable[id];
             }
             return null;
         }
 
-        private State getOrCreate(StateKey stateKey)
+        private State GetOrCreate(StateKey stateKey)
         {
             int id = stateKey.ID;
-            if (id < stateTable.Length)
+            if (id < _stateTable.Length)
             {
-                State state = stateTable[id];
+                State state = _stateTable[id];
                 if (state != null)
                 {
                     return state;
                 }
             }
-            return createState(id);
+            return CreateState(id);
         }
 
-        private State createState(int id)
+        private State CreateState(int id)
         {
-            if (id >= stateTable.Length)
+            if (id >= _stateTable.Length)
             {
                 State[] newTable = new State[id + 1];
-                Array.Copy(stateTable, 0, newTable, 0, stateTable.Length);
-                stateTable = newTable;
+                Array.Copy(_stateTable, 0, newTable, 0, _stateTable.Length);
+                _stateTable = newTable;
             }
             State state = new State();
-            state.lastChangedTime = getCurrentTime();
-            stateTable[id] = state;
+            state.LastChangedTime = GetCurrentTime();
+            _stateTable[id] = state;
             return state;
         }
 
-        private long getCurrentTime()
+        private long GetCurrentTime()
         {
-            return (gui != null) ? gui.curTime : 0;
+            return (_gui != null) ? _gui._curTime : 0;
         }
 
         public class State
         {
-            public long lastChangedTime;
-            public bool active;
-            public bool shouldAnimate;
+            public long LastChangedTime;
+            public bool Active;
+            public bool ShouldAnimate;
         }
     }
 }

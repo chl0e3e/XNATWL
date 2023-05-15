@@ -41,12 +41,12 @@ namespace XNATWL
     {
         public interface WidgetResolver
         {
-            Widget resolveWidget(String name, String param);
+            Widget ResolveWidget(String name, String param);
         }
 
         public interface ImageResolver
         {
-            Image resolveImage(String name);
+            Image ResolveImage(String name);
         }
 
         public interface Callback
@@ -55,7 +55,7 @@ namespace XNATWL
              * Called when a link has been clicked
              * @param href the href of the link
              */
-            void handleLinkClicked(String href);
+            void HandleLinkClicked(String href);
         }
 
         public interface Callback2 : Callback
@@ -75,57 +75,56 @@ namespace XNATWL
              * @see Event.Type#MOUSE_BTNUP
              * @see Event.Type#MOUSE_CLICKED
              */
-            void handleMouseButton(Event evt, TextAreaModel.Element element);
+            void HandleMouseButton(Event evt, TextAreaModel.Element element);
         }
 
         public static StateKey STATE_HOVER = StateKey.Get("hover");
 
         static char[] EMPTY_CHAR_ARRAY = new char[0];
 
-        private Dictionary<String, Widget> widgets;
-        private Dictionary<String, WidgetResolver> widgetResolvers;
-        private Dictionary<String, Image> userImages;
-        private List<ImageResolver> imageResolvers;
+        private Dictionary<String, Widget> _widgets;
+        private Dictionary<String, WidgetResolver> _widgetResolvers;
+        private Dictionary<String, Image> _userImages;
+        private List<ImageResolver> _imageResolvers;
 
-        TextAreaModel.StyleSheetResolver styleClassResolver;
-        private Runnable modelCB;
-        private TextAreaModel.TextAreaModel model;
-        private ParameterMap fonts;
-        private ParameterMap images;
-        private Font defaultFont;
-        private Callback[] callbacks;
-        private MouseCursor mouseCursorNormal;
-        private MouseCursor mouseCursorLink;
-        private DraggableButton.DragListener dragListener;
+        TextAreaModel.StyleSheetResolver _styleClassResolver;
+        private TextAreaModel.TextAreaModel _model;
+        private ParameterMap _fonts;
+        private ParameterMap _images;
+        private Font _defaultFont;
+        private Callback[] _callbacks;
+        private MouseCursor _mouseCursorNormal;
+        private MouseCursor _mouseCursorLink;
+        private DraggableButton.DragListener _dragListener;
 
-        private LClip layoutRoot;
-        private List<LImage> allBGImages;
-        private RenderInfo renderInfo;
-        private bool inLayoutCode;
-        private bool bForceRelayout;
-        private Dimension preferredInnerSize;
-        private FontMapper fontMapper;
-        private FontMapperCacheEntry[] fontMapperCache;
+        private LClip _layoutRoot;
+        private List<LImage> _allBGImages;
+        private RenderInfo _renderInfo;
+        private bool _inLayoutCode;
+        private bool _bForceRelayout;
+        private Dimension _preferredInnerSize;
+        private FontMapper _fontMapper;
+        private FontMapperCacheEntry[] _fontMapperCache;
 
-        private int lastMouseX;
-        private int lastMouseY;
-        private bool lastMouseInside;
-        private bool dragging;
-        private int dragStartX;
-        private int dragStartY;
-        private LElement curLElementUnderMouse;
+        private int _lastMouseX;
+        private int _lastMouseY;
+        private bool _lastMouseInside;
+        private bool _dragging;
+        private int _dragStartX;
+        private int _dragStartY;
+        private LElement _curLElementUnderMouse;
 
         public event EventHandler<TextAreaChangedEventArgs> Changed;
 
         public TextArea()
         {
-            this.widgets = new Dictionary<String, Widget>();
-            this.widgetResolvers = new Dictionary<String, WidgetResolver>();
-            this.userImages = new Dictionary<String, Image>();
-            this.imageResolvers = new List<ImageResolver>();
-            this.layoutRoot = new LClip(null);
-            this.allBGImages = new List<LImage>();
-            this.renderInfo = new RenderInfo(getAnimationState());
+            this._widgets = new Dictionary<String, Widget>();
+            this._widgetResolvers = new Dictionary<String, WidgetResolver>();
+            this._userImages = new Dictionary<String, Image>();
+            this._imageResolvers = new List<ImageResolver>();
+            this._layoutRoot = new LClip(null);
+            this._allBGImages = new List<LImage>();
+            this._renderInfo = new RenderInfo(GetAnimationState());
 
             //this.modelCB = new Runnable() {
             //    public void run() {
@@ -136,26 +135,26 @@ namespace XNATWL
 
         public TextArea(TextAreaModel.TextAreaModel model) : this()
         {
-            setModel(model);
+            SetModel(model);
         }
 
-        public TextAreaModel.TextAreaModel getModel()
+        public TextAreaModel.TextAreaModel GetModel()
         {
-            return model;
+            return _model;
         }
 
-        public void setModel(TextAreaModel.TextAreaModel model)
+        public void SetModel(TextAreaModel.TextAreaModel model)
         {
-            if (this.model != null)
+            if (this._model != null)
             {
-                this.model.Changed -= Model_Changed;
+                this._model.Changed -= Model_Changed;
             }
-            this.model = model;
+            this._model = model;
             if (model != null)
             {
-                this.model.Changed += Model_Changed;
+                this._model.Changed += Model_Changed;
             }
-            forceRelayout();
+            ForceRelayout();
         }
 
         private void Model_Changed(object sender, TextAreaChangedEventArgs e)
@@ -163,28 +162,28 @@ namespace XNATWL
 
         }
 
-        public void registerWidget(String name, Widget widget)
+        public void RegisterWidget(String name, Widget widget)
         {
             if (name == null)
             {
                 throw new NullReferenceException("name");
             }
-            if (widget.getParent() != null)
+            if (widget.GetParent() != null)
             {
                 throw new ArgumentOutOfRangeException("Widget must not have a parent");
             }
-            if (widgets.ContainsKey(name) || widgetResolvers.ContainsKey(name))
+            if (_widgets.ContainsKey(name) || _widgetResolvers.ContainsKey(name))
             {
                 throw new ArgumentOutOfRangeException("widget name already in registered");
             }
-            if (widgets.ContainsValue(widget))
+            if (_widgets.ContainsValue(widget))
             {
                 throw new ArgumentOutOfRangeException("widget already registered");
             }
-            widgets.Add(name, widget);
+            _widgets.Add(name, widget);
         }
 
-        public void registerWidgetResolver(String name, WidgetResolver resolver)
+        public void RegisterWidgetResolver(String name, WidgetResolver resolver)
         {
             if (name == null)
             {
@@ -194,97 +193,97 @@ namespace XNATWL
             {
                 throw new NullReferenceException("resolver");
             }
-            if (widgets.ContainsKey(name) || widgetResolvers.ContainsKey(name))
+            if (_widgets.ContainsKey(name) || _widgetResolvers.ContainsKey(name))
             {
                 throw new ArgumentOutOfRangeException("widget name already in registered");
             }
-            widgetResolvers.Add(name, resolver);
+            _widgetResolvers.Add(name, resolver);
         }
 
-        public void unregisterWidgetResolver(String name)
+        public void UnregisterWidgetResolver(String name)
         {
             if (name == null)
             {
                 throw new NullReferenceException("name");
             }
-            widgetResolvers.Remove(name);
+            _widgetResolvers.Remove(name);
         }
 
-        public void unregisterWidget(String name)
+        public void UnregisterWidget(String name)
         {
             if (name == null)
             {
                 throw new NullReferenceException("name");
             }
-            Widget w = widgets[name];
+            Widget w = _widgets[name];
             if (w != null)
             {
-                int idx = getChildIndex(w);
+                int idx = GetChildIndex(w);
                 if (idx >= 0)
                 {
-                    base.removeChild(idx);
-                    forceRelayout();
+                    base.RemoveChild(idx);
+                    ForceRelayout();
                 }
             }
         }
 
-        public void unregisterAllWidgets()
+        public void UnregisterAllWidgets()
         {
-            widgets.Clear();
-            base.removeAllChildren();
-            forceRelayout();
+            _widgets.Clear();
+            base.RemoveAllChildren();
+            ForceRelayout();
         }
 
-        public void registerImage(String name, Image image)
+        public void RegisterImage(String name, Image image)
         {
             if (name == null)
             {
                 throw new NullReferenceException("name");
             }
-            userImages.Add(name, image);
+            _userImages.Add(name, image);
         }
 
-        public void registerImageResolver(ImageResolver resolver)
+        public void RegisterImageResolver(ImageResolver resolver)
         {
             if (resolver == null)
             {
                 throw new NullReferenceException("resolver");
             }
-            if (!imageResolvers.Contains(resolver))
+            if (!_imageResolvers.Contains(resolver))
             {
-                imageResolvers.Add(resolver);
+                _imageResolvers.Add(resolver);
             }
         }
 
-        public void unregisterImage(String name)
+        public void UnregisterImage(String name)
         {
-            userImages.Remove(name);
+            _userImages.Remove(name);
         }
 
-        public void unregisterImageResolver(ImageResolver imageResolver)
+        public void UnregisterImageResolver(ImageResolver imageResolver)
         {
-            imageResolvers.Remove(imageResolver);
+            _imageResolvers.Remove(imageResolver);
         }
 
-        public DraggableButton.DragListener getDragListener()
+        public DraggableButton.DragListener GetDragListener()
         {
-            return dragListener;
+            return _dragListener;
         }
 
-        public void setDragListener(DraggableButton.DragListener dragListener)
+        public void SetDragListener(DraggableButton.DragListener dragListener)
         {
-            this.dragListener = dragListener;
+            this._dragListener = dragListener;
         }
 
-        public TextAreaModel.StyleSheetResolver getStyleClassResolver()
+        public TextAreaModel.StyleSheetResolver GetStyleClassResolver()
         {
-            return styleClassResolver;
+            return _styleClassResolver;
         }
 
-        public void setStyleClassResolver(TextAreaModel.StyleSheetResolver styleClassResolver)
+        public void SetStyleClassResolver(TextAreaModel.StyleSheetResolver styleClassResolver)
         {
-            this.styleClassResolver = styleClassResolver;
-            forceRelayout();
+            this._styleClassResolver = styleClassResolver;
+            ForceRelayout();
         }
 
         /**
@@ -296,28 +295,28 @@ namespace XNATWL
          *    white-space: pre
          *}</pre>
          */
-        public void setDefaultStyleSheet()
+        public void SetDefaultStyleSheet()
         {
             //try
             {
                 StyleSheet styleSheet = new StyleSheet();
                 styleSheet.Parse("p,ul{margin-bottom:1em}");
-                setStyleClassResolver(styleSheet);
+                SetStyleClassResolver(styleSheet);
             }
             //catch (Exception ex)
             {
-            //    Logger.GetLogger(typeof(TextArea)).log(Logger.Level.SEVERE,
-             //           "Can't create default style sheet", ex);
+                //    Logger.GetLogger(typeof(TextArea)).log(Logger.Level.SEVERE,
+                //           "Can't create default style sheet", ex);
             }
         }
 
-        public Rect getElementRect(Element element)
+        public Rect GetElementRect(Element element)
         {
             int[] offset = new int[2];
-            LElement le = layoutRoot.find(element, offset);
+            LElement le = _layoutRoot.Find(element, offset);
             if (le != null)
             {
-                return new Rect(le.x + offset[0], le.y + offset[1], le.width, le.height);
+                return new Rect(le._x + offset[0], le._y + offset[1], le._width, le._height);
             }
             else
             {
@@ -326,289 +325,289 @@ namespace XNATWL
         }
 
         //@Override
-        protected override void applyTheme(ThemeInfo themeInfo)
+        protected override void ApplyTheme(ThemeInfo themeInfo)
         {
-            base.applyTheme(themeInfo);
-            applyThemeTextArea(themeInfo);
+            base.ApplyTheme(themeInfo);
+            ApplyThemeTextArea(themeInfo);
         }
 
-        protected void applyThemeTextArea(ThemeInfo themeInfo)
+        protected void ApplyThemeTextArea(ThemeInfo themeInfo)
         {
-            fonts = themeInfo.GetParameterMap("fonts");
-            images = themeInfo.GetParameterMap("images");
-            defaultFont = themeInfo.GetFont("font");
-            mouseCursorNormal = themeInfo.GetMouseCursor("mouseCursor");
-            mouseCursorLink = themeInfo.GetMouseCursor("mouseCursor.link");
-            forceRelayout();
-        }
-
-        //@Override
-        protected override void afterAddToGUI(GUI gui)
-        {
-            base.afterAddToGUI(gui);
-            renderInfo.asNormal.setGUI(gui);
-            renderInfo.asHover.setGUI(gui);
+            _fonts = themeInfo.GetParameterMap("fonts");
+            _images = themeInfo.GetParameterMap("images");
+            _defaultFont = themeInfo.GetFont("font");
+            _mouseCursorNormal = themeInfo.GetMouseCursor("mouseCursor");
+            _mouseCursorLink = themeInfo.GetMouseCursor("mouseCursor.link");
+            ForceRelayout();
         }
 
         //@Override
-        public override void insertChild(Widget child, int index)
+        protected override void AfterAddToGUI(GUI gui)
+        {
+            base.AfterAddToGUI(gui);
+            _renderInfo._asNormal.SetGUI(gui);
+            _renderInfo._asHover.SetGUI(gui);
+        }
+
+        //@Override
+        public override void InsertChild(Widget child, int index)
         {
             throw new InvalidOperationException("use registerWidget");
         }
 
         //@Override
-        public override void removeAllChildren()
+        public override void RemoveAllChildren()
         {
             throw new InvalidOperationException("use registerWidget");
         }
 
         //@Override
-        public override Widget removeChild(int index)
+        public override Widget RemoveChild(int index)
         {
             throw new InvalidOperationException("use registerWidget");
         }
 
-        private void computePreferredInnerSize()
+        private void ComputePreferredInnerSize()
         {
             int prefWidth = -1;
             int prefHeight = -1;
 
-            if (model == null)
+            if (_model == null)
             {
                 prefWidth = 0;
                 prefHeight = 0;
 
             }
-            else if (getMaxWidth() > 0)
+            else if (GetMaxWidth() > 0)
             {
-                int borderHorizontal = getBorderHorizontal();
-                int maxWidth = Math.Max(0, getMaxWidth() - borderHorizontal);
-                int minWidth = Math.Max(0, getMinWidth() - borderHorizontal);
+                int borderHorizontal = GetBorderHorizontal();
+                int maxWidth = Math.Max(0, GetMaxWidth() - borderHorizontal);
+                int minWidth = Math.Max(0, GetMinWidth() - borderHorizontal);
 
                 if (minWidth < maxWidth)
                 {
                     //System.out.println("Doing preferred size computation");
 
                     LClip tmpRoot = new LClip(null);
-                    startLayout();
+                    StartLayout();
                     try
                     {
-                        tmpRoot.width = maxWidth;
+                        tmpRoot._width = maxWidth;
                         Box box = new Box(this, tmpRoot, 0, 0, 0, false);
-                        layoutElements(box, model);
-                        box.finish();
+                        LayoutElements(box, _model);
+                        box.Finish();
 
-                        prefWidth = Math.Max(0, maxWidth - box.minRemainingWidth);
-                        prefHeight = box.curY;
+                        prefWidth = Math.Max(0, maxWidth - box._minRemainingWidth);
+                        prefHeight = box._curY;
                     }
                     finally
                     {
-                        endLayout();
+                        EndLayout();
                     }
                 }
             }
-            preferredInnerSize = new Dimension(prefWidth, prefHeight);
+            _preferredInnerSize = new Dimension(prefWidth, prefHeight);
         }
 
         //@Override
-        public override int getPreferredInnerWidth()
+        public override int GetPreferredInnerWidth()
         {
-            if (preferredInnerSize == null)
+            if (_preferredInnerSize == null)
             {
-                computePreferredInnerSize();
+                ComputePreferredInnerSize();
             }
-            if (preferredInnerSize.X >= 0)
+            if (_preferredInnerSize.X >= 0)
             {
-                return preferredInnerSize.X;
+                return _preferredInnerSize.X;
             }
-            return getInnerWidth();
+            return GetInnerWidth();
         }
 
         //@Override
-        public override int getPreferredInnerHeight()
+        public override int GetPreferredInnerHeight()
         {
-            if (getInnerWidth() == 0)
+            if (GetInnerWidth() == 0)
             {
-                if (preferredInnerSize == null)
+                if (_preferredInnerSize == null)
                 {
-                    computePreferredInnerSize();
+                    ComputePreferredInnerSize();
                 }
-                if (preferredInnerSize.Y >= 0)
+                if (_preferredInnerSize.Y >= 0)
                 {
-                    return preferredInnerSize.Y;
+                    return _preferredInnerSize.Y;
                 }
             }
-            validateLayout();
-            return layoutRoot.height;
+            ValidateLayout();
+            return _layoutRoot._height;
         }
 
         //@Override
-        public override int getPreferredWidth()
+        public override int GetPreferredWidth()
         {
-            int maxWidth = getMaxWidth();
-            return computeSize(getMinWidth(), base.getPreferredWidth(), maxWidth);
+            int maxWidth = GetMaxWidth();
+            return ComputeSize(GetMinWidth(), base.GetPreferredWidth(), maxWidth);
         }
 
         //@Override
-        public override void setMaxSize(int width, int height)
+        public override void SetMaxSize(int width, int height)
         {
-            if (width != getMaxWidth())
+            if (width != GetMaxWidth())
             {
-                preferredInnerSize = null;
-                invalidateLayout();
+                _preferredInnerSize = null;
+                InvalidateLayout();
             }
-            base.setMaxSize(width, height);
+            base.SetMaxSize(width, height);
         }
 
         //@Override
-        public override void setMinSize(int width, int height)
+        public override void SetMinSize(int width, int height)
         {
-            if (width != getMinWidth())
+            if (width != GetMinWidth())
             {
-                preferredInnerSize = null;
-                invalidateLayout();
+                _preferredInnerSize = null;
+                InvalidateLayout();
             }
-            base.setMinSize(width, height);
+            base.SetMinSize(width, height);
         }
 
         //@Override
-        protected override void layout()
+        protected override void Layout()
         {
-            int targetWidth = getInnerWidth();
+            int targetWidth = GetInnerWidth();
 
             //System.out.println(this+" minWidth="+getMinWidth()+" width="+getWidth()+" maxWidth="+getMaxWidth()+" targetWidth="+targetWidth+" preferredInnerSize="+preferredInnerSize);
 
             // only recompute the layout when it has changed
-            if (layoutRoot.width != targetWidth || bForceRelayout)
+            if (_layoutRoot._width != targetWidth || _bForceRelayout)
             {
-                var old = layoutRoot.width;
-                layoutRoot.width = targetWidth;
-                inLayoutCode = true;
-                bForceRelayout = false;
+                var old = _layoutRoot._width;
+                _layoutRoot._width = targetWidth;
+                _inLayoutCode = true;
+                _bForceRelayout = false;
                 int requiredHeight;
 
-                startLayout();
+                StartLayout();
                 try
                 {
-                    clearLayout();
-                    Box box = new Box(this, layoutRoot, 0, 0, 0, true);
-                    if (model != null)
+                    ClearLayout();
+                    Box box = new Box(this, _layoutRoot, 0, 0, 0, true);
+                    if (_model != null)
                     {
-                        layoutElements(box, model);
+                        LayoutElements(box, _model);
 
-                        box.finish();
+                        box.Finish();
 
                         // set position & size of all widget elements
-                        layoutRoot.adjustWidget(getInnerX(), getInnerY());
-                        layoutRoot.collectBGImages(0, 0, allBGImages);
+                        _layoutRoot.AdjustWidget(GetInnerX(), GetInnerY());
+                        _layoutRoot.CollectBGImages(0, 0, _allBGImages);
                     }
-                    updateMouseHover();
-                    requiredHeight = box.curY;
+                    UpdateMouseHover();
+                    requiredHeight = box._curY;
                 }
                 finally
                 {
-                    inLayoutCode = false;
-                    endLayout();
+                    _inLayoutCode = false;
+                    EndLayout();
                 }
 
-                if (layoutRoot.height != requiredHeight)
+                if (_layoutRoot._height != requiredHeight)
                 {
-                    layoutRoot.height = requiredHeight;
-                    if (getInnerHeight() != requiredHeight)
+                    _layoutRoot._height = requiredHeight;
+                    if (GetInnerHeight() != requiredHeight)
                     {
                         // call outside of inLayoutCode range
-                        invalidateLayout();
+                        InvalidateLayout();
                     }
                 }
             }
         }
 
         //@Override
-        protected override void paintWidget(GUI gui)
+        protected override void PaintWidget(GUI gui)
         {
-            List<LImage> bi = allBGImages;
-            RenderInfo ri = renderInfo;
-            ri.offsetX = getInnerX();
-            ri.offsetY = getInnerY();
-            ri.renderer = gui.getRenderer();
+            List<LImage> bi = _allBGImages;
+            RenderInfo ri = _renderInfo;
+            ri._offsetX = GetInnerX();
+            ri._offsetY = GetInnerY();
+            ri._renderer = gui.GetRenderer();
 
             for (int i = 0, n = bi.Count; i < n; i++)
             {
-                bi[i].draw(ri);
+                bi[i].Draw(ri);
             }
 
-            layoutRoot.draw(ri);
+            _layoutRoot.Draw(ri);
         }
 
         //@Override
-        protected override void sizeChanged()
+        protected override void SizeChanged()
         {
-            if (!inLayoutCode)
+            if (!_inLayoutCode)
             {
-                invalidateLayout();
+                InvalidateLayout();
             }
         }
 
         //@Override
-        protected override void childAdded(Widget child)
+        protected override void ChildAdded(Widget child)
         {
             // always ignore
         }
 
         //@Override
-        protected override void childRemoved(Widget exChild)
+        protected override void ChildRemoved(Widget exChild)
         {
             // always ignore
         }
 
         //@Override
-        protected override void allChildrenRemoved()
+        protected override void AllChildrenRemoved()
         {
             // always ignore
         }
 
         //@Override
-        public override void destroy()
+        public override void Destroy()
         {
-            base.destroy();
-            clearLayout();
-            forceRelayout();
+            base.Destroy();
+            ClearLayout();
+            ForceRelayout();
         }
 
         //@Override
-        public override bool handleEvent(Event evt)
+        public override bool HandleEvent(Event evt)
         {
-            if (base.handleEvent(evt))
+            if (base.HandleEvent(evt))
             {
                 return true;
             }
 
-            if (evt.isMouseEvent())
+            if (evt.IsMouseEvent())
             {
-                EventType eventType = evt.getEventType();
+                EventType eventType = evt.GetEventType();
 
-                if (dragging)
+                if (_dragging)
                 {
                     if (eventType == EventType.MOUSE_DRAGGED)
                     {
-                        if (dragListener != null)
+                        if (_dragListener != null)
                         {
-                            dragListener.dragged(evt.getMouseX() - dragStartX, evt.getMouseY() - dragStartY);
+                            _dragListener.Dragged(evt.GetMouseX() - _dragStartX, evt.GetMouseY() - _dragStartY);
                         }
                     }
-                    if (evt.isMouseDragEnd())
+                    if (evt.IsMouseDragEnd())
                     {
-                        if (dragListener != null)
+                        if (_dragListener != null)
                         {
-                            dragListener.dragStopped();
+                            _dragListener.DragStopped();
                         }
-                        dragging = false;
-                        updateMouseHover(evt);
+                        _dragging = false;
+                        UpdateMouseHover(evt);
                     }
                     return true;
                 }
 
-                updateMouseHover(evt);
+                UpdateMouseHover(evt);
 
                 if (eventType == EventType.MOUSE_WHEEL)
                 {
@@ -617,34 +616,34 @@ namespace XNATWL
 
                 if (eventType == EventType.MOUSE_BTNDOWN)
                 {
-                    dragStartX = evt.getMouseX();
-                    dragStartY = evt.getMouseY();
+                    _dragStartX = evt.GetMouseX();
+                    _dragStartY = evt.GetMouseY();
                 }
 
                 if (eventType == EventType.MOUSE_DRAGGED)
                 {
-                    System.Diagnostics.Debug.Assert(!dragging);
-                    dragging = true;
-                    if (dragListener != null)
+                    System.Diagnostics.Debug.Assert(!_dragging);
+                    _dragging = true;
+                    if (_dragListener != null)
                     {
-                        dragListener.dragStarted();
+                        _dragListener.DragStarted();
                     }
                     return true;
                 }
 
-                if (curLElementUnderMouse != null && (
+                if (_curLElementUnderMouse != null && (
                         eventType == EventType.MOUSE_CLICKED ||
                         eventType == EventType.MOUSE_BTNDOWN ||
                         eventType == EventType.MOUSE_BTNUP))
                 {
-                    Element e = curLElementUnderMouse.element;
-                    if (callbacks != null)
+                    Element e = _curLElementUnderMouse._element;
+                    if (_callbacks != null)
                     {
-                        foreach (Callback l in callbacks)
+                        foreach (Callback l in _callbacks)
                         {
                             if (l is Callback2)
                             {
-                                ((Callback2)l).handleMouseButton(evt, e);
+                                ((Callback2)l).HandleMouseButton(evt, e);
                             }
                         }
                     }
@@ -652,14 +651,14 @@ namespace XNATWL
 
                 if (eventType == EventType.MOUSE_CLICKED)
                 {
-                    if (curLElementUnderMouse != null && curLElementUnderMouse.href != null)
+                    if (_curLElementUnderMouse != null && _curLElementUnderMouse._href != null)
                     {
-                        String href = curLElementUnderMouse.href;
-                        if (callbacks != null)
+                        String href = _curLElementUnderMouse._href;
+                        if (_callbacks != null)
                         {
-                            foreach (Callback l in callbacks)
+                            foreach (Callback l in _callbacks)
                             {
-                                l.handleLinkClicked(href);
+                                l.HandleLinkClicked(href);
                             }
                         }
                     }
@@ -672,182 +671,182 @@ namespace XNATWL
         }
 
         //@Override
-        internal override Object getTooltipContentAt(int mouseX, int mouseY)
+        internal override Object GetTooltipContentAt(int mouseX, int mouseY)
         {
-            if (curLElementUnderMouse != null)
+            if (_curLElementUnderMouse != null)
             {
-                if (curLElementUnderMouse.element is ImageElement)
+                if (_curLElementUnderMouse._element is ImageElement)
                 {
-                    return ((ImageElement)curLElementUnderMouse.element).GetToolTip();
+                    return ((ImageElement)_curLElementUnderMouse._element).GetToolTip();
                 }
             }
-            return base.getTooltipContentAt(mouseX, mouseY);
+            return base.GetTooltipContentAt(mouseX, mouseY);
         }
 
-        private void updateMouseHover(Event evt)
+        private void UpdateMouseHover(Event evt)
         {
-            lastMouseInside = isMouseInside(evt);
-            lastMouseX = evt.getMouseX();
-            lastMouseY = evt.getMouseY();
-            updateMouseHover();
+            _lastMouseInside = IsMouseInside(evt);
+            _lastMouseX = evt.GetMouseX();
+            _lastMouseY = evt.GetMouseY();
+            UpdateMouseHover();
         }
 
-        private void updateMouseHover()
+        private void UpdateMouseHover()
         {
             LElement le = null;
-            if (lastMouseInside)
+            if (_lastMouseInside)
             {
-                le = layoutRoot.find(lastMouseX - getInnerX(), lastMouseY - getInnerY());
+                le = _layoutRoot.Find(_lastMouseX - GetInnerX(), _lastMouseY - GetInnerY());
             }
-            if (curLElementUnderMouse != le)
+            if (_curLElementUnderMouse != le)
             {
-                curLElementUnderMouse = le;
-                layoutRoot.setHover(le);
-                renderInfo.asNormal.resetAnimationTime(STATE_HOVER);
-                renderInfo.asHover.resetAnimationTime(STATE_HOVER);
-                updateTooltip();
+                _curLElementUnderMouse = le;
+                _layoutRoot.SetHover(le);
+                _renderInfo._asNormal.ResetAnimationTime(STATE_HOVER);
+                _renderInfo._asHover.ResetAnimationTime(STATE_HOVER);
+                UpdateTooltip();
             }
 
-            if (le != null && le.href != null)
+            if (le != null && le._href != null)
             {
-                setMouseCursor(mouseCursorLink);
+                SetMouseCursor(_mouseCursorLink);
             }
             else
             {
-                setMouseCursor(mouseCursorNormal);
+                SetMouseCursor(_mouseCursorNormal);
             }
 
-            getAnimationState().setAnimationState(STATE_HOVER, lastMouseInside);
+            GetAnimationState().SetAnimationState(STATE_HOVER, _lastMouseInside);
         }
 
-        void forceRelayout()
+        void ForceRelayout()
         {
-            bForceRelayout = true;
-            preferredInnerSize = null;
-            invalidateLayout();
+            _bForceRelayout = true;
+            _preferredInnerSize = null;
+            InvalidateLayout();
         }
 
-        private void clearLayout()
+        private void ClearLayout()
         {
-            layoutRoot.destroy();
-            allBGImages.Clear();
-            base.removeAllChildren();
+            _layoutRoot.Destroy();
+            _allBGImages.Clear();
+            base.RemoveAllChildren();
         }
 
-        private void startLayout()
+        private void StartLayout()
         {
-            if (styleClassResolver != null)
+            if (_styleClassResolver != null)
             {
-                styleClassResolver.StartLayout();
+                _styleClassResolver.StartLayout();
             }
 
-            GUI gui = getGUI();
-            fontMapper = (gui != null) ? gui.getRenderer().FontMapper : null;
-            fontMapperCache = null;
+            GUI gui = GetGUI();
+            _fontMapper = (gui != null) ? gui.GetRenderer().FontMapper : null;
+            _fontMapperCache = null;
         }
 
-        private void endLayout()
+        private void EndLayout()
         {
-            if (styleClassResolver != null)
+            if (_styleClassResolver != null)
             {
-                styleClassResolver.LayoutFinished();
+                _styleClassResolver.LayoutFinished();
             }
-            fontMapper = null;
-            fontMapperCache = null;
+            _fontMapper = null;
+            _fontMapperCache = null;
         }
 
-        private void layoutElements(Box box, IEnumerable<Element> elements)
+        private void LayoutElements(Box box, IEnumerable<Element> elements)
         {
             foreach (Element e in elements)
             {
-                layoutElement(box, e);
+                LayoutElement(box, e);
             }
         }
 
-        private void layoutElement(Box box, Element e)
+        private void LayoutElement(Box box, Element e)
         {
-            box.clearFloater(e.GetStyle().Get(StyleAttribute.CLEAR, styleClassResolver));
+            box.ClearFloater(e.GetStyle().Get(StyleAttribute.CLEAR, _styleClassResolver));
 
             if (e is TextElement)
             {
-                layoutTextElement(box, (TextElement)e);
+                LayoutTextElement(box, (TextElement)e);
             }
             else if (e is LineBreakElement)
             {
-                box.nextLine(true);
+                box.NextLine(true);
             }
             else
             {
-                if (box.wasPreformatted)
+                if (box._wasPreformatted)
                 {
-                    box.nextLine(false);
-                    box.wasPreformatted = false;
+                    box.NextLine(false);
+                    box._wasPreformatted = false;
                 }
                 if (e is ParagraphElement)
                 {
-                    layoutParagraphElement(box, (ParagraphElement)e);
+                    LayoutParagraphElement(box, (ParagraphElement)e);
                 }
                 else if (e is ImageElement)
                 {
-                    layoutImageElement(box, (ImageElement)e);
+                    LayoutImageElement(box, (ImageElement)e);
                 }
                 else if (e is WidgetElement)
                 {
-                    layoutWidgetElement(box, (WidgetElement)e);
+                    LayoutWidgetElement(box, (WidgetElement)e);
                 }
                 else if (e is ListElement)
                 {
-                    layoutListElement(box, (ListElement)e);
+                    LayoutListElement(box, (ListElement)e);
                 }
                 else if (e is OrderedListElement)
                 {
-                    layoutOrderedListElement(box, (OrderedListElement)e);
+                    LayoutOrderedListElement(box, (OrderedListElement)e);
                 }
                 else if (e is BlockElement)
                 {
-                    layoutBlockElement(box, (BlockElement)e);
+                    LayoutBlockElement(box, (BlockElement)e);
                 }
                 else if (e is TableElement)
                 {
-                    layoutTableElement(box, (TableElement)e);
+                    LayoutTableElement(box, (TableElement)e);
                 }
                 else if (e is LinkElement)
                 {
-                    layoutLinkElement(box, (LinkElement)e);
+                    LayoutLinkElement(box, (LinkElement)e);
                 }
                 else if (e is ContainerElement)
                 {
-                    layoutContainerElement(box, (ContainerElement)e);
+                    LayoutContainerElement(box, (ContainerElement)e);
                 }
                 else
                 {
-                    Logger.GetLogger(typeof(TextArea)).log(Logger.Level.SEVERE, "Unknown Element subclass: {0}" + e.GetType().FullName);
+                    Logger.GetLogger(typeof(TextArea)).Log(Logger.Level.SEVERE, "Unknown Element subclass: {0}" + e.GetType().FullName);
                 }
             }
         }
 
-        private void layoutImageElement(Box box, ImageElement ie)
+        private void LayoutImageElement(Box box, ImageElement ie)
         {
-            Image image = selectImage(ie.GetImageName());
+            Image image = SelectImage(ie.GetImageName());
             if (image == null)
             {
                 return;
             }
 
             LImage li = new LImage(ie, image);
-            li.href = box.href;
-            layout(box, ie, li);
+            li._href = box._href;
+            Layout(box, ie, li);
         }
 
-        private void layoutWidgetElement(Box box, WidgetElement we)
+        private void LayoutWidgetElement(Box box, WidgetElement we)
         {
-            Widget widget = widgets[we.GetWidgetName()];
+            Widget widget = _widgets[we.GetWidgetName()];
             if (widget == null)
             {
-                WidgetResolver resolver = widgetResolvers[we.GetWidgetName()];
+                WidgetResolver resolver = _widgetResolvers[we.GetWidgetName()];
                 if (resolver != null)
                 {
-                    widget = resolver.resolveWidget(we.GetWidgetName(), we.GetWidgetParam());
+                    widget = resolver.ResolveWidget(we.GetWidgetName(), we.GetWidgetParam());
                 }
                 if (widget == null)
                 {
@@ -855,136 +854,136 @@ namespace XNATWL
                 }
             }
 
-            if (widget.getParent() != null)
+            if (widget.GetParent() != null)
             {
-                Logger.GetLogger(typeof(TextArea)).log(Logger.Level.SEVERE, "Widget already added: " + widget.getThemePath());
+                Logger.GetLogger(typeof(TextArea)).Log(Logger.Level.SEVERE, "Widget already added: " + widget.GetThemePath());
                 return;
             }
 
-            base.insertChild(widget, getNumChildren());
-            widget.adjustSize();
+            base.InsertChild(widget, GetNumChildren());
+            widget.AdjustSize();
 
             LWidget lw = new LWidget(we, widget);
-            lw.width = widget.getWidth();
-            lw.height = widget.getHeight();
+            lw._width = widget.GetWidth();
+            lw._height = widget.GetHeight();
 
-            layout(box, we, lw);
+            Layout(box, we, lw);
         }
 
-        private void layout(Box box, Element e, LElement le)
+        private void Layout(Box box, Element e, LElement le)
         {
             Style style = e.GetStyle();
 
-            FloatPosition floatPosition = style.Get(StyleAttribute.FLOAT_POSITION, styleClassResolver);
-            Display display = style.Get(StyleAttribute.DISPLAY, styleClassResolver);
+            FloatPosition floatPosition = style.Get(StyleAttribute.FLOAT_POSITION, _styleClassResolver);
+            Display display = style.Get(StyleAttribute.DISPLAY, _styleClassResolver);
 
-            le.marginTop = (short)convertToPX0(style, StyleAttribute.MARGIN_TOP, box.boxWidth);
-            le.marginLeft = (short)convertToPX0(style, StyleAttribute.MARGIN_LEFT, box.boxWidth);
-            le.marginRight = (short)convertToPX0(style, StyleAttribute.MARGIN_RIGHT, box.boxWidth);
-            le.marginBottom = (short)convertToPX0(style, StyleAttribute.MARGIN_BOTTOM, box.boxWidth);
+            le._marginTop = (short)ConvertToPX0(style, StyleAttribute.MARGIN_TOP, box._boxWidth);
+            le._marginLeft = (short)ConvertToPX0(style, StyleAttribute.MARGIN_LEFT, box._boxWidth);
+            le._marginRight = (short)ConvertToPX0(style, StyleAttribute.MARGIN_RIGHT, box._boxWidth);
+            le._marginBottom = (short)ConvertToPX0(style, StyleAttribute.MARGIN_BOTTOM, box._boxWidth);
 
-            int autoHeight = le.height;
-            int width = convertToPX(style, StyleAttribute.WIDTH, box.boxWidth, le.width);
+            int autoHeight = le._height;
+            int width = ConvertToPX(style, StyleAttribute.WIDTH, box._boxWidth, le._width);
             if (width > 0)
             {
-                if (le.width > 0)
+                if (le._width > 0)
                 {
-                    autoHeight = width * le.height / le.width;
+                    autoHeight = width * le._height / le._width;
                 }
-                le.width = width;
+                le._width = width;
             }
 
-            int height = convertToPX(style, StyleAttribute.HEIGHT, le.height, autoHeight);
+            int height = ConvertToPX(style, StyleAttribute.HEIGHT, le._height, autoHeight);
             if (height > 0)
             {
-                le.height = height;
+                le._height = height;
             }
 
-            layout(box, e, le, floatPosition, display);
+            Layout(box, e, le, floatPosition, display);
         }
 
-        private void layout(Box box, Element e, LElement le, FloatPosition floatPos, Display display)
+        private void Layout(Box box, Element e, LElement le, FloatPosition floatPos, Display display)
         {
             bool leftRight = (floatPos != FloatPosition.NONE);
 
             if (leftRight || display != Display.INLINE)
             {
-                box.nextLine(false);
+                box.NextLine(false);
                 if (!leftRight)
                 {
-                    box.curY = box.computeTopPadding(le.marginTop);
-                    box.checkFloaters();
+                    box._curY = box.ComputeTopPadding(le._marginTop);
+                    box.CheckFloaters();
                 }
             }
 
-            box.advancePastFloaters(le.width, le.marginLeft, le.marginRight);
-            if (le.width > box.lineWidth)
+            box.AdvancePastFloaters(le._width, le._marginLeft, le._marginRight);
+            if (le._width > box._lineWidth)
             {
-                le.width = box.lineWidth;
+                le._width = box._lineWidth;
             }
 
             if (leftRight)
             {
                 if (floatPos == FloatPosition.RIGHT)
                 {
-                    le.x = box.computeRightPadding(le.marginRight) - le.width;
-                    box.objRight.Add(le);
+                    le._x = box.ComputeRightPadding(le._marginRight) - le._width;
+                    box._objRight.Add(le);
                 }
                 else
                 {
-                    le.x = box.computeLeftPadding(le.marginLeft);
-                    box.objLeft.Add(le);
+                    le._x = box.ComputeLeftPadding(le._marginLeft);
+                    box._objLeft.Add(le);
                 }
             }
             else if (display == Display.INLINE)
             {
-                if (box.getRemaining() < le.width && !box.isAtStartOfLine())
+                if (box.GetRemaining() < le._width && !box.IsAtStartOfLine())
                 {
-                    box.nextLine(false);
+                    box.NextLine(false);
                 }
-                le.x = box.getXAndAdvance(le.width);
+                le._x = box.GetXAndAdvance(le._width);
             }
             else
             {
-                switch (e.GetStyle().Get(StyleAttribute.HORIZONTAL_ALIGNMENT, styleClassResolver))
+                switch (e.GetStyle().Get(StyleAttribute.HORIZONTAL_ALIGNMENT, _styleClassResolver))
                 {
                     case TextAreaModel.HAlignment.CENTER:
                     case TextAreaModel.HAlignment.JUSTIFY:
-                        le.x = box.lineStartX + (box.lineWidth - le.width) / 2;
+                        le._x = box._lineStartX + (box._lineWidth - le._width) / 2;
                         break;
 
                     case TextAreaModel.HAlignment.RIGHT:
-                        le.x = box.computeRightPadding(le.marginRight) - le.width;
+                        le._x = box.ComputeRightPadding(le._marginRight) - le._width;
                         break;
 
                     default:
-                        le.x = box.computeLeftPadding(le.marginLeft);
+                        le._x = box.ComputeLeftPadding(le._marginLeft);
                         break;
                 }
             }
 
-            box.layout.Add(le);
+            box._layout.Add(le);
 
             if (leftRight)
             {
-                System.Diagnostics.Debug.Assert(box.lineStartIdx == box.layout.Count - 1);
-                box.lineStartIdx++;
-                le.y = box.computeTopPadding(le.marginTop);
-                box.computePadding();
+                System.Diagnostics.Debug.Assert(box._lineStartIdx == box._layout.Count - 1);
+                box._lineStartIdx++;
+                le._y = box.ComputeTopPadding(le._marginTop);
+                box.ComputePadding();
             }
             else if (display != Display.INLINE)
             {
-                box.accountMinRemaining(Math.Max(0, box.lineWidth - le.width));
-                box.nextLine(false);
+                box.AccountMinRemaining(Math.Max(0, box._lineWidth - le._width));
+                box.NextLine(false);
             }
         }
 
         private static int DEFAULT_FONT_SIZE = 14;
 
-        int convertToPX(Style style, StyleAttribute<Value> attribute, int full, int auto)
+        int ConvertToPX(Style style, StyleAttribute<Value> attribute, int full, int auto)
         {
-            style = style.Resolve(attribute, styleClassResolver);
-            Value valueUnit = style.GetNoResolve(attribute, styleClassResolver);
+            style = style.Resolve(attribute, _styleClassResolver);
+            Value valueUnit = style.GetNoResolve(attribute, _styleClassResolver);
 
             Font font = null;
             if (valueUnit.UnitOfValue.FontBased)
@@ -997,7 +996,7 @@ namespace XNATWL
                         return DEFAULT_FONT_SIZE;
                     }
                 }
-                font = selectFont(style);
+                font = SelectFont(style);
                 if (font == null)
                 {
                     return 0;
@@ -1037,30 +1036,30 @@ namespace XNATWL
             return (int)Math.Round(value);
         }
 
-        int convertToPX0(Style style, StyleAttribute<Value> attribute, int full)
+        int ConvertToPX0(Style style, StyleAttribute<Value> attribute, int full)
         {
-            return Math.Max(0, convertToPX(style, attribute, full, 0));
+            return Math.Max(0, ConvertToPX(style, attribute, full, 0));
         }
 
-        private Font selectFont(Style style)
+        private Font SelectFont(Style style)
         {
-            List<string> fontFamilies = style.Get(StyleAttribute.FONT_FAMILIES, styleClassResolver);
+            List<string> fontFamilies = style.Get(StyleAttribute.FONT_FAMILIES, _styleClassResolver);
             if (fontFamilies != null)
             {
-                if (fontMapper != null)
+                if (_fontMapper != null)
                 {
-                    Font font = selectFontMapper(style, fontMapper, fontFamilies);
+                    Font font = SelectFontMapper(style, _fontMapper, fontFamilies);
                     if (font != null)
                     {
                         return font;
                     }
                 }
 
-                if (fonts != null)
+                if (_fonts != null)
                 {
-                    foreach(string fontFamily in fontFamilies)
+                    foreach (string fontFamily in fontFamilies)
                     {
-                        Font font = fonts.GetFont(fontFamily);
+                        Font font = _fonts.GetFont(fontFamily);
                         if (font != null)
                         {
                             return font;
@@ -1068,52 +1067,51 @@ namespace XNATWL
                     }
                 }
             }
-            return defaultFont;
+            return _defaultFont;
         }
 
-        private static StateSelect HOVER_STATESELECT =
-                new StateSelect(new Check(STATE_HOVER));
+        private static StateSelect HOVER_STATESELECT = new StateSelect(new Check(STATE_HOVER));
 
         private static int FONT_MAPPER_CACHE_SIZE = 16;
 
         public class FontMapperCacheEntry
         {
-            internal int fontSize;
-            internal int fontStyle;
-            internal List<string> fontFamilies;
-            internal TextDecoration tdNormal;
-            internal TextDecoration tdHover;
-            internal int hashCode;
-            internal Font font;
-            internal FontMapperCacheEntry next;
+            internal int _fontSize;
+            internal int _fontStyle;
+            internal List<string> _fontFamilies;
+            internal TextDecoration _tdNormal;
+            internal TextDecoration _tdHover;
+            internal int _hashCode;
+            internal Font _font;
+            internal FontMapperCacheEntry _next;
 
             internal FontMapperCacheEntry(int fontSize, int fontStyle, List<string> fontFamilies, TextDecoration tdNormal, TextDecoration tdHover, int hashCode, Font font)
             {
-                this.fontSize = fontSize;
-                this.fontStyle = fontStyle;
-                this.fontFamilies = fontFamilies;
-                this.tdNormal = tdNormal;
-                this.tdHover = tdHover;
-                this.hashCode = hashCode;
-                this.font = font;
+                this._fontSize = fontSize;
+                this._fontStyle = fontStyle;
+                this._fontFamilies = fontFamilies;
+                this._tdNormal = tdNormal;
+                this._tdHover = tdHover;
+                this._hashCode = hashCode;
+                this._font = font;
             }
         }
 
-        private Font selectFontMapper(Style style, FontMapper fontMapper, List<string> fontFamilies)
+        private Font SelectFontMapper(Style style, FontMapper fontMapper, List<string> fontFamilies)
         {
-            int fontSize = convertToPX(style, StyleAttribute.FONT_SIZE, DEFAULT_FONT_SIZE, DEFAULT_FONT_SIZE);
+            int fontSize = ConvertToPX(style, StyleAttribute.FONT_SIZE, DEFAULT_FONT_SIZE, DEFAULT_FONT_SIZE);
             int fontStyle = 0;
-            if (style.Get(StyleAttribute.FONT_WEIGHT, styleClassResolver) >= 550)
+            if (style.Get(StyleAttribute.FONT_WEIGHT, _styleClassResolver) >= 550)
             {
                 fontStyle |= FontMapperStatics.STYLE_BOLD;
             }
-            if (style.Get(StyleAttribute.FONT_ITALIC, styleClassResolver))
+            if (style.Get(StyleAttribute.FONT_ITALIC, _styleClassResolver))
             {
                 fontStyle |= FontMapperStatics.STYLE_ITALIC;
             }
 
-            TextDecoration textDecoration = (TextDecoration) style.GetAsObject(StyleAttribute.TEXT_DECORATION, styleClassResolver);
-            TextDecoration textDecorationHover =  (TextDecoration) style.GetAsObject(StyleAttribute.TEXT_DECORATION_HOVER, styleClassResolver);
+            TextDecoration textDecoration = (TextDecoration)style.GetAsObject(StyleAttribute.TEXT_DECORATION, _styleClassResolver);
+            TextDecoration textDecorationHover = (TextDecoration)style.GetAsObject(StyleAttribute.TEXT_DECORATION_HOVER, _styleClassResolver);
 
             int hashCode = fontSize;
             hashCode = hashCode * 67 + fontStyle;
@@ -1123,34 +1121,34 @@ namespace XNATWL
 
             int cacheIdx = hashCode & (FONT_MAPPER_CACHE_SIZE - 1);
 
-            if (fontMapperCache != null)
+            if (_fontMapperCache != null)
             {
-                for (FontMapperCacheEntry cache = fontMapperCache[cacheIdx]; cache != null; cache = cache.next)
+                for (FontMapperCacheEntry cache = _fontMapperCache[cacheIdx]; cache != null; cache = cache._next)
                 {
-                    if (cache.hashCode == hashCode &&
-                            cache.fontSize == fontSize &&
-                            cache.fontStyle == fontStyle &&
-                            cache.tdNormal == textDecoration &&
-                            cache.tdHover == textDecorationHover &&
-                            cache.fontFamilies.Equals(fontFamilies))
+                    if (cache._hashCode == hashCode &&
+                            cache._fontSize == fontSize &&
+                            cache._fontStyle == fontStyle &&
+                            cache._tdNormal == textDecoration &&
+                            cache._tdHover == textDecorationHover &&
+                            cache._fontFamilies.Equals(fontFamilies))
                     {
-                        return cache.font;
+                        return cache._font;
                     }
                 }
             }
             else
             {
-                fontMapperCache = new FontMapperCacheEntry[FONT_MAPPER_CACHE_SIZE];
+                _fontMapperCache = new FontMapperCacheEntry[FONT_MAPPER_CACHE_SIZE];
             }
 
-            FontParameter fpNormal = createFontParameter(textDecoration);
+            FontParameter fpNormal = CreateFontParameter(textDecoration);
 
             StateSelect select;
             FontParameter[] parameters;
 
             if (textDecorationHover != null)
             {
-                FontParameter fpHover = createFontParameter(textDecorationHover);
+                FontParameter fpHover = CreateFontParameter(textDecorationHover);
 
                 select = HOVER_STATESELECT;
                 parameters = new FontParameter[] { fpHover, fpNormal };
@@ -1165,13 +1163,13 @@ namespace XNATWL
 
             FontMapperCacheEntry ce = new FontMapperCacheEntry(fontSize, fontStyle,
                     fontFamilies, textDecoration, textDecorationHover, hashCode, font);
-            ce.next = fontMapperCache[cacheIdx];
-            fontMapperCache[cacheIdx] = ce;
+            ce._next = _fontMapperCache[cacheIdx];
+            _fontMapperCache[cacheIdx] = ce;
 
             return font;
         }
 
-        private static FontParameter createFontParameter(TextDecoration deco)
+        private static FontParameter CreateFontParameter(TextDecoration deco)
         {
             FontParameter fp = new FontParameter();
             fp.Put(FontParameter.UNDERLINE, deco == TextDecoration.UNDERLINE);
@@ -1179,25 +1177,25 @@ namespace XNATWL
             return fp;
         }
 
-        private FontData createFontData(Style style)
+        private FontData CreateFontData(Style style)
         {
-            Font font = selectFont(style);
+            Font font = SelectFont(style);
             if (font == null)
             {
                 return null;
             }
 
             return new FontData(font,
-                    style.Get(StyleAttribute.COLOR, styleClassResolver),
-                    style.Get(StyleAttribute.COLOR_HOVER, styleClassResolver));
+                    style.Get(StyleAttribute.COLOR, _styleClassResolver),
+                    style.Get(StyleAttribute.COLOR_HOVER, _styleClassResolver));
         }
 
-        private Image selectImage(Style style, StyleAttribute<String> element)
+        private Image SelectImage(Style style, StyleAttribute<String> element)
         {
-            String imageName = style.Get(element, styleClassResolver);
+            String imageName = style.Get(element, _styleClassResolver);
             if (imageName != null)
             {
-                return selectImage(imageName);
+                return SelectImage(imageName);
             }
             else
             {
@@ -1205,60 +1203,60 @@ namespace XNATWL
             }
         }
 
-        private Image selectImage(String name)
+        private Image SelectImage(String name)
         {
             Image image = null;
-            if (userImages.ContainsKey(name))
+            if (_userImages.ContainsKey(name))
             {
-                image = userImages[name];
+                image = _userImages[name];
             }
             if (image != null)
             {
                 return image;
             }
-            for (int i = 0; i < imageResolvers.Count; i++)
+            for (int i = 0; i < _imageResolvers.Count; i++)
             {
-                image = imageResolvers[i].resolveImage(name);
+                image = _imageResolvers[i].ResolveImage(name);
                 if (image != null)
                 {
                     return image;
                 }
             }
-            if (images != null)
+            if (_images != null)
             {
-                return images.GetImage(name);
+                return _images.GetImage(name);
             }
             return null;
         }
 
-        private void layoutParagraphElement(Box box, ParagraphElement pe)
+        private void LayoutParagraphElement(Box box, ParagraphElement pe)
         {
             Style style = pe.GetStyle();
-            Font font = selectFont(style);
+            Font font = SelectFont(style);
 
-            doMarginTop(box, style);
-            LElement anchor = box.addAnchor(pe);
-            box.setupTextParams(style, font, true);
+            DoMarginTop(box, style);
+            LElement anchor = box.AddAnchor(pe);
+            box.SetupTextParams(style, font, true);
 
-            layoutElements(box, pe);
+            LayoutElements(box, pe);
 
-            if (box.textAlignment == TextAreaModel.HAlignment.JUSTIFY)
+            if (box._textAlignment == TextAreaModel.HAlignment.JUSTIFY)
             {
-                box.textAlignment = TextAreaModel.HAlignment.LEFT;
+                box._textAlignment = TextAreaModel.HAlignment.LEFT;
             }
-            box.nextLine(false);
-            box.inParagraph = false;
+            box.NextLine(false);
+            box._inParagraph = false;
 
-            anchor.height = box.curY - anchor.y;
-            doMarginBottom(box, style);
+            anchor._height = box._curY - anchor._y;
+            DoMarginBottom(box, style);
         }
 
-        private void layoutTextElement(Box box, TextElement te)
+        private void LayoutTextElement(Box box, TextElement te)
         {
             String text = te.GetText();
             Style style = te.GetStyle();
-            FontData fontData = createFontData(style);
-            bool pre = style.Get(StyleAttribute.PREFORMATTED, styleClassResolver);
+            FontData fontData = CreateFontData(style);
+            bool pre = style.Get(StyleAttribute.PREFORMATTED, _styleClassResolver);
 
             if (fontData == null)
             {
@@ -1266,21 +1264,21 @@ namespace XNATWL
             }
 
             bool inheritHover;
-            object inheritHoverStyle = style.Resolve(StyleAttribute.INHERIT_HOVER, styleClassResolver).GetRawAsObject(StyleAttribute.INHERIT_HOVER);
+            object inheritHoverStyle = style.Resolve(StyleAttribute.INHERIT_HOVER, _styleClassResolver).GetRawAsObject(StyleAttribute.INHERIT_HOVER);
             if (inheritHoverStyle != null)
             {
-                inheritHover = (bool) inheritHoverStyle;
+                inheritHover = (bool)inheritHoverStyle;
             }
             else
             {
-                inheritHover = (box.style != null) && (box.style == style.Parent);
+                inheritHover = (box._style != null) && (box._style == style.Parent);
             }
 
-            box.setupTextParams(style, fontData.font, false);
+            box.SetupTextParams(style, fontData._font, false);
 
-            if (pre && !box.wasPreformatted)
+            if (pre && !box._wasPreformatted)
             {
-                box.nextLine(false);
+                box.NextLine(false);
             }
 
             if (pre)
@@ -1289,47 +1287,47 @@ namespace XNATWL
                 while (idx < text.Length)
                 {
                     int end = TextUtil.IndexOf(text, '\n', idx);
-                    layoutTextPre(box, te, fontData, text, idx, end, inheritHover);
+                    LayoutTextPre(box, te, fontData, text, idx, end, inheritHover);
                     if (end < text.Length && text[end] == '\n')
                     {
                         end++;
-                        box.nextLine(true);
+                        box.NextLine(true);
                     }
                     idx = end;
                 }
             }
             else
             {
-                layoutText(box, te, fontData, text, 0, text.Length, inheritHover);
+                LayoutText(box, te, fontData, text, 0, text.Length, inheritHover);
             }
 
-            box.wasPreformatted = pre;
+            box._wasPreformatted = pre;
         }
 
-        private void layoutText(Box box, TextElement te, FontData fontData,
+        private void LayoutText(Box box, TextElement te, FontData fontData,
                 String text, int textStart, int textEnd, bool inheritHover)
         {
             int idx = textStart;
             // trim start
-            while (textStart < textEnd && isSkip(text[textStart]))
+            while (textStart < textEnd && IsSkip(text[textStart]))
             {
                 textStart++;
             }
             // trim end
             bool endsWithSpace = false;
-            while (textEnd > textStart && isSkip(text[textEnd - 1]))
+            while (textEnd > textStart && IsSkip(text[textEnd - 1]))
             {
                 endsWithSpace = true;
                 textEnd--;
             }
 
-            Font font = fontData.font;
+            Font font = fontData._font;
 
             // check if we skipped white spaces and the previous element in this
             // row was not a text cell
-            if (textStart > idx && box.prevOnLineEndsNotWithSpace())
+            if (textStart > idx && box.PrevOnLineEndsNotWithSpace())
             {
-                box.curX += font.SpaceWidth;
+                box._curX += font.SpaceWidth;
             }
 
             object breakWord = null;    // lazy lookup
@@ -1337,13 +1335,13 @@ namespace XNATWL
             idx = textStart;
             while (idx < textEnd)
             {
-                System.Diagnostics.Debug.Assert(!isSkip(text[idx]));
+                System.Diagnostics.Debug.Assert(!IsSkip(text[idx]));
 
                 int end = idx;
                 int visibleEnd = idx;
-                if (box.textAlignment != TextAreaModel.HAlignment.JUSTIFY)
+                if (box._textAlignment != TextAreaModel.HAlignment.JUSTIFY)
                 {
-                    end = idx + font.ComputeVisibleGlyphs(text, idx, textEnd, box.getRemaining());
+                    end = idx + font.ComputeVisibleGlyphs(text, idx, textEnd, box.GetRemaining());
                     visibleEnd = end;
 
                     if (end < textEnd)
@@ -1351,18 +1349,18 @@ namespace XNATWL
                         // if we are at a punctuation then walk backwards until we hit
                         // the word or a break. This ensures that the punctuation stays
                         // at the end of a word
-                        while (end > idx && isPunctuation(text[end]))
+                        while (end > idx && IsPunctuation(text[end]))
                         {
                             end--;
                         }
 
                         // if we are not at the end of this text element
                         // and the next character is not a space
-                        if (!isBreak(text[end]))
+                        if (!IsBreak(text[end]))
                         {
                             // then we walk backwards until we find spaces
                             // this prevents the line ending in the middle of a word
-                            while (end > idx && !isBreak(text[end - 1]))
+                            while (end > idx && !IsBreak(text[end - 1]))
                             {
                                 end--;
                             }
@@ -1370,7 +1368,7 @@ namespace XNATWL
                     }
 
                     // now walks backwards until we hit the end of the previous word
-                    while (end > idx && isSkip(text[end - 1]))
+                    while (end > idx && IsSkip(text[end - 1]))
                     {
                         end--;
                     }
@@ -1382,13 +1380,13 @@ namespace XNATWL
                 if (end == idx)
                 {
                     // we may need a new line
-                    if (box.textAlignment != TextAreaModel.HAlignment.JUSTIFY && box.nextLine(false))
+                    if (box._textAlignment != TextAreaModel.HAlignment.JUSTIFY && box.NextLine(false))
                     {
                         continue;
                     }
                     if (breakWord == null)
                     {
-                        breakWord = te.GetStyle().Get(StyleAttribute.BREAKWORD, styleClassResolver);
+                        breakWord = te.GetStyle().Get(StyleAttribute.BREAKWORD, _styleClassResolver);
                     }
                     if ((bool)breakWord)
                     {
@@ -1405,12 +1403,12 @@ namespace XNATWL
                     {
                         // or we already are at the start of a line
                         // just put the word there even if it doesn't fit
-                        while (end < textEnd && !isBreak(text[end]))
+                        while (end < textEnd && !IsBreak(text[end]))
                         {
                             end++;
                         }
                         // some characters need to stay at the end of a word
-                        while (end < textEnd && isPunctuation(text[end]))
+                        while (end < textEnd && IsPunctuation(text[end]))
                         {
                             end++;
                         }
@@ -1420,47 +1418,47 @@ namespace XNATWL
 
                 if (idx < end)
                 {
-                    LText lt = new LText(te, fontData, text, idx, end, box.doCacheText);
+                    LText lt = new LText(te, fontData, text, idx, end, box._doCacheText);
                     if (advancePastFloaters)
                     {
-                        box.advancePastFloaters(lt.width, box.marginLeft, box.marginRight);
+                        box.AdvancePastFloaters(lt._width, box._marginLeft, box._marginRight);
                     }
-                    if (box.textAlignment == TextAreaModel.HAlignment.JUSTIFY && box.getRemaining() < lt.width)
+                    if (box._textAlignment == TextAreaModel.HAlignment.JUSTIFY && box.GetRemaining() < lt._width)
                     {
-                        box.nextLine(false);
+                        box.NextLine(false);
                     }
 
-                    int width = lt.width;
-                    if (end < textEnd && isSkip(text[end]))
+                    int width = lt._width;
+                    if (end < textEnd && IsSkip(text[end]))
                     {
                         width += font.SpaceWidth;
                     }
 
-                    lt.x = box.getXAndAdvance(width);
-                    lt.marginTop = (short)box.marginTop;
-                    lt.href = box.href;
-                    lt.inheritHover = inheritHover;
-                    box.layout.Add(lt);
+                    lt._x = box.GetXAndAdvance(width);
+                    lt._marginTop = (short)box._marginTop;
+                    lt._href = box._href;
+                    lt._inheritHover = inheritHover;
+                    box._layout.Add(lt);
                 }
 
                 // find the start of the next word
                 idx = end;
-                while (idx < textEnd && isSkip(text[idx]))
+                while (idx < textEnd && IsSkip(text[idx]))
                 {
                     idx++;
                 }
             }
 
-            if (!box.isAtStartOfLine() && endsWithSpace)
+            if (!box.IsAtStartOfLine() && endsWithSpace)
             {
-                box.curX += font.SpaceWidth;
+                box._curX += font.SpaceWidth;
             }
         }
 
-        private void layoutTextPre(Box box, TextElement te, FontData fontData,
+        private void LayoutTextPre(Box box, TextElement te, FontData fontData,
                 String text, int textStart, int textEnd, bool inheritHover)
         {
-            Font font = fontData.font;
+            Font font = fontData._font;
             int idx = textStart;
             for (; ; )
             {
@@ -1469,12 +1467,12 @@ namespace XNATWL
                     if (text[idx] == '\t')
                     {
                         idx++;
-                        int tabX = box.computeNextTabStop(te.GetStyle(), font);
-                        if (tabX < box.lineWidth)
+                        int tabX = box.ComputeNextTabStop(te.GetStyle(), font);
+                        if (tabX < box._lineWidth)
                         {
-                            box.curX = tabX;
+                            box._curX = tabX;
                         }
-                        else if (!box.isAtStartOfLine())
+                        else if (!box.IsAtStartOfLine())
                         {
                             break;
                         }
@@ -1489,19 +1487,19 @@ namespace XNATWL
 
                     if (end > idx)
                     {
-                        int count = font.ComputeVisibleGlyphs(text, idx, end, box.getRemaining());
-                        if (count == 0 && !box.isAtStartOfLine())
+                        int count = font.ComputeVisibleGlyphs(text, idx, end, box.GetRemaining());
+                        if (count == 0 && !box.IsAtStartOfLine())
                         {
                             break;
                         }
 
                         end = idx + Math.Max(1, count);
 
-                        LText lt = new LText(te, fontData, text, idx, end, box.doCacheText);
-                        lt.x = box.getXAndAdvance(lt.width);
-                        lt.marginTop = (short)box.marginTop;
-                        lt.inheritHover = inheritHover;
-                        box.layout.Add(lt);
+                        LText lt = new LText(te, fontData, text, idx, end, box._doCacheText);
+                        lt._x = box.GetXAndAdvance(lt._width);
+                        lt._marginTop = (short)box._marginTop;
+                        lt._inheritHover = inheritHover;
+                        box._layout.Add(lt);
                     }
 
                     idx = end;
@@ -1512,107 +1510,107 @@ namespace XNATWL
                     break;
                 }
 
-                box.nextLine(false);
+                box.NextLine(false);
             }
         }
 
-        private void doMarginTop(Box box, Style style)
+        private void DoMarginTop(Box box, Style style)
         {
-            int marginTop = convertToPX0(style, StyleAttribute.MARGIN_TOP, box.boxWidth);
-            box.nextLine(false);    // need to complete line before computing targetY
-            box.advanceToY(box.computeTopPadding(marginTop));
+            int marginTop = ConvertToPX0(style, StyleAttribute.MARGIN_TOP, box._boxWidth);
+            box.NextLine(false);    // need to complete line before computing targetY
+            box.AdvanceToY(box.ComputeTopPadding(marginTop));
         }
 
-        private void doMarginBottom(Box box, Style style)
+        private void DoMarginBottom(Box box, Style style)
         {
-            int marginBottom = convertToPX0(style, StyleAttribute.MARGIN_BOTTOM, box.boxWidth);
-            box.setMarginBottom(marginBottom);
+            int marginBottom = ConvertToPX0(style, StyleAttribute.MARGIN_BOTTOM, box._boxWidth);
+            box.SetMarginBottom(marginBottom);
         }
 
-        private void layoutContainerElement(Box box, ContainerElement ce)
+        private void LayoutContainerElement(Box box, ContainerElement ce)
         {
             Style style = ce.GetStyle();
-            doMarginTop(box, style);
-            box.addAnchor(ce);
-            layoutElements(box, ce);
-            doMarginBottom(box, style);
+            DoMarginTop(box, style);
+            box.AddAnchor(ce);
+            LayoutElements(box, ce);
+            DoMarginBottom(box, style);
         }
 
-        private void layoutLinkElement(Box box, LinkElement le)
+        private void LayoutLinkElement(Box box, LinkElement le)
         {
-            String oldHref = box.href;
-            box.href = le.GetHREF();
+            String oldHref = box._href;
+            box._href = le.GetHREF();
 
             Style style = le.GetStyle();
-            Display display = style.Get(StyleAttribute.DISPLAY, styleClassResolver);
+            Display display = style.Get(StyleAttribute.DISPLAY, _styleClassResolver);
             if (display == Display.BLOCK)
             {
-                layoutBlockElement(box, le);
+                LayoutBlockElement(box, le);
             }
             else
             {
-                layoutContainerElement(box, le);
+                LayoutContainerElement(box, le);
             }
 
-            box.href = oldHref;
+            box._href = oldHref;
         }
 
-        private void layoutListElement(Box box, ListElement le)
+        private void LayoutListElement(Box box, ListElement le)
         {
             Style style = le.GetStyle();
 
-            doMarginTop(box, style);
+            DoMarginTop(box, style);
 
-            Image image = selectImage(style, StyleAttribute.LIST_STYLE_IMAGE);
+            Image image = SelectImage(style, StyleAttribute.LIST_STYLE_IMAGE);
             if (image != null)
             {
                 LImage li = new LImage(le, image);
-                li.marginRight = (short)convertToPX0(style, StyleAttribute.PADDING_LEFT, box.boxWidth);
-                layout(box, le, li, FloatPosition.LEFT, Display.BLOCK);
+                li._marginRight = (short)ConvertToPX0(style, StyleAttribute.PADDING_LEFT, box._boxWidth);
+                Layout(box, le, li, FloatPosition.LEFT, Display.BLOCK);
 
-                int imageHeight = li.height;
-                li.height = short.MaxValue;
+                int imageHeight = li._height;
+                li._height = short.MaxValue;
 
-                layoutElements(box, le);
+                LayoutElements(box, le);
 
-                li.height = imageHeight;
+                li._height = imageHeight;
 
-                box.objLeft.Remove(li);
-                box.advanceToY(li.bottom());
-                box.computePadding();
+                box._objLeft.Remove(li);
+                box.AdvanceToY(li.Bottom());
+                box.ComputePadding();
             }
             else
             {
-                layoutElements(box, le);
-                box.nextLine(false);
+                LayoutElements(box, le);
+                box.NextLine(false);
             }
 
-            doMarginBottom(box, style);
+            DoMarginBottom(box, style);
         }
 
-        private void layoutOrderedListElement(Box box, OrderedListElement ole)
+        private void LayoutOrderedListElement(Box box, OrderedListElement ole)
         {
             Style style = ole.GetStyle();
-            FontData fontData = createFontData(style);
+            FontData fontData = CreateFontData(style);
 
             if (fontData == null)
             {
                 return;
             }
 
-            doMarginTop(box, style);
-            LElement anchor = box.addAnchor(ole);
+            DoMarginTop(box, style);
+            LElement anchor = box.AddAnchor(ole);
 
             int start = Math.Max(1, ole.GetStart());
             int count = ole.Count;
-            OrderedListType type = style.Get(StyleAttribute.LIST_STYLE_TYPE, styleClassResolver);
+            OrderedListType type = style.Get(StyleAttribute.LIST_STYLE_TYPE, _styleClassResolver);
 
             String[] labels = new String[count];
-            int maxLabelWidth = convertToPX0(style, StyleAttribute.PADDING_LEFT, box.boxWidth);
+            int maxLabelWidth = ConvertToPX0(style, StyleAttribute.PADDING_LEFT, box._boxWidth);
             for (int i = 0; i < count; i++)
             {
                 labels[i] = type.Format(start + i) + ". ";
-                int width = fontData.font.ComputeTextWidth(labels[i]);
+                int width = fontData._font.ComputeTextWidth(labels[i]);
                 maxLabelWidth = Math.Max(maxLabelWidth, width);
             }
 
@@ -1621,51 +1619,51 @@ namespace XNATWL
                 String label = labels[i];
                 Element li = ole.ElementAt(i);
                 Style liStyle = li.GetStyle();
-                doMarginTop(box, liStyle);
+                DoMarginTop(box, liStyle);
 
-                LText lt = new LText(ole, fontData, label, 0, label.Length, box.doCacheText);
-                int labelWidth = lt.width;
-                int labelHeight = lt.height;
+                LText lt = new LText(ole, fontData, label, 0, label.Length, box._doCacheText);
+                int labelWidth = lt._width;
+                int labelHeight = lt._height;
 
-                lt.width += convertToPX0(liStyle, StyleAttribute.PADDING_LEFT, box.boxWidth);
-                layout(box, ole, lt, FloatPosition.LEFT, Display.BLOCK);
-                lt.x += Math.Max(0, maxLabelWidth - labelWidth);
-                lt.height = short.MaxValue;
+                lt._width += ConvertToPX0(liStyle, StyleAttribute.PADDING_LEFT, box._boxWidth);
+                Layout(box, ole, lt, FloatPosition.LEFT, Display.BLOCK);
+                lt._x += Math.Max(0, maxLabelWidth - labelWidth);
+                lt._height = short.MaxValue;
 
-                layoutElement(box, li);
+                LayoutElement(box, li);
 
-                lt.height = labelHeight;
+                lt._height = labelHeight;
 
-                box.objLeft.Remove(lt);
-                box.advanceToY(lt.bottom());
-                box.computePadding();
+                box._objLeft.Remove(lt);
+                box.AdvanceToY(lt.Bottom());
+                box.ComputePadding();
 
-                doMarginBottom(box, liStyle);
+                DoMarginBottom(box, liStyle);
             }
 
-            anchor.height = box.curY - anchor.y;
-            doMarginBottom(box, style);
+            anchor._height = box._curY - anchor._y;
+            DoMarginBottom(box, style);
         }
 
-        private Box layoutBox(LClip clip, int continerWidth, int paddingLeft, int paddingRight, ContainerElement ce, String href, bool doCacheText)
+        private Box LayoutBox(LClip clip, int continerWidth, int paddingLeft, int paddingRight, ContainerElement ce, String href, bool doCacheText)
         {
             Style style = ce.GetStyle();
-            int paddingTop = convertToPX0(style, StyleAttribute.PADDING_TOP, continerWidth);
-            int paddingBottom = convertToPX0(style, StyleAttribute.PADDING_BOTTOM, continerWidth);
-            int marginBottom = convertToPX0(style, StyleAttribute.MARGIN_BOTTOM, continerWidth);
+            int paddingTop = ConvertToPX0(style, StyleAttribute.PADDING_TOP, continerWidth);
+            int paddingBottom = ConvertToPX0(style, StyleAttribute.PADDING_BOTTOM, continerWidth);
+            int marginBottom = ConvertToPX0(style, StyleAttribute.MARGIN_BOTTOM, continerWidth);
 
             Box box = new Box(this, clip, paddingLeft, paddingRight, paddingTop, doCacheText);
-            box.href = href;
-            box.style = style;
-            layoutElements(box, ce);
-            box.finish();
+            box._href = href;
+            box._style = style;
+            LayoutElements(box, ce);
+            box.Finish();
 
-            int contentHeight = box.curY + paddingBottom;
-            int boxHeight = Math.Max(contentHeight, convertToPX(style, StyleAttribute.HEIGHT, contentHeight, contentHeight));
+            int contentHeight = box._curY + paddingBottom;
+            int boxHeight = Math.Max(contentHeight, ConvertToPX(style, StyleAttribute.HEIGHT, contentHeight, contentHeight));
             if (boxHeight > contentHeight)
             {
                 int amount = 0;
-                TextAreaModel.VAlignment vAlign = style.Get(StyleAttribute.VERTICAL_ALIGNMENT, styleClassResolver);
+                TextAreaModel.VAlignment vAlign = style.Get(StyleAttribute.VERTICAL_ALIGNMENT, _styleClassResolver);
                 if (vAlign == TextAreaModel.VAlignment.BOTTOM)
                 {
                     amount = boxHeight - contentHeight;
@@ -1677,52 +1675,52 @@ namespace XNATWL
 
                 if (amount > 0)
                 {
-                    clip.moveContentY(amount);
+                    clip.MoveContentY(amount);
                 }
             }
 
-            clip.height = boxHeight;
-            clip.marginBottom = (short)Math.Max(marginBottom, box.marginBottomAbs - box.curY);
+            clip._height = boxHeight;
+            clip._marginBottom = (short)Math.Max(marginBottom, box._marginBottomAbs - box._curY);
             return box;
         }
 
-        private void layoutBlockElement(Box box, ContainerElement be)
+        private void LayoutBlockElement(Box box, ContainerElement be)
         {
-            box.nextLine(false);
+            box.NextLine(false);
 
             Style style = be.GetStyle();
-            FloatPosition floatPosition = style.Get(StyleAttribute.FLOAT_POSITION, styleClassResolver);
+            FloatPosition floatPosition = style.Get(StyleAttribute.FLOAT_POSITION, _styleClassResolver);
 
-            LImage bgImage = createBGImage(box, be);
+            LImage bgImage = CreateBGImage(box, be);
 
-            int marginTop = convertToPX0(style, StyleAttribute.MARGIN_TOP, box.boxWidth);
-            int marginLeft = convertToPX0(style, StyleAttribute.MARGIN_LEFT, box.boxWidth);
-            int marginRight = convertToPX0(style, StyleAttribute.MARGIN_RIGHT, box.boxWidth);
+            int marginTop = ConvertToPX0(style, StyleAttribute.MARGIN_TOP, box._boxWidth);
+            int marginLeft = ConvertToPX0(style, StyleAttribute.MARGIN_LEFT, box._boxWidth);
+            int marginRight = ConvertToPX0(style, StyleAttribute.MARGIN_RIGHT, box._boxWidth);
 
-            int bgX = box.computeLeftPadding(marginLeft);
-            int bgY = box.computeTopPadding(marginTop);
+            int bgX = box.ComputeLeftPadding(marginLeft);
+            int bgY = box.ComputeTopPadding(marginTop);
             int bgWidth;
 
-            int remaining = Math.Max(0, box.computeRightPadding(marginRight) - bgX);
-            int paddingLeft = convertToPX0(style, StyleAttribute.PADDING_LEFT, box.boxWidth);
-            int paddingRight = convertToPX0(style, StyleAttribute.PADDING_RIGHT, box.boxWidth);
+            int remaining = Math.Max(0, box.ComputeRightPadding(marginRight) - bgX);
+            int paddingLeft = ConvertToPX0(style, StyleAttribute.PADDING_LEFT, box._boxWidth);
+            int paddingRight = ConvertToPX0(style, StyleAttribute.PADDING_RIGHT, box._boxWidth);
 
             if (floatPosition == FloatPosition.NONE)
             {
-                bgWidth = convertToPX(style, StyleAttribute.WIDTH, remaining, remaining);
+                bgWidth = ConvertToPX(style, StyleAttribute.WIDTH, remaining, remaining);
             }
             else
             {
-                bgWidth = convertToPX(style, StyleAttribute.WIDTH, box.boxWidth, int.MinValue);
+                bgWidth = ConvertToPX(style, StyleAttribute.WIDTH, box._boxWidth, int.MinValue);
                 if (bgWidth == int.MinValue)
                 {
                     LClip dummy = new LClip(null);
-                    dummy.width = Math.Max(0, box.lineWidth - paddingLeft - paddingRight);
+                    dummy._width = Math.Max(0, box._lineWidth - paddingLeft - paddingRight);
 
-                    Box dummyBox = layoutBox(dummy, box.boxWidth, paddingLeft, paddingRight, be, null, false);
-                    dummyBox.nextLine(false);
+                    Box dummyBox = LayoutBox(dummy, box._boxWidth, paddingLeft, paddingRight, be, null, false);
+                    dummyBox.NextLine(false);
 
-                    bgWidth = Math.Max(0, dummy.width - dummyBox.minRemainingWidth);
+                    bgWidth = Math.Max(0, dummy._width - dummyBox._minRemainingWidth);
                 }
             }
 
@@ -1730,65 +1728,64 @@ namespace XNATWL
 
             if (floatPosition != FloatPosition.NONE)
             {
-                box.advancePastFloaters(bgWidth, marginLeft, marginRight);
+                box.AdvancePastFloaters(bgWidth, marginLeft, marginRight);
 
-                bgX = box.computeLeftPadding(marginLeft);
-                bgY = Math.Max(bgY, box.curY);
-                remaining = Math.Max(0, box.computeRightPadding(marginRight) - bgX);
+                bgX = box.ComputeLeftPadding(marginLeft);
+                bgY = Math.Max(bgY, box._curY);
+                remaining = Math.Max(0, box.ComputeRightPadding(marginRight) - bgX);
             }
 
             bgWidth = Math.Min(bgWidth, remaining);
 
             if (floatPosition == FloatPosition.RIGHT)
             {
-                bgX = box.computeRightPadding(marginRight) - bgWidth;
+                bgX = box.ComputeRightPadding(marginRight) - bgWidth;
             }
 
             LClip clip = new LClip(be);
-            clip.x = bgX;
-            clip.y = bgY;
-            clip.width = bgWidth;
-            clip.marginLeft = (short)marginLeft;
-            clip.marginRight = (short)marginRight;
-            clip.href = box.href;
-            box.layout.Add(clip);
+            clip._x = bgX;
+            clip._y = bgY;
+            clip._width = bgWidth;
+            clip._marginLeft = (short)marginLeft;
+            clip._marginRight = (short)marginRight;
+            clip._href = box._href;
+            box._layout.Add(clip);
 
-            Box clipBox = layoutBox(clip, box.boxWidth, paddingLeft, paddingRight, be, box.href, box.doCacheText);
+            Box clipBox = LayoutBox(clip, box._boxWidth, paddingLeft, paddingRight, be, box._href, box._doCacheText);
 
             // sync main box with layout
-            box.lineStartIdx = box.layout.Count;
+            box._lineStartIdx = box._layout.Count;
 
             if (floatPosition == FloatPosition.NONE)
             {
-                box.advanceToY(bgY + clip.height);
-                box.setMarginBottom(clip.marginBottom);
-                box.accountMinRemaining(clipBox.minRemainingWidth);
+                box.AdvanceToY(bgY + clip._height);
+                box.SetMarginBottom(clip._marginBottom);
+                box.AccountMinRemaining(clipBox._minRemainingWidth);
             }
             else
             {
                 if (floatPosition == FloatPosition.RIGHT)
                 {
-                    box.objRight.Add(clip);
+                    box._objRight.Add(clip);
                 }
                 else
                 {
-                    box.objLeft.Add(clip);
+                    box._objLeft.Add(clip);
                 }
-                box.computePadding();
+                box.ComputePadding();
             }
 
             if (bgImage != null)
             {
-                bgImage.x = bgX;
-                bgImage.y = bgY;
-                bgImage.width = bgWidth;
-                bgImage.height = clip.height;
-                bgImage.hoverSrc = clip;
+                bgImage._x = bgX;
+                bgImage._y = bgY;
+                bgImage._width = bgWidth;
+                bgImage._height = clip._height;
+                bgImage._hoverSrc = clip;
             }
         }
 
-        private void computeTableWidth(TableElement te,
-                int maxTableWidth, int[] columnWidth, int[] columnSpacing, bool[] columnsWithFixedWidth)
+        private void ComputeTableWidth(TableElement te, int maxTableWidth, int[] columnWidth, int[] columnSpacing, bool[] columnsWithFixedWidth)
         {
             int numColumns = te.GetNumColumns();
             int numRows = te.GetNumRows();
@@ -1811,18 +1808,18 @@ namespace XNATWL
                     {
                         Style cellStyle = cell.GetStyle();
                         int colspan = cell.GetColspan();
-                        int cellWidth = convertToPX(cellStyle, StyleAttribute.WIDTH, maxTableWidth, int.MinValue);
+                        int cellWidth = ConvertToPX(cellStyle, StyleAttribute.WIDTH, maxTableWidth, int.MinValue);
                         if (cellWidth == int.MinValue && (colspan > 1 || !hasFixedWidth))
                         {
-                            int paddingLeft = Math.Max(cellPadding, convertToPX0(cellStyle, StyleAttribute.PADDING_LEFT, maxTableWidth));
-                            int paddingRight = Math.Max(cellPadding, convertToPX0(cellStyle, StyleAttribute.PADDING_RIGHT, maxTableWidth));
+                            int paddingLeft = Math.Max(cellPadding, ConvertToPX0(cellStyle, StyleAttribute.PADDING_LEFT, maxTableWidth));
+                            int paddingRight = Math.Max(cellPadding, ConvertToPX0(cellStyle, StyleAttribute.PADDING_RIGHT, maxTableWidth));
 
                             LClip dummy = new LClip(null);
-                            dummy.width = maxTableWidth;
-                            Box dummyBox = layoutBox(dummy, maxTableWidth, paddingLeft, paddingRight, cell, null, false);
-                            dummyBox.finish();
+                            dummy._width = maxTableWidth;
+                            Box dummyBox = LayoutBox(dummy, maxTableWidth, paddingLeft, paddingRight, cell, null, false);
+                            dummyBox.Finish();
 
-                            cellWidth = maxTableWidth - dummyBox.minRemainingWidth;
+                            cellWidth = maxTableWidth - dummyBox._minRemainingWidth;
                         }
                         else if (colspan == 1 && cellWidth >= 0)
                         {
@@ -1856,8 +1853,8 @@ namespace XNATWL
                         else
                         {
                             width = Math.Max(width, cellWidth);
-                            marginLeft = Math.Max(marginLeft, convertToPX(cellStyle, StyleAttribute.MARGIN_LEFT, maxTableWidth, 0));
-                            marginRight = Math.Max(marginRight, convertToPX(cellStyle, StyleAttribute.MARGIN_LEFT, maxTableWidth, 0));
+                            marginLeft = Math.Max(marginLeft, ConvertToPX(cellStyle, StyleAttribute.MARGIN_LEFT, maxTableWidth, 0));
+                            marginRight = Math.Max(marginRight, ConvertToPX(cellStyle, StyleAttribute.MARGIN_LEFT, maxTableWidth, 0));
                         }
                     }
                 }
@@ -1903,7 +1900,7 @@ namespace XNATWL
             }
         }
 
-        private void layoutTableElement(Box box, TableElement te)
+        private void LayoutTableElement(Box box, TableElement te)
         {
             int numColumns = te.GetNumColumns();
             int numRows = te.GetNumRows();
@@ -1916,13 +1913,13 @@ namespace XNATWL
                 return;
             }
 
-            doMarginTop(box, tableStyle);
-            LElement anchor = box.addAnchor(te);
+            DoMarginTop(box, tableStyle);
+            LElement anchor = box.AddAnchor(te);
 
-            int left = box.computeLeftPadding(convertToPX0(tableStyle, StyleAttribute.MARGIN_LEFT, box.boxWidth));
-            int right = box.computeRightPadding(convertToPX0(tableStyle, StyleAttribute.MARGIN_RIGHT, box.boxWidth));
+            int left = box.ComputeLeftPadding(ConvertToPX0(tableStyle, StyleAttribute.MARGIN_LEFT, box._boxWidth));
+            int right = box.ComputeRightPadding(ConvertToPX0(tableStyle, StyleAttribute.MARGIN_RIGHT, box._boxWidth));
             int maxTableWidth = Math.Max(0, right - left);
-            int tableWidth = Math.Min(maxTableWidth, convertToPX(tableStyle, StyleAttribute.WIDTH, box.boxWidth, int.MinValue));
+            int tableWidth = Math.Min(maxTableWidth, ConvertToPX(tableStyle, StyleAttribute.WIDTH, box._boxWidth, int.MinValue));
             bool autoTableWidth = tableWidth == int.MinValue;
 
             if (tableWidth <= 0)
@@ -1934,12 +1931,12 @@ namespace XNATWL
             int[] columnSpacing = new int[numColumns + 1];
             bool[] columnsWithFixedWidth = new bool[numColumns];
 
-            columnSpacing[0] = Math.Max(cellSpacing, convertToPX0(tableStyle, StyleAttribute.PADDING_LEFT, box.boxWidth));
+            columnSpacing[0] = Math.Max(cellSpacing, ConvertToPX0(tableStyle, StyleAttribute.PADDING_LEFT, box._boxWidth));
 
-            computeTableWidth(te, tableWidth, columnWidth, columnSpacing, columnsWithFixedWidth);
+            ComputeTableWidth(te, tableWidth, columnWidth, columnSpacing, columnsWithFixedWidth);
 
             columnSpacing[numColumns] = Math.Max(columnSpacing[numColumns],
-                    convertToPX0(tableStyle, StyleAttribute.PADDING_RIGHT, box.boxWidth));
+                    ConvertToPX0(tableStyle, StyleAttribute.PADDING_RIGHT, box._boxWidth));
 
             int columnSpacingSum = 0;
             foreach (int spacing in columnSpacing)
@@ -1998,10 +1995,10 @@ namespace XNATWL
                 }
             }
 
-            LImage tableBGImage = createBGImage(box, te);
+            LImage tableBGImage = CreateBGImage(box, te);
 
-            box.textAlignment = TextAreaModel.HAlignment.LEFT;
-            box.curY += Math.Max(cellSpacing, convertToPX0(tableStyle, StyleAttribute.PADDING_TOP, box.boxWidth));
+            box._textAlignment = TextAreaModel.HAlignment.LEFT;
+            box._curY += Math.Max(cellSpacing, ConvertToPX0(tableStyle, StyleAttribute.PADDING_TOP, box._boxWidth));
 
             LImage[] bgImages = new LImage[numColumns];
 
@@ -2009,32 +2006,32 @@ namespace XNATWL
             {
                 if (row > 0)
                 {
-                    box.curY += cellSpacing;
+                    box._curY += cellSpacing;
                 }
 
                 LImage rowBGImage = null;
                 Style rowStyle = te.GetRowStyle(row);
                 if (rowStyle != null)
                 {
-                    int marginTop = convertToPX0(rowStyle, StyleAttribute.MARGIN_TOP, tableWidth);
-                    box.curY = box.computeTopPadding(marginTop);
+                    int marginTop = ConvertToPX0(rowStyle, StyleAttribute.MARGIN_TOP, tableWidth);
+                    box._curY = box.ComputeTopPadding(marginTop);
 
-                    Image image = selectImage(rowStyle, StyleAttribute.BACKGROUND_IMAGE);
+                    Image image = SelectImage(rowStyle, StyleAttribute.BACKGROUND_IMAGE);
                     if (image == null)
                     {
-                        image = createBackgroundColor(rowStyle);
+                        image = CreateBackgroundColor(rowStyle);
                     }
                     if (image != null)
                     {
                         rowBGImage = new LImage(te, image);
-                        rowBGImage.y = box.curY;
-                        rowBGImage.x = left;
-                        rowBGImage.width = tableWidth;
-                        box.clip.bgImages.Add(rowBGImage);
+                        rowBGImage._y = box._curY;
+                        rowBGImage._x = left;
+                        rowBGImage._width = tableWidth;
+                        box._clip._bgImages.Add(rowBGImage);
                     }
 
-                    box.curY += convertToPX0(rowStyle, StyleAttribute.PADDING_TOP, tableWidth);
-                    box.minLineHeight = convertToPX0(rowStyle, StyleAttribute.HEIGHT, tableWidth);
+                    box._curY += ConvertToPX0(rowStyle, StyleAttribute.PADDING_TOP, tableWidth);
+                    box._minLineHeight = ConvertToPX0(rowStyle, StyleAttribute.HEIGHT, tableWidth);
                 }
 
                 int x = left;
@@ -2052,103 +2049,103 @@ namespace XNATWL
 
                         Style cellStyle = cell.GetStyle();
 
-                        int paddingLeft = Math.Max(cellPadding, convertToPX0(cellStyle, StyleAttribute.PADDING_LEFT, tableWidth));
-                        int paddingRight = Math.Max(cellPadding, convertToPX0(cellStyle, StyleAttribute.PADDING_RIGHT, tableWidth));
+                        int paddingLeft = Math.Max(cellPadding, ConvertToPX0(cellStyle, StyleAttribute.PADDING_LEFT, tableWidth));
+                        int paddingRight = Math.Max(cellPadding, ConvertToPX0(cellStyle, StyleAttribute.PADDING_RIGHT, tableWidth));
 
                         LClip clip = new LClip(cell);
-                        LImage bgImage = createBGImage(box, cell);
+                        LImage bgImage = CreateBGImage(box, cell);
                         if (bgImage != null)
                         {
-                            bgImage.x = x;
-                            bgImage.width = width;
-                            bgImage.hoverSrc = clip;
+                            bgImage._x = x;
+                            bgImage._width = width;
+                            bgImage._hoverSrc = clip;
                             bgImages[col] = bgImage;
                         }
 
-                        clip.x = x;
-                        clip.y = box.curY;
-                        clip.width = width;
-                        clip.marginTop = (short)convertToPX0(cellStyle, StyleAttribute.MARGIN_TOP, tableWidth);
-                        box.layout.Add(clip);
+                        clip._x = x;
+                        clip._y = box._curY;
+                        clip._width = width;
+                        clip._marginTop = (short)ConvertToPX0(cellStyle, StyleAttribute.MARGIN_TOP, tableWidth);
+                        box._layout.Add(clip);
 
-                        layoutBox(clip, tableWidth, paddingLeft, paddingRight, cell, null, box.doCacheText);
+                        LayoutBox(clip, tableWidth, paddingLeft, paddingRight, cell, null, box._doCacheText);
 
                         col += Math.Max(0, cell.GetColspan() - 1);
                     }
                     x += width;
                 }
-                box.nextLine(false);
+                box.NextLine(false);
 
                 for (int col = 0; col < numColumns; col++)
                 {
                     LImage bgImage = bgImages[col];
                     if (bgImage != null)
                     {
-                        bgImage.height = box.curY - bgImage.y;
+                        bgImage._height = box._curY - bgImage._y;
                         bgImages[col] = null;   // clear for next row
                     }
                 }
 
                 if (rowStyle != null)
                 {
-                    box.curY += convertToPX0(rowStyle, StyleAttribute.PADDING_BOTTOM, tableWidth);
+                    box._curY += ConvertToPX0(rowStyle, StyleAttribute.PADDING_BOTTOM, tableWidth);
 
                     if (rowBGImage != null)
                     {
-                        rowBGImage.height = box.curY - rowBGImage.y;
+                        rowBGImage._height = box._curY - rowBGImage._y;
                     }
 
-                    doMarginBottom(box, rowStyle);
+                    DoMarginBottom(box, rowStyle);
                 }
             }
 
-            box.curY += Math.Max(cellSpacing, convertToPX0(tableStyle, StyleAttribute.PADDING_BOTTOM, box.boxWidth));
-            box.checkFloaters();
-            box.accountMinRemaining(Math.Max(0, box.lineWidth - tableWidth));
+            box._curY += Math.Max(cellSpacing, ConvertToPX0(tableStyle, StyleAttribute.PADDING_BOTTOM, box._boxWidth));
+            box.CheckFloaters();
+            box.AccountMinRemaining(Math.Max(0, box._lineWidth - tableWidth));
 
             if (tableBGImage != null)
             {
-                tableBGImage.height = box.curY - tableBGImage.y;
-                tableBGImage.x = left;
-                tableBGImage.width = tableWidth;
+                tableBGImage._height = box._curY - tableBGImage._y;
+                tableBGImage._x = left;
+                tableBGImage._width = tableWidth;
             }
 
             // anchor.y already set (by addAnchor)
-            anchor.x = left;
-            anchor.width = tableWidth;
-            anchor.height = box.curY - anchor.y;
+            anchor._x = left;
+            anchor._width = tableWidth;
+            anchor._height = box._curY - anchor._y;
 
-            doMarginBottom(box, tableStyle);
+            DoMarginBottom(box, tableStyle);
         }
 
-        private LImage createBGImage(Box box, Element element)
+        private LImage CreateBGImage(Box box, Element element)
         {
             Style style = element.GetStyle();
-            Image image = selectImage(style, StyleAttribute.BACKGROUND_IMAGE);
+            Image image = SelectImage(style, StyleAttribute.BACKGROUND_IMAGE);
             if (image == null)
             {
-                image = createBackgroundColor(style);
+                image = CreateBackgroundColor(style);
             }
             if (image != null)
             {
                 LImage bgImage = new LImage(element, image);
-                bgImage.y = box.curY;
-                box.clip.bgImages.Add(bgImage);
+                bgImage._y = box._curY;
+                box._clip._bgImages.Add(bgImage);
                 return bgImage;
             }
             return null;
         }
 
-        private Image createBackgroundColor(Style style)
+        private Image CreateBackgroundColor(Style style)
         {
-            Color color = style.Get(StyleAttribute.BACKGROUND_COLOR, styleClassResolver);
+            Color color = style.Get(StyleAttribute.BACKGROUND_COLOR, _styleClassResolver);
             if (color.Alpha != 0)
             {
-                Image white = selectImage("white");
+                Image white = SelectImage("white");
                 if (white != null)
                 {
                     Image image = white.CreateTintedVersion(color);
-                    Color colorHover = style.Get(StyleAttribute.BACKGROUND_COLOR_HOVER, styleClassResolver);
+                    Color colorHover = style.Get(StyleAttribute.BACKGROUND_COLOR_HOVER, _styleClassResolver);
                     if (colorHover != null)
                     {
                         return new Theme.StateSelectImage(HOVER_STATESELECT, null,
@@ -2160,395 +2157,395 @@ namespace XNATWL
             return null;
         }
 
-        static bool isSkip(char ch)
+        static bool IsSkip(char ch)
         {
             return CharUtil.IsWhitespace(ch);
         }
 
-        static bool isPunctuation(char ch)
+        static bool IsPunctuation(char ch)
         {
             return ":;,.-!?".IndexOf(ch) >= 0;
         }
 
-        static bool isBreak(char ch)
+        static bool IsBreak(char ch)
         {
-            return CharUtil.IsWhitespace(ch) || isPunctuation(ch) || (ch == 0x3001) || (ch == 0x3002);
+            return CharUtil.IsWhitespace(ch) || IsPunctuation(ch) || (ch == 0x3001) || (ch == 0x3002);
         }
 
         internal class Box
         {
-            internal LClip clip;
-            internal List<LElement> layout;
-            internal List<LElement> objLeft = new List<LElement>();
-            internal List<LElement> objRight = new List<LElement>();
-            internal StringBuilder lineInfo = new StringBuilder();
-            internal int boxLeft;
-            internal int boxWidth;
-            internal int boxMarginOffsetLeft;
-            internal int boxMarginOffsetRight;
-            internal bool doCacheText;
-            internal int curY;
-            internal int curX;
-            internal int lineStartIdx;
-            internal int lastProcessedAnchorIdx;
-            internal int marginTop;
-            internal int marginLeft;
-            internal int marginRight;
-            internal int marginBottomAbs;
-            internal int marginBottomNext;
-            internal int lineStartX;
-            internal int lineWidth;
-            internal int fontLineHeight;
-            internal int minLineHeight;
-            internal int lastLineEnd;
-            internal int lastLineBottom;
-            internal int minRemainingWidth;
-            internal bool inParagraph;
-            internal bool wasAutoBreak;
-            internal bool wasPreformatted;
-            internal TextAreaModel.HAlignment textAlignment;
-            internal String href;
-            internal TextAreaModel.Style style;
-            internal TextArea textAreaW;
+            internal LClip _clip;
+            internal List<LElement> _layout;
+            internal List<LElement> _objLeft = new List<LElement>();
+            internal List<LElement> _objRight = new List<LElement>();
+            internal StringBuilder _lineInfo = new StringBuilder();
+            internal int _boxLeft;
+            internal int _boxWidth;
+            internal int _boxMarginOffsetLeft;
+            internal int _boxMarginOffsetRight;
+            internal bool _doCacheText;
+            internal int _curY;
+            internal int _curX;
+            internal int _lineStartIdx;
+            internal int _lastProcessedAnchorIdx;
+            internal int _marginTop;
+            internal int _marginLeft;
+            internal int _marginRight;
+            internal int _marginBottomAbs;
+            internal int _marginBottomNext;
+            internal int _lineStartX;
+            internal int _lineWidth;
+            internal int _fontLineHeight;
+            internal int _minLineHeight;
+            internal int _lastLineEnd;
+            internal int _lastLineBottom;
+            internal int _minRemainingWidth;
+            internal bool _inParagraph;
+            internal bool _wasAutoBreak;
+            internal bool _wasPreformatted;
+            internal TextAreaModel.HAlignment _textAlignment;
+            internal String _href;
+            internal TextAreaModel.Style _style;
+            internal TextArea _textAreaW;
 
             internal Box(TextArea textAreaW, LClip clip, int paddingLeft, int paddingRight, int paddingTop, bool doCacheText)
             {
-                this.textAreaW = textAreaW;
-                this.clip = clip;
-                this.layout = clip.layout;
-                this.boxLeft = paddingLeft;
-                this.boxWidth = Math.Max(0, clip.width - paddingLeft - paddingRight);
-                this.boxMarginOffsetLeft = paddingLeft;
-                this.boxMarginOffsetRight = paddingRight;
-                this.doCacheText = doCacheText;
-                this.curX = paddingLeft;
-                this.curY = paddingTop;
-                this.lineStartX = paddingLeft;
-                this.lineWidth = boxWidth;
-                this.minRemainingWidth = boxWidth;
-                this.textAlignment = TextAreaModel.HAlignment.LEFT;
-                System.Diagnostics.Debug.Assert(layout.Count == 0);
+                this._textAreaW = textAreaW;
+                this._clip = clip;
+                this._layout = clip._layout;
+                this._boxLeft = paddingLeft;
+                this._boxWidth = Math.Max(0, clip._width - paddingLeft - paddingRight);
+                this._boxMarginOffsetLeft = paddingLeft;
+                this._boxMarginOffsetRight = paddingRight;
+                this._doCacheText = doCacheText;
+                this._curX = paddingLeft;
+                this._curY = paddingTop;
+                this._lineStartX = paddingLeft;
+                this._lineWidth = _boxWidth;
+                this._minRemainingWidth = _boxWidth;
+                this._textAlignment = TextAreaModel.HAlignment.LEFT;
+                System.Diagnostics.Debug.Assert(_layout.Count == 0);
             }
 
-            internal void computePadding()
+            internal void ComputePadding()
             {
-                int left = computeLeftPadding(marginLeft);
-                int right = computeRightPadding(marginRight);
+                int left = ComputeLeftPadding(_marginLeft);
+                int right = ComputeRightPadding(_marginRight);
 
-                lineStartX = left;
-                lineWidth = Math.Max(0, right - left);
+                _lineStartX = left;
+                _lineWidth = Math.Max(0, right - left);
 
-                if (isAtStartOfLine())
+                if (IsAtStartOfLine())
                 {
-                    curX = lineStartX;
+                    _curX = _lineStartX;
                 }
 
-                accountMinRemaining(getRemaining());
+                AccountMinRemaining(GetRemaining());
             }
 
-            internal int computeLeftPadding(int marginLeft)
+            internal int ComputeLeftPadding(int marginLeft)
             {
-                int left = boxLeft + Math.Max(0, marginLeft - boxMarginOffsetLeft);
+                int left = _boxLeft + Math.Max(0, marginLeft - _boxMarginOffsetLeft);
 
-                for (int i = 0, n = objLeft.Count; i < n; i++)
+                for (int i = 0, n = _objLeft.Count; i < n; i++)
                 {
-                    LElement e = objLeft[i];
-                    left = Math.Max(left, e.x + e.width + Math.Max(e.marginRight, marginLeft));
+                    LElement e = _objLeft[i];
+                    left = Math.Max(left, e._x + e._width + Math.Max(e._marginRight, marginLeft));
                 }
 
                 return left;
             }
 
-            internal int computeRightPadding(int marginRight)
+            internal int ComputeRightPadding(int marginRight)
             {
-                int right = boxLeft + boxWidth - Math.Max(0, marginRight - boxMarginOffsetRight);
+                int right = _boxLeft + _boxWidth - Math.Max(0, marginRight - _boxMarginOffsetRight);
 
-                for (int i = 0, n = objRight.Count; i < n; i++)
+                for (int i = 0, n = _objRight.Count; i < n; i++)
                 {
-                    LElement e = objRight[i];
-                    right = Math.Min(right, e.x - Math.Max(e.marginLeft, marginRight));
+                    LElement e = _objRight[i];
+                    right = Math.Min(right, e._x - Math.Max(e._marginLeft, marginRight));
                 }
 
                 return right;
             }
 
-            internal int computePaddingWidth(int marginLeft, int marginRight)
+            internal int ComputePaddingWidth(int marginLeft, int marginRight)
             {
-                return Math.Max(0, computeRightPadding(marginRight) - computeLeftPadding(marginLeft));
+                return Math.Max(0, ComputeRightPadding(marginRight) - ComputeLeftPadding(marginLeft));
             }
 
-            internal int computeTopPadding(int marginTop)
+            internal int ComputeTopPadding(int marginTop)
             {
-                return Math.Max(marginBottomAbs, curY + marginTop);
+                return Math.Max(_marginBottomAbs, _curY + marginTop);
             }
 
-            internal void setMarginBottom(int marginBottom)
+            internal void SetMarginBottom(int marginBottom)
             {
-                if (isAtStartOfLine())
+                if (IsAtStartOfLine())
                 {
-                    marginBottomAbs = Math.Max(marginBottomAbs, curY + marginBottom);
+                    _marginBottomAbs = Math.Max(_marginBottomAbs, _curY + marginBottom);
                 }
                 else
                 {
-                    marginBottomNext = Math.Max(marginBottomNext, marginBottom);
+                    _marginBottomNext = Math.Max(_marginBottomNext, marginBottom);
                 }
             }
 
-            internal int getRemaining()
+            internal int GetRemaining()
             {
-                return Math.Max(0, lineWidth - curX + lineStartX);
+                return Math.Max(0, _lineWidth - _curX + _lineStartX);
             }
 
-            internal void accountMinRemaining(int remaining)
+            internal void AccountMinRemaining(int remaining)
             {
-                minRemainingWidth = Math.Min(minRemainingWidth, remaining);
+                _minRemainingWidth = Math.Min(_minRemainingWidth, remaining);
             }
 
-            internal int getXAndAdvance(int amount)
+            internal int GetXAndAdvance(int amount)
             {
-                int x = curX;
-                curX = x + amount;
+                int x = _curX;
+                _curX = x + amount;
                 return x;
             }
 
-            internal bool isAtStartOfLine()
+            internal bool IsAtStartOfLine()
             {
-                return lineStartIdx == layout.Count;
+                return _lineStartIdx == _layout.Count;
             }
 
-            internal bool prevOnLineEndsNotWithSpace()
+            internal bool PrevOnLineEndsNotWithSpace()
             {
-                int layoutSize = layout.Count;
-                if (lineStartIdx < layoutSize)
+                int layoutSize = _layout.Count;
+                if (_lineStartIdx < layoutSize)
                 {
-                    LElement le = layout[layoutSize - 1];
+                    LElement le = _layout[layoutSize - 1];
                     if (le is LText)
                     {
                         LText lt = (LText)le;
-                        return !isSkip(lt.text[lt.end - 1]);
+                        return !IsSkip(lt._text[lt._end - 1]);
                     }
                     return true;
                 }
                 return false;
             }
 
-            internal void checkFloaters()
+            internal void CheckFloaters()
             {
-                removeObjFromList(objLeft);
-                removeObjFromList(objRight);
-                computePadding();
+                RemoveObjFromList(_objLeft);
+                RemoveObjFromList(_objRight);
+                ComputePadding();
                 // curX is set by computePadding()
             }
 
-            internal void clearFloater(Clear clear)
+            internal void ClearFloater(Clear clear)
             {
                 if (clear != Clear.NONE)
                 {
                     int targetY = -1;
                     if (clear == Clear.LEFT || clear == Clear.BOTH)
                     {
-                        for (int i = 0, n = objLeft.Count; i < n; ++i)
+                        for (int i = 0, n = _objLeft.Count; i < n; ++i)
                         {
-                            LElement le = objLeft[i];
-                            if (le.height != short.MaxValue)
+                            LElement le = _objLeft[i];
+                            if (le._height != short.MaxValue)
                             {  // special case for list elements
-                                targetY = Math.Max(targetY, le.y + le.height);
+                                targetY = Math.Max(targetY, le._y + le._height);
                             }
                         }
                     }
                     if (clear == Clear.RIGHT || clear == Clear.BOTH)
                     {
-                        for (int i = 0, n = objRight.Count; i < n; ++i)
+                        for (int i = 0, n = _objRight.Count; i < n; ++i)
                         {
-                            LElement le = objRight[i];
-                            targetY = Math.Max(targetY, le.y + le.height);
+                            LElement le = _objRight[i];
+                            targetY = Math.Max(targetY, le._y + le._height);
                         }
                     }
                     if (targetY >= 0)
                     {
-                        advanceToY(targetY);
+                        AdvanceToY(targetY);
                     }
                 }
             }
 
-            internal void advanceToY(int targetY)
+            internal void AdvanceToY(int targetY)
             {
-                nextLine(false);
-                if (targetY > curY)
+                NextLine(false);
+                if (targetY > _curY)
                 {
-                    curY = targetY;
-                    checkFloaters();
+                    _curY = targetY;
+                    CheckFloaters();
                 }
             }
 
-            internal void advancePastFloaters(int requiredWidth, int marginLeft, int marginRight)
+            internal void AdvancePastFloaters(int requiredWidth, int marginLeft, int marginRight)
             {
-                if (computePaddingWidth(marginLeft, marginRight) < requiredWidth)
+                if (ComputePaddingWidth(marginLeft, marginRight) < requiredWidth)
                 {
-                    nextLine(false);
+                    NextLine(false);
                     do
                     {
                         int targetY = int.MaxValue;
-                        if (objLeft.Count != 0)
+                        if (_objLeft.Count != 0)
                         {
-                            LElement le = objLeft[objLeft.Count - 1];
-                            if (le.height != short.MaxValue)
+                            LElement le = _objLeft[_objLeft.Count - 1];
+                            if (le._height != short.MaxValue)
                             {  // special case for list elements
-                                targetY = Math.Min(targetY, le.bottom());
+                                targetY = Math.Min(targetY, le.Bottom());
                             }
                         }
-                        if (objRight.Count != 0)
+                        if (_objRight.Count != 0)
                         {
-                            LElement le = objRight[objRight.Count - 1];
-                            targetY = Math.Min(targetY, le.bottom());
+                            LElement le = _objRight[_objRight.Count - 1];
+                            targetY = Math.Min(targetY, le.Bottom());
                         }
-                        if (targetY == int.MaxValue || targetY < curY)
+                        if (targetY == int.MaxValue || targetY < _curY)
                         {
                             return;
                         }
-                        curY = targetY;
-                        checkFloaters();
-                    } while (computePaddingWidth(marginLeft, marginRight) < requiredWidth);
+                        _curY = targetY;
+                        CheckFloaters();
+                    } while (ComputePaddingWidth(marginLeft, marginRight) < requiredWidth);
                 }
             }
 
-            internal bool nextLine(bool force)
+            internal bool NextLine(bool force)
             {
-                if (isAtStartOfLine() && (wasAutoBreak || !force))
+                if (IsAtStartOfLine() && (_wasAutoBreak || !force))
                 {
-                    wasAutoBreak = !force;
+                    _wasAutoBreak = !force;
                     return false;
                 }
 
-                accountMinRemaining(getRemaining());
+                AccountMinRemaining(GetRemaining());
 
-                int targetY = curY;
-                int lineHeight = minLineHeight;
+                int targetY = _curY;
+                int lineHeight = _minLineHeight;
 
-                if (isAtStartOfLine())
+                if (IsAtStartOfLine())
                 {
-                    lineHeight = Math.Max(lineHeight, fontLineHeight);
+                    lineHeight = Math.Max(lineHeight, _fontLineHeight);
                 }
                 else
                 {
-                    for (int idx = lineStartIdx; idx < layout.Count; idx++)
+                    for (int idx = _lineStartIdx; idx < _layout.Count; idx++)
                     {
-                        LElement le = layout[idx];
-                        lineHeight = Math.Max(lineHeight, le.height);
+                        LElement le = _layout[idx];
+                        lineHeight = Math.Max(lineHeight, le._height);
                     }
 
-                    LElement lastElement = layout[layout.Count - 1];
-                    int remaining = (lineStartX + lineWidth) - (lastElement.x + lastElement.width);
+                    LElement lastElement = _layout[_layout.Count - 1];
+                    int remaining = (_lineStartX + _lineWidth) - (lastElement._x + lastElement._width);
 
-                    switch (textAlignment)
+                    switch (_textAlignment)
                     {
                         case TextAreaModel.HAlignment.RIGHT:
                             {
-                                for (int idx = lineStartIdx; idx < layout.Count; idx++)
+                                for (int idx = _lineStartIdx; idx < _layout.Count; idx++)
                                 {
-                                    LElement le = layout[idx];
-                                    le.x += remaining;
+                                    LElement le = _layout[idx];
+                                    le._x += remaining;
                                 }
                                 break;
                             }
                         case TextAreaModel.HAlignment.CENTER:
                             {
                                 int offset = remaining / 2;
-                                for (int idx = lineStartIdx; idx < layout.Count; idx++)
+                                for (int idx = _lineStartIdx; idx < _layout.Count; idx++)
                                 {
-                                    LElement le = layout[idx];
-                                    le.x += offset;
+                                    LElement le = _layout[idx];
+                                    le._x += offset;
                                 }
                                 break;
                             }
                         case TextAreaModel.HAlignment.JUSTIFY:
-                            if (remaining < lineWidth / 4)
+                            if (remaining < _lineWidth / 4)
                             {
-                                int num = layout.Count - lineStartIdx;
+                                int num = _layout.Count - _lineStartIdx;
                                 for (int i = 1; i < num; i++)
                                 {
-                                    LElement le = layout[lineStartIdx + i];
+                                    LElement le = _layout[_lineStartIdx + i];
                                     int offset = remaining * i / (num - 1);
-                                    le.x += offset;
+                                    le._x += offset;
                                 }
                             }
                             break;
                     }
 
-                    for (int idx = lineStartIdx; idx < layout.Count; idx++)
+                    for (int idx = _lineStartIdx; idx < _layout.Count; idx++)
                     {
-                        LElement le = layout[idx];
-                        switch (le.element.GetStyle().Get(StyleAttribute.VERTICAL_ALIGNMENT, textAreaW.styleClassResolver))
+                        LElement le = _layout[idx];
+                        switch (le._element.GetStyle().Get(StyleAttribute.VERTICAL_ALIGNMENT, _textAreaW._styleClassResolver))
                         {
                             case TextAreaModel.VAlignment.BOTTOM:
-                                le.y = lineHeight - le.height;
+                                le._y = lineHeight - le._height;
                                 break;
                             case TextAreaModel.VAlignment.TOP:
-                                le.y = 0;
+                                le._y = 0;
                                 break;
                             case TextAreaModel.VAlignment.MIDDLE:
-                                le.y = (lineHeight - le.height) / 2;
+                                le._y = (lineHeight - le._height) / 2;
                                 break;
                             case TextAreaModel.VAlignment.FILL:
-                                le.y = 0;
-                                le.height = lineHeight;
+                                le._y = 0;
+                                le._height = lineHeight;
                                 break;
                         }
-                        targetY = Math.Max(targetY, computeTopPadding(le.marginTop - le.y));
-                        marginBottomNext = Math.Max(marginBottomNext, le.bottom() - lineHeight);
+                        targetY = Math.Max(targetY, ComputeTopPadding(le._marginTop - le._y));
+                        _marginBottomNext = Math.Max(_marginBottomNext, le.Bottom() - lineHeight);
                     }
 
-                    for (int idx = lineStartIdx; idx < layout.Count; idx++)
+                    for (int idx = _lineStartIdx; idx < _layout.Count; idx++)
                     {
-                        LElement le = layout[idx];
-                        le.y += targetY;
+                        LElement le = _layout[idx];
+                        le._y += targetY;
                     }
                 }
 
-                processAnchors(targetY, lineHeight);
+                ProcessAnchors(targetY, lineHeight);
 
-                minLineHeight = 0;
-                lineStartIdx = layout.Count;
-                wasAutoBreak = !force;
-                curY = targetY + lineHeight;
-                marginBottomAbs = Math.Max(marginBottomAbs, curY + marginBottomNext);
-                marginBottomNext = 0;
-                marginTop = 0;
-                checkFloaters();
+                _minLineHeight = 0;
+                _lineStartIdx = _layout.Count;
+                _wasAutoBreak = !force;
+                _curY = targetY + lineHeight;
+                _marginBottomAbs = Math.Max(_marginBottomAbs, _curY + _marginBottomNext);
+                _marginBottomNext = 0;
+                _marginTop = 0;
+                CheckFloaters();
                 // curX is set by computePadding() inside checkFloaters()
                 return true;
             }
 
-            internal void finish()
+            internal void Finish()
             {
-                nextLine(false);
-                clearFloater(Clear.BOTH);
-                processAnchors(curY, 0);
-                int lineInfoLength = lineInfo.Length;
-                clip.lineInfo = new char[lineInfoLength];
-                clip.lineInfo = lineInfo.ToString(0, lineInfoLength).ToCharArray();
+                NextLine(false);
+                ClearFloater(Clear.BOTH);
+                ProcessAnchors(_curY, 0);
+                int lineInfoLength = _lineInfo.Length;
+                _clip._lineInfo = new char[lineInfoLength];
+                _clip._lineInfo = _lineInfo.ToString(0, lineInfoLength).ToCharArray();
             }
 
-            internal int computeNextTabStop(Style style, Font font)
+            internal int ComputeNextTabStop(Style style, Font font)
             {
                 int em = font.MWidth;
-                int tabSize = style.Get(StyleAttribute.TAB_SIZE, textAreaW.styleClassResolver);
+                int tabSize = style.Get(StyleAttribute.TAB_SIZE, _textAreaW._styleClassResolver);
                 if (tabSize <= 0 || em <= 0)
                 {
                     // replace with single space when tabs are disabled
-                    return curX + font.SpaceWidth;
+                    return _curX + font.SpaceWidth;
                 }
                 int tabSizePX = Math.Min(tabSize, short.MaxValue / em) * em;
-                int x = curX - lineStartX + font.SpaceWidth;
-                return curX + tabSizePX - (x % tabSizePX);
+                int x = _curX - _lineStartX + font.SpaceWidth;
+                return _curX + tabSizePX - (x % tabSizePX);
             }
 
-            private void removeObjFromList(List<LElement> list)
+            private void RemoveObjFromList(List<LElement> list)
             {
                 for (int i = list.Count; i-- > 0;)
                 {
                     LElement e = list[i];
-                    if (e.bottom() <= curY)
+                    if (e.Bottom() <= _curY)
                     {
                         // can't update marginBottomAbs here - results in layout error for text
                         list.RemoveAt(i);
@@ -2556,151 +2553,154 @@ namespace XNATWL
                 }
             }
 
-            internal void setupTextParams(Style style, Font font, bool isParagraphStart)
+            internal void SetupTextParams(Style style, Font font, bool isParagraphStart)
             {
                 if (font != null)
                 {
-                    fontLineHeight = font.LineHeight;
+                    _fontLineHeight = font.LineHeight;
                 }
                 else
                 {
-                    fontLineHeight = 0;
+                    _fontLineHeight = 0;
                 }
 
                 if (isParagraphStart)
                 {
-                    nextLine(false);
-                    inParagraph = true;
+                    NextLine(false);
+                    _inParagraph = true;
                 }
 
-                if (isParagraphStart || (!inParagraph && isAtStartOfLine()))
+                if (isParagraphStart || (!_inParagraph && IsAtStartOfLine()))
                 {
-                    marginLeft = textAreaW.convertToPX0(style, StyleAttribute.MARGIN_LEFT, boxWidth);
-                    marginRight = textAreaW.convertToPX0(style, StyleAttribute.MARGIN_RIGHT, boxWidth);
-                    textAlignment = style.Get(StyleAttribute.HORIZONTAL_ALIGNMENT, textAreaW.styleClassResolver);
-                    computePadding();
-                    curX = Math.Max(0, lineStartX + textAreaW.convertToPX(style, StyleAttribute.TEXT_INDENT, boxWidth, 0));
+                    _marginLeft = _textAreaW.ConvertToPX0(style, StyleAttribute.MARGIN_LEFT, _boxWidth);
+                    _marginRight = _textAreaW.ConvertToPX0(style, StyleAttribute.MARGIN_RIGHT, _boxWidth);
+                    _textAlignment = style.Get(StyleAttribute.HORIZONTAL_ALIGNMENT, _textAreaW._styleClassResolver);
+                    ComputePadding();
+                    _curX = Math.Max(0, _lineStartX + _textAreaW.ConvertToPX(style, StyleAttribute.TEXT_INDENT, _boxWidth, 0));
                 }
 
-                marginTop = textAreaW.convertToPX0(style, StyleAttribute.MARGIN_TOP, boxWidth);
+                _marginTop = _textAreaW.ConvertToPX0(style, StyleAttribute.MARGIN_TOP, _boxWidth);
             }
 
-            internal LElement addAnchor(Element e)
+            internal LElement AddAnchor(Element e)
             {
                 LElement le = new LElement(e);
-                le.y = curY;
-                le.x = boxLeft;
-                le.width = boxWidth;
-                clip.anchors.Add(le);
+                le._y = _curY;
+                le._x = _boxLeft;
+                le._width = _boxWidth;
+                _clip._anchors.Add(le);
                 return le;
             }
 
-            private void processAnchors(int y, int height)
+            private void ProcessAnchors(int y, int height)
             {
-                while (lastProcessedAnchorIdx < clip.anchors.Count)
+                while (_lastProcessedAnchorIdx < _clip._anchors.Count)
                 {
-                    LElement le = clip.anchors[lastProcessedAnchorIdx++];
-                    if (le.height == 0)
+                    LElement le = _clip._anchors[_lastProcessedAnchorIdx++];
+                    if (le._height == 0)
                     {
-                        le.y = y;
-                        le.height = height;
+                        le._y = y;
+                        le._height = height;
                     }
                 }
-                if (lineStartIdx > lastLineEnd)
+                if (_lineStartIdx > _lastLineEnd)
                 {
-                    lineInfo.Append((char)0).Append((char)(lineStartIdx - lastLineEnd));
+                    _lineInfo.Append((char)0).Append((char)(_lineStartIdx - _lastLineEnd));
                 }
-                if (y > lastLineBottom)
+                if (y > _lastLineBottom)
                 {
-                    lineInfo.Append((char)y).Append((char)0);
+                    _lineInfo.Append((char)y).Append((char)0);
                 }
-                lastLineBottom = y + height;
-                lineInfo.Append((char)lastLineBottom).Append((char)(layout.Count - lineStartIdx));
-                lastLineEnd = layout.Count;
+                _lastLineBottom = y + height;
+                _lineInfo.Append((char)_lastLineBottom).Append((char)(_layout.Count - _lineStartIdx));
+                _lastLineEnd = _layout.Count;
             }
         }
 
         public class RenderInfo
         {
-            internal int offsetX;
-            internal int offsetY;
-            internal Renderer.Renderer renderer;
-            internal AnimationState asNormal;
-            internal AnimationState asHover;
+            internal int _offsetX;
+            internal int _offsetY;
+            internal Renderer.Renderer _renderer;
+            internal AnimationState _asNormal;
+            internal AnimationState _asHover;
 
             public RenderInfo(AnimationState parent)
             {
-                asNormal = new AnimationState(parent);
-                asNormal.setAnimationState(STATE_HOVER, false);
-                asHover = new AnimationState(parent);
-                asHover.setAnimationState(STATE_HOVER, true);
+                _asNormal = new AnimationState(parent);
+                _asNormal.SetAnimationState(STATE_HOVER, false);
+                _asHover = new AnimationState(parent);
+                _asHover.SetAnimationState(STATE_HOVER, true);
             }
 
-            internal AnimationState getAnimationState(bool isHover)
+            internal AnimationState GetAnimationState(bool isHover)
             {
-                return isHover ? asHover : asNormal;
+                return isHover ? _asHover : _asNormal;
             }
         }
 
         public class LElement
         {
-            internal Element element;
-            internal int x;
-            internal int y;
-            internal int width;
-            internal int height;
-            internal short marginTop;
-            internal short marginLeft;
-            internal short marginRight;
-            internal short marginBottom;
-            internal String href;
-            internal bool isHover;
-            internal bool inheritHover;
+            internal Element _element;
+            internal int _x;
+            internal int _y;
+            internal int _width;
+            internal int _height;
+            internal short _marginTop;
+            internal short _marginLeft;
+            internal short _marginRight;
+            internal short _marginBottom;
+            internal String _href;
+            internal bool _isHover;
+            internal bool _inheritHover;
 
             public LElement(Element element)
             {
-                this.element = element;
+                this._element = element;
             }
 
-            internal virtual void adjustWidget(int offX, int offY) { }
-            internal virtual void collectBGImages(int offX, int offY, List<LImage> allBGImages) { }
-            internal virtual void draw(RenderInfo ri) { }
-            internal virtual void destroy() { }
+            internal virtual void AdjustWidget(int offX, int offY) { }
+            internal virtual void CollectBGImages(int offX, int offY, List<LImage> allBGImages) { }
+            internal virtual void Draw(RenderInfo ri) { }
+            internal virtual void Destroy() { }
 
-            internal virtual bool isInside(int x, int y)
+            internal virtual bool IsInside(int x, int y)
             {
-                return (x >= this.x) && (x < this.x + this.width) &&
-                        (y >= this.y) && (y < this.y + this.height);
+                return (x >= this._x) && (x < this._x + this._width) &&
+                        (y >= this._y) && (y < this._y + this._height);
             }
-            internal virtual LElement find(int x, int y)
+
+            internal virtual LElement Find(int x, int y)
             {
                 return this;
             }
-            internal virtual LElement find(Element element, int[] offset)
+
+            internal virtual LElement Find(Element element, int[] offset)
             {
-                if (this.element == element)
+                if (this._element == element)
                 {
                     return this;
                 }
                 return null;
             }
-            internal virtual bool setHover(LElement le)
+
+            internal virtual bool SetHover(LElement le)
             {
-                isHover = (this == le) || (le != null && element == le.element);
-                return isHover;
+                _isHover = (this == le) || (le != null && _element == le._element);
+                return _isHover;
             }
 
-            internal virtual int bottom()
+            internal virtual int Bottom()
             {
-                return y + height + marginBottom;
+                return _y + _height + _marginBottom;
             }
         }
 
         public class FontData
         {
-            internal Font font;
-            Color color;
-            Color colorHover;
+            internal Font _font;
+            Color _color;
+            Color _colorHover;
 
             internal FontData(Font font, Color color, Color colorHover)
             {
@@ -2708,17 +2708,17 @@ namespace XNATWL
                 {
                     colorHover = color;
                 }
-                this.font = font;
-                this.color = maskWhite(color);
-                this.colorHover = maskWhite(colorHover);
+                this._font = font;
+                this._color = MaskWhite(color);
+                this._colorHover = MaskWhite(colorHover);
             }
 
-            public Color getColor(bool isHover)
+            public Color GetColor(bool isHover)
             {
-                return isHover ? colorHover : color;
+                return isHover ? _colorHover : _color;
             }
 
-            private static Color maskWhite(Color c)
+            private static Color MaskWhite(Color c)
             {
                 return Color.WHITE.Equals(c) ? null : c;
             }
@@ -2726,225 +2726,217 @@ namespace XNATWL
 
         public class LText : LElement
         {
-            internal FontData fontData;
-            internal String text;
-            internal int start;
-            internal int end;
-            internal FontCache cache;
+            internal FontData _fontData;
+            internal String _text;
+            internal int _start;
+            internal int _end;
+            internal FontCache _cache;
 
             internal LText(Element element, FontData fontData, String text, int start, int end, bool doCache) : base(element)
             {
-                Font font = fontData.font;
-                this.fontData = fontData;
-                this.text = text;
-                this.start = start;
-                this.end = end;
-                Color c = fontData.getColor(isHover);
-                this.cache = doCache ? font.CacheText(null, text, start, end) : null;
-                this.height = font.LineHeight;
+                Font font = fontData._font;
+                this._fontData = fontData;
+                this._text = text;
+                this._start = start;
+                this._end = end;
+                Color c = fontData.GetColor(_isHover);
+                this._cache = doCache ? font.CacheText(null, text, start, end) : null;
+                this._height = font.LineHeight;
 
-                if (cache != null)
+                if (_cache != null)
                 {
-                    this.width = cache.Width;
+                    this._width = _cache.Width;
                 }
                 else
                 {
-                    this.width = font.ComputeTextWidth(text, start, end);
+                    this._width = font.ComputeTextWidth(text, start, end);
                 }
             }
 
-            //@Override
-            internal override void draw(RenderInfo ri)
+            internal override void Draw(RenderInfo ri)
             {
-                Color c = fontData.getColor(isHover);
+                Color c = _fontData.GetColor(_isHover);
                 if (c != null)
                 {
-                    drawTextWithColor(ri, c);
+                    DrawTextWithColor(ri, c);
                 }
                 else
                 {
-                    drawText(Color.BLACK, ri);
+                    DrawText(Color.BLACK, ri);
                 }
             }
 
-            private void drawTextWithColor(RenderInfo ri, Color c)
+            private void DrawTextWithColor(RenderInfo ri, Color c)
             {
-                drawText(c, ri);
+                DrawText(c, ri);
             }
 
-            private void drawText(Color c, RenderInfo ri)
+            private void DrawText(Color c, RenderInfo ri)
             {
-                AnimationState animationState = ri.getAnimationState(isHover);
-                if (cache != null)
+                AnimationState animationState = ri.GetAnimationState(_isHover);
+                if (_cache != null)
                 {
-                    cache.Draw(animationState, x + ri.offsetX, y + ri.offsetY);
+                    _cache.Draw(animationState, _x + ri._offsetX, _y + ri._offsetY);
                 }
                 else
                 {
-                    fontData.font.DrawText(animationState, x + ri.offsetX, y + ri.offsetY, text, start, end);
+                    _fontData._font.DrawText(animationState, _x + ri._offsetX, _y + ri._offsetY, _text, _start, _end);
                 }
             }
 
-            //@Override
-            internal override void destroy()
+            internal override void Destroy()
             {
-                if (cache != null)
+                if (_cache != null)
                 {
-                    cache.Dispose();
-                    cache = null;
+                    _cache.Dispose();
+                    _cache = null;
                 }
             }
         }
 
         public class LWidget : LElement
         {
-            Widget widget;
+            Widget _widget;
 
             internal LWidget(Element element, Widget widget) : base(element)
             {
-                this.widget = widget;
+                this._widget = widget;
             }
 
-            //@Override
-            internal override void adjustWidget(int offX, int offY)
+            internal override void AdjustWidget(int offX, int offY)
             {
-                widget.setPosition(x + offX, y + offY);
-                widget.setSize(width, height);
+                _widget.SetPosition(_x + offX, _y + offY);
+                _widget.SetSize(_width, _height);
             }
         }
 
         public class LImage : LElement
         {
-            internal Image img;
-            internal LElement hoverSrc;
+            internal Image _img;
+            internal LElement _hoverSrc;
 
             internal LImage(Element element, Image img) : base(element)
             {
-                this.img = img;
-                this.width = img.Width;
-                this.height = img.Height;
-                this.hoverSrc = this;
+                this._img = img;
+                this._width = img.Width;
+                this._height = img.Height;
+                this._hoverSrc = this;
             }
 
             //@Override
-            internal override void draw(RenderInfo ri)
+            internal override void Draw(RenderInfo ri)
             {
-                img.Draw(ri.getAnimationState(hoverSrc.isHover),
-                        x + ri.offsetX, y + ri.offsetY, width, height);
+                _img.Draw(ri.GetAnimationState(_hoverSrc._isHover),
+                        _x + ri._offsetX, _y + ri._offsetY, _width, _height);
             }
         }
 
         public class LClip : LElement
         {
-            internal List<LElement> layout;
-            internal List<LImage> bgImages;
-            internal List<LElement> anchors;
-            internal char[] lineInfo;
+            internal List<LElement> _layout;
+            internal List<LImage> _bgImages;
+            internal List<LElement> _anchors;
+            internal char[] _lineInfo;
 
             public LClip(Element element) : base(element)
             {
-                this.layout = new List<LElement>();
-                this.bgImages = new List<LImage>();
-                this.anchors = new List<LElement>();
-                this.lineInfo = EMPTY_CHAR_ARRAY;
+                this._layout = new List<LElement>();
+                this._bgImages = new List<LImage>();
+                this._anchors = new List<LElement>();
+                this._lineInfo = EMPTY_CHAR_ARRAY;
             }
 
-            //@Override
-            internal override void draw(RenderInfo ri)
+            internal override void Draw(RenderInfo ri)
             {
-                ri.offsetX += x;
-                ri.offsetY += y;
-                ri.renderer.ClipEnter(ri.offsetX, ri.offsetY, width, height);
+                ri._offsetX += _x;
+                ri._offsetY += _y;
+                ri._renderer.ClipEnter(ri._offsetX, ri._offsetY, _width, _height);
                 try
                 {
-                    if (!ri.renderer.ClipIsEmpty())
+                    if (!ri._renderer.ClipIsEmpty())
                     {
-                        List<LElement> ll = layout;
+                        List<LElement> ll = _layout;
                         for (int i = 0, n = ll.Count; i < n; i++)
                         {
-                            ll[i].draw(ri);
+                            ll[i].Draw(ri);
                         }
                     }
                 }
                 finally
                 {
-                    ri.renderer.ClipLeave();
-                    ri.offsetX -= x;
-                    ri.offsetY -= y;
+                    ri._renderer.ClipLeave();
+                    ri._offsetX -= _x;
+                    ri._offsetY -= _y;
                 }
             }
 
-            //@Override
-            internal override void adjustWidget(int offX, int offY)
+            internal override void AdjustWidget(int offX, int offY)
             {
-                offX += x;
-                offY += y;
-                for (int i = 0, n = layout.Count; i < n; i++)
+                offX += _x;
+                offY += _y;
+                for (int i = 0, n = _layout.Count; i < n; i++)
                 {
-                    layout[i].adjustWidget(offX, offY);
+                    _layout[i].AdjustWidget(offX, offY);
                 }
             }
 
-            //@Override
-            internal override void collectBGImages(int offX, int offY, List<LImage> allBGImages)
+            internal override void CollectBGImages(int offX, int offY, List<LImage> allBGImages)
             {
-                offX += x;
-                offY += y;
-                for (int i = 0, n = bgImages.Count; i < n; i++)
+                offX += _x;
+                offY += _y;
+                for (int i = 0, n = _bgImages.Count; i < n; i++)
                 {
-                    LImage img = bgImages[i];
-                    img.x += offX;
-                    img.y += offY;
+                    LImage img = _bgImages[i];
+                    img._x += offX;
+                    img._y += offY;
                     allBGImages.Add(img);
                 }
-                for (int i = 0, n = layout.Count; i < n; i++)
+                for (int i = 0, n = _layout.Count; i < n; i++)
                 {
-                    layout[i].collectBGImages(offX, offY, allBGImages);
+                    _layout[i].CollectBGImages(offX, offY, allBGImages);
                 }
             }
 
-            //@Override
-            internal override void destroy()
+            internal override void Destroy()
             {
-                for (int i = 0, n = layout.Count; i < n; i++)
+                for (int i = 0, n = _layout.Count; i < n; i++)
                 {
-                    layout[i].destroy();
+                    _layout[i].Destroy();
                 }
-                layout.Clear();
-                bgImages.Clear();
-                lineInfo = EMPTY_CHAR_ARRAY;
+                _layout.Clear();
+                _bgImages.Clear();
+                _lineInfo = EMPTY_CHAR_ARRAY;
             }
 
-            //@Override
-            internal override LElement find(int x, int y)
+            internal override LElement Find(int x, int y)
             {
-                x -= this.x;
-                y -= this.y;
+                x -= this._x;
+                y -= this._y;
                 int lineTop = 0;
                 int layoutIdx = 0;
-                for (int lineIdx = 0; lineIdx < lineInfo.Length && y >= lineTop;)
+                for (int lineIdx = 0; lineIdx < _lineInfo.Length && y >= lineTop;)
                 {
-                    int lineBottom = lineInfo[lineIdx++];
-                    int layoutCount = lineInfo[lineIdx++];
+                    int lineBottom = _lineInfo[lineIdx++];
+                    int layoutCount = _lineInfo[lineIdx++];
                     if (layoutCount > 0)
                     {
                         if (lineBottom == 0 || y < lineBottom)
                         {
                             for (int i = 0; i < layoutCount; i++)
                             {
-                                LElement le = layout[layoutIdx + i];
-                                if (le.isInside(x, y))
+                                LElement le = _layout[layoutIdx + i];
+                                if (le.IsInside(x, y))
                                 {
-                                    return le.find(x, y);
+                                    return le.Find(x, y);
                                 }
                             }
-                            if (lineBottom > 0 && x >= layout[layoutIdx].x)
+                            if (lineBottom > 0 && x >= _layout[layoutIdx]._x)
                             {
                                 LElement prev = null;
                                 for (int i = 0; i < layoutCount; i++)
                                 {
-                                    LElement le = layout[layoutIdx + i];
-                                    if (le.x >= x && (prev == null || prev.element == le.element))
+                                    LElement le = _layout[layoutIdx + i];
+                                    if (le._x >= x && (prev == null || prev._element == le._element))
                                     {
                                         return le;
                                     }
@@ -2962,32 +2954,31 @@ namespace XNATWL
                 return this;
             }
 
-            //@Override
-            override internal LElement find(Element element, int[] offset)
+            override internal LElement Find(Element element, int[] offset)
             {
-                if (this.element == element)
+                if (this._element == element)
                 {
                     return this;
                 }
-                LElement match = find(layout, element, offset);
+                LElement match = Find(_layout, element, offset);
                 if (match == null)
                 {
-                    match = find(anchors, element, offset);
+                    match = Find(_anchors, element, offset);
                 }
                 return match;
             }
 
-            private LElement find(List<LElement> l, Element e, int[] offset)
+            private LElement Find(List<LElement> l, Element e, int[] offset)
             {
                 for (int i = 0, n = l.Count; i < n; i++)
                 {
-                    LElement match = l[i].find(e, offset);
+                    LElement match = l[i].Find(e, offset);
                     if (match != null)
                     {
                         if (offset != null)
                         {
-                            offset[0] += this.x;
-                            offset[1] += this.y;
+                            offset[0] += this._x;
+                            offset[1] += this._y;
                         }
                         return match;
                     }
@@ -2995,65 +2986,63 @@ namespace XNATWL
                 return null;
             }
 
-            //@Override
-            override internal bool setHover(LElement le)
+            override internal bool SetHover(LElement le)
             {
                 bool childHover = false;
-                for (int i = 0, n = layout.Count; i < n; i++)
+                for (int i = 0, n = _layout.Count; i < n; i++)
                 {
-                    childHover |= layout[i].setHover(le);
+                    childHover |= _layout[i].SetHover(le);
                 }
                 if (childHover)
                 {
-                    isHover = true;
+                    _isHover = true;
                 }
                 else
                 {
-                    base.setHover(le);
+                    base.SetHover(le);
                 }
-                for (int i = 0, n = layout.Count; i < n; i++)
+                for (int i = 0, n = _layout.Count; i < n; i++)
                 {
-                    LElement child = layout[i];
-                    if (child.inheritHover)
+                    LElement child = _layout[i];
+                    if (child._inheritHover)
                     {
-                        child.isHover = isHover;
+                        child._isHover = _isHover;
                     }
                 }
-                return isHover;
+                return _isHover;
             }
 
-            internal void moveContentY(int amount)
+            internal void MoveContentY(int amount)
             {
-                for (int i = 0, n = layout.Count; i < n; i++)
+                for (int i = 0, n = _layout.Count; i < n; i++)
                 {
-                    layout[i].y += amount;
+                    _layout[i]._y += amount;
                 }
-                if (lineInfo.Length > 0)
+                if (_lineInfo.Length > 0)
                 {
-                    if (lineInfo[1] == 0)
+                    if (_lineInfo[1] == 0)
                     {
-                        lineInfo[0] += (char)amount;
+                        _lineInfo[0] += (char)amount;
                     }
                     else
                     {
-                        int n = lineInfo.Length;
+                        int n = _lineInfo.Length;
                         char[] tmpLineInfo = new char[n + 2];
                         tmpLineInfo[0] = (char)amount;
                         for (int i = 0; i < n; i += 2)
                         {
-                            int lineBottom = lineInfo[i];
+                            int lineBottom = _lineInfo[i];
                             if (lineBottom > 0)
                             {
                                 lineBottom += amount;
                             }
                             tmpLineInfo[i + 2] = (char)lineBottom;
-                            tmpLineInfo[i + 3] = lineInfo[i + 1];
+                            tmpLineInfo[i + 3] = _lineInfo[i + 1];
                         }
-                        lineInfo = tmpLineInfo;
+                        _lineInfo = tmpLineInfo;
                     }
                 }
             }
         }
     }
-
 }

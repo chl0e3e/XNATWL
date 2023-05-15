@@ -117,7 +117,10 @@ namespace XNATWL.Model
 
         public void FireSelectionChange(object sender, SelectionChangedEventArgs e)
         {
-            this.SelectionChanged.Invoke(sender, e);
+            if (this.SelectionChanged != null)
+            {
+                this.SelectionChanged.Invoke(sender, e);
+            }
         }
     }
 }

@@ -184,8 +184,8 @@ namespace XNATWL.IO
 
         public static string RelativePath(FileSystemObject from, FileSystemObject to)
         {
-            int levelFrom = _countLevel(from);
-            int levelTo = _countLevel(to);
+            int levelFrom = CountLevel(from);
+            int levelTo = CountLevel(to);
             int prefixes = 0;
 
             StringBuilder sb = new StringBuilder();
@@ -219,7 +219,7 @@ namespace XNATWL.IO
             return sb.ToString();
         }
 
-        private static int _countLevel(FileSystemObject file)
+        private static int CountLevel(FileSystemObject file)
         {
             int level = 0;
             while (file != null)

@@ -115,30 +115,28 @@ namespace XNATWL
          */
         public static int DEFAULT_GAP = -4;
 
-        private static bool DEBUG_LAYOUT_GROUPS = Widget.DEBUG_LAYOUT_GROUPS;
+        protected Dimension _smallGap;
+        protected Dimension _mediumGap;
+        protected Dimension _largeGap;
+        protected Dimension _defaultGap;
+        protected ParameterMap _namedGaps;
 
-        protected Dimension smallGap;
-        protected Dimension mediumGap;
-        protected Dimension largeGap;
-        protected Dimension defaultGap;
-        protected ParameterMap namedGaps;
+        protected bool _bAddDefaultGaps = true;
+        protected bool _bIncludeInvisibleWidgets = true;
+        protected bool _redoDefaultGaps;
+        protected bool _isPrepared;
+        protected bool _blockInvalidateLayoutTree;
+        protected bool _bWarnOnIncomplete;
 
-        protected bool bAddDefaultGaps = true;
-        protected bool bIncludeInvisibleWidgets = true;
-        protected bool redoDefaultGaps;
-        protected bool isPrepared;
-        protected bool blockInvalidateLayoutTree;
-        protected bool bWarnOnIncomplete;
-
-        private Group horz;
-        private Group vert;
+        private Group _horzGroup;
+        private Group _vertGroup;
 
         /**
          * Debugging aid. Captures the stack trace where one of the group was last assigned.
          */
-        Exception debugStackTrace;
+        Exception _debugStackTrace;
 
-        Dictionary<Widget, WidgetSpring> widgetSprings;
+        Dictionary<Widget, WidgetSpring> _widgetSprings;
 
         /**
          * Creates a new DialogLayout widget.
@@ -150,13 +148,13 @@ namespace XNATWL
          */
         public DialogLayout()
         {
-            widgetSprings = new Dictionary<Widget, WidgetSpring>();
-            collectDebugStack();
+            _widgetSprings = new Dictionary<Widget, WidgetSpring>();
+            CollectDebugStack();
         }
 
-        public Group getHorizontalGroup()
+        public Group GetHorizontalGroup()
         {
-            return horz;
+            return _horzGroup;
         }
 
         /**
@@ -177,20 +175,20 @@ namespace XNATWL
          * @param g the group used for the X axis
          * @see #setVerticalGroup(de.matthiasmann.twl.DialogLayout.Group)
          */
-        public void setHorizontalGroup(Group g)
+        public void SetHorizontalGroup(Group g)
         {
             if (g != null)
             {
-                g.checkGroup(this);
+                g.CheckGroup(this);
             }
-            this.horz = g;
-            collectDebugStack();
-            layoutGroupsChanged();
+            this._horzGroup = g;
+            CollectDebugStack();
+            LayoutGroupsChanged();
         }
 
-        public Group getVerticalGroup()
+        public Group GetVerticalGroup()
         {
-            return vert;
+            return _vertGroup;
         }
 
         /**
@@ -203,64 +201,64 @@ namespace XNATWL
          * @param g the group used for the Y axis
          * @see #setHorizontalGroup(de.matthiasmann.twl.DialogLayout.Group) 
          */
-        public void setVerticalGroup(Group g)
+        public void SetVerticalGroup(Group g)
         {
             if (g != null)
             {
-                g.checkGroup(this);
+                g.CheckGroup(this);
             }
-            this.vert = g;
-            collectDebugStack();
-            layoutGroupsChanged();
+            this._vertGroup = g;
+            CollectDebugStack();
+            LayoutGroupsChanged();
         }
 
-        public Dimension getSmallGap()
+        public Dimension GetSmallGap()
         {
-            return smallGap;
+            return _smallGap;
         }
 
-        public void setSmallGap(Dimension smallGap)
+        public void SetSmallGap(Dimension smallGap)
         {
-            this.smallGap = smallGap;
-            maybeInvalidateLayoutTree();
+            this._smallGap = smallGap;
+            MaybeInvalidateLayoutTree();
         }
 
-        public Dimension getMediumGap()
+        public Dimension GetMediumGap()
         {
-            return mediumGap;
+            return _mediumGap;
         }
 
-        public void setMediumGap(Dimension mediumGap)
+        public void SetMediumGap(Dimension mediumGap)
         {
-            this.mediumGap = mediumGap;
-            maybeInvalidateLayoutTree();
+            this._mediumGap = mediumGap;
+            MaybeInvalidateLayoutTree();
         }
 
-        public Dimension getLargeGap()
+        public Dimension GetLargeGap()
         {
-            return largeGap;
+            return _largeGap;
         }
 
-        public void setLargeGap(Dimension largeGap)
+        public void SetLargeGap(Dimension largeGap)
         {
-            this.largeGap = largeGap;
-            maybeInvalidateLayoutTree();
+            this._largeGap = largeGap;
+            MaybeInvalidateLayoutTree();
         }
 
-        public Dimension getDefaultGap()
+        public Dimension GetDefaultGap()
         {
-            return defaultGap;
+            return _defaultGap;
         }
 
-        public void setDefaultGap(Dimension defaultGap)
+        public void SetDefaultGap(Dimension defaultGap)
         {
-            this.defaultGap = defaultGap;
-            maybeInvalidateLayoutTree();
+            this._defaultGap = defaultGap;
+            MaybeInvalidateLayoutTree();
         }
 
-        public bool isAddDefaultGaps()
+        public bool IsAddDefaultGaps()
         {
-            return bAddDefaultGaps;
+            return _bAddDefaultGaps;
         }
 
         /**
@@ -268,40 +266,40 @@ namespace XNATWL
          * 
          * @param addDefaultGaps if true then default gaps are added.
          */
-        public void setAddDefaultGaps(bool bAddDefaultGaps)
+        public void SetAddDefaultGaps(bool bAddDefaultGaps)
         {
-            this.bAddDefaultGaps = bAddDefaultGaps;
+            this._bAddDefaultGaps = bAddDefaultGaps;
         }
 
         /**
          * removes all default gaps from all groups.
          */
-        public void removeDefaultGaps()
+        public void RemoveDefaultGaps()
         {
-            if (horz != null && vert != null)
+            if (_horzGroup != null && _vertGroup != null)
             {
-                horz.removeDefaultGaps();
-                vert.removeDefaultGaps();
-                maybeInvalidateLayoutTree();
+                _horzGroup.RemoveDefaultGaps();
+                _vertGroup.RemoveDefaultGaps();
+                MaybeInvalidateLayoutTree();
             }
         }
 
         /**
          * Adds theme dependant default gaps to all groups.
          */
-        public void addDefaultGaps()
+        public void AddDefaultGaps()
         {
-            if (horz != null && vert != null)
+            if (_horzGroup != null && _vertGroup != null)
             {
-                horz.addDefaultGap();
-                vert.addDefaultGap();
-                maybeInvalidateLayoutTree();
+                _horzGroup.AddDefaultGap();
+                _vertGroup.AddDefaultGap();
+                MaybeInvalidateLayoutTree();
             }
         }
 
-        public bool isIncludeInvisibleWidgets()
+        public bool IsIncludeInvisibleWidgets()
         {
-            return bIncludeInvisibleWidgets;
+            return _bIncludeInvisibleWidgets;
         }
 
         /**
@@ -314,220 +312,209 @@ namespace XNATWL
          * @param includeInvisibleWidgets If true then invisible widgets are included,
          *      if false they don't contribute to the layout.
          */
-        public void setIncludeInvisibleWidgets(bool includeInvisibleWidgets)
+        public void SetIncludeInvisibleWidgets(bool includeInvisibleWidgets)
         {
-            if (this.bIncludeInvisibleWidgets != includeInvisibleWidgets)
+            if (this._bIncludeInvisibleWidgets != includeInvisibleWidgets)
             {
-                this.bIncludeInvisibleWidgets = includeInvisibleWidgets;
-                layoutGroupsChanged();
+                this._bIncludeInvisibleWidgets = includeInvisibleWidgets;
+                LayoutGroupsChanged();
             }
         }
 
-        private void collectDebugStack()
+        private void CollectDebugStack()
         {
-            bWarnOnIncomplete = true;
+            _bWarnOnIncomplete = true;
             if (DEBUG_LAYOUT_GROUPS)
             {
-                debugStackTrace = new Exception("DialogLayout created/used here");
+                _debugStackTrace = new Exception("DialogLayout created/used here");
             }
         }
 
-        private void warnOnIncomplete()
+        private void WarnOnIncomplete()
         {
-            bWarnOnIncomplete = false;
-            getLogger().log(Level.WARNING, "Dialog layout has incomplete state", debugStackTrace);
+            _bWarnOnIncomplete = false;
+            GetLogger().Log(Level.WARNING, "Dialog layout has incomplete state", _debugStackTrace);
         }
 
-        static Logger getLogger()
+        static Logger GetLogger()
         {
             return Logger.GetLogger(typeof(DialogLayout));
         }
 
-        protected void applyThemeDialogLayout(ThemeInfo themeInfo)
+        protected void ApplyThemeDialogLayout(ThemeInfo themeInfo)
         {
             try
             {
-                blockInvalidateLayoutTree = true;
-                setSmallGap(themeInfo.GetParameterValue("smallGap", true, typeof(Dimension), Dimension.ZERO));
-                setMediumGap(themeInfo.GetParameterValue("mediumGap", true, typeof(Dimension), Dimension.ZERO));
-                setLargeGap(themeInfo.GetParameterValue("largeGap", true, typeof(Dimension), Dimension.ZERO));
-                setDefaultGap(themeInfo.GetParameterValue("defaultGap", true, typeof(Dimension), Dimension.ZERO));
-                namedGaps = themeInfo.GetParameterMap("namedGaps");
+                _blockInvalidateLayoutTree = true;
+                SetSmallGap(themeInfo.GetParameterValue("smallGap", true, typeof(Dimension), Dimension.ZERO));
+                SetMediumGap(themeInfo.GetParameterValue("mediumGap", true, typeof(Dimension), Dimension.ZERO));
+                SetLargeGap(themeInfo.GetParameterValue("largeGap", true, typeof(Dimension), Dimension.ZERO));
+                SetDefaultGap(themeInfo.GetParameterValue("defaultGap", true, typeof(Dimension), Dimension.ZERO));
+                _namedGaps = themeInfo.GetParameterMap("namedGaps");
             }
             finally
             {
-                blockInvalidateLayoutTree = false;
+                _blockInvalidateLayoutTree = false;
             }
-            invalidateLayout();
+            InvalidateLayout();
         }
 
-        //@Override
-        protected override void applyTheme(ThemeInfo themeInfo)
+        protected override void ApplyTheme(ThemeInfo themeInfo)
         {
-            base.applyTheme(themeInfo);
-            applyThemeDialogLayout(themeInfo);
+            base.ApplyTheme(themeInfo);
+            ApplyThemeDialogLayout(themeInfo);
         }
 
-        //@Override
-        public override int getMinWidth()
+        public override int GetMinWidth()
         {
-            if (horz != null)
+            if (_horzGroup != null)
             {
-                prepare();
-                return horz.getMinSize(AXIS_X) + getBorderHorizontal();
+                Prepare();
+                return _horzGroup.GetMinSize(AXIS_X) + GetBorderHorizontal();
             }
-            return base.getMinWidth();
+            return base.GetMinWidth();
         }
 
-        //@Override
-        public override int getMinHeight()
+        public override int GetMinHeight()
         {
-            if (vert != null)
+            if (_vertGroup != null)
             {
-                prepare();
-                return vert.getMinSize(AXIS_Y) + getBorderVertical();
+                Prepare();
+                return _vertGroup.GetMinSize(AXIS_Y) + GetBorderVertical();
             }
-            return base.getMinHeight();
+            return base.GetMinHeight();
         }
 
-        //@Override
-        public override int getPreferredInnerWidth()
+        public override int GetPreferredInnerWidth()
         {
-            if (horz != null)
+            if (_horzGroup != null)
             {
-                prepare();
-                return horz.getPrefSize(DialogLayout.AXIS_X);
+                Prepare();
+                return _horzGroup.GetPrefSize(DialogLayout.AXIS_X);
             }
-            return base.getPreferredInnerWidth();
+            return base.GetPreferredInnerWidth();
         }
 
-        //@Override
-        public override int getPreferredInnerHeight()
+        public override int GetPreferredInnerHeight()
         {
-            if (vert != null)
+            if (_vertGroup != null)
             {
-                prepare();
-                return vert.getPrefSize(AXIS_Y);
+                Prepare();
+                return _vertGroup.GetPrefSize(AXIS_Y);
             }
-            return base.getPreferredInnerHeight();
+            return base.GetPreferredInnerHeight();
         }
 
-        //@Override
-        public override void adjustSize()
+        public override void AdjustSize()
         {
-            if (horz != null && vert != null)
+            if (_horzGroup != null && _vertGroup != null)
             {
-                prepare();
-                int minWidth = horz.getMinSize(AXIS_X);
-                int minHeight = vert.getMinSize(AXIS_Y);
-                int prefWidth = horz.getPrefSize(AXIS_X);
-                int prefHeight = vert.getPrefSize(AXIS_Y);
-                int maxWidth = getMaxWidth();
-                int maxHeight = getMaxHeight();
-                setInnerSize(
-                        computeSize(minWidth, prefWidth, maxWidth),
-                        computeSize(minHeight, prefHeight, maxHeight));
-                doLayout();
+                Prepare();
+                int minWidth = _horzGroup.GetMinSize(AXIS_X);
+                int minHeight = _vertGroup.GetMinSize(AXIS_Y);
+                int prefWidth = _horzGroup.GetPrefSize(AXIS_X);
+                int prefHeight = _vertGroup.GetPrefSize(AXIS_Y);
+                int maxWidth = GetMaxWidth();
+                int maxHeight = GetMaxHeight();
+                SetInnerSize(
+                        ComputeSize(minWidth, prefWidth, maxWidth),
+                        ComputeSize(minHeight, prefHeight, maxHeight));
+                DoLayout();
             }
         }
 
-        //@Override
-        protected override void layout()
+        protected override void Layout()
         {
-            if (horz != null && vert != null)
+            if (_horzGroup != null && _vertGroup != null)
             {
-                prepare();
-                doLayout();
+                Prepare();
+                DoLayout();
             }
-            else if (bWarnOnIncomplete)
+            else if (_bWarnOnIncomplete)
             {
-                warnOnIncomplete();
+                WarnOnIncomplete();
             }
         }
 
-        protected void prepare()
+        protected void Prepare()
         {
-            if (redoDefaultGaps)
+            if (_redoDefaultGaps)
             {
-                if (bAddDefaultGaps)
+                if (_bAddDefaultGaps)
                 {
                     try
                     {
-                        blockInvalidateLayoutTree = true;
-                        removeDefaultGaps();
-                        addDefaultGaps();
+                        _blockInvalidateLayoutTree = true;
+                        RemoveDefaultGaps();
+                        AddDefaultGaps();
                     }
                     finally
                     {
-                        blockInvalidateLayoutTree = false;
+                        _blockInvalidateLayoutTree = false;
                     }
                 }
-                redoDefaultGaps = false;
-                isPrepared = false;
+                _redoDefaultGaps = false;
+                _isPrepared = false;
             }
-            if (!isPrepared)
+            if (!_isPrepared)
             {
-                foreach (WidgetSpring s in widgetSprings.Values)
+                foreach (WidgetSpring s in _widgetSprings.Values)
                 {
-                    if (bIncludeInvisibleWidgets || s.w.isVisible())
+                    if (_bIncludeInvisibleWidgets || s._w.IsVisible())
                     {
                         s.prepare();
                     }
                 }
-                isPrepared = true;
+                _isPrepared = true;
             }
         }
 
-        protected void doLayout()
+        protected void DoLayout()
         {
-            horz.setSize(AXIS_X, getInnerX(), getInnerWidth());
-            vert.setSize(AXIS_Y, getInnerY(), getInnerHeight());
+            _horzGroup.SetSize(AXIS_X, GetInnerX(), GetInnerWidth());
+            _vertGroup.SetSize(AXIS_Y, GetInnerY(), GetInnerHeight());
             try
             {
-                foreach (WidgetSpring s in widgetSprings.Values)
+                foreach (WidgetSpring s in _widgetSprings.Values)
                 {
-                    if (bIncludeInvisibleWidgets || s.w.isVisible())
+                    if (_bIncludeInvisibleWidgets || s._w.IsVisible())
                     {
-                        s.apply();
+                        s.Apply();
                     }
                 }
             }
             catch (InvalidOperationException ex)
             {
-                if (debugStackTrace != null && ex.InnerException == null)
+                if (_debugStackTrace != null && ex.InnerException == null)
                 {
-                    throw new InvalidOperationException(ex.Message, debugStackTrace);
+                    throw new InvalidOperationException(ex.Message, _debugStackTrace);
                 }
                 throw ex;
             }
         }
 
-        //@Override
-        public override void invalidateLayout()
+        public override void InvalidateLayout()
         {
-            isPrepared = false;
-            base.invalidateLayout();
+            _isPrepared = false;
+            base.InvalidateLayout();
         }
 
-        //@Override
-        protected override void paintWidget(GUI gui)
+        protected override void PaintWidget(GUI gui)
         {
-            isPrepared = false;
+            _isPrepared = false;
             // super.paintWidget() is empty
         }
 
-        //@Override
-        protected override void sizeChanged()
+        protected override void SizeChanged()
         {
-            isPrepared = false;
-            base.sizeChanged();
+            _isPrepared = false;
+            base.SizeChanged();
         }
 
-        //@Override
-        protected override void afterAddToGUI(GUI gui)
+        protected override void AfterAddToGUI(GUI gui)
         {
-            isPrepared = false;
-            base.afterAddToGUI(gui);
+            _isPrepared = false;
+            base.AfterAddToGUI(gui);
         }
 
         /**
@@ -536,7 +523,7 @@ namespace XNATWL
          *
          * @return the new parallel Group.
          */
-        public Group createParallelGroup()
+        public Group CreateParallelGroup()
         {
             return new ParallelGroup(this);
         }
@@ -548,9 +535,9 @@ namespace XNATWL
          * @param widgets the widgets to add
          * @return a new parallel Group.
          */
-        public Group createParallelGroup(params Widget[] widgets)
+        public Group CreateParallelGroup(params Widget[] widgets)
         {
-            return createParallelGroup().addWidgets(widgets);
+            return CreateParallelGroup().AddWidgets(widgets);
         }
 
         /**
@@ -560,9 +547,9 @@ namespace XNATWL
          * @param groups the groups to add
          * @return a new parallel Group.
          */
-        public Group createParallelGroup(params Group[] groups)
+        public Group CreateParallelGroup(params Group[] groups)
         {
-            return createParallelGroup().addGroups(groups);
+            return CreateParallelGroup().AddGroups(groups);
         }
 
         /**
@@ -574,7 +561,7 @@ namespace XNATWL
          * 
          * @return a new sequential Group.
          */
-        public Group createSequentialGroup()
+        public Group CreateSequentialGroup()
         {
             return new SequentialGroup(this);
         }
@@ -586,9 +573,9 @@ namespace XNATWL
          * @param widgets the widgets to add
          * @return a new sequential Group.
          */
-        public Group createSequentialGroup(params Widget[] widgets)
+        public Group CreateSequentialGroup(params Widget[] widgets)
         {
-            return createSequentialGroup().addWidgets(widgets);
+            return CreateSequentialGroup().AddWidgets(widgets);
         }
 
         /**
@@ -598,34 +585,31 @@ namespace XNATWL
          * @param groups the groups to add
          * @return a new sequential Group.
          */
-        public Group createSequentialGroup(params Group[] groups)
+        public Group CreateSequentialGroup(params Group[] groups)
         {
-            return createSequentialGroup().addGroups(groups);
+            return CreateSequentialGroup().AddGroups(groups);
         }
 
-        //@Override
-        public override void insertChild(Widget child, int index)
+        public override void InsertChild(Widget child, int index)
         {
-            base.insertChild(child, index);
-            widgetSprings.Add(child, new WidgetSpring(this, child));
+            base.InsertChild(child, index);
+            _widgetSprings.Add(child, new WidgetSpring(this, child));
         }
 
-        //@Override
-        public override void removeAllChildren()
+        public override void RemoveAllChildren()
         {
-            base.removeAllChildren();
-            widgetSprings.Clear();
-            recheckWidgets();
-            layoutGroupsChanged();
+            base.RemoveAllChildren();
+            _widgetSprings.Clear();
+            RecheckWidgets();
+            LayoutGroupsChanged();
         }
 
-        //@Override
-        public override Widget removeChild(int index)
+        public override Widget RemoveChild(int index)
         {
-            Widget widget = base.removeChild(index);
-            widgetSprings.Remove(widget);
-            recheckWidgets();
-            layoutGroupsChanged();
+            Widget widget = base.RemoveChild(index);
+            _widgetSprings.Remove(widget);
+            RecheckWidgets();
+            LayoutGroupsChanged();
             return widget;
         }
 
@@ -639,7 +623,7 @@ namespace XNATWL
          * @param alignment the new alignment
          * @return true if the widget's alignment was changed, false otherwise
          */
-        public bool setWidgetAlignment(Widget widget, Alignment alignment)
+        public bool SetWidgetAlignment(Widget widget, Alignment alignment)
         {
             if (widget == null)
             {
@@ -649,90 +633,96 @@ namespace XNATWL
             {
                 throw new NullReferenceException("alignment");
             }
-            WidgetSpring ws = widgetSprings[widget];
+            WidgetSpring ws = _widgetSprings[widget];
             if (ws != null)
             {
-                System.Diagnostics.Debug.Assert(widget.getParent() == this);
-                ws.alignment = alignment;
+                System.Diagnostics.Debug.Assert(widget.GetParent() == this);
+                ws._alignment = alignment;
                 return true;
             }
             return false;
         }
 
-        protected void recheckWidgets()
+        protected void RecheckWidgets()
         {
-            if (horz != null)
+            if (_horzGroup != null)
             {
-                horz.recheckWidgets();
+                _horzGroup.RecheckWidgets();
             }
-            if (vert != null)
+            if (_vertGroup != null)
             {
-                vert.recheckWidgets();
+                _vertGroup.RecheckWidgets();
             }
         }
 
-        protected void layoutGroupsChanged()
+        protected void LayoutGroupsChanged()
         {
-            redoDefaultGaps = true;
-            maybeInvalidateLayoutTree();
+            _redoDefaultGaps = true;
+            MaybeInvalidateLayoutTree();
         }
 
-        protected void maybeInvalidateLayoutTree()
+        protected void MaybeInvalidateLayoutTree()
         {
-            if (horz != null && vert != null && !blockInvalidateLayoutTree)
+            if (_horzGroup != null && _vertGroup != null && !_blockInvalidateLayoutTree)
             {
-                invalidateLayout();
+                InvalidateLayout();
             }
         }
 
         //@Override
-        protected override void childVisibilityChanged(Widget child)
+        protected override void ChildVisibilityChanged(Widget child)
         {
-            if (!bIncludeInvisibleWidgets)
+            if (!_bIncludeInvisibleWidgets)
             {
-                layoutGroupsChanged(); // this will also clear isPrepared
+                LayoutGroupsChanged(); // this will also clear isPrepared
             }
         }
 
-        void removeChild(WidgetSpring widgetSpring)
+        void RemoveChild(WidgetSpring widgetSpring)
         {
-            Widget widget = widgetSpring.w;
-            int idx = getChildIndex(widget);
+            Widget widget = widgetSpring._w;
+            int idx = GetChildIndex(widget);
             System.Diagnostics.Debug.Assert(idx >= 0);
-            base.removeChild(idx);
-            widgetSprings.Remove(widget);
+            base.RemoveChild(idx);
+            _widgetSprings.Remove(widget);
         }
 
         public class Gap
         {
-            public int min;
-            public int preferred;
-            public int max;
+            public int Min;
+            public int Preferred;
+            public int Max;
 
             public Gap() : this(0, 0, 32767)
             {
                 
             }
+
             public Gap(int size) : this(size, size, size)
             {
 
             }
+
             public Gap(Utils.Number size) : this(size.IntValue(), size.IntValue(), size.IntValue())
             {
 
             }
+
             public Gap(int min, int preferred) : this(min, preferred, 32767)
             {
 
             }
+
             public Gap(Utils.Number min, Utils.Number preferred) : this(min.IntValue(), preferred.IntValue(), 32767)
             {
 
             }
+
             public Gap(Utils.Number min, Utils.Number preferred, Utils.Number max) : this(min.IntValue(), preferred.IntValue(), max.IntValue())
             {
 
             }
+
             public Gap(int min, int preferred, int max)
             {
                 if (min < 0)
@@ -747,18 +737,18 @@ namespace XNATWL
                 {
                     throw new ArgumentOutOfRangeException("max");
                 }
-                this.min = min;
-                this.preferred = preferred;
-                this.max = max;
+                this.Min = min;
+                this.Preferred = preferred;
+                this.Max = max;
             }
         }
 
         public abstract class Spring
         {
-            internal abstract int getMinSize(int axis);
-            internal abstract int getPrefSize(int axis);
-            internal abstract int getMaxSize(int axis);
-            internal abstract void setSize(int axis, int pos, int size);
+            internal abstract int GetMinSize(int axis);
+            internal abstract int GetPrefSize(int axis);
+            internal abstract int GetMaxSize(int axis);
+            internal abstract void SetSize(int axis, int pos, int size);
 
             //internal DialogLayout _dialogLayout;
 
@@ -767,12 +757,12 @@ namespace XNATWL
                 //this._dialogLayout = dialogLayout;
             }
 
-            void collectAllSprings(HashSet<Spring> result)
+            void CollectAllSprings(HashSet<Spring> result)
             {
                 result.Add(this);
             }
 
-            internal virtual bool isVisible()
+            internal virtual bool IsVisible()
             {
                 return true;
             }
@@ -780,148 +770,143 @@ namespace XNATWL
 
         public class WidgetSpring : Spring
         {
-            internal Widget w;
-            internal Alignment alignment;
-            int x;
-            int y;
-            int width;
-            int height;
-            int minWidth;
-            int minHeight;
-            int maxWidth;
-            int maxHeight;
-            int prefWidth;
-            int prefHeight;
-            int flags;
+            internal Widget _w;
+            internal Alignment _alignment;
+            int _x;
+            int _y;
+            int _width;
+            int _height;
+            int _minWidth;
+            int _minHeight;
+            int _maxWidth;
+            int _maxHeight;
+            int _prefWidth;
+            int _prefHeight;
+            int _flags;
             private DialogLayout _dialogLayout;
 
             internal WidgetSpring(DialogLayout dialogLayout, Widget w)
             {
                 this._dialogLayout = dialogLayout;
-                this.w = w;
-                this.alignment = Alignment.FILL;
+                this._w = w;
+                this._alignment = Alignment.FILL;
             }
 
             internal void prepare()
             {
-                this.x = w.getX();
-                this.y = w.getY();
-                this.width = w.getWidth();
-                this.height = w.getHeight();
-                this.minWidth = w.getMinWidth();
-                this.minHeight = w.getMinHeight();
-                this.maxWidth = w.getMaxWidth();
-                this.maxHeight = w.getMaxHeight();
-                this.prefWidth = computeSize(minWidth, w.getPreferredWidth(), maxWidth);
-                this.prefHeight = computeSize(minHeight, w.getPreferredHeight(), maxHeight);
-                this.flags = 0;
+                this._x = _w.GetX();
+                this._y = _w.GetY();
+                this._width = _w.GetWidth();
+                this._height = _w.GetHeight();
+                this._minWidth = _w.GetMinWidth();
+                this._minHeight = _w.GetMinHeight();
+                this._maxWidth = _w.GetMaxWidth();
+                this._maxHeight = _w.GetMaxHeight();
+                this._prefWidth = ComputeSize(_minWidth, _w.GetPreferredWidth(), _maxWidth);
+                this._prefHeight = ComputeSize(_minHeight, _w.GetPreferredHeight(), _maxHeight);
+                this._flags = 0;
             }
 
-            //@Override
-            internal override int getMinSize(int axis)
+            internal override int GetMinSize(int axis)
             {
                 if (axis == DialogLayout.AXIS_X)
                 {
-                    return minWidth;
+                    return _minWidth;
                 }
                 else if (axis == DialogLayout.AXIS_Y)
                 {
-                    return minHeight;
+                    return _minHeight;
                 }
 
                 throw new ArgumentOutOfRangeException("axis");
             }
 
-            //@Override
-            internal override int getPrefSize(int axis)
+            internal override int GetPrefSize(int axis)
             {
                 if (axis == DialogLayout.AXIS_X)
                 {
-                    return prefWidth;
+                    return _prefWidth;
                 }
                 else if (axis == DialogLayout.AXIS_Y)
                 {
-                    return prefHeight;
+                    return _prefHeight;
                 }
 
                 throw new ArgumentOutOfRangeException("axis");
             }
 
-            //@Override
-            internal override int getMaxSize(int axis)
+            internal override int GetMaxSize(int axis)
             {
                 if (axis == DialogLayout.AXIS_X)
                 {
-                    return maxWidth;
+                    return _maxWidth;
                 }
                 else if (axis == DialogLayout.AXIS_Y)
                 {
-                    return maxHeight;
+                    return _maxHeight;
                 }
 
                 throw new ArgumentOutOfRangeException("axis");
             }
 
-            //@Override
-            internal override void setSize(int axis, int pos, int size)
+            internal override void SetSize(int axis, int pos, int size)
             {
-                this.flags |= 1 << axis;
+                this._flags |= 1 << axis;
 
                 if (axis == DialogLayout.AXIS_X)
                 {
-                    this.x = pos;
-                    this.width = size;
+                    this._x = pos;
+                    this._width = size;
                     return;
                 }
                 else if (axis == DialogLayout.AXIS_Y)
                 {
-                    this.y = pos;
-                    this.height = size;
+                    this._y = pos;
+                    this._height = size;
                     return;
                 }
 
                 throw new ArgumentOutOfRangeException("axis");
             }
 
-            internal void apply()
+            internal void Apply()
             {
-                if (flags != 3)
+                if (_flags != 3)
                 {
-                    invalidState();
+                    InvalidState();
                 }
-                if (alignment != Alignment.FILL)
+                if (_alignment != Alignment.FILL)
                 {
-                    int newWidth = Math.Min(width, prefWidth);
-                    int newHeight = Math.Min(height, prefHeight);
-                    w.setPosition(
-                            x + alignment.computePositionX(width, newWidth),
-                            y + alignment.computePositionY(height, newHeight));
-                    w.setSize(newWidth, newHeight);
+                    int newWidth = Math.Min(_width, _prefWidth);
+                    int newHeight = Math.Min(_height, _prefHeight);
+                    _w.SetPosition(
+                            _x + _alignment.ComputePositionX(_width, newWidth),
+                            _y + _alignment.ComputePositionY(_height, newHeight));
+                    _w.SetSize(newWidth, newHeight);
                 }
                 else
                 {
-                    w.setPosition(x, y);
-                    w.setSize(width, height);
+                    _w.SetPosition(_x, _y);
+                    _w.SetSize(_width, _height);
                 }
             }
 
-            //@Override
-            internal override bool isVisible()
+            internal override bool IsVisible()
             {
-                return w.isVisible();
+                return _w.IsVisible();
             }
 
-            void invalidState()
+            void InvalidState()
             {
                 StringBuilder sb = new StringBuilder();
-                sb.Append("Widget ").Append(w)
-                        .Append(" with theme ").Append(w.getTheme())
+                sb.Append("Widget ").Append(_w)
+                        .Append(" with theme ").Append(_w.GetTheme())
                         .Append(" is not part of the following groups:");
-                if ((flags & (1 << AXIS_X)) == 0)
+                if ((_flags & (1 << AXIS_X)) == 0)
                 {
                     sb.Append(" horizontal");
                 }
-                if ((flags & (1 << AXIS_Y)) == 0)
+                if ((_flags & (1 << AXIS_Y)) == 0)
                 {
                     sb.Append(" vertical");
                 }
@@ -931,48 +916,44 @@ namespace XNATWL
 
         private class GapSpring : Spring
         {
-            int min;
-            int pref;
-            int max;
-            internal bool isDefault;
+            int _min;
+            int _pref;
+            int _max;
+            internal bool _isDefault;
             private DialogLayout _dialogLayout;
 
             internal GapSpring(DialogLayout dialogLayout, int min, int pref, int max, bool isDefault)
             {
                 this._dialogLayout = dialogLayout;
-                convertConstant(AXIS_X, min);
-                convertConstant(AXIS_X, pref);
-                convertConstant(AXIS_X, max);
-                this.min = min;
-                this.pref = pref;
-                this.max = max;
-                this.isDefault = isDefault;
+                ConvertConstant(AXIS_X, min);
+                ConvertConstant(AXIS_X, pref);
+                ConvertConstant(AXIS_X, max);
+                this._min = min;
+                this._pref = pref;
+                this._max = max;
+                this._isDefault = isDefault;
             }
 
-            //@Override
-            internal override int getMinSize(int axis)
+            internal override int GetMinSize(int axis)
             {
-                return convertConstant(axis, min);
+                return ConvertConstant(axis, _min);
             }
 
-            //@Override
-            internal override int getPrefSize(int axis)
+            internal override int GetPrefSize(int axis)
             {
-                return convertConstant(axis, pref);
+                return ConvertConstant(axis, _pref);
             }
 
-            //@Override
-            internal override int getMaxSize(int axis)
+            internal override int GetMaxSize(int axis)
             {
-                return convertConstant(axis, max);
+                return ConvertConstant(axis, _max);
             }
 
-            //@Override
-            internal override void setSize(int axis, int pos, int size)
+            internal override void SetSize(int axis, int pos, int size)
             {
             }
 
-            private int convertConstant(int axis, int value)
+            private int ConvertConstant(int axis, int value)
             {
                 if (value >= 0)
                 {
@@ -981,19 +962,19 @@ namespace XNATWL
                 Dimension dim;
                 if (value == SMALL_GAP)
                 {
-                    dim = this._dialogLayout.smallGap;
+                    dim = this._dialogLayout._smallGap;
                 }
                 else if (value == MEDIUM_GAP)
                 {
-                    dim = this._dialogLayout.mediumGap;
+                    dim = this._dialogLayout._mediumGap;
                 }
                 else if (value == LARGE_GAP)
                 {
-                    dim = this._dialogLayout.largeGap;
+                    dim = this._dialogLayout._largeGap;
                 }
                 else if (value == DEFAULT_GAP)
                 {
-                    dim = this._dialogLayout.defaultGap;
+                    dim = this._dialogLayout._defaultGap;
                 }
                 else
                 {
@@ -1019,43 +1000,39 @@ namespace XNATWL
 
         private class NamedGapSpring : Spring
         {
-            String name;
+            String _name;
             private DialogLayout _dialogLayout;
 
             public NamedGapSpring(DialogLayout dialogLayout, String name)
             {
                 this._dialogLayout = dialogLayout;
-                this.name = name;
+                this._name = name;
             }
 
-            //@Override
-            internal override int getMaxSize(int axis)
+            internal override int GetMaxSize(int axis)
             {
-                return getGap().max;
+                return GetGap().Max;
             }
 
-            //@Override
-            internal override int getMinSize(int axis)
+            internal override int GetMinSize(int axis)
             {
-                return getGap().min;
+                return GetGap().Min;
             }
 
-            //@Override
-            internal override int getPrefSize(int axis)
+            internal override int GetPrefSize(int axis)
             {
-                return getGap().preferred;
+                return GetGap().Preferred;
             }
 
-            //@Override
-            internal override void setSize(int axis, int pos, int size)
+            internal override void SetSize(int axis, int pos, int size)
             {
             }
 
-            private Gap getGap()
+            private Gap GetGap()
             {
-                if (this._dialogLayout.namedGaps != null)
+                if (this._dialogLayout._namedGaps != null)
                 {
-                    return this._dialogLayout.namedGaps.GetParameterValue(name, true, typeof(Gap), NO_GAP);
+                    return this._dialogLayout._namedGaps.GetParameterValue(_name, true, typeof(Gap), NO_GAP);
                 }
                 return NO_GAP;
             }
@@ -1063,8 +1040,8 @@ namespace XNATWL
 
         public abstract class Group : Spring
         {
-            internal List<Spring> springs = new List<Spring>();
-            bool alreadyAdded;
+            internal List<Spring> _springs = new List<Spring>();
+            bool _alreadyAdded;
             internal DialogLayout _dialogLayout;
 
             public Group(DialogLayout dialogLayout)
@@ -1072,12 +1049,12 @@ namespace XNATWL
                 this._dialogLayout = dialogLayout;
             }
 
-            internal void checkGroup(DialogLayout owner)
+            internal void CheckGroup(DialogLayout owner)
             {
                 if (this._dialogLayout != owner) {
                     throw new InvalidOperationException("Can't add group from different layout");
                 }
-                if (alreadyAdded)
+                if (_alreadyAdded)
                 {
                     throw new InvalidOperationException("Group already added to another group");
                 }
@@ -1091,11 +1068,11 @@ namespace XNATWL
              * @param g the child Group
              * @return this Group
              */
-            public Group addGroup(Group g)
+            public Group AddGroup(Group g)
             {
-                g.checkGroup(this._dialogLayout);
-                g.alreadyAdded = true;
-                addSpring(g);
+                g.CheckGroup(this._dialogLayout);
+                g._alreadyAdded = true;
+                AddSpring(g);
                 return this;
             }
 
@@ -1107,11 +1084,11 @@ namespace XNATWL
              * @param groups the groups to add
              * @return this Group
              */
-            public Group addGroups(params Group[] groups)
+            public Group AddGroups(params Group[] groups)
             {
                 foreach (Group g in groups)
                 {
-                    addGroup(g);
+                    AddGroup(g);
                 }
                 return this;
             }
@@ -1127,17 +1104,17 @@ namespace XNATWL
              * @return this Group
              * @see Widget#add(de.matthiasmann.twl.Widget)
              */
-            public Group addWidget(Widget w)
+            public Group AddWidget(Widget w)
             {
-                if (w.getParent() != this._dialogLayout) {
-                    this._dialogLayout.add(w);
+                if (w.GetParent() != this._dialogLayout) {
+                    this._dialogLayout.Add(w);
                 }
-                WidgetSpring s = this._dialogLayout.widgetSprings[w];
+                WidgetSpring s = this._dialogLayout._widgetSprings[w];
                 if (s == null)
                 {
                     throw new InvalidOperationException("WidgetSpring for Widget not found: " + w);
                 }
-                addSpring(s);
+                AddSpring(s);
                 return this;
             }
 
@@ -1154,10 +1131,10 @@ namespace XNATWL
              * @see Widget#add(de.matthiasmann.twl.Widget) 
              * @see #setWidgetAlignment(de.matthiasmann.twl.Widget, de.matthiasmann.twl.Alignment)
              */
-            public Group addWidget(Widget w, Alignment alignment)
+            public Group AddWidget(Widget w, Alignment alignment)
             {
-                this.addWidget(w);
-                this._dialogLayout.setWidgetAlignment(w, alignment);
+                this.AddWidget(w);
+                this._dialogLayout.SetWidgetAlignment(w, alignment);
                 return this;
             }
 
@@ -1167,11 +1144,11 @@ namespace XNATWL
              * @param widgets The widgets which should be added.
              * @return this Group
              */
-            public Group addWidgets(params Widget[] widgets)
+            public Group AddWidgets(params Widget[] widgets)
             {
                 foreach (Widget w in widgets)
                 {
-                    addWidget(w);
+                    AddWidget(w);
                 }
                 return this;
             }
@@ -1187,7 +1164,7 @@ namespace XNATWL
              * @param widgets The widgets which should be added.
              * @return this Group
              */
-            public Group addWidgetsWithGap(String gapName, params Widget[] widgets)
+            public Group AddWidgetsWithGap(String gapName, params Widget[] widgets)
             {
                 StateKey stateNotFirst = StateKey.Get(gapName + ("NotFirst"));
                 StateKey stateNotLast = StateKey.Get(gapName + ("NotLast"));
@@ -1195,13 +1172,13 @@ namespace XNATWL
                 {
                     if (i > 0)
                     {
-                        addGap(gapName);
+                        AddGap(gapName);
                     }
                     Widget w = widgets[i];
-                    addWidget(w);
-                    AnimationState animationState = w.getAnimationState();
-                    animationState.setAnimationState(stateNotFirst, i > 0);
-                    animationState.setAnimationState(stateNotLast, i < n - 1);
+                    AddWidget(w);
+                    AnimationState animationState = w.GetAnimationState();
+                    animationState.SetAnimationState(stateNotFirst, i > 0);
+                    animationState.SetAnimationState(stateNotLast, i < n - 1);
                 }
                 return this;
             }
@@ -1218,9 +1195,9 @@ namespace XNATWL
              * @see DialogLayout#LARGE_GAP
              * @see DialogLayout#DEFAULT_GAP
              */
-            public Group addGap(int min, int pref, int max)
+            public Group AddGap(int min, int pref, int max)
             {
-                addSpring(new GapSpring(this._dialogLayout, min, pref, max, false));
+                AddSpring(new GapSpring(this._dialogLayout, min, pref, max, false));
                 return this;
             }
 
@@ -1234,9 +1211,9 @@ namespace XNATWL
              * @see DialogLayout#LARGE_GAP
              * @see DialogLayout#DEFAULT_GAP
              */
-            public Group addGap(int size)
+            public Group AddGap(int size)
             {
-                addSpring(new GapSpring(this._dialogLayout, size, size, size, false));
+                AddSpring(new GapSpring(this._dialogLayout, size, size, size, false));
                 return this;
             }
 
@@ -1250,9 +1227,9 @@ namespace XNATWL
              * @see DialogLayout#LARGE_GAP
              * @see DialogLayout#DEFAULT_GAP
              */
-            public Group addMinGap(int minSize)
+            public Group AddMinGap(int minSize)
             {
-                addSpring(new GapSpring(this._dialogLayout, minSize, minSize, short.MaxValue, false));
+                AddSpring(new GapSpring(this._dialogLayout, minSize, minSize, short.MaxValue, false));
                 return this;
             }
 
@@ -1262,9 +1239,9 @@ namespace XNATWL
              * <p>This is equivalent to {@code addGap(0, 0, Short.MAX_VALUE) }</p>
              * @return this Group
              */
-            public virtual Group addGap()
+            public virtual Group AddGap()
             {
-                addSpring(new GapSpring(this._dialogLayout, 0, 0, short.MaxValue, false));
+                AddSpring(new GapSpring(this._dialogLayout, 0, 0, short.MaxValue, false));
                 return this;
             }
 
@@ -1279,34 +1256,34 @@ namespace XNATWL
              * @param name the name of the gap (vcase sensitive)
              * @return this Group
              */
-            public Group addGap(String name)
+            public Group AddGap(String name)
             {
                 if (name.Length == 0)
                 {
                     throw new ArgumentOutOfRangeException("name");
                 }
-                addSpring(new NamedGapSpring(this._dialogLayout, name));
+                AddSpring(new NamedGapSpring(this._dialogLayout, name));
                 return this;
             }
 
             /**
              * Remove all default gaps from this and child groups
              */
-            public void removeDefaultGaps()
+            public void RemoveDefaultGaps()
             {
-                for (int i = springs.Count; i-- > 0;)
+                for (int i = _springs.Count; i-- > 0;)
                 {
-                    Spring s = springs[i];
+                    Spring s = _springs[i];
                     if (s is GapSpring)
                     {
-                        if (((GapSpring)s).isDefault)
+                        if (((GapSpring)s)._isDefault)
                         {
-                            springs.RemoveAt(i);
+                            _springs.RemoveAt(i);
                         }
                     }
                     else if (s is Group)
                     {
-                        ((Group)s).removeDefaultGaps();
+                        ((Group)s).RemoveDefaultGaps();
                     }
                 }
             }
@@ -1314,14 +1291,14 @@ namespace XNATWL
             /**
              * Add a default gap between all children except if the neighbour is already a Gap.
              */
-            public virtual void addDefaultGap()
+            public virtual void AddDefaultGap()
             {
-                for (int i = 0; i < springs.Count; i++)
+                for (int i = 0; i < _springs.Count; i++)
                 {
-                    Spring s = springs[i];
+                    Spring s = _springs[i];
                     if (s is Group)
                     {
-                        ((Group)s).addDefaultGap();
+                        ((Group)s).AddDefaultGap();
                     }
                 }
             }
@@ -1334,19 +1311,19 @@ namespace XNATWL
              *      should be removed from the {@code DialogLayout}
              * @return true if it was found and removed, false otherwise
              */
-            public bool removeGroup(Group g, bool removeWidgets)
+            public bool RemoveGroup(Group g, bool removeWidgets)
             {
-                for (int i = 0; i < springs.Count; i++)
+                for (int i = 0; i < _springs.Count; i++)
                 {
-                    if (springs[i] == g)
+                    if (_springs[i] == g)
                     {
-                        springs.RemoveAt(i);
+                        _springs.RemoveAt(i);
                         if (removeWidgets)
                         {
-                            g.removeWidgets();
-                            this._dialogLayout.recheckWidgets();
+                            g.RemoveWidgets();
+                            this._dialogLayout.RecheckWidgets();
                         }
-                        this._dialogLayout.layoutGroupsChanged();
+                        this._dialogLayout.LayoutGroupsChanged();
                         return true;
                     }
                 }
@@ -1359,75 +1336,75 @@ namespace XNATWL
              * @param removeWidgets if true all widgets in this group are removed
              *      from the {@code DialogLayout}
              */
-            public void clear(bool bRemoveWidgets)
+            public void Clear(bool bRemoveWidgets)
             {
                 if (bRemoveWidgets)
                 {
-                    removeWidgets();
+                    RemoveWidgets();
                 }
-                springs.Clear();
+                _springs.Clear();
                 if (bRemoveWidgets)
                 {
-                    this._dialogLayout.recheckWidgets();
+                    this._dialogLayout.RecheckWidgets();
                 }
-                this._dialogLayout.layoutGroupsChanged();
+                this._dialogLayout.LayoutGroupsChanged();
             }
 
-            internal void addSpring(Spring s)
+            internal void AddSpring(Spring s)
             {
-                springs.Add(s);
-                this._dialogLayout.layoutGroupsChanged();
+                _springs.Add(s);
+                this._dialogLayout.LayoutGroupsChanged();
             }
 
-            internal void recheckWidgets()
+            internal void RecheckWidgets()
             {
-                for (int i = springs.Count; i-- > 0;)
+                for (int i = _springs.Count; i-- > 0;)
                 {
-                    Spring s = springs[i];
+                    Spring s = _springs[i];
                     if (s is WidgetSpring)
                     {
-                        if (!this._dialogLayout.widgetSprings.ContainsKey(((WidgetSpring)s).w))
+                        if (!this._dialogLayout._widgetSprings.ContainsKey(((WidgetSpring)s)._w))
                         {
-                            springs.RemoveAt(i);
+                            _springs.RemoveAt(i);
                         }
                     }
                     else if (s is Group)
                     {
-                        ((Group)s).recheckWidgets();
+                        ((Group)s).RecheckWidgets();
                     }
                 }
             }
 
-            void removeWidgets()
+            void RemoveWidgets()
             {
-                for (int i = springs.Count; i-- > 0;)
+                for (int i = _springs.Count; i-- > 0;)
                 {
-                    Spring s = springs[i];
+                    Spring s = _springs[i];
                     if (s is WidgetSpring)
                     {
-                        this._dialogLayout.removeChild((WidgetSpring)s);
+                        this._dialogLayout.RemoveChild((WidgetSpring)s);
                     }
                     else if (s is Group)
                     {
-                        ((Group)s).removeWidgets();
+                        ((Group)s).RemoveWidgets();
                     }
                 }
             }
         }
 
         class SpringDelta : IComparable<SpringDelta> {
-            internal int idx;
-            internal int delta;
+            internal int _idx;
+            internal int _delta;
 
             internal SpringDelta(int idx, int delta)
             {
-                this.idx = idx;
-                this.delta = delta;
+                this._idx = idx;
+                this._delta = delta;
             }
 
             public int CompareTo(SpringDelta o)
             {
-                return delta - o.delta;
+                return _delta - o._delta;
             }
         }
 
@@ -1437,47 +1414,44 @@ namespace XNATWL
             {
             }
 
-            //@Override
-            internal override int getMinSize(int axis)
+            internal override int GetMinSize(int axis)
             {
                 int size = 0;
-                for (int i = 0, n = springs.Count; i < n; i++)
+                for (int i = 0, n = _springs.Count; i < n; i++)
                 {
-                    Spring s = springs[i];
-                    if (this._dialogLayout.bIncludeInvisibleWidgets || s.isVisible())
+                    Spring s = _springs[i];
+                    if (this._dialogLayout._bIncludeInvisibleWidgets || s.IsVisible())
                     {
-                        size += s.getMinSize(axis);
+                        size += s.GetMinSize(axis);
                     }
                 }
                 return size;
             }
 
-            //@Override
-            internal override int getPrefSize(int axis)
+            internal override int GetPrefSize(int axis)
             {
                 int size = 0;
-                for (int i = 0, n = springs.Count; i < n; i++)
+                for (int i = 0, n = _springs.Count; i < n; i++)
                 {
-                    Spring s = springs[i];
-                    if (this._dialogLayout.bIncludeInvisibleWidgets || s.isVisible())
+                    Spring s = _springs[i];
+                    if (this._dialogLayout._bIncludeInvisibleWidgets || s.IsVisible())
                     {
-                        size += s.getPrefSize(axis);
+                        size += s.GetPrefSize(axis);
                     }
                 }
                 return size;
             }
 
-            //@Override
-            internal override int getMaxSize(int axis)
+            internal override int GetMaxSize(int axis)
             {
                 int size = 0;
                 bool hasMax = false;
-                for (int i = 0, n = springs.Count; i < n; i++)
+                for (int i = 0, n = _springs.Count; i < n; i++)
                 {
-                    Spring s = springs[i];
-                    if (this._dialogLayout.bIncludeInvisibleWidgets || s.isVisible())
+                    Spring s = _springs[i];
+                    if (this._dialogLayout._bIncludeInvisibleWidgets || s.IsVisible())
                     {
-                        int max = s.getMaxSize(axis);
+                        int max = s.GetMaxSize(axis);
                         if (max > 0)
                         {
                             size += max;
@@ -1485,7 +1459,7 @@ namespace XNATWL
                         }
                         else
                         {
-                            size += s.getPrefSize(axis);
+                            size += s.GetPrefSize(axis);
                         }
                     }
                 }
@@ -1495,59 +1469,57 @@ namespace XNATWL
             /**
              * Add a default gap between all children except if the neighbour is already a Gap.
              */
-            //@Override
-            public override void addDefaultGap()
+            public override void AddDefaultGap()
             {
-                if (springs.Count > 1)
+                if (_springs.Count > 1)
                 {
                     bool wasGap = true;
-                    for (int i = 0; i < springs.Count; i++)
+                    for (int i = 0; i < _springs.Count; i++)
                     {
-                        Spring s = springs[i];
-                        if (this._dialogLayout.bIncludeInvisibleWidgets || s.isVisible())
+                        Spring s = _springs[i];
+                        if (this._dialogLayout._bIncludeInvisibleWidgets || s.IsVisible())
                         {
                             bool isGap = (s is GapSpring) || (s is NamedGapSpring);
                             if (!isGap && !wasGap)
                             {
-                                this.springs.Insert(i++, new GapSpring(this._dialogLayout, DEFAULT_GAP, DEFAULT_GAP, DEFAULT_GAP, true));
+                                this._springs.Insert(i++, new GapSpring(this._dialogLayout, DEFAULT_GAP, DEFAULT_GAP, DEFAULT_GAP, true));
                             }
                             wasGap = isGap;
                         }
                     }
                 }
 
-                base.addDefaultGap();
+                base.AddDefaultGap();
             }
 
-            //@Override
-            internal override void setSize(int axis, int pos, int size)
+            internal override void SetSize(int axis, int pos, int size)
             {
-                int prefSize = getPrefSize(axis);
+                int prefSize = GetPrefSize(axis);
                 if (size == prefSize)
                 {
-                    foreach (Spring s in springs)
+                    foreach (Spring s in _springs)
                     {
-                        if (this._dialogLayout.bIncludeInvisibleWidgets || s.isVisible())
+                        if (this._dialogLayout._bIncludeInvisibleWidgets || s.IsVisible())
                         {
-                            int spref = s.getPrefSize(axis);
-                            s.setSize(axis, pos, spref);
+                            int spref = s.GetPrefSize(axis);
+                            s.SetSize(axis, pos, spref);
                             pos += spref;
                         }
                     }
                 }
-                else if (springs.Count == 1)
+                else if (_springs.Count == 1)
                 {
                     // no need to check visibility flag
-                    Spring s = springs[0];
-                    s.setSize(axis, pos, size);
+                    Spring s = _springs[0];
+                    s.SetSize(axis, pos, size);
                 }
-                else if (springs.Count > 1)
+                else if (_springs.Count > 1)
                 {
-                    setSizeNonPref(axis, pos, size, prefSize);
+                    SetSizeNonPref(axis, pos, size, prefSize);
                 }
             }
 
-            private void setSizeNonPref(int axis, int pos, int size, int prefSize)
+            private void SetSizeNonPref(int axis, int pos, int size, int prefSize)
             {
                 int delta = size - prefSize;
                 bool useMin = delta < 0;
@@ -1556,16 +1528,16 @@ namespace XNATWL
                     delta = -delta;
                 }
 
-                SpringDelta[] deltas = new SpringDelta[springs.Count];
+                SpringDelta[] deltas = new SpringDelta[_springs.Count];
                 int resizeable = 0;
-                for (int i = 0; i < springs.Count; i++)
+                for (int i = 0; i < _springs.Count; i++)
                 {
-                    Spring s = springs[i];
-                    if (this._dialogLayout.bIncludeInvisibleWidgets || s.isVisible())
+                    Spring s = _springs[i];
+                    if (this._dialogLayout._bIncludeInvisibleWidgets || s.IsVisible())
                     {
                         int sdelta = useMin
-                                ? s.getPrefSize(axis) - s.getMinSize(axis)
-                                : s.getMaxSize(axis) - s.getPrefSize(axis);
+                                ? s.GetPrefSize(axis) - s.GetMinSize(axis)
+                                : s.GetMaxSize(axis) - s.GetPrefSize(axis);
                         if (sdelta > 0)
                         {
                             deltas[resizeable++] = new SpringDelta(i, sdelta);
@@ -1579,7 +1551,7 @@ namespace XNATWL
                         Array.Sort(deltas, 0, resizeable);
                     }
 
-                    int[] sizes = new int[springs.Count];
+                    int[] sizes = new int[_springs.Count];
 
                     int remaining = resizeable;
                     for (int i = 0; i < resizeable; i++)
@@ -1587,7 +1559,7 @@ namespace XNATWL
                         SpringDelta d = deltas[i];
 
                         int sdelta = delta / remaining;
-                        int ddelta = Math.Min(d.delta, sdelta);
+                        int ddelta = Math.Min(d._delta, sdelta);
                         delta -= ddelta;
                         remaining--;
 
@@ -1595,40 +1567,40 @@ namespace XNATWL
                         {
                             ddelta = -ddelta;
                         }
-                        sizes[d.idx] = ddelta;
+                        sizes[d._idx] = ddelta;
                     }
 
-                    for (int i = 0; i < springs.Count; i++)
+                    for (int i = 0; i < _springs.Count; i++)
                     {
-                        Spring s = springs[i];
-                        if (this._dialogLayout.bIncludeInvisibleWidgets || s.isVisible())
+                        Spring s = _springs[i];
+                        if (this._dialogLayout._bIncludeInvisibleWidgets || s.IsVisible())
                         {
-                            int ssize = s.getPrefSize(axis) + sizes[i];
-                            s.setSize(axis, pos, ssize);
+                            int ssize = s.GetPrefSize(axis) + sizes[i];
+                            s.SetSize(axis, pos, ssize);
                             pos += ssize;
                         }
                     }
                 }
                 else
                 {
-                    foreach (Spring s in springs)
+                    foreach (Spring s in _springs)
                     {
-                        if (this._dialogLayout.bIncludeInvisibleWidgets || s.isVisible())
+                        if (this._dialogLayout._bIncludeInvisibleWidgets || s.IsVisible())
                         {
                             int ssize;
                             if (useMin)
                             {
-                                ssize = s.getMinSize(axis);
+                                ssize = s.GetMinSize(axis);
                             }
                             else
                             {
-                                ssize = s.getMaxSize(axis);
+                                ssize = s.GetMaxSize(axis);
                                 if (ssize == 0)
                                 {
-                                    ssize = s.getPrefSize(axis);
+                                    ssize = s.GetPrefSize(axis);
                                 }
                             }
-                            s.setSize(axis, pos, ssize);
+                            s.SetSize(axis, pos, ssize);
                             pos += ssize;
                         }
                     }
@@ -1642,68 +1614,63 @@ namespace XNATWL
             {
             }
 
-            //@Override
-            override internal int getMinSize(int axis)
+            override internal int GetMinSize(int axis)
             {
                 int size = 0;
-                for (int i = 0, n = springs.Count; i < n; i++)
+                for (int i = 0, n = _springs.Count; i < n; i++)
                 {
-                    Spring s = springs[i];
-                    if (this._dialogLayout.bIncludeInvisibleWidgets || s.isVisible())
+                    Spring s = _springs[i];
+                    if (this._dialogLayout._bIncludeInvisibleWidgets || s.IsVisible())
                     {
-                        size = Math.Max(size, s.getMinSize(axis));
+                        size = Math.Max(size, s.GetMinSize(axis));
                     }
                 }
                 return size;
             }
 
-            //@Override
-            override internal int getPrefSize(int axis)
+            override internal int GetPrefSize(int axis)
             {
                 int size = 0;
-                for (int i = 0, n = springs.Count; i < n; i++)
+                for (int i = 0, n = _springs.Count; i < n; i++)
                 {
-                    Spring s = springs[i];
-                    if (this._dialogLayout.bIncludeInvisibleWidgets || s.isVisible())
+                    Spring s = _springs[i];
+                    if (this._dialogLayout._bIncludeInvisibleWidgets || s.IsVisible())
                     {
-                        size = Math.Max(size, s.getPrefSize(axis));
+                        size = Math.Max(size, s.GetPrefSize(axis));
                     }
                 }
                 return size;
             }
 
-            //@Override
-            override internal int getMaxSize(int axis)
+            override internal int GetMaxSize(int axis)
             {
                 int size = 0;
-                for (int i = 0, n = springs.Count; i < n; i++)
+                for (int i = 0, n = _springs.Count; i < n; i++)
                 {
-                    Spring s = springs[i];
-                    if (this._dialogLayout.bIncludeInvisibleWidgets || s.isVisible())
+                    Spring s = _springs[i];
+                    if (this._dialogLayout._bIncludeInvisibleWidgets || s.IsVisible())
                     {
-                        size = Math.Max(size, s.getMaxSize(axis));
+                        size = Math.Max(size, s.GetMaxSize(axis));
                     }
                 }
                 return size;
             }
-
-            //@Override
-            override internal void setSize(int axis, int pos, int size)
+            
+            override internal void SetSize(int axis, int pos, int size)
             {
-                for (int i = 0, n = springs.Count; i < n; i++)
+                for (int i = 0, n = _springs.Count; i < n; i++)
                 {
-                    Spring s = springs[i];
-                    if (this._dialogLayout.bIncludeInvisibleWidgets || s.isVisible())
+                    Spring s = _springs[i];
+                    if (this._dialogLayout._bIncludeInvisibleWidgets || s.IsVisible())
                     {
-                        s.setSize(axis, pos, size);
+                        s.SetSize(axis, pos, size);
                     }
                 }
             }
 
-            //@Override
-            public override Group addGap()
+            public override Group AddGap()
             {
-                getLogger().log(Level.WARNING, "Useless call to addGap() on ParallelGroup", new Exception());
+                GetLogger().Log(Level.WARNING, "Useless call to addGap() on ParallelGroup", new Exception());
                 return this;
             }
         }

@@ -10,10 +10,10 @@ namespace XNATWL.Test
 {
     public class GraphDemoDialog1 : FadeFrame
     {
-        private SimpleGraphLineModel gmMsPerFrame;
-        private long lastTime = nanoTime();
+        private SimpleGraphLineModel _gmMsPerFrame;
+        private long _lastTime = NanoTime();
 
-        private static long nanoTime()
+        private static long NanoTime()
         {
             long nano = 10000L * Stopwatch.GetTimestamp();
             nano /= TimeSpan.TicksPerMillisecond;
@@ -23,24 +23,24 @@ namespace XNATWL.Test
 
         public GraphDemoDialog1()
         {
-            gmMsPerFrame = new SimpleGraphLineModel("default", 100, 0, 30);
-            GraphLineModel[] lineModel = new GraphLineModel[] { gmMsPerFrame };
+            _gmMsPerFrame = new SimpleGraphLineModel("default", 100, 0, 30);
+            GraphLineModel[] lineModel = new GraphLineModel[] { _gmMsPerFrame };
 
             Graph graph = new Graph(new SimpleGraphModel(lineModel));
-            graph.setTheme("/graph");
+            graph.SetTheme("/graph");
 
-            setTheme(SimpleTest.WITH_TITLE);
-            setTitle("MS per frame");
-            add(graph);
+            SetTheme(SimpleTest.WITH_TITLE);
+            SetTitle("MS per frame");
+            Add(graph);
         }
 
-        protected override void paint(GUI gui)
+        protected override void Paint(GUI gui)
         {
-            long time = nanoTime();
-            gmMsPerFrame.AddPoint((float)(time - lastTime) * 1e-6f);
-            lastTime = time;
+            long time = NanoTime();
+            _gmMsPerFrame.AddPoint((float)(time - _lastTime) * 1e-6f);
+            _lastTime = time;
 
-            base.paint(gui);
+            base.Paint(gui);
         }
     }
 }

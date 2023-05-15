@@ -36,298 +36,294 @@ namespace XNATWL
     {
         public enum Direction
         {
-            HORIZONTAL,
-            VERTICAL
+            Horizontal,
+            Vertical
         };
 
-        private Direction direction;
-        private int spacing;
-        private bool scroll;
-        private Alignment alignment = Alignment.TOP;
+        private Direction _direction;
+        private int _spacing;
+        private bool _scroll;
+        private Alignment _alignment = Alignment.TOP;
 
-        public BoxLayout() : this(Direction.HORIZONTAL)
+        public BoxLayout() : this(Direction.Horizontal)
         {
             
         }
 
         public BoxLayout(Direction direction)
         {
-            this.direction = direction;
+            this._direction = direction;
         }
 
-        public int getSpacing()
+        public int GetSpacing()
         {
-            return spacing;
+            return _spacing;
         }
 
-        public void setSpacing(int spacing)
+        public void SetSpacing(int spacing)
         {
-            if (this.spacing != spacing)
+            if (this._spacing != spacing)
             {
-                this.spacing = spacing;
-                invalidateLayout();
+                this._spacing = spacing;
+                InvalidateLayout();
             }
         }
 
-        public bool isScroll()
+        public bool IsScroll()
         {
-            return scroll;
+            return _scroll;
         }
 
-        public void setScroll(bool scroll)
+        public void SetScroll(bool scroll)
         {
-            if (this.scroll != scroll)
+            if (this._scroll != scroll)
             {
-                this.scroll = scroll;
-                invalidateLayout();
+                this._scroll = scroll;
+                InvalidateLayout();
             }
         }
 
-        public Alignment getAlignment()
+        public Alignment GetAlignment()
         {
-            return alignment;
+            return _alignment;
         }
 
-        public void setAlignment(Alignment alignment)
+        public void SetAlignment(Alignment alignment)
         {
             if (alignment == null)
             {
                 throw new NullReferenceException("alignment");
             }
 
-            if (this.alignment != alignment)
+            if (this._alignment != alignment)
             {
-                this.alignment = alignment;
-                invalidateLayout();
+                this._alignment = alignment;
+                InvalidateLayout();
             }
         }
 
-        public Direction getDirection()
+        public Direction GetDirection()
         {
-            return direction;
+            return _direction;
         }
 
-        public void setDirection(Direction direction)
+        public void SetDirection(Direction direction)
         {
-            if (direction == null)
+            if (this._direction != direction)
             {
-                throw new NullReferenceException("direction");
-            }
-            if (this.direction != direction)
-            {
-                this.direction = direction;
-                invalidateLayout();
+                this._direction = direction;
+                InvalidateLayout();
             }
         }
 
-        public override int getMinWidth()
+        public override int GetMinWidth()
         {
-            int minWidth = (direction == Direction.HORIZONTAL)
-                    ? computeMinWidthHorizontal(this, spacing)
-                    : computeMinWidthVertical(this);
-            return Math.Max(base.getMinWidth(), minWidth + getBorderHorizontal());
+            int minWidth = (_direction == Direction.Horizontal)
+                    ? ComputeMinWidthHorizontal(this, _spacing)
+                    : ComputeMinWidthVertical(this);
+            return Math.Max(base.GetMinWidth(), minWidth + GetBorderHorizontal());
         }
 
-        public override int getMinHeight()
+        public override int GetMinHeight()
         {
-            int minHeight = (direction == Direction.HORIZONTAL)
-                    ? computeMinHeightHorizontal(this)
-                    : computeMinHeightVertical(this, spacing);
-            return Math.Max(base.getMinHeight(), minHeight + getBorderVertical());
+            int minHeight = (_direction == Direction.Horizontal)
+                    ? ComputeMinHeightHorizontal(this)
+                    : ComputeMinHeightVertical(this, _spacing);
+            return Math.Max(base.GetMinHeight(), minHeight + GetBorderVertical());
         }
 
-        public override int getPreferredInnerWidth()
+        public override int GetPreferredInnerWidth()
         {
-            return (direction == Direction.HORIZONTAL)
-                    ? computePreferredWidthHorizontal(this, spacing)
-                    : computePreferredWidthVertical(this);
+            return (_direction == Direction.Horizontal)
+                    ? ComputePreferredWidthHorizontal(this, _spacing)
+                    : ComputePreferredWidthVertical(this);
         }
 
-        public override int getPreferredInnerHeight()
+        public override int GetPreferredInnerHeight()
         {
-            return (direction == Direction.HORIZONTAL)
-                    ? computePreferredHeightHorizontal(this)
-                    : computePreferredHeightVertical(this, spacing);
+            return (_direction == Direction.Horizontal)
+                    ? ComputePreferredHeightHorizontal(this)
+                    : ComputePreferredHeightVertical(this, _spacing);
         }
 
-        protected override void applyTheme(ThemeInfo themeInfo)
+        protected override void ApplyTheme(ThemeInfo themeInfo)
         {
-            base.applyTheme(themeInfo);
-            setSpacing(themeInfo.GetParameter("spacing", 0));
-            setAlignment((Alignment) themeInfo.GetParameter("alignment", Alignment.TOP));
+            base.ApplyTheme(themeInfo);
+            SetSpacing(themeInfo.GetParameter("spacing", 0));
+            SetAlignment((Alignment) themeInfo.GetParameter("alignment", Alignment.TOP));
         }
 
-        public static int computeMinWidthHorizontal(Widget container, int spacing)
+        public static int ComputeMinWidthHorizontal(Widget container, int spacing)
         {
-            int n = container.getNumChildren();
+            int n = container.GetNumChildren();
             int minWidth = Math.Max(0, n - 1) * spacing;
             for (int i = 0; i < n; i++)
             {
-                minWidth += container.getChild(i).getMinWidth();
+                minWidth += container.GetChild(i).GetMinWidth();
             }
             return minWidth;
         }
 
-        public static int computeMinHeightHorizontal(Widget container)
+        public static int ComputeMinHeightHorizontal(Widget container)
         {
-            int n = container.getNumChildren();
+            int n = container.GetNumChildren();
             int minHeight = 0;
             for (int i = 0; i < n; i++)
             {
-                minHeight = Math.Max(minHeight, container.getChild(i).getMinHeight());
+                minHeight = Math.Max(minHeight, container.GetChild(i).GetMinHeight());
             }
             return minHeight;
         }
 
-        public static int computePreferredWidthHorizontal(Widget container, int spacing)
+        public static int ComputePreferredWidthHorizontal(Widget container, int spacing)
         {
-            int n = container.getNumChildren();
+            int n = container.GetNumChildren();
             int prefWidth = Math.Max(0, n - 1) * spacing;
             for (int i = 0; i < n; i++)
             {
-                prefWidth += getPrefChildWidth(container.getChild(i));
+                prefWidth += GetPrefChildWidth(container.GetChild(i));
             }
             return prefWidth;
         }
 
-        public static int computePreferredHeightHorizontal(Widget container)
+        public static int ComputePreferredHeightHorizontal(Widget container)
         {
-            int n = container.getNumChildren();
+            int n = container.GetNumChildren();
             int prefHeight = 0;
             for (int i = 0; i < n; i++)
             {
-                prefHeight = Math.Max(prefHeight, getPrefChildHeight(container.getChild(i)));
+                prefHeight = Math.Max(prefHeight, GetPrefChildHeight(container.GetChild(i)));
             }
             return prefHeight;
         }
 
-        public static int computeMinWidthVertical(Widget container)
+        public static int ComputeMinWidthVertical(Widget container)
         {
-            int n = container.getNumChildren();
+            int n = container.GetNumChildren();
             int minWidth = 0;
             for (int i = 0; i < n; i++)
             {
-                minWidth = Math.Max(minWidth, container.getChild(i).getMinWidth());
+                minWidth = Math.Max(minWidth, container.GetChild(i).GetMinWidth());
             }
             return minWidth;
         }
 
-        public static int computeMinHeightVertical(Widget container, int spacing)
+        public static int ComputeMinHeightVertical(Widget container, int spacing)
         {
-            int n = container.getNumChildren();
+            int n = container.GetNumChildren();
             int minHeight = Math.Max(0, n - 1) * spacing;
             for (int i = 0; i < n; i++)
             {
-                minHeight += container.getChild(i).getMinHeight();
+                minHeight += container.GetChild(i).GetMinHeight();
             }
             return minHeight;
         }
 
-        public static int computePreferredWidthVertical(Widget container)
+        public static int ComputePreferredWidthVertical(Widget container)
         {
-            int n = container.getNumChildren();
+            int n = container.GetNumChildren();
             int prefWidth = 0;
             for (int i = 0; i < n; i++)
             {
-                prefWidth = Math.Max(prefWidth, getPrefChildWidth(container.getChild(i)));
+                prefWidth = Math.Max(prefWidth, GetPrefChildWidth(container.GetChild(i)));
             }
             return prefWidth;
         }
 
-        public static int computePreferredHeightVertical(Widget container, int spacing)
+        public static int ComputePreferredHeightVertical(Widget container, int spacing)
         {
-            int n = container.getNumChildren();
+            int n = container.GetNumChildren();
             int prefHeight = Math.Max(0, n - 1) * spacing;
             for (int i = 0; i < n; i++)
             {
-                prefHeight += getPrefChildHeight(container.getChild(i));
+                prefHeight += GetPrefChildHeight(container.GetChild(i));
             }
             return prefHeight;
         }
 
-        public static void layoutHorizontal(Widget container, int spacing, Alignment alignment, bool scroll)
+        public static void LayoutHorizontal(Widget container, int spacing, Alignment alignment, bool scroll)
         {
-            int numChildren = container.getNumChildren();
-            int height = container.getInnerHeight();
-            int x = container.getInnerX();
-            int y = container.getInnerY();
+            int numChildren = container.GetNumChildren();
+            int height = container.GetInnerHeight();
+            int x = container.GetInnerX();
+            int y = container.GetInnerY();
 
             // 1: check if we need to scroll
             if (scroll)
             {
-                int width = computePreferredWidthHorizontal(container, spacing);
-                if (width > container.getInnerWidth())
+                int width = ComputePreferredWidthHorizontal(container, spacing);
+                if (width > container.GetInnerWidth())
                 {
-                    x -= width - container.getInnerWidth();
+                    x -= width - container.GetInnerWidth();
                 }
             }
 
             // 2: position children
             for (int idx = 0; idx < numChildren; idx++)
             {
-                Widget child = container.getChild(idx);
-                int childWidth = getPrefChildWidth(child);
-                int childHeight = (alignment == Alignment.FILL) ? height : getPrefChildHeight(child);
-                int yoff = (height - childHeight) * alignment.getVPosition() / 2;
-                child.setSize(childWidth, childHeight);
-                child.setPosition(x, y + yoff);
+                Widget child = container.GetChild(idx);
+                int childWidth = GetPrefChildWidth(child);
+                int childHeight = (alignment == Alignment.FILL) ? height : GetPrefChildHeight(child);
+                int yoff = (height - childHeight) * alignment.GetVPosition() / 2;
+                child.SetSize(childWidth, childHeight);
+                child.SetPosition(x, y + yoff);
                 x += childWidth + spacing;
             }
         }
 
-        public static void layoutVertical(Widget container, int spacing, Alignment alignment, bool scroll)
+        public static void LayoutVertical(Widget container, int spacing, Alignment alignment, bool scroll)
         {
-            int numChildren = container.getNumChildren();
-            int width = container.getInnerWidth();
-            int x = container.getInnerX();
-            int y = container.getInnerY();
+            int numChildren = container.GetNumChildren();
+            int width = container.GetInnerWidth();
+            int x = container.GetInnerX();
+            int y = container.GetInnerY();
 
             // 1: check if we need to scroll
             if (scroll)
             {
-                int height = computePreferredHeightVertical(container, spacing);
-                if (height > container.getInnerHeight())
+                int height = ComputePreferredHeightVertical(container, spacing);
+                if (height > container.GetInnerHeight())
                 {
-                    x -= height - container.getInnerHeight();
+                    x -= height - container.GetInnerHeight();
                 }
             }
 
             // 2: position children
             for (int idx = 0; idx < numChildren; idx++)
             {
-                Widget child = container.getChild(idx);
-                int childWidth = (alignment == Alignment.FILL) ? width : getPrefChildWidth(child);
-                int childHeight = getPrefChildHeight(child);
-                int xoff = (width - childWidth) * alignment.getHPosition() / 2;
-                child.setSize(childWidth, childHeight);
-                child.setPosition(x + xoff, y);
+                Widget child = container.GetChild(idx);
+                int childWidth = (alignment == Alignment.FILL) ? width : GetPrefChildWidth(child);
+                int childHeight = GetPrefChildHeight(child);
+                int xoff = (width - childWidth) * alignment.GetHPosition() / 2;
+                child.SetSize(childWidth, childHeight);
+                child.SetPosition(x + xoff, y);
                 y += childHeight + spacing;
             }
         }
 
-        protected override void layout()
+        protected override void Layout()
         {
-            if (getNumChildren() > 0)
+            if (GetNumChildren() > 0)
             {
-                if (direction == Direction.HORIZONTAL)
+                if (_direction == Direction.Horizontal)
                 {
-                    layoutHorizontal(this, spacing, alignment, scroll);
+                    LayoutHorizontal(this, _spacing, _alignment, _scroll);
                 }
                 else
                 {
-                    layoutVertical(this, spacing, alignment, scroll);
+                    LayoutVertical(this, _spacing, _alignment, _scroll);
                 }
             }
         }
 
-        private static int getPrefChildWidth(Widget child)
+        private static int GetPrefChildWidth(Widget child)
         {
-            return computeSize(child.getMinWidth(), child.getPreferredWidth(), child.getMaxWidth());
+            return ComputeSize(child.GetMinWidth(), child.GetPreferredWidth(), child.GetMaxWidth());
         }
 
-        private static int getPrefChildHeight(Widget child)
+        private static int GetPrefChildHeight(Widget child)
         {
-            return computeSize(child.getMinHeight(), child.getPreferredHeight(), child.getMaxHeight());
+            return ComputeSize(child.GetMinHeight(), child.GetPreferredHeight(), child.GetMaxHeight());
         }
     }
 }

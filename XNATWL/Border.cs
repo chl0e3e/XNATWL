@@ -34,64 +34,64 @@ namespace XNATWL
     {
         public static Border ZERO = new Border(0);
 
-        private int top;
-        private int left;
-        private int bottom;
-        private int right;
+        private int _top;
+        private int _left;
+        private int _bottom;
+        private int _right;
 
         public Border(int all)
         {
-            this.top = all;
-            this.left = all;
-            this.bottom = all;
-            this.right = all;
+            this._top = all;
+            this._left = all;
+            this._bottom = all;
+            this._right = all;
         }
 
         public Border(Utils.Number all)
         {
-            this.top = all.IntValue();
-            this.left = all.IntValue();
-            this.bottom = all.IntValue();
-            this.right = all.IntValue();
+            this._top = all.IntValue();
+            this._left = all.IntValue();
+            this._bottom = all.IntValue();
+            this._right = all.IntValue();
         }
 
         public Border(int horz, int vert)
         {
-            this.top = vert;
-            this.left = horz;
-            this.bottom = vert;
-            this.right = horz;
+            this._top = vert;
+            this._left = horz;
+            this._bottom = vert;
+            this._right = horz;
         }
 
         public Border(Utils.Number horz, Utils.Number vert)
         {
-            this.top = vert.IntValue();
-            this.left = horz.IntValue();
-            this.bottom = vert.IntValue();
-            this.right = horz.IntValue();
+            this._top = vert.IntValue();
+            this._left = horz.IntValue();
+            this._bottom = vert.IntValue();
+            this._right = horz.IntValue();
         }
 
         public Border(int top, int left, int bottom, int right)
         {
-            this.top = top;
-            this.left = left;
-            this.bottom = bottom;
-            this.right = right;
+            this._top = top;
+            this._left = left;
+            this._bottom = bottom;
+            this._right = right;
         }
 
         public Border(Utils.Number top, Utils.Number left, Utils.Number bottom, Utils.Number right)
         {
-            this.top = top.IntValue();
-            this.left = left.IntValue();
-            this.bottom = bottom.IntValue();
-            this.right = right.IntValue();
+            this._top = top.IntValue();
+            this._left = left.IntValue();
+            this._bottom = bottom.IntValue();
+            this._right = right.IntValue();
         }
 
         public int BorderBottom
         {
             get
             {
-                return bottom;
+                return _bottom;
             }
         }
 
@@ -99,7 +99,7 @@ namespace XNATWL
         {
             get
             {
-                return left;
+                return _left;
             }
         }
 
@@ -107,7 +107,7 @@ namespace XNATWL
         {
             get
             {
-                return right;
+                return _right;
             }
         }
 
@@ -115,7 +115,7 @@ namespace XNATWL
         {
             get
             {
-                return top;
+                return _top;
             }
         }
 
@@ -123,7 +123,7 @@ namespace XNATWL
         {
             get
             {
-                return bottom;
+                return _bottom;
             }
         }
 
@@ -131,7 +131,7 @@ namespace XNATWL
         {
             get
             {
-                return left;
+                return _left;
             }
         }
 
@@ -139,7 +139,7 @@ namespace XNATWL
         {
             get
             {
-                return right;
+                return _right;
             }
         }
 
@@ -147,13 +147,13 @@ namespace XNATWL
         {
             get
             {
-                return top;
+                return _top;
             }
         }
 
         public override string ToString()
         {
-            return "[Border top=" + top + " left=" + left + " bottom=" + bottom + " right=" + right + "]";
+            return "[Border top=" + _top + " left=" + _left + " bottom=" + _bottom + " right=" + _right + "]";
         }
     }
 }

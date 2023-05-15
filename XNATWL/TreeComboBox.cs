@@ -33,7 +33,6 @@ using XNATWL.Model;
 
 namespace XNATWL
 {
-
     public class TreeComboBox : ComboBoxBase
     {
         public interface PathResolver
@@ -46,180 +45,180 @@ namespace XNATWL
              * @return A node - MUST NOT BE NULL
              * @throws IllegalArgumentException when the path can't be resolved, the message is displayed
              */
-            TreeTableNode resolvePath(TreeTableModel model, String path);
+            TreeTableNode ResolvePath(TreeTableModel model, String path);
         }
 
         public event EventHandler<TreeComboBoxSelectedNodeChanged> SelectedNodeChanged;
 
         private static String DEFAULT_POPUP_THEME = "treecomboboxPopup";
 
-        TableSingleSelectionModel selectionModel;
-        TreePathDisplay display;
-        TreeTable table;
+        TableSingleSelectionModel _selectionModel;
+        TreePathDisplay _display;
+        TreeTable _table;
 
-        private TreeTableModel model;
-        private PathResolver pathResolver;
-        private bool suppressCallback;
+        private TreeTableModel _model;
+        private PathResolver _pathResolver;
+        private bool _suppressCallback;
 
-        bool suppressTreeSelectionUpdating;
+        bool _suppressTreeSelectionUpdating;
 
         class TreeComboBoxPathDisplay : TreePathDisplay
         {
-            private TreeComboBox treeComboBox;
+            private TreeComboBox _treeComboBox;
             public TreeComboBoxPathDisplay(TreeComboBox treeComboBox)
             {
-                this.treeComboBox = treeComboBox;
+                this._treeComboBox = treeComboBox;
             }
-            public override bool resolvePath(string path)
+            public override bool ResolvePath(string path)
             {
-                return this.treeComboBox.resolvePath(path);
+                return this._treeComboBox.ResolvePath(path);
             }
         }
 
         class TreeComboBoxTableSelectionManager : TableRowSelectionManager
         {
-            private TreeComboBox treeComboBox;
+            private TreeComboBox _treeComboBox;
             public TreeComboBoxTableSelectionManager(TreeComboBox treeComboBox)
             {
-                this.treeComboBox = treeComboBox;
+                this._treeComboBox = treeComboBox;
             }
-            protected override bool handleMouseClick(int row, int column, bool isShift, bool isCtrl)
+            protected override bool HandleMouseClick(int row, int column, bool isShift, bool isCtrl)
             {
-                if (!isShift && !isCtrl && row >= 0 && row < getNumRows())
+                if (!isShift && !isCtrl && row >= 0 && row < GetNumRows())
                 {
-                    this.treeComboBox.popup.closePopup();
+                    this._treeComboBox._popup.ClosePopup();
                     return true;
                 }
-                return base.handleMouseClick(row, column, isShift, isCtrl);
+                return base.HandleMouseClick(row, column, isShift, isCtrl);
             }
         }
 
         public TreeComboBox()
         {
-            selectionModel = new TableSingleSelectionModel();
-            display = new TreeComboBoxPathDisplay(this);
-            display.setTheme("display");
-            table = new TreeTable();
-            table.setSelectionManager(new TreeComboBoxTableSelectionManager(this));
-            display.PathElementClicked += Display_PathElementClicked;
-            selectionModel.SelectionChanged += SelectionModel_SelectionChanged;
+            _selectionModel = new TableSingleSelectionModel();
+            _display = new TreeComboBoxPathDisplay(this);
+            _display.SetTheme("display");
+            _table = new TreeTable();
+            _table.SetSelectionManager(new TreeComboBoxTableSelectionManager(this));
+            _display.PathElementClicked += Display_PathElementClicked;
+            _selectionModel.SelectionChanged += SelectionModel_SelectionChanged;
 
-            ScrollPane scrollPane = new ScrollPane(table);
-            scrollPane.setFixed(ScrollPane.Fixed.HORIZONTAL);
+            ScrollPane scrollPane = new ScrollPane(_table);
+            scrollPane.SetFixed(ScrollPane.Fixed.HORIZONTAL);
 
-            add(display);
-            popup.setTheme(DEFAULT_POPUP_THEME);
-            popup.add(scrollPane);
+            Add(_display);
+            _popup.SetTheme(DEFAULT_POPUP_THEME);
+            _popup.Add(scrollPane);
         }
 
         private void SelectionModel_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            int row = selectionModel.FirstSelected;
+            int row = _selectionModel.FirstSelected;
             if (row >= 0)
             {
-                suppressTreeSelectionUpdating = true;
+                _suppressTreeSelectionUpdating = true;
                 try
                 {
-                    nodeChanged(table.getNodeFromRow(row));
+                    NodeChanged(_table.GetNodeFromRow(row));
                 }
                 finally
                 {
-                    suppressTreeSelectionUpdating = false;
+                    _suppressTreeSelectionUpdating = false;
                 }
             }
         }
 
         private void Display_PathElementClicked(object sender, TreePathElementClickedEventArgs e)
         {
-            fireSelectedNodeChanged(e.Node, e.ChildNode);
+            FireSelectedNodeChanged(e.Node, e.ChildNode);
         }
 
         public TreeComboBox(TreeTableModel model) : this()
         {
-            setModel(model);
+            SetModel(model);
         }
 
-        public TreeTableModel getModel()
+        public TreeTableModel GetModel()
         {
-            return model;
+            return _model;
         }
 
-        public void setModel(TreeTableModel model)
+        public void SetModel(TreeTableModel model)
         {
-            if (this.model != model)
+            if (this._model != model)
             {
-                this.model = model;
-                table.setModel(model);
-                display.setCurrentNode(model);
+                this._model = model;
+                _table.SetModel(model);
+                _display.SetCurrentNode(model);
             }
         }
 
-        public void setCurrentNode(TreeTableNode node)
+        public void SetCurrentNode(TreeTableNode node)
         {
             if (node == null)
             {
                 throw new NullReferenceException("node");
             }
-            display.setCurrentNode(node);
-            if (popup.isOpen())
+            _display.SetCurrentNode(node);
+            if (_popup.IsOpen())
             {
-                tableSelectToCurrentNode();
+                TableSelectToCurrentNode();
             }
         }
 
-        public TreeTableNode getCurrentNode()
+        public TreeTableNode GetCurrentNode()
         {
-            return display.getCurrentNode();
+            return _display.GetCurrentNode();
         }
 
-        public void setSeparator(String separator)
+        public void SetSeparator(String separator)
         {
-            display.setSeparator(separator);
+            _display.SetSeparator(separator);
         }
 
-        public String getSeparator()
+        public String GetSeparator()
         {
-            return display.getSeparator();
+            return _display.GetSeparator();
         }
 
-        public PathResolver getPathResolver()
+        public PathResolver GetPathResolver()
         {
-            return pathResolver;
+            return _pathResolver;
         }
 
-        public void setPathResolver(PathResolver pathResolver)
+        public void SetPathResolver(PathResolver pathResolver)
         {
-            this.pathResolver = pathResolver;
-            display.setAllowEdit(pathResolver != null);
+            this._pathResolver = pathResolver;
+            _display.SetAllowEdit(pathResolver != null);
         }
 
-        public TreeTable getTreeTable()
+        public TreeTable GetTreeTable()
         {
-            return table;
+            return _table;
         }
 
-        public EditField getEditField()
+        public EditField GetEditField()
         {
-            return display.getEditField();
+            return _display.GetEditField();
         }
 
-        protected override void applyTheme(ThemeInfo themeInfo)
+        protected override void ApplyTheme(ThemeInfo themeInfo)
         {
-            base.applyTheme(themeInfo);
-            applyTreeComboboxPopupThemeName(themeInfo);
+            base.ApplyTheme(themeInfo);
+            ApplyTreeComboboxPopupThemeName(themeInfo);
         }
 
-        protected void applyTreeComboboxPopupThemeName(ThemeInfo themeInfo)
+        protected void ApplyTreeComboboxPopupThemeName(ThemeInfo themeInfo)
         {
-            popup.setTheme(themeInfo.GetParameter("popupThemeName", DEFAULT_POPUP_THEME));
+            _popup.SetTheme(themeInfo.GetParameter("popupThemeName", DEFAULT_POPUP_THEME));
         }
 
-        protected override Widget getLabel()
+        protected override Widget GetLabel()
         {
-            return display;
+            return _display;
         }
 
-        void fireSelectedNodeChanged(TreeTableNode node, TreeTableNode child)
+        void FireSelectedNodeChanged(TreeTableNode node, TreeTableNode child)
         {
             if (this.SelectedNodeChanged != null)
             {
@@ -227,36 +226,36 @@ namespace XNATWL
             }
         }
 
-        bool resolvePath(String path)
+        bool ResolvePath(String path)
         {
-            if (pathResolver != null)
+            if (_pathResolver != null)
             {
                 try
                 {
-                    TreeTableNode node = pathResolver.resolvePath(model, path);
+                    TreeTableNode node = _pathResolver.ResolvePath(_model, path);
                     System.Diagnostics.Debug.Assert(node != null);
-                    nodeChanged(node);
+                    NodeChanged(node);
                     return true;
                 }
                 catch (ArgumentException ex)
                 {
-                    display.setEditErrorMessage(ex.Message);
+                    _display.SetEditErrorMessage(ex.Message);
                 }
             }
             return false;
         }
 
-        void nodeChanged(TreeTableNode node)
+        void NodeChanged(TreeTableNode node)
         {
-            TreeTableNode oldNode = display.getCurrentNode();
-            display.setCurrentNode(node);
-            if (!suppressCallback)
+            TreeTableNode oldNode = _display.GetCurrentNode();
+            _display.SetCurrentNode(node);
+            if (!_suppressCallback)
             {
-                fireSelectedNodeChanged(node, getChildOf(node, oldNode));
+                FireSelectedNodeChanged(node, GetChildOf(node, oldNode));
             }
         }
 
-        private TreeTableNode getChildOf(TreeTableNode parent, TreeTableNode node)
+        private TreeTableNode GetChildOf(TreeTableNode parent, TreeTableNode node)
         {
             while (node != null && node != parent)
             {
@@ -265,31 +264,31 @@ namespace XNATWL
             return node;
         }
 
-        private void tableSelectToCurrentNode()
+        private void TableSelectToCurrentNode()
         {
-            if (!suppressTreeSelectionUpdating)
+            if (!_suppressTreeSelectionUpdating)
             {
-                table.collapseAll();
-                int idx = table.getRowFromNodeExpand(display.getCurrentNode());
-                suppressCallback = true;
+                _table.CollapseAll();
+                int idx = _table.GetRowFromNodeExpand(_display.GetCurrentNode());
+                _suppressCallback = true;
                 try
                 {
-                    selectionModel.SetSelection(idx, idx);
+                    _selectionModel.SetSelection(idx, idx);
                 }
                 finally
                 {
-                    suppressCallback = false;
+                    _suppressCallback = false;
                 }
-                table.scrollToRow(Math.Max(0, idx));
+                _table.ScrollToRow(Math.Max(0, idx));
             }
         }
 
-        protected override bool openPopup()
+        protected override bool OpenPopup()
         {
-            if (base.openPopup())
+            if (base.OpenPopup())
             {
-                popup.validateLayout();
-                tableSelectToCurrentNode();
+                _popup.ValidateLayout();
+                TableSelectToCurrentNode();
                 return true;
             }
             return false;

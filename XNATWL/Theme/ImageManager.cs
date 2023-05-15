@@ -494,13 +494,13 @@ namespace XNATWL.Theme
                             default:
                                 idx = r * columns + c;
                                 break;
-                            case TextureRotation.CLOCKWISE_90:
+                            case TextureRotation.Clockwise90:
                                 idx = c * rows + (rows - 1 - r);
                                 break;
-                            case TextureRotation.CLOCKWISE_180:
+                            case TextureRotation.Clockwise180:
                                 idx = (rows - 1 - r) * columns + (columns - 1 - c);
                                 break;
-                            case TextureRotation.CLOCKWISE_270:
+                            case TextureRotation.Clockwise270:
                                 idx = (columns - 1 - c) * rows + r;
                                 break;
 
@@ -510,8 +510,8 @@ namespace XNATWL.Theme
                 }
                 switch (parameters.Rot)
                 {
-                    case TextureRotation.CLOCKWISE_90:
-                    case TextureRotation.CLOCKWISE_270:
+                    case TextureRotation.Clockwise90:
+                    case TextureRotation.Clockwise270:
                         image = new GridImage(imageParts,
                                 (splity != null) ? SPLIT_WEIGHTS_3 : SPLIT_WEIGHTS_1,
                                 (splitx != null) ? SPLIT_WEIGHTS_3 : SPLIT_WEIGHTS_1,
@@ -840,7 +840,7 @@ namespace XNATWL.Theme
             try
             {
                 GradientType type = xmlp.ParseEnumFromAttribute<GradientType>("type", typeof(GradientType));
-                GradientWrap wrap = xmlp.ParseEnumFromAttribute<GradientWrap>("wrap", typeof(GradientWrap), GradientWrap.SCALE);
+                GradientWrap wrap = xmlp.ParseEnumFromAttribute<GradientWrap>("wrap", typeof(GradientWrap), GradientWrap.Scale);
 
                 Gradient gradient = new Gradient(type);
                 gradient.Wrap = wrap;
@@ -933,10 +933,10 @@ namespace XNATWL.Theme
             int rot = xmlp.ParseIntFromAttribute("rot", 0);
             switch (rot)
             {
-                case 0: parameters.Rot = TextureRotation.NONE; break;
-                case 90: parameters.Rot = TextureRotation.CLOCKWISE_90; break;
-                case 180: parameters.Rot = TextureRotation.CLOCKWISE_180; break;
-                case 270: parameters.Rot = TextureRotation.CLOCKWISE_270; break;
+                case 0: parameters.Rot = TextureRotation.None; break;
+                case 90: parameters.Rot = TextureRotation.Clockwise90; break;
+                case 180: parameters.Rot = TextureRotation.Clockwise180; break;
+                case 270: parameters.Rot = TextureRotation.Clockwise270; break;
                 default:
                     throw xmlp.Error("invalid rotation angle");
             }

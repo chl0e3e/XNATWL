@@ -10,51 +10,51 @@ namespace XNATWL.Test
 {
     public class TableDemoDialog1 : FadeFrame
     {
-        private ScrollPane scrollPane;
-        private ComboBoxValue cbv;
+        private ScrollPane _scrollPane;
+        private ComboBoxValue _cbv;
 
         public TableDemoDialog1()
         {
             ListModel<String> cbm = new SimpleChangeableListModel<String>("Hallo", "Welt", "Test");
-            cbv = new ComboBoxValue(0, cbm);
+            _cbv = new ComboBoxValue(0, cbm);
             TableModel m = new DemoTableModel(this);
             Table t = new Table(m);
             // register the ComboBoxValue class (see below) and it's cell widget creator
             // this will change the behavior of cells when they contain a data valzue of
             // the type "ComboBoxValue"
-            t.registerCellRenderer(typeof(ComboBoxValue), new ComboBoxCellWidgetCreator());
+            t.RegisterCellRenderer(typeof(ComboBoxValue), new ComboBoxCellWidgetCreator());
 
-            t.setTheme("/table");
-            t.setVaribleRowHeight(true);
-            t.setDefaultSelectionManager();
+            t.SetTheme("/table");
+            t.SetVariableRowHeight(true);
+            t.SetDefaultSelectionManager();
 
-            scrollPane = new ScrollPane(t);
-            scrollPane.setTheme("/tableScrollPane");
+            _scrollPane = new ScrollPane(t);
+            _scrollPane.SetTheme("/tableScrollPane");
 
-            setTheme("scrollPaneDemoDialog1");
-            setTitle("Table with variable row height");
-            add(scrollPane);
+            SetTheme("scrollPaneDemoDialog1");
+            SetTitle("Table with variable row height");
+            Add(_scrollPane);
         }
 
         public class ComboBoxValue : SimpleIntegerModel
         {
-            private ListModel<String> model;
+            private ListModel<String> _model;
             public ComboBoxValue(int value, ListModel<String> model) : base(0, model.Entries - 1, value)
             {
-                this.model = model;
+                this._model = model;
             }
 
-            public ListModel<String> getModel() {
-                return model;
+            public ListModel<String> GetModel() {
+                return _model;
             }
         }
 
         private class DemoTableModel : AbstractTableModel
         {
-            TableDemoDialog1 tableDemoDialog;
+            TableDemoDialog1 _tableDemoDialog;
             public DemoTableModel(TableDemoDialog1 tableDemoDialog)
             {
-                this.tableDemoDialog = tableDemoDialog;
+                this._tableDemoDialog = tableDemoDialog;
             }
 
             public override int Columns
@@ -79,11 +79,11 @@ namespace XNATWL.Test
                 {
                     // This cell will contain a ComboBoxValue - via registerCellRenderer
                     // below this will cause a comobox to appear
-                    return tableDemoDialog.cbv;
+                    return _tableDemoDialog._cbv;
                 }
                 if (row == 6 && column == 1)
                 {
-                    return "Selected: " + tableDemoDialog.cbv.Value;
+                    return "Selected: " + _tableDemoDialog._cbv.Value;
                 }
                 return "Row " + row + (((row * this.Columns + column) % 17 == 0) ? "\n" : "") + " Column " + column;
             }
@@ -101,15 +101,15 @@ namespace XNATWL.Test
 
         private class ComboBoxCellWidgetCreator : CellWidgetCreator
         {
-            private int comboBoxHeight;
-            private ComboBoxValue data;
+            private int _comboBoxHeight;
+            private ComboBoxValue _data;
 
-            public void applyTheme(ThemeInfo themeInfo)
+            public void ApplyTheme(ThemeInfo themeInfo)
             {
-                comboBoxHeight = themeInfo.GetParameter("comboBoxHeight", 0);
+                _comboBoxHeight = themeInfo.GetParameter("comboBoxHeight", 0);
             }
 
-            public String getTheme()
+            public String GetTheme()
             {
                 return "ComboBoxCellRenderer";
             }
@@ -121,7 +121,7 @@ namespace XNATWL.Test
              *   widget when an update has been send to that cell.
              * @return the widget to use for this cell
              */
-            public Widget updateWidget(Widget existingWidget)
+            public Widget UpdateWidget(Widget existingWidget)
             {
                 MyComboBox cb = (MyComboBox)existingWidget;
                 if (cb == null)
@@ -132,43 +132,43 @@ namespace XNATWL.Test
                 // but the code pattern here can also be used when updates are
                 // generated. Care should be taken that the above type cast
                 // does not fail.
-                cb.setData(data);
+                cb.SetData(_data);
                 return cb;
             }
 
-            public void positionWidget(Widget widget, int x, int y, int w, int h)
+            public void PositionWidget(Widget widget, int x, int y, int w, int h)
             {
                 // this method will size and position the ComboBox
                 // If the widget should be centered (like a check box) then this
                 // would be done here
-                widget.setPosition(x, y);
-                widget.setSize(w, h);
+                widget.SetPosition(x, y);
+                widget.SetSize(w, h);
             }
 
-            public void setCellData(int row, int column, Object data)
+            public void SetCellData(int row, int column, Object data)
             {
                 // we have to remember the cell data for the next call of updateWidget
-                this.data = (ComboBoxValue)data;
+                this._data = (ComboBoxValue)data;
             }
 
-            public Widget getCellRenderWidget(int x, int y, int width, int height, bool isSelected)
+            public Widget GetCellRenderWidget(int x, int y, int width, int height, bool isSelected)
             {
                 // this cell does not render anything itself
                 return null;
             }
 
-            public int getColumnSpan()
+            public int GetColumnSpan()
             {
                 // no column spanning
                 return 1;
             }
 
-            public int getPreferredHeight()
+            public int GetPreferredHeight()
             {
                 // we have to inform the table about the required cell height before
                 // we can create the widget - so we need to get the required height
                 // from the theme -  see applyTheme/getTheme
-                return comboBoxHeight;
+                return _comboBoxHeight;
             }
 
             /**
@@ -177,28 +177,28 @@ namespace XNATWL.Test
              */
             private class MyComboBox : ComboBox<String>
             {
-                ComboBoxValue data;
+                ComboBoxValue _data;
 
                 public MyComboBox()
                 {
-                    setTheme("combobox");   // keep default theme name
+                    SetTheme("combobox");   // keep default theme name
                     this.SelectionChanged += MyComboBox_SelectionChanged;
                 }
 
                 private void MyComboBox_SelectionChanged(object sender, ComboBoxSelectionChangedEventArgs e)
                 {
-                    if (data != null)
+                    if (_data != null)
                     {
-                        data.Value = getSelected();
+                        _data.Value = GetSelected();
                     }
                 }
 
-                public void setData(ComboBoxValue data)
+                public void SetData(ComboBoxValue data)
                 {
-                    this.data = null;
-                    setModel(data.getModel());
-                    setSelected(data.Value);
-                    this.data = data;
+                    this._data = null;
+                    SetModel(data.GetModel());
+                    SetSelected(data.Value);
+                    this._data = data;
                 }
             }
         }

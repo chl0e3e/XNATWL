@@ -41,10 +41,10 @@ namespace XNATWL
         public static StateKey STATE_PRESSED = StateKey.Get("pressed");
         public static StateKey STATE_SELECTED = StateKey.Get("selected");
 
-        private ButtonModel model;
-        private String themeText;
-        private String text;
-        private int mouseButton;
+        private ButtonModel _model;
+        private String _themeText;
+        private String _text;
+        private int _mouseButton;
 
         public event EventHandler<ButtonActionEventArgs> Action;
         public event EventHandler<ButtonStateChangedEventArgs> State;
@@ -80,7 +80,7 @@ namespace XNATWL
 
         public Button(String text) : this(null, false, null)
         {
-            setText(text);
+            SetText(text);
         }
 
         /**
@@ -102,7 +102,7 @@ namespace XNATWL
          */
         public Button(AnimationState animState, bool inherit, ButtonModel model) : base(animState, inherit)
         {
-            this.mouseButton = Event.MOUSE_LBUTTON;
+            this._mouseButton = Event.MOUSE_LBUTTON;
             //this.stateChangedCB = new Runnable() {
             //    public void run() {
             //        modelStateChanged();
@@ -112,39 +112,39 @@ namespace XNATWL
             {
                 model = new SimpleButtonModel();
             }
-            setModel(model);
-            setCanAcceptKeyboardFocus(true);
+            SetModel(model);
+            SetCanAcceptKeyboardFocus(true);
         }
 
-        public ButtonModel getModel()
+        public ButtonModel GetModel()
         {
-            return model;
+            return _model;
         }
 
-        public void setModel(ButtonModel model)
+        public void SetModel(ButtonModel model)
         {
             if (model == null)
             {
                 throw new NullReferenceException("model");
             }
-            bool isConnected = getGUI() != null;
-            if (this.model != null)
+            bool isConnected = GetGUI() != null;
+            if (this._model != null)
             {
-                this.model.State -= Model_State;
-                this.model.Action -= Model_Action;
+                this._model.State -= Model_State;
+                this._model.Action -= Model_Action;
             }
-            this.model = model;
-            this.model.State += Model_State;
-            this.model.Action += Model_Action;
-            modelStateChanged();
-            AnimationState animationState = getAnimationState();
-            animationState.dontAnimate(STATE_ARMED);
-            animationState.dontAnimate(STATE_PRESSED);
-            animationState.dontAnimate(STATE_HOVER);
-            animationState.dontAnimate(STATE_SELECTED);
+            this._model = model;
+            this._model.State += Model_State;
+            this._model.Action += Model_Action;
+            ModelStateChanged();
+            AnimationState animationState = GetAnimationState();
+            animationState.DontAnimate(STATE_ARMED);
+            animationState.DontAnimate(STATE_PRESSED);
+            animationState.DontAnimate(STATE_HOVER);
+            animationState.DontAnimate(STATE_SELECTED);
         }
 
-        public bool hasCallbacks()
+        public bool HasCallbacks()
         {
             return this.Action.GetInvocationList().Length > 0;
         }
@@ -163,35 +163,33 @@ namespace XNATWL
             {
                 this.State.Invoke(this, e);
             }
-            modelStateChanged();
+            ModelStateChanged();
         }
 
-        //@Override
-        internal override void widgetDisabled()
+        internal override void WidgetDisabled()
         {
-            disarm();
+            Disarm();
         }
 
-        //@Override
-        public override void setEnabled(bool enabled)
+        public override void SetEnabled(bool enabled)
         {
-            model.Enabled = (enabled);
+            _model.Enabled = (enabled);
         }
 
-        public String getText()
+        public String GetText()
         {
-            return text;
+            return _text;
         }
 
-        public void setText(String text)
+        public void SetText(String text)
         {
-            this.text = text;
-            updateText();
+            this._text = text;
+            UpdateText();
         }
 
-        public int getMouseButton()
+        public int GetMouseButton()
         {
-            return mouseButton;
+            return _mouseButton;
         }
 
         /**
@@ -199,172 +197,163 @@ namespace XNATWL
          * The default is {@link Event#MOUSE_LBUTTON}
          * @param mouseButton the mouse button
          */
-        public void setMouseButton(int mouseButton)
+        public void SetMouseButton(int mouseButton)
         {
             if (mouseButton < Event.MOUSE_LBUTTON || mouseButton > Event.MOUSE_RBUTTON)
             {
                 throw new ArgumentOutOfRangeException("mouseButton");
             }
-            this.mouseButton = mouseButton;
+            this._mouseButton = mouseButton;
         }
 
-        //@Override
-        protected override void applyTheme(ThemeInfo themeInfo)
+        protected override void ApplyTheme(ThemeInfo themeInfo)
         {
-            base.applyTheme(themeInfo);
-            applyThemeButton(themeInfo);
+            base.ApplyTheme(themeInfo);
+            ApplyThemeButton(themeInfo);
         }
 
-        protected void applyThemeButton(ThemeInfo themeInfo)
+        protected void ApplyThemeButton(ThemeInfo themeInfo)
         {
-            themeText = themeInfo.GetParameterValue<string>("text", false, typeof(String), "");
-            updateText();
+            _themeText = themeInfo.GetParameterValue<string>("text", false, typeof(String), "");
+            UpdateText();
         }
 
-        //@Override
-        protected override void afterAddToGUI(GUI gui)
+        protected override void AfterAddToGUI(GUI gui)
         {
-            base.afterAddToGUI(gui);
-            if (this.model != null)
+            base.AfterAddToGUI(gui);
+            if (this._model != null)
             {
-                this.model.Connect();
+                this._model.Connect();
             }
         }
 
-        //@Override
-        protected override void beforeRemoveFromGUI(GUI gui)
+        protected override void BeforeRemoveFromGUI(GUI gui)
         {
-            if (this.model != null)
+            if (this._model != null)
             {
-                this.model.Disconnect();
+                this._model.Disconnect();
             }
-            base.beforeRemoveFromGUI(gui);
+            base.BeforeRemoveFromGUI(gui);
         }
 
-        //@Override
-        public override int getMinWidth()
+        public override int GetMinWidth()
         {
-            return Math.Max(base.getMinWidth(), getPreferredWidth());
+            return Math.Max(base.GetMinWidth(), GetPreferredWidth());
         }
 
-        //@Override
-        public override int getMinHeight()
+        public override int GetMinHeight()
         {
-            return Math.Max(base.getMinHeight(), getPreferredHeight());
+            return Math.Max(base.GetMinHeight(), GetPreferredHeight());
         }
 
-        //@Override
-        public override void setVisible(bool visible)
+        public override void SetVisible(bool visible)
         {
-            base.setVisible(visible);
+            base.SetVisible(visible);
             if (!visible)
             {
-                disarm();
+                Disarm();
             }
         }
 
-        protected void disarm()
+        protected void Disarm()
         {
             // disarm first to not fire a callback
-            model.Hover = (false);
-            model.Armed = (false);
-            model.Pressed = (false);
+            _model.Hover = (false);
+            _model.Armed = (false);
+            _model.Pressed = (false);
         }
 
-        void modelStateChanged()
+        void ModelStateChanged()
         {
-            base.setEnabled(model.Enabled);
-            AnimationState animationState = getAnimationState();
-            animationState.setAnimationState(STATE_SELECTED, model.Selected);
-            animationState.setAnimationState(STATE_HOVER, model.Hover);
-            animationState.setAnimationState(STATE_ARMED, model.Armed);
-            animationState.setAnimationState(STATE_PRESSED, model.Pressed);
+            base.SetEnabled(_model.Enabled);
+            AnimationState animationState = GetAnimationState();
+            animationState.SetAnimationState(STATE_SELECTED, _model.Selected);
+            animationState.SetAnimationState(STATE_HOVER, _model.Hover);
+            animationState.SetAnimationState(STATE_ARMED, _model.Armed);
+            animationState.SetAnimationState(STATE_PRESSED, _model.Pressed);
         }
 
-        void updateText()
+        void UpdateText()
         {
-            if (text == null)
+            if (_text == null)
             {
-                base.setCharSequence(TextUtil.NotNull(themeText));
+                base.SetCharSequence(TextUtil.NotNull(_themeText));
             }
             else
             {
-                base.setCharSequence(text);
+                base.SetCharSequence(_text);
             }
-            invalidateLayout();
+            InvalidateLayout();
         }
 
-        //@Override
-        public override bool handleEvent(Event evt)
+        public override bool HandleEvent(Event evt)
         {
-            if (evt.isMouseEvent())
+            if (evt.IsMouseEvent())
             {
-                bool hover = (evt.getEventType() != EventType.MOUSE_EXITED) && isMouseInside(evt);
-                model.Hover = (hover);
-                model.Armed = (hover && model.Pressed);
+                bool hover = (evt.GetEventType() != EventType.MOUSE_EXITED) && IsMouseInside(evt);
+                _model.Hover = (hover);
+                _model.Armed = (hover && _model.Pressed);
             }
 
 
-            EventType type = evt.getEventType();
+            EventType type = evt.GetEventType();
 
             if (type == EventType.MOUSE_BTNDOWN)
             {
-                if (evt.getMouseButton() == mouseButton)
+                if (evt.GetMouseButton() == _mouseButton)
                 {
-                    model.Pressed = (true);
-                    model.Armed = (true);
+                    _model.Pressed = (true);
+                    _model.Armed = (true);
                 }
             }
             else if (type == EventType.MOUSE_BTNUP)
             {
-                if (evt.getMouseButton() == mouseButton)
+                if (evt.GetMouseButton() == _mouseButton)
                 {
-                    model.Pressed = (false);
-                    model.Armed = (false);
+                    _model.Pressed = (false);
+                    _model.Armed = (false);
                 }
             }
             else if (type == EventType.KEY_PRESSED)
             {
-                switch (evt.getKeyCode())
+                switch (evt.GetKeyCode())
                 {
                     case Event.KEY_RETURN:
                     case Event.KEY_SPACE:
-                        if (!evt.isKeyRepeated())
+                        if (!evt.IsKeyRepeated())
                         {
-                            model.Pressed = (true);
-                            model.Armed = (true);
+                            _model.Pressed = (true);
+                            _model.Armed = (true);
                         }
                         return true;
                 }
             }
             else if (type == EventType.KEY_RELEASED)
             {
-                switch (evt.getKeyCode())
+                switch (evt.GetKeyCode())
                 {
                     case Event.KEY_RETURN:
                     case Event.KEY_SPACE:
-                        model.Pressed = (false);
-                        model.Armed = (false);
+                        _model.Pressed = (false);
+                        _model.Armed = (false);
                         return true;
                 }
             }
             else if (type == EventType.POPUP_OPENED)
             {
-                model.Hover = (false);
+                _model.Hover = (false);
             }
             else if (type == EventType.MOUSE_WHEEL)
             {
                 return false;
             }
 
-            if (base.handleEvent(evt))
+            if (base.HandleEvent(evt))
             {
                 return true;
             }
             // eat all mouse events - except moused wheel which was checked above
-            return evt.isMouseEvent();
+            return evt.IsMouseEvent();
         }
-
     }
-
 }

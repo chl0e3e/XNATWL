@@ -35,11 +35,11 @@ namespace XNATWL
 {
     public class PopupWindow : Container
     {
-        private Widget owner;
+        private Widget _owner;
 
-        private bool closeOnClickedOutside = true;
-        private bool closeOnEscape = true;
-        private Runnable requestCloseCallback;
+        private bool _closeOnClickedOutside = true;
+        private bool _closeOnEscape = true;
+        private Runnable _requestCloseCallback;
 
         /**
          * Creates a new pop-up window.
@@ -52,17 +52,17 @@ namespace XNATWL
             {
                 throw new NullReferenceException("owner");
             }
-            this.owner = owner;
+            this._owner = owner;
         }
 
-        public Widget getOwner()
+        public Widget GetOwner()
         {
-            return owner;
+            return _owner;
         }
 
-        public bool isCloseOnClickedOutside()
+        public bool IsCloseOnClickedOutside()
         {
-            return closeOnClickedOutside;
+            return _closeOnClickedOutside;
         }
 
         /**
@@ -74,14 +74,14 @@ namespace XNATWL
          *
          * @param closeOnClickedOutside true if it should close on clicks outside it's area
          */
-        public void setCloseOnClickedOutside(bool closeOnClickedOutside)
+        public void SetCloseOnClickedOutside(bool closeOnClickedOutside)
         {
-            this.closeOnClickedOutside = closeOnClickedOutside;
+            this._closeOnClickedOutside = closeOnClickedOutside;
         }
 
-        public bool isCloseOnEscape()
+        public bool IsCloseOnEscape()
         {
-            return closeOnEscape;
+            return _closeOnEscape;
         }
 
         /**
@@ -91,14 +91,14 @@ namespace XNATWL
          *
          * @param closeOnEscape true if it should close on escape
          */
-        public void setCloseOnEscape(bool closeOnEscape)
+        public void SetCloseOnEscape(bool closeOnEscape)
         {
-            this.closeOnEscape = closeOnEscape;
+            this._closeOnEscape = closeOnEscape;
         }
 
-        public Runnable getRequestCloseCallback()
+        public Runnable GetRequestCloseCallback()
         {
-            return requestCloseCallback;
+            return _requestCloseCallback;
         }
 
         /**
@@ -107,9 +107,9 @@ namespace XNATWL
          * 
          * @param requestCloseCallback the new callback or null
          */
-        public void setRequestCloseCallback(Runnable requestCloseCallback)
+        public void SetRequestCloseCallback(Runnable requestCloseCallback)
         {
-            this.requestCloseCallback = requestCloseCallback;
+            this._requestCloseCallback = requestCloseCallback;
         }
 
         /**
@@ -122,23 +122,23 @@ namespace XNATWL
          * @see #getOwner() 
          * @see #getGUI()
          */
-        public virtual bool openPopup()
+        public virtual bool OpenPopup()
         {
-            GUI gui = owner.getGUI();
+            GUI gui = _owner.GetGUI();
             if (gui != null)
             {
                 // a popup can't be invisible or disabled when it should open
-                base.setVisible(true);
-                base.setEnabled(true);
+                base.SetVisible(true);
+                base.SetEnabled(true);
                 // owner's hasOpenPopups flag is handled by GUI
-                gui.openPopup(this);
-                requestKeyboardFocus();
-                focusFirstChild();
+                gui.OpenPopup(this);
+                RequestKeyboardFocus();
+                FocusFirstChild();
                 // check isOpen() to make sure that the popup hasn't been close
                 // in the focus transfer.
                 // This can happen if {@code setVisible(false)} is called inside
                 // {@code keyboardFocusLost()}
-                return isOpen();
+                return IsOpen();
             }
             return false;
         }
@@ -150,12 +150,12 @@ namespace XNATWL
          * @see #adjustSize()
          * @see #centerPopup()
          */
-        public void openPopupCentered()
+        public void OpenPopupCentered()
         {
-            if (openPopup())
+            if (OpenPopup())
             {
-                adjustSize();
-                centerPopup();
+                AdjustSize();
+                CenterPopup();
             }
         }
 
@@ -170,27 +170,27 @@ namespace XNATWL
          * @param height the desired height
          * @see #centerPopup()
          */
-        public void openPopupCentered(int width, int height)
+        public void OpenPopupCentered(int width, int height)
         {
-            if (openPopup())
+            if (OpenPopup())
             {
-                setSize(Math.Min(getParent().getInnerWidth(), width),
-                        Math.Min(getParent().getInnerHeight(), height));
-                centerPopup();
+                SetSize(Math.Min(GetParent().GetInnerWidth(), width),
+                        Math.Min(GetParent().GetInnerHeight(), height));
+                CenterPopup();
             }
         }
 
         /**
          * Closes this pop-up window. Keyboard focus is transfered to it's owner.
          */
-        public virtual void closePopup()
+        public virtual void ClosePopup()
         {
-            GUI gui = getGUI();
+            GUI gui = GetGUI();
             if (gui != null)
             {
                 // owner's hasOpenPopups flag is handled by GUI
-                gui.closePopup(this);
-                owner.requestKeyboardFocus();
+                gui.ClosePopup(this);
+                _owner.RequestKeyboardFocus();
             }
         }
 
@@ -198,9 +198,9 @@ namespace XNATWL
          * Checks if this pop-up window is currently open
          * @return true if it is open
          */
-        public bool isOpen()
+        public bool IsOpen()
         {
-            return getParent() != null;
+            return GetParent() != null;
         }
 
         /**
@@ -209,14 +209,14 @@ namespace XNATWL
          *
          * @see #isOpen()
          */
-        public void centerPopup()
+        public void CenterPopup()
         {
-            Widget parent = getParent();
+            Widget parent = GetParent();
             if (parent != null)
             {
-                setPosition(
-                        parent.getInnerX() + (parent.getInnerWidth() - getWidth()) / 2,
-                        parent.getInnerY() + (parent.getInnerHeight() - getHeight()) / 2);
+                SetPosition(
+                        parent.GetInnerX() + (parent.GetInnerWidth() - GetWidth()) / 2,
+                        parent.GetInnerY() + (parent.GetInnerHeight() - GetHeight()) / 2);
             }
         }
 
@@ -228,26 +228,26 @@ namespace XNATWL
          * @param cb the optional callback which should be called at the end of the bound drag.
          * @return true if the binding was successful, false if not.
          */
-        public bool bindMouseDrag(Runnable cb)
+        public bool BindMouseDrag(Runnable cb)
         {
-            GUI gui = getGUI();
+            GUI gui = GetGUI();
             if (gui != null)
             {
-                return gui.bindDragEvent(this, cb);
+                return gui.BindDragEvent(this, cb);
             }
             return false;
         }
 
-        public override int getPreferredWidth()
+        public override int GetPreferredWidth()
         {
-            int parentWidth = (getParent() != null) ? getParent().getInnerWidth() : short.MaxValue;
-            return Math.Min(parentWidth, base.getPreferredWidth());
+            int parentWidth = (GetParent() != null) ? GetParent().GetInnerWidth() : short.MaxValue;
+            return Math.Min(parentWidth, base.GetPreferredWidth());
         }
 
-        public override int getPreferredHeight()
+        public override int GetPreferredHeight()
         {
-            int parentHeight = (getParent() != null) ? getParent().getInnerHeight() : short.MaxValue;
-            return Math.Min(parentHeight, base.getPreferredHeight());
+            int parentHeight = (GetParent() != null) ? GetParent().GetInnerHeight() : short.MaxValue;
+            return Math.Min(parentHeight, base.GetPreferredHeight());
         }
 
         /**
@@ -257,21 +257,21 @@ namespace XNATWL
          * @param evt the event
          * @return always returns true
          */
-        public override bool handleEvent(Event evt)
+        public override bool HandleEvent(Event evt)
         {
-            if (handleEventPopup(evt))
+            if (HandleEventPopup(evt))
             {
                 return true;
             }
-            if (evt.getEventType() == EventType.MOUSE_CLICKED &&
-                    !isInside(evt.getMouseX(), evt.getMouseY()))
+            if (evt.GetEventType() == EventType.MOUSE_CLICKED &&
+                    !IsInside(evt.GetMouseX(), evt.GetMouseY()))
             {
-                mouseClickedOutside(evt);
+                MouseClickedOutside(evt);
                 return true;
             }
-            if (evt.isKeyPressedEvent() && evt.getKeyCode() == Event.KEY_ESCAPE)
+            if (evt.IsKeyPressedEvent() && evt.GetKeyCode() == Event.KEY_ESCAPE)
             {
-                escapePressed(evt);
+                EscapePressed(evt);
                 return true;
             }
             // eat all events
@@ -286,12 +286,12 @@ namespace XNATWL
          * @param evt the event
          * @return true if the event has been handled, false otherwise.
          */
-        protected virtual bool handleEventPopup(Event evt)
+        protected virtual bool HandleEventPopup(Event evt)
         {
-            return base.handleEvent(evt);
+            return base.HandleEvent(evt);
         }
 
-        protected bool isMouseInside(Event evt)
+        public override bool IsMouseInside(Event evt)
         {
             return true;    // :P
         }
@@ -307,15 +307,15 @@ namespace XNATWL
          * @see #setCloseOnEscape(bool)
          * @see #mouseClickedOutside(de.matthiasmann.twl.Event)
          */
-        protected void requestPopupClose()
+        protected void RequestPopupClose()
         {
-            if (requestCloseCallback != null)
+            if (_requestCloseCallback != null)
             {
-                requestCloseCallback.run();
+                _requestCloseCallback.Run();
             }
             else
             {
-                closePopup();
+                ClosePopup();
             }
         }
 
@@ -328,11 +328,11 @@ namespace XNATWL
          * @param evt The click event
          * @see #setCloseOnClickedOutside(bool) 
          */
-        protected void mouseClickedOutside(Event evt)
+        protected void MouseClickedOutside(Event evt)
         {
-            if (closeOnClickedOutside)
+            if (_closeOnClickedOutside)
             {
-                requestPopupClose();
+                RequestPopupClose();
             }
         }
 
@@ -345,22 +345,22 @@ namespace XNATWL
          * @param evt The click event
          * @see #setCloseOnEscape(bool)
          */
-        protected virtual void escapePressed(Event evt)
+        protected virtual void EscapePressed(Event evt)
         {
-            if (closeOnEscape)
+            if (_closeOnEscape)
             {
-                requestPopupClose();
+                RequestPopupClose();
             }
         }
 
-        internal override void setParent(Widget parent)
+        internal override void SetParent(Widget parent)
         {
             if (!(parent is GUI))
             {
                 throw new ArgumentOutOfRangeException("PopupWindow can't be used as child widget");
             }
 
-            base.setParent(parent);
+            base.SetParent(parent);
         }
     }
 

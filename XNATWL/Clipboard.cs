@@ -34,12 +34,12 @@ namespace XNATWL
 {
     public class Clipboard
     {
-        public static String getClipboard()
+        public static String GetClipboard()
         {
             return "";
         }
 
-        public static void setClipboard(String str)
+        public static void SetClipboard(String str)
         {
             //System.Windows.Clipboard.SetData(DataFormats.Text, (Object)textData);
         }

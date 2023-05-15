@@ -40,14 +40,13 @@ namespace XNATWL
 {
     public class InputMap
     {
-
         private static InputMap EMPTY_MAP = new InputMap(new KeyStroke[0]);
 
-        private KeyStroke[] keyStrokes;
+        private KeyStroke[] _keyStrokes;
 
         public InputMap(KeyStroke[] keyStrokes)
         {
-            this.keyStrokes = keyStrokes;
+            this._keyStrokes = keyStrokes;
         }
 
         /**
@@ -55,16 +54,16 @@ namespace XNATWL
          * @param event the key event
          * @return the action or null if no mapping was found
          */
-        public String mapEvent(Event @event)
+        public String MapEvent(Event @event)
         {
-            if (@event.isKeyEvent())
+            if (@event.IsKeyEvent())
             {
-                int mappedEventModifiers = KeyStroke.convertModifier(@event);
-                foreach (KeyStroke ks in keyStrokes)
+                int mappedEventModifiers = KeyStroke.ConvertModifier(@event);
+                foreach (KeyStroke ks in _keyStrokes)
                 {
-                    if (ks.match(@event, mappedEventModifiers))
+                    if (ks.Match(@event, mappedEventModifiers))
                     {
-                        return ks.getAction();
+                        return ks.GetAction();
                     }
                 }
             }
@@ -78,7 +77,7 @@ namespace XNATWL
          * @param newKeyStrokes the new key strokes.
          * @return the InputMap containing the resulting mapping
          */
-        public InputMap addKeyStrokes(LinkedHashSet<KeyStroke> newKeyStrokes)
+        public InputMap AddKeyStrokes(LinkedHashSet<KeyStroke> newKeyStrokes)
         {
             int size = newKeyStrokes.Count;
             if (size == 0)
@@ -86,14 +85,14 @@ namespace XNATWL
                 return this;
             }
 
-            KeyStroke[] combined = new KeyStroke[keyStrokes.Length + size];
+            KeyStroke[] combined = new KeyStroke[_keyStrokes.Length + size];
             int i = 0;
             foreach(KeyStroke ks in newKeyStrokes)
             {
                 combined[i] = ks;
                 i++;
             }   // copy new key strokes
-            foreach (KeyStroke ks in keyStrokes)
+            foreach (KeyStroke ks in _keyStrokes)
             {
                 if (!newKeyStrokes.Contains(ks))
                 {  // append old ones if they have not been replaced
@@ -102,7 +101,7 @@ namespace XNATWL
                 }
             }
 
-            return new InputMap(shrink(combined, size));
+            return new InputMap(Shrink(combined, size));
         }
 
         /**
@@ -112,17 +111,17 @@ namespace XNATWL
          * @param map the other InputMap containing the new key strokes.
          * @return the InputMap containing the resulting mapping
          */
-        public InputMap addKeyStrokes(InputMap map)
+        public InputMap AddKeyStrokes(InputMap map)
         {
-            if (map == this || map.keyStrokes.Length == 0)
+            if (map == this || map._keyStrokes.Length == 0)
             {
                 return this;
             }
-            if (keyStrokes.Length == 0)
+            if (_keyStrokes.Length == 0)
             {
                 return map;
             }
-            return addKeyStrokes(new LinkedHashSet<KeyStroke>(map.keyStrokes.ToList()));
+            return AddKeyStrokes(new LinkedHashSet<KeyStroke>(map._keyStrokes.ToList()));
         }
 
         /**
@@ -133,11 +132,11 @@ namespace XNATWL
          * @param keyStroke the new key stroke.
          * @return the InputMap containing the resulting mapping
          */
-        public InputMap addKeyStroke(KeyStroke keyStroke)
+        public InputMap AddKeyStroke(KeyStroke keyStroke)
         {
             LinkedHashSet<KeyStroke> newKeyStrokes = new LinkedHashSet<KeyStroke>(1);
             newKeyStrokes.Add(keyStroke);
-            return addKeyStrokes(newKeyStrokes);
+            return AddKeyStrokes(newKeyStrokes);
         }
 
         /**
@@ -146,7 +145,7 @@ namespace XNATWL
          * @param keyStrokes the key strokes to remove
          * @return the InputMap containing the resulting mapping
          */
-        public InputMap removeKeyStrokes(HashSet<KeyStroke> keyStrokes)
+        public InputMap RemoveKeyStrokes(HashSet<KeyStroke> keyStrokes)
         {
             if (keyStrokes.Count == 0)
             {
@@ -154,8 +153,8 @@ namespace XNATWL
             }
 
             int size = 0;
-            KeyStroke[] result = new KeyStroke[this.keyStrokes.Length];
-            foreach (KeyStroke ks in this.keyStrokes)
+            KeyStroke[] result = new KeyStroke[this._keyStrokes.Length];
+            foreach (KeyStroke ks in this._keyStrokes)
             {
                 if (!keyStrokes.Contains(ks))
                 {  // append old ones if it has not been removed
@@ -163,23 +162,23 @@ namespace XNATWL
                 }
             }
 
-            return new InputMap(shrink(result, size));
+            return new InputMap(Shrink(result, size));
         }
 
         /**
          * Returns all key strokes in this InputMap.
          * @return all key strokes in this InputMap.
          */
-        public KeyStroke[] getKeyStrokes()
+        public KeyStroke[] GetKeyStrokes()
         {
-            return (KeyStroke[]) keyStrokes.Clone();
+            return (KeyStroke[]) _keyStrokes.Clone();
         }
 
         /**
          * Returns an empty input mapping
          * @return an empty input mapping
          */
-        public static InputMap empty()
+        public static InputMap Empty()
         {
             return EMPTY_MAP;
         }
@@ -191,7 +190,7 @@ namespace XNATWL
          * @return the parsed key strokes
          * @throws IOException if an IO related error occured
          */
-        public static InputMap parse(FileSystemObject url)
+        public static InputMap Parse(FileSystemObject url)
         {
             try
             {
@@ -202,7 +201,7 @@ namespace XNATWL
                     xmlp.NextTag();
                     xmlp.Require(XmlPullParser.START_TAG, null, "inputMapDef");
                     xmlp.NextTag();
-                    LinkedHashSet<KeyStroke> keyStrokes = parseBody(xmlp);
+                    LinkedHashSet<KeyStroke> keyStrokes = ParseBody(xmlp);
                     xmlp.Require(XmlPullParser.END_TAG, null, "inputMapDef");
                     return new InputMap(keyStrokes.ToArray());
                 }
@@ -225,7 +224,7 @@ namespace XNATWL
          * @throws IOException if an IO error occured
          * @see #parse(java.net.URL) 
          */
-        public void writeXML(Stream os)
+        public void WriteXML(Stream os)
         {
             try
             {
@@ -248,13 +247,13 @@ namespace XNATWL
                 serializer.endDocument();*/
                 XmlDocument xmlDocument = new XmlDocument();
                 var inputMapDefNode = xmlDocument.CreateNode(XmlNodeType.Element, "inputMapDef", "");
-                foreach (KeyStroke ks in keyStrokes)
+                foreach (KeyStroke ks in _keyStrokes)
                 {
                     var keystrokeNode = xmlDocument.CreateNode(XmlNodeType.Element, "action", "");
                     var keystrokeNameAttribute = xmlDocument.CreateAttribute("name");
-                    keystrokeNameAttribute.Value = ks.getAction();
+                    keystrokeNameAttribute.Value = ks.GetAction();
                     keystrokeNode.Attributes.Append(keystrokeNameAttribute);
-                    keystrokeNode.InnerText = ks.getStroke();
+                    keystrokeNode.InnerText = ks.GetStroke();
                     inputMapDefNode.AppendChild(keystrokeNode);
                 }
                 xmlDocument.Save(os);
@@ -274,7 +273,7 @@ namespace XNATWL
          * @throws XmlPullParserException if a parser error occured
          * @throws IOException if an IO error occured
          */
-        public static LinkedHashSet<KeyStroke> parseBody(XMLParser xmlp)
+        public static LinkedHashSet<KeyStroke> ParseBody(XMLParser xmlp)
         {
             LinkedHashSet<KeyStroke> newStrokes = new LinkedHashSet<KeyStroke>();
             while (!xmlp.IsEndTag())
@@ -284,10 +283,10 @@ namespace XNATWL
                 String key = xmlp.NextText();
                 try
                 {
-                    KeyStroke ks = KeyStroke.parse(key, name);
+                    KeyStroke ks = KeyStroke.Parse(key, name);
                     if (!newStrokes.Add(ks))
                     {
-                        System.Diagnostics.Debug.WriteLine("InputMap: Duplicate key stroke '" + ks.getStroke() + "'");
+                        System.Diagnostics.Debug.WriteLine("InputMap: Duplicate key stroke '" + ks.GetStroke() + "'");
                     }
                 }
                 catch (ArgumentOutOfRangeException ex)
@@ -300,7 +299,7 @@ namespace XNATWL
             return newStrokes;
         }
 
-        private static KeyStroke[] shrink(KeyStroke[] keyStrokes, int size)
+        private static KeyStroke[] Shrink(KeyStroke[] keyStrokes, int size)
         {
             if (size != keyStrokes.Length)
             {

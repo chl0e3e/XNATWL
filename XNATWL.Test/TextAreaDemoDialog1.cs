@@ -21,20 +21,20 @@ namespace XNATWL.Test
             fileStream.Close();
 
             Button btnX = new Button("Blub!");
-            btnX.setTheme("/button");
+            btnX.SetTheme("/button");
 
             TextArea textArea = new TextArea(tam);
-            textArea.setTheme("textarea");
-            textArea.registerWidget("test", btnX);
-            textArea.setDefaultStyleSheet();
+            textArea.SetTheme("textarea");
+            textArea.RegisterWidget("test", btnX);
+            textArea.SetDefaultStyleSheet();
 
             ScrollPane scrollPane2 = new ScrollPane(textArea);
-            scrollPane2.setTheme("scrollpane");
-            scrollPane2.setFixed(ScrollPane.Fixed.HORIZONTAL);
+            scrollPane2.SetTheme("scrollpane");
+            scrollPane2.SetFixed(ScrollPane.Fixed.HORIZONTAL);
 
-            setTheme("licenseFrame");
-            setTitle("TWL License");
-            add(scrollPane2);
+            SetTheme("licenseFrame");
+            SetTitle("TWL License");
+            Add(scrollPane2);
         }
     }
 }

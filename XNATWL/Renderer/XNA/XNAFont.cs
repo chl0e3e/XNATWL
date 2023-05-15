@@ -155,7 +155,7 @@ namespace XNATWL.Renderer.XNA
             FontState fontState = this.EvalFontState(animState);
             x += fontState._offsetX;
             y += fontState._offsetY;
-            return this._bitmapFont.DrawMultiLineText(fontState._color, x, y, str, 100, HAlignment.CENTER);
+            return this._bitmapFont.DrawMultiLineText(fontState._color, x, y, str, 100, HAlignment.Center);
         }
 
         public void DrawMultiLineText(int x, int y, AttributedString attributedString)
@@ -303,7 +303,7 @@ namespace XNATWL.Renderer.XNA
                 this._font._renderer.GraphicsDevice.SetRenderTarget(null);
                 this._cachedXNATexture = new XNATexture(this._font._renderer, this._width, this._height, this._cachedRenderTarget);
 
-                this._cachedImage = (TextureAreaBase) this._cachedXNATexture.GetImage(0, 0, this._width, this._height, Color.BLACK, false, TextureRotation.NONE);
+                this._cachedImage = (TextureAreaBase) this._cachedXNATexture.GetImage(0, 0, this._width, this._height, Color.BLACK, false, TextureRotation.None);
             }
 
             public void Dispose()
@@ -420,7 +420,7 @@ namespace XNATWL.Renderer.XNA
                     Texture2D cachedTexture = new Texture2D(this._font._renderer.GraphicsDevice, this._width, this._height);
                     cachedTexture.SetData(_texOutput.LineColors);
                     this._cachedXNATexture = new XNATexture(this._font._renderer, this._width, this._height, cachedTexture);
-                    this._cachedImage = (TextureAreaBase)this._cachedXNATexture.GetImage(0, 0, this._width, this._height, Color.BLACK, false, TextureRotation.NONE);
+                    this._cachedImage = (TextureAreaBase)this._cachedXNATexture.GetImage(0, 0, this._width, this._height, Color.BLACK, false, TextureRotation.None);
                 }
                 else
                 {
@@ -430,7 +430,7 @@ namespace XNATWL.Renderer.XNA
                     Texture2D cachedTexture = new Texture2D(this._font._renderer.GraphicsDevice, this._width, this._height);
                     cachedTexture.SetData(_texOutput.LineColors);
                     this._cachedXNATexture = new XNATexture(this._font._renderer, this._width, this._height, cachedTexture);
-                    this._cachedImage = (TextureAreaBase)this._cachedXNATexture.GetImage(0, 0, this._width, this._height, Color.BLACK, false, TextureRotation.NONE);
+                    this._cachedImage = (TextureAreaBase)this._cachedXNATexture.GetImage(0, 0, this._width, this._height, Color.BLACK, false, TextureRotation.None);
                 }
             }
 

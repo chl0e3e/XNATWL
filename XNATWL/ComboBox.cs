@@ -40,131 +40,131 @@ namespace XNATWL
 
         private static int INVALID_WIDTH = -1;
 
-        private ComboboxLabel label;
-        private ListBox<T> listbox;
+        private ComboboxLabel _label;
+        private ListBox<T> _listbox;
 
-        String displayTextNoSelection = "";
-        bool noSelectionIsError;
-        bool computeWidthFromModel;
-        int modelWidth = INVALID_WIDTH;
-        int selectionOnPopupOpen = ListBox<T>.NO_SELECTION;
+        String _displayTextNoSelection = "";
+        bool _noSelectionIsError;
+        bool _computeWidthFromModel;
+        int _modelWidth = INVALID_WIDTH;
+        int _selectionOnPopupOpen = ListBox<T>.NO_SELECTION;
 
         public event EventHandler<ComboBoxSelectionChangedEventArgs> SelectionChanged;
 
         public ComboBox(ListSelectionModel<T> model) : this()
         {
-            setModel(model);
+            SetModel(model);
         }
 
         public ComboBox(ListModel<T> model, IntegerModel selectionModel) : this()
         {
-            setModel(model);
-            setSelectionModel(selectionModel);
+            SetModel(model);
+            SetSelectionModel(selectionModel);
         }
 
         public ComboBox(ListModel<T> model) : this()
         {
-            setModel(model);
+            SetModel(model);
         }
 
         public ComboBox()
         {
-            this.label = new ComboboxLabel(this, getAnimationState());
-            this.listbox = new ComboboxListbox<T>();
+            this._label = new ComboboxLabel(this, GetAnimationState());
+            this._listbox = new ComboboxListbox<T>();
 
-            this.button.getModel().State += ComboBox_State;
-            this.listbox.Callback += Listbox_Callback;
+            this._button.GetModel().State += ComboBox_State;
+            this._listbox.Callback += Listbox_Callback;
 
-            popup.setTheme("comboboxPopup");
-            popup.add(listbox);
-            add(label);
+            _popup.SetTheme("comboboxPopup");
+            _popup.Add(_listbox);
+            Add(_label);
         }
 
         private void Listbox_Callback(object sender, ListBoxEventArgs e)
         {
             switch (e.Reason)
             {
-                case ListBoxCallbackReason.KEYBOARD_RETURN:
-                case ListBoxCallbackReason.MOUSE_CLICK:
-                case ListBoxCallbackReason.MOUSE_DOUBLE_CLICK:
-                    listBoxSelectionChanged(true);
+                case ListBoxCallbackReason.KeyboardReturn:
+                case ListBoxCallbackReason.MouseClick:
+                case ListBoxCallbackReason.MouseDoubleClick:
+                    ListBoxSelectionChanged(true);
                     break;
                 default:
-                    listBoxSelectionChanged(false);
+                    ListBoxSelectionChanged(false);
                     break;
             }
         }
 
         private void ComboBox_State(object sender, ButtonStateChangedEventArgs e)
         {
-            this.updateHover();
+            this.UpdateHover();
         }
 
-        public void setModel(ListModel<T> model)
+        public void SetModel(ListModel<T> model)
         {
-            unregisterModelChangeListener();
-            listbox.setModel(model);
-            if (computeWidthFromModel)
+            UnregisterModelChangeListener();
+            _listbox.SetModel(model);
+            if (_computeWidthFromModel)
             {
-                registerModelChangeListener();
+                RegisterModelChangeListener();
             }
         }
 
-        public ListModel<T> getModel()
+        public ListModel<T> GetModel()
         {
-            return listbox.getModel();
+            return _listbox.getModel();
         }
 
-        public void setSelectionModel(IntegerModel selectionModel)
+        public void SetSelectionModel(IntegerModel selectionModel)
         {
-            listbox.setSelectionModel(selectionModel);
+            _listbox.SetSelectionModel(selectionModel);
         }
 
-        public IntegerModel getSelectionModel()
+        public IntegerModel GetSelectionModel()
         {
-            return listbox.getSelectionModel();
+            return _listbox.GetSelectionModel();
         }
 
-        public void setModel(ListSelectionModel<T> model)
+        public void SetModel(ListSelectionModel<T> model)
         {
-            listbox.setModel(model);
+            _listbox.SetModel(model);
         }
 
-        public void setSelected(int selected)
+        public void SetSelected(int selected)
         {
-            listbox.setSelected(selected);
-            updateLabel();
+            _listbox.SetSelected(selected);
+            UpdateLabel();
         }
 
-        public int getSelected()
+        public int GetSelected()
         {
-            return listbox.getSelected();
+            return _listbox.GetSelected();
         }
 
-        public bool isComputeWidthFromModel()
+        public bool IsComputeWidthFromModel()
         {
-            return computeWidthFromModel;
+            return _computeWidthFromModel;
         }
 
-        public void setComputeWidthFromModel(bool computeWidthFromModel)
+        public void SetComputeWidthFromModel(bool computeWidthFromModel)
         {
-            if (this.computeWidthFromModel != computeWidthFromModel)
+            if (this._computeWidthFromModel != computeWidthFromModel)
             {
-                this.computeWidthFromModel = computeWidthFromModel;
+                this._computeWidthFromModel = computeWidthFromModel;
                 if (computeWidthFromModel)
                 {
-                    registerModelChangeListener();
+                    RegisterModelChangeListener();
                 }
                 else
                 {
-                    unregisterModelChangeListener();
+                    UnregisterModelChangeListener();
                 }
             }
         }
 
-        public String getDisplayTextNoSelection()
+        public String GetDisplayTextNoSelection()
         {
-            return displayTextNoSelection;
+            return _displayTextNoSelection;
         }
 
         /**
@@ -174,19 +174,19 @@ namespace XNATWL
          * @param displayTextNoSelection the text to display
          * @throws NullPointerException when displayTextNoSelection is null
          */
-        public void setDisplayTextNoSelection(String displayTextNoSelection)
+        public void SetDisplayTextNoSelection(String displayTextNoSelection)
         {
             if (displayTextNoSelection == null)
             {
                 throw new ArgumentNullException("displayTextNoSelection");
             }
-            this.displayTextNoSelection = displayTextNoSelection;
-            updateLabel();
+            this._displayTextNoSelection = displayTextNoSelection;
+            UpdateLabel();
         }
 
-        public bool isNoSelectionIsError()
+        public bool IsNoSelectionIsError()
         {
-            return noSelectionIsError;
+            return _noSelectionIsError;
         }
 
         /**
@@ -195,18 +195,18 @@ namespace XNATWL
          * 
          * @param noSelectionIsError
          */
-        public void setNoSelectionIsError(bool noSelectionIsError)
+        public void SetNoSelectionIsError(bool noSelectionIsError)
         {
-            this.noSelectionIsError = noSelectionIsError;
-            updateLabel();
+            this._noSelectionIsError = noSelectionIsError;
+            UpdateLabel();
         }
 
-        private void registerModelChangeListener()
+        private void RegisterModelChangeListener()
         {
-            ListModel<T> model = getModel();
+            ListModel<T> model = GetModel();
             if (model != null)
             {
-                modelWidth = INVALID_WIDTH;
+                _modelWidth = INVALID_WIDTH;
                 model.AllChanged += Model_AllChanged;
                 model.EntriesChanged += Model_EntriesChanged;
                 model.EntriesDeleted += Model_EntriesDeleted;
@@ -216,248 +216,248 @@ namespace XNATWL
 
         private void Model_EntriesInserted(object sender, ListSubsetChangedEventArgs e)
         {
-            updateModelWidth(e.First, e.Last);
+            UpdateModelWidth(e.First, e.Last);
         }
 
         private void Model_EntriesDeleted(object sender, ListSubsetChangedEventArgs e)
         {
-            invalidateModelWidth();
+            InvalidateModelWidth();
         }
 
         private void Model_EntriesChanged(object sender, ListSubsetChangedEventArgs e)
         {
-            invalidateModelWidth();
+            InvalidateModelWidth();
         }
 
         private void Model_AllChanged(object sender, ListAllChangedEventArgs e)
         {
-            invalidateModelWidth();
+            InvalidateModelWidth();
         }
 
-        private void unregisterModelChangeListener()
+        private void UnregisterModelChangeListener()
         {
-                ListModel<T> model = getModel();
-                if (model != null)
-                {
-                    model.AllChanged -= Model_AllChanged;
-                    model.EntriesChanged -= Model_EntriesChanged;
-                    model.EntriesDeleted -= Model_EntriesDeleted;
-                    model.EntriesInserted -= Model_EntriesInserted;
-                }
-        }
-
-        protected override bool openPopup()
-        {
-            if (base.openPopup())
+            ListModel<T> model = GetModel();
+            if (model != null)
             {
-                popup.validateLayout();
-                selectionOnPopupOpen = getSelected();
-                listbox.scrollToSelected();
+                model.AllChanged -= Model_AllChanged;
+                model.EntriesChanged -= Model_EntriesChanged;
+                model.EntriesDeleted -= Model_EntriesDeleted;
+                model.EntriesInserted -= Model_EntriesInserted;
+            }
+        }
+
+        protected override bool OpenPopup()
+        {
+            if (base.OpenPopup())
+            {
+                _popup.ValidateLayout();
+                _selectionOnPopupOpen = GetSelected();
+                _listbox.ScrollToSelected();
                 return true;
             }
             return false;
         }
 
-        protected override void popupEscapePressed(Event evt)
+        protected override void PopupEscapePressed(Event evt)
         {
-            setSelected(selectionOnPopupOpen);
-            base.popupEscapePressed(evt);
+            SetSelected(_selectionOnPopupOpen);
+            base.PopupEscapePressed(evt);
         }
 
         /**
          * Called when a right click was made on the ComboboxLabel.
          * The default implementation does nothing
          */
-        protected void handleRightClick()
+        protected void HandleRightClick()
         {
         }
 
-        protected void listBoxSelectionChanged(bool close)
+        protected void ListBoxSelectionChanged(bool close)
         {
-            updateLabel();
+            UpdateLabel();
             if (close)
             {
-                popup.closePopup();
+                _popup.ClosePopup();
             }
             this.SelectionChanged.Invoke(this, new ComboBoxSelectionChangedEventArgs());
         }
 
-        protected String getModelData(int idx)
+        protected String GetModelData(int idx)
         {
-            return getModel().EntryAt(idx).ToString();
+            return GetModel().EntryAt(idx).ToString();
         }
 
-        protected override Widget getLabel()
+        protected override Widget GetLabel()
         {
-            return label;
+            return _label;
         }
 
-        protected void updateLabel()
+        protected void UpdateLabel()
         {
-            int selected = getSelected();
+            int selected = GetSelected();
             if (selected == ListBox<T>.NO_SELECTION)
             {
-                label.setText(displayTextNoSelection);
-                label.getAnimationState().setAnimationState(STATE_ERROR, noSelectionIsError);
+                _label.SetText(_displayTextNoSelection);
+                _label.GetAnimationState().SetAnimationState(STATE_ERROR, _noSelectionIsError);
             }
             else
             {
-                label.setText(getModelData(selected));
-                label.getAnimationState().setAnimationState(STATE_ERROR, false);
+                _label.SetText(GetModelData(selected));
+                _label.GetAnimationState().SetAnimationState(STATE_ERROR, false);
             }
-            if (!computeWidthFromModel)
+            if (!_computeWidthFromModel)
             {
-                invalidateLayout();
+                InvalidateLayout();
             }
         }
 
-        protected void applyTheme(ThemeInfo themeInfo)
+        protected void ApplyTheme(ThemeInfo themeInfo)
         {
-            base.applyTheme(themeInfo);
-            modelWidth = INVALID_WIDTH;
+            base.ApplyTheme(themeInfo);
+            _modelWidth = INVALID_WIDTH;
         }
 
-        public override bool handleEvent(Event evt)
+        public override bool HandleEvent(Event evt)
         {
-            if (base.handleEvent(evt))
+            if (base.HandleEvent(evt))
             {
                 return true;
             }
-            if (evt.isKeyPressedEvent())
+            if (evt.IsKeyPressedEvent())
             {
-                switch (evt.getKeyCode())
+                switch (evt.GetKeyCode())
                 {
                     case Event.KEY_UP:
                     case Event.KEY_DOWN:
                     case Event.KEY_HOME:
                     case Event.KEY_END:
                         // let the listbox handle this :)
-                        listbox.handleEvent(evt);
+                        _listbox.HandleEvent(evt);
                         return true;
                     case Event.KEY_SPACE:
                     case Event.KEY_RETURN:
-                        openPopup();
+                        OpenPopup();
                         return true;
                 }
             }
             return false;
         }
 
-        void invalidateModelWidth()
+        void InvalidateModelWidth()
         {
-            if (computeWidthFromModel)
+            if (_computeWidthFromModel)
             {
-                modelWidth = INVALID_WIDTH;
-                invalidateLayout();
+                _modelWidth = INVALID_WIDTH;
+                InvalidateLayout();
             }
         }
 
-        void updateModelWidth()
+        void UpdateModelWidth()
         {
-            if (computeWidthFromModel)
+            if (_computeWidthFromModel)
             {
-                modelWidth = 0;
-                updateModelWidth(0, getModel().Entries - 1);
+                _modelWidth = 0;
+                UpdateModelWidth(0, GetModel().Entries - 1);
             }
         }
 
-        void updateModelWidth(int first, int last)
+        void UpdateModelWidth(int first, int last)
         {
-            if (computeWidthFromModel)
+            if (_computeWidthFromModel)
             {
-                int newModelWidth = modelWidth;
+                int newModelWidth = _modelWidth;
                 for (int idx = first; idx <= last; idx++)
                 {
-                    newModelWidth = Math.Max(newModelWidth, computeEntryWidth(idx));
+                    newModelWidth = Math.Max(newModelWidth, ComputeEntryWidth(idx));
                 }
-                if (newModelWidth > modelWidth)
+                if (newModelWidth > _modelWidth)
                 {
-                    modelWidth = newModelWidth;
-                    invalidateLayout();
+                    _modelWidth = newModelWidth;
+                    InvalidateLayout();
                 }
             }
         }
 
-        protected int computeEntryWidth(int idx)
+        protected int ComputeEntryWidth(int idx)
         {
-            int width = label.getBorderHorizontal();
-            Font font = label.getFont();
+            int width = _label.GetBorderHorizontal();
+            Font font = _label.GetFont();
             if (font != null)
             {
-                width += font.ComputeMultiLineTextWidth(getModelData(idx));
+                width += font.ComputeMultiLineTextWidth(GetModelData(idx));
             }
             return width;
         }
 
-        void updateHover()
+        void UpdateHover()
         {
-            getAnimationState().setAnimationState(Label.STATE_HOVER,
-                    label.hover || button.getModel().Hover);
+            GetAnimationState().SetAnimationState(Label.STATE_HOVER,
+                    _label._hover || _button.GetModel().Hover);
         }
 
         class ComboboxLabel : Label
         {
-            internal bool hover;
-            private ComboBox<T> comboBox;
+            internal bool _hover;
+            private ComboBox<T> _comboBox;
 
             public ComboboxLabel(ComboBox<T> comboBox, AnimationState animState) : base(animState)
             {
-                this.comboBox = comboBox;
+                this._comboBox = comboBox;
 
-                setAutoSize(false);
-                setClip(true);
-                setTheme("display");
+                SetAutoSize(false);
+                SetClip(true);
+                SetTheme("display");
             }
 
-            public override int getPreferredInnerWidth()
+            public override int GetPreferredInnerWidth()
             {
-                if (this.comboBox.computeWidthFromModel && this.comboBox.getModel() != null)
+                if (this._comboBox._computeWidthFromModel && this._comboBox.GetModel() != null)
                 {
-                    if (this.comboBox.modelWidth == INVALID_WIDTH)
+                    if (this._comboBox._modelWidth == INVALID_WIDTH)
                     {
-                        this.comboBox.updateModelWidth();
+                        this._comboBox.UpdateModelWidth();
                     }
-                    return this.comboBox.modelWidth;
+                    return this._comboBox._modelWidth;
                 }
                 else
                 {
-                    return base.getPreferredInnerWidth();
+                    return base.GetPreferredInnerWidth();
                 }
             }
 
-            public override int getPreferredInnerHeight()
+            public override int GetPreferredInnerHeight()
             {
-                int prefHeight = base.getPreferredInnerHeight();
-                if (getFont() != null)
+                int prefHeight = base.GetPreferredInnerHeight();
+                if (GetFont() != null)
                 {
-                    prefHeight = Math.Max(prefHeight, getFont().LineHeight);
+                    prefHeight = Math.Max(prefHeight, GetFont().LineHeight);
                 }
                 return prefHeight;
             }
 
-            public override bool handleEvent(Event evt)
+            public override bool HandleEvent(Event evt)
             {
-                if (evt.isMouseEvent())
+                if (evt.IsMouseEvent())
                 {
-                    bool newHover = evt.getEventType() != EventType.MOUSE_EXITED;
-                    if (newHover != hover)
+                    bool newHover = evt.GetEventType() != EventType.MOUSE_EXITED;
+                    if (newHover != _hover)
                     {
-                        hover = newHover;
-                        this.comboBox.updateHover();
+                        _hover = newHover;
+                        this._comboBox.UpdateHover();
                     }
 
-                    if (evt.getEventType() == EventType.MOUSE_CLICKED)
+                    if (evt.GetEventType() == EventType.MOUSE_CLICKED)
                     {
-                        this.comboBox.openPopup();
+                        this._comboBox.OpenPopup();
                     }
 
-                    if (evt.getEventType() == EventType.MOUSE_BTNDOWN &&
-                            evt.getMouseButton() == Event.MOUSE_RBUTTON)
+                    if (evt.GetEventType() == EventType.MOUSE_BTNDOWN &&
+                            evt.GetMouseButton() == Event.MOUSE_RBUTTON)
                     {
-                        this.comboBox.handleRightClick();
+                        this._comboBox.HandleRightClick();
                     }
 
-                    return evt.getEventType() != EventType.MOUSE_WHEEL;
+                    return evt.GetEventType() != EventType.MOUSE_WHEEL;
                 }
                 return false;
             }
@@ -487,10 +487,10 @@ namespace XNATWL
         {
             public ComboboxListbox()
             {
-                setTheme("listbox");
+                SetTheme("listbox");
             }
 
-            protected override ListBoxDisplay createDisplay()
+            protected override ListBoxDisplay CreateDisplay()
             {
                 return new ComboboxListboxLabel();
             }
@@ -498,16 +498,16 @@ namespace XNATWL
 
         class ComboboxListboxLabel : ListBox<T>.ListBoxLabel
         {
-            protected override bool handleListBoxEvent(Event evt)
+            protected override bool HandleListBoxEvent(Event evt)
             {
-                if (evt.getEventType() == EventType.MOUSE_CLICKED)
+                if (evt.GetEventType() == EventType.MOUSE_CLICKED)
                 {
-                    doListBoxCallback(ListBoxCallbackReason.MOUSE_CLICK);
+                    DoListBoxCallback(ListBoxCallbackReason.MouseClick);
                     return true;
                 }
-                if (evt.getEventType() == EventType.MOUSE_BTNDOWN)
+                if (evt.GetEventType() == EventType.MOUSE_BTNDOWN)
                 {
-                    doListBoxCallback(ListBoxCallbackReason.SET_SELECTED);
+                    DoListBoxCallback(ListBoxCallbackReason.SetSelected);
                     return true;
                 }
                 return false;

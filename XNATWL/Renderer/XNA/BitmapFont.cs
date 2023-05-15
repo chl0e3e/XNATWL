@@ -741,11 +741,11 @@ namespace XNATWL.Renderer.XNA
             {
                 int lineEnd = TextUtil.IndexOf(str, '\n', start);
                 int xoff = 0;
-                if (align != HAlignment.LEFT)
+                if (align != HAlignment.Left)
                 {
                     int lineWidth = this.ComputeTextWidth(str, start, lineEnd);
                     xoff = width - lineWidth;
-                    if (align == HAlignment.CENTER)
+                    if (align == HAlignment.Center)
                     {
                         xoff /= 2;
                     }
@@ -800,11 +800,11 @@ namespace XNATWL.Renderer.XNA
                 int lineWidth = this.ComputeTextWidth(str, start, lineEnd);
                 int xoff = width - lineWidth;
 
-                if (align == HAlignment.LEFT)
+                if (align == HAlignment.Left)
                 {
                     xoff = 0;
                 }
-                else if (align == HAlignment.CENTER)
+                else if (align == HAlignment.Center)
                 {
                     xoff /= 2;
                 }
@@ -891,7 +891,7 @@ namespace XNATWL.Renderer.XNA
             }
         }
 
-        private static short parseShort(Dictionary<String, String> parameters, String key)
+        private static short ParseShort(Dictionary<String, String> parameters, String key)
         {
             String value = GetParam(parameters, key);
             try

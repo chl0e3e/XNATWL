@@ -38,12 +38,13 @@ namespace XNATWL
     {
         public enum ClickType
         {
-            CLICK,
-            DOUBLE_CLICK
+            Click,
+            DoubleClick
         }
 
-        private bool autoSize = true;
-        private Widget labelFor;
+        private bool _autoSize = true;
+        private Widget _labelFor;
+
         public event EventHandler<LabelClickEventArgs> Clicked;
 
         public Label() : this((AnimationState)null, false)
@@ -74,7 +75,7 @@ namespace XNATWL
 
         public Label(String text) : this()
         {
-            setText(text);
+            SetText(text);
         }
 
         /*public void addCallback(CallbackWithReason<CallbackReason> cb) {
@@ -89,58 +90,59 @@ namespace XNATWL
             CallbackSupport.fireCallbacks(callbacks, reason);
         }*/
 
-        public bool isAutoSize()
+        public bool IsAutoSize()
         {
-            return autoSize;
+            return _autoSize;
         }
 
-        public void setAutoSize(bool autoSize)
+        public void SetAutoSize(bool autoSize)
         {
-            this.autoSize = autoSize;
+            this._autoSize = autoSize;
         }
 
         //@Override
-        public override void setFont(Font font)
+        public override void SetFont(Font font)
         {
-            base.setFont(font);
-            if (autoSize)
+            base.SetFont(font);
+
+            if (_autoSize)
             {
-                invalidateLayout();
+                InvalidateLayout();
             }
         }
 
-        public String getText()
+        public String GetText()
         {
-            return base.getCharSequence();
+            return base.GetCharSequence();
         }
 
-        public void setText(String text)
+        public void SetText(String text)
         {
             text = TextUtil.NotNull(text);
-            if (!text.Equals(getText()))
+            if (!text.Equals(GetText()))
             {
-                base.setCharSequence(text);
-                if (autoSize)
+                base.SetCharSequence(text);
+                if (_autoSize)
                 {
-                    invalidateLayout();
+                    InvalidateLayout();
                 }
             }
         }
 
         //@Override
-        public override Object getTooltipContent()
+        public override Object GetTooltipContent()
         {
-            Object toolTipContent = base.getTooltipContent();
-            if (toolTipContent == null && labelFor != null)
+            Object toolTipContent = base.GetTooltipContent();
+            if (toolTipContent == null && _labelFor != null)
             {
-                return labelFor.getTooltipContent();
+                return _labelFor.GetTooltipContent();
             }
             return toolTipContent;
         }
 
-        public Widget getLabelFor()
+        public Widget GetLabelFor()
         {
-            return labelFor;
+            return _labelFor;
         }
 
         /**
@@ -150,84 +152,84 @@ namespace XNATWL
          *
          * @param labelFor the associated widget. Can be {@code null}.
          */
-        public void setLabelFor(Widget labelFor)
+        public void SetLabelFor(Widget labelFor)
         {
             if (labelFor == this)
             {
                 throw new ArgumentOutOfRangeException("labelFor == this");
             }
-            this.labelFor = labelFor;
+            this._labelFor = labelFor;
         }
 
-        protected void applyThemeLabel(ThemeInfo themeInfo)
+        protected void ApplyThemeLabel(ThemeInfo themeInfo)
         {
             String themeText = (string) themeInfo.GetParameterValue("text", false, typeof(string));
             if (themeText != null)
             {
-                setText(themeText);
+                SetText(themeText);
             }
         }
 
         //@Override
-        protected override void applyTheme(ThemeInfo themeInfo)
+        protected override void ApplyTheme(ThemeInfo themeInfo)
         {
-            base.applyTheme(themeInfo);
-            applyThemeLabel(themeInfo);
+            base.ApplyTheme(themeInfo);
+            ApplyThemeLabel(themeInfo);
         }
 
         //@Override
-        public override bool requestKeyboardFocus()
+        public override bool RequestKeyboardFocus()
         {
-            if (labelFor != null)
+            if (_labelFor != null)
             {
-                return labelFor.requestKeyboardFocus();
+                return _labelFor.RequestKeyboardFocus();
             }
             else
             {
-                return base.requestKeyboardFocus();
+                return base.RequestKeyboardFocus();
             }
         }
 
         //@Override
-        public override int getMinWidth()
+        public override int GetMinWidth()
         {
-            return Math.Max(base.getMinWidth(), getPreferredWidth());
+            return Math.Max(base.GetMinWidth(), GetPreferredWidth());
         }
 
         //@Override
-        public override int getMinHeight()
+        public override int GetMinHeight()
         {
-            return Math.Max(base.getMinHeight(), getPreferredHeight());
+            return Math.Max(base.GetMinHeight(), GetPreferredHeight());
         }
 
         //@Override
-        public override bool handleEvent(Event evt)
+        public override bool HandleEvent(Event evt)
         {
-            handleMouseHover(evt);
-            if (evt.isMouseEvent())
+            HandleMouseHover(evt);
+            if (evt.IsMouseEvent())
             {
-                if (evt.getEventType() == EventType.MOUSE_CLICKED)
+                if (evt.GetEventType() == EventType.MOUSE_CLICKED)
                 {
-                    switch (evt.getMouseClickCount())
+                    switch (evt.GetMouseClickCount())
                     {
                         case 1:
-                            handleClick(false);
+                            HandleClick(false);
                             break;
                         case 2:
-                            handleClick(true);
+                            HandleClick(true);
                             break;
                     }
                 }
-                return evt.getEventType() != EventType.MOUSE_WHEEL;
+                return evt.GetEventType() != EventType.MOUSE_WHEEL;
             }
             return false;
         }
 
-        protected void handleClick(bool doubleClick)
+        protected void HandleClick(bool doubleClick)
         {
             if (this.Clicked != null)
             {
-                this.Clicked.Invoke(this, new LabelClickEventArgs(doubleClick ? ClickType.DOUBLE_CLICK : ClickType.CLICK));
+                this.Clicked.Invoke(this, new LabelClickEventArgs(doubleClick ? ClickType.DoubleClick : ClickType.Click));
             }
         }
     }
@@ -238,7 +240,7 @@ namespace XNATWL
 
         public LabelClickEventArgs(Label.ClickType clickType)
         {
-            this.ClickType = ClickType;
+            this.ClickType = clickType;
         }
     }
 }

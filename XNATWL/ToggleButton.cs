@@ -45,23 +45,22 @@ namespace XNATWL
 
         public ToggleButton(String text) : this()
         {
-            setText(text);
+            SetText(text);
         }
 
-        public void setModel(BooleanModel model)
+        public void SetModel(BooleanModel model)
         {
-            ((ToggleButtonModel)getModel()).setModel(model);
+            ((ToggleButtonModel)GetModel()).SetModel(model);
         }
 
-        public bool isActive()
+        public bool IsActive()
         {
-            return getModel().Selected;
+            return GetModel().Selected;
         }
 
-        public void setActive(bool active)
+        public void SetActive(bool active)
         {
-            getModel().Selected = active;
+            GetModel().Selected = active;
         }
     }
-
 }

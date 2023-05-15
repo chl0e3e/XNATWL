@@ -32,10 +32,10 @@ namespace XNATWL.Renderer
 {
     public enum TextureRotation
     {
-        NONE,
-        CLOCKWISE_90,
-        CLOCKWISE_180,
-        CLOCKWISE_270
+        None,
+        Clockwise90,
+        Clockwise180,
+        Clockwise270
     }
 
     public interface Texture

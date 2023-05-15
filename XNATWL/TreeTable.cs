@@ -37,13 +37,12 @@ namespace XNATWL
 {
     public class TreeTable : TableBase
     {
-        private TreeLeafCellRenderer leafRenderer;
-        private TreeNodeCellRenderer nodeRenderer;
+        private TreeLeafCellRenderer _leafRenderer;
+        private TreeNodeCellRenderer _nodeRenderer;
 
         private Dictionary<TreeTableNode, NodeState> _states;
-        private int nodeStateTableSize;
-        TreeTableModel model;
-        private NodeState rootNodeState;
+        TreeTableModel _model;
+        private NodeState _rootNodeState;
 
         public event EventHandler<TreeTableNodeExpandedEventArgs> NodeExpanded;
         public event EventHandler<TreeTableNodeCollapsedEventArgs> NodeCollapsed;
@@ -51,101 +50,101 @@ namespace XNATWL
         public TreeTable()
         {
             this._states = new Dictionary<TreeTableNode, NodeState>();
-            leafRenderer = new TreeLeafCellRenderer(this);
-            nodeRenderer = new TreeNodeCellRenderer(this);
-            hasCellWidgetCreators = true;
+            _leafRenderer = new TreeLeafCellRenderer(this);
+            _nodeRenderer = new TreeNodeCellRenderer(this);
+            _hasCellWidgetCreators = true;
 
-            ActionMap am = getOrCreateActionMap();
-            am.addMapping("expandLeadRow", this, "setLeadRowExpanded", new Object[] { true }, ActionMap.FLAG_ON_PRESSED);
-            am.addMapping("collapseLeadRow", this, "setLeadRowExpanded", new Object[] { false }, ActionMap.FLAG_ON_PRESSED);
+            ActionMap am = GetOrCreateActionMap();
+            am.AddMapping("expandLeadRow", this, "SetLeadRowExpanded", new Object[] { true }, ActionMap.FLAG_ON_PRESSED);
+            am.AddMapping("collapseLeadRow", this, "SetLeadRowExpanded", new Object[] { false }, ActionMap.FLAG_ON_PRESSED);
         }
 
         public TreeTable(TreeTableModel model) : this()
         {
-            setModel(model);
+            SetModel(model);
         }
 
-        public virtual void setModel(TreeTableModel model)
+        public virtual void SetModel(TreeTableModel model)
         {
-            if (this.model != null)
+            if (this._model != null)
             {
-                this.model.ColumnDeleted -= Model_ColumnDeleted;
-                this.model.ColumnInserted -= Model_ColumnInserted;
-                this.model.ColumnHeaderChanged -= Model_ColumnHeaderChanged;
-                this.model.NodesAdded -= Model_NodesAdded;
-                this.model.NodesChanged -= Model_NodesChanged;
-                this.model.NodesRemoved -= Model_NodesRemoved;
+                this._model.ColumnDeleted -= Model_ColumnDeleted;
+                this._model.ColumnInserted -= Model_ColumnInserted;
+                this._model.ColumnHeaderChanged -= Model_ColumnHeaderChanged;
+                this._model.NodesAdded -= Model_NodesAdded;
+                this._model.NodesChanged -= Model_NodesChanged;
+                this._model.NodesRemoved -= Model_NodesRemoved;
             }
-            this.columnHeaderModel = model;
-            this.model = model;
-            this.nodeStateTableSize = 0;
-            if (this.model != null)
+            this._columnHeaderModel = model;
+            this._model = model;
+            //this.nodeStateTableSize = 0;
+            if (this._model != null)
             {
-                this.model.ColumnDeleted += Model_ColumnDeleted;
-                this.model.ColumnInserted += Model_ColumnInserted;
-                this.model.ColumnHeaderChanged += Model_ColumnHeaderChanged;
-                this.model.NodesAdded += Model_NodesAdded;
-                this.model.NodesChanged += Model_NodesChanged;
-                this.model.NodesRemoved += Model_NodesRemoved;
-                this.rootNodeState = createNodeState(model);
-                this.rootNodeState.level = -1;
-                this.rootNodeState.expanded = true;
-                this.rootNodeState.initChildSizes();
-                this.numRows = computeNumRows();
-                this.numColumns = model.Columns;
+                this._model.ColumnDeleted += Model_ColumnDeleted;
+                this._model.ColumnInserted += Model_ColumnInserted;
+                this._model.ColumnHeaderChanged += Model_ColumnHeaderChanged;
+                this._model.NodesAdded += Model_NodesAdded;
+                this._model.NodesChanged += Model_NodesChanged;
+                this._model.NodesRemoved += Model_NodesRemoved;
+                this._rootNodeState = CreateNodeState(model);
+                this._rootNodeState._level = -1;
+                this._rootNodeState._expanded = true;
+                this._rootNodeState.InitChildSizes();
+                this._numRows = ComputeNumRows();
+                this._numColumns = model.Columns;
             }
             else
             {
-                this.rootNodeState = null;
-                this.numRows = 0;
-                this.numColumns = 0;
+                this._rootNodeState = null;
+                this._numRows = 0;
+                this._numColumns = 0;
             }
-            modelAllChanged();
-            invalidateLayout();
+            ModelAllChanged();
+            InvalidateLayout();
         }
 
         private void Model_NodesRemoved(object sender, TreeNodesChangedEventArgs e)
         {
-            modelNodesRemoved(e.Parent, e.Index, e.Count);
+            ModelNodesRemoved(e.Parent, e.Index, e.Count);
         }
 
         private void Model_NodesChanged(object sender, TreeNodesChangedEventArgs e)
         {
-            modelNodesChanged(e.Parent, e.Index, e.Count);
+            ModelNodesChanged(e.Parent, e.Index, e.Count);
         }
 
         private void Model_NodesAdded(object sender, TreeNodesChangedEventArgs e)
         {
-            modelNodesAdded(e.Parent, e.Index, e.Count);
+            ModelNodesAdded(e.Parent, e.Index, e.Count);
         }
 
         private void Model_ColumnHeaderChanged(object sender, ColumnHeaderChangedEventArgs e)
         {
-            modelColumnHeaderChanged(e.Column);
+            ModelColumnHeaderChanged(e.Column);
         }
 
         private void Model_ColumnInserted(object sender, ColumnsChangedEventArgs e)
         {
-            numColumns = model.Columns;
-            modelColumnsInserted(e.Index, e.Count);
+            _numColumns = _model.Columns;
+            ModelColumnsInserted(e.Index, e.Count);
         }
 
         private void Model_ColumnDeleted(object sender, ColumnsChangedEventArgs e)
         {
-            numColumns = model.Columns;
-            modelColumnsDeleted(e.Index, e.Count);
+            _numColumns = _model.Columns;
+            ModelColumnsDeleted(e.Index, e.Count);
         }
 
-        protected override void applyTheme(ThemeInfo themeInfo)
+        protected override void ApplyTheme(ThemeInfo themeInfo)
         {
-            base.applyTheme(themeInfo);
-            applyThemeTreeTable(themeInfo);
+            base.ApplyTheme(themeInfo);
+            ApplyThemeTreeTable(themeInfo);
         }
 
-        protected void applyThemeTreeTable(ThemeInfo themeInfo)
+        protected void ApplyThemeTreeTable(ThemeInfo themeInfo)
         {
-            applyCellRendererTheme(leafRenderer);
-            applyCellRendererTheme(nodeRenderer);
+            ApplyCellRendererTheme(_leafRenderer);
+            ApplyCellRendererTheme(_nodeRenderer);
         }
 
         /**
@@ -154,7 +153,7 @@ namespace XNATWL
          * @param node the node to locate
          * @return the row in the table or -1 if the node is not visible
          */
-        public int getRowFromNode(TreeTableNode node)
+        public int GetRowFromNode(TreeTableNode node)
         {
             int position = -1;
             TreeTableNode parent = node.Parent;
@@ -176,18 +175,18 @@ namespace XNATWL
                     // node is not part of the tree
                     return -1;
                 }
-                if (ns.childSizes == null)
+                if (ns._childSizes == null)
                 {
-                    if (ns.expanded)
+                    if (ns._expanded)
                     {
-                        ns.initChildSizes();
+                        ns.InitChildSizes();
                     }
                     else
                     {
                         return -1;
                     }
                 }
-                idx = ns.childSizes.GetPosition(idx);
+                idx = ns._childSizes.GetPosition(idx);
                 position += idx + 1;
                 node = parent;
                 parent = node.Parent;
@@ -195,20 +194,20 @@ namespace XNATWL
             return position;
         }
 
-        public int getRowFromNodeExpand(TreeTableNode node)
+        public int GetRowFromNodeExpand(TreeTableNode node)
         {
             if (node.Parent != null)
             {
                 TreeTableNode parent = node.Parent;
-                int row = getRowFromNodeExpand(parent);
+                int row = GetRowFromNodeExpand(parent);
                 int idx = parent.ChildIndexOf(node);
-                NodeState ns = getOrCreateNodeState(parent);
+                NodeState ns = GetOrCreateNodeState(parent);
                 ns.Value = true;
-                if (ns.childSizes == null)
+                if (ns._childSizes == null)
                 {
-                    ns.initChildSizes();
+                    ns.InitChildSizes();
                 }
-                return row + 1 + ns.childSizes.GetPosition(idx);
+                return row + 1 + ns._childSizes.GetPosition(idx);
             }
             else
             {
@@ -216,81 +215,81 @@ namespace XNATWL
             }
         }
 
-        public override TreeTableNode getNodeFromRow(int row)
+        public override TreeTableNode GetNodeFromRow(int row)
         {
-            NodeState ns = rootNodeState;
+            NodeState ns = _rootNodeState;
             for (; ; )
             {
                 int idx;
-                if (ns.childSizes == null)
+                if (ns._childSizes == null)
                 {
-                    idx = Math.Min(ns.key.Children - 1, row);
+                    idx = Math.Min(ns._key.Children - 1, row);
                     row -= idx + 1;
                 }
                 else
                 {
-                    idx = ns.childSizes.GetIndex(row);
-                    row -= ns.childSizes.GetPosition(idx) + 1;
+                    idx = ns._childSizes.GetIndex(row);
+                    row -= ns._childSizes.GetPosition(idx) + 1;
                 }
                 if (row < 0)
                 {
-                    return ns.key.ChildAt(idx);
+                    return ns._key.ChildAt(idx);
                 }
-                System.Diagnostics.Debug.Assert(ns.children[idx] != null);
-                ns = ns.children[idx];
+                System.Diagnostics.Debug.Assert(ns._children[idx] != null);
+                ns = ns._children[idx];
             }
         }
 
-        public void collapseAll()
+        public void CollapseAll()
         {
             foreach (NodeState ns in this._states.Values)
             {
-                if (ns != rootNodeState)
+                if (ns != _rootNodeState)
                 {
                     ns.Value = false;
                 }
             }
         }
 
-        public bool isRowExpanded(int row)
+        public bool IsRowExpanded(int row)
         {
-            checkRowIndex(row);
-            TreeTableNode node = getNodeFromRow(row);
+            CheckRowIndex(row);
+            TreeTableNode node = GetNodeFromRow(row);
             NodeState ns = null;
             if (this._states.ContainsKey(node))
             {
                 ns = this._states[node];
             }
-            return (ns != null) && ns.expanded;
+            return (ns != null) && ns._expanded;
         }
 
-        public void setRowExpanded(int row, bool expanded)
+        public void SetRowExpanded(int row, bool expanded)
         {
-            checkRowIndex(row);
-            TreeTableNode node = getNodeFromRow(row);
-            NodeState state = getOrCreateNodeState(node);
+            CheckRowIndex(row);
+            TreeTableNode node = GetNodeFromRow(row);
+            NodeState state = GetOrCreateNodeState(node);
             state.Value = expanded;
         }
 
-        public void setLeadRowExpanded(bool expanded)
+        public void SetLeadRowExpanded(bool expanded)
         {
-            TableSelectionManager sm = getSelectionManager();
+            TableSelectionManager sm = GetSelectionManager();
             if (sm != null)
             {
-                int row = sm.getLeadRow();
-                if (row >= 0 && row < numRows)
+                int row = sm.GetLeadRow();
+                if (row >= 0 && row < _numRows)
                 {
-                    setRowExpanded(row, expanded);
+                    SetRowExpanded(row, expanded);
                 }
             }
         }
 
-        protected NodeState getOrCreateNodeState(TreeTableNode node)
+        protected NodeState GetOrCreateNodeState(TreeTableNode node)
         {
             NodeState ns;
             if (!this._states.ContainsKey(node))
             {
-                ns = createNodeState(node);
+                ns = CreateNodeState(node);
             }
             else
             {
@@ -299,7 +298,7 @@ namespace XNATWL
             return ns;
         }
 
-        protected NodeState createNodeState(TreeTableNode node)
+        protected NodeState CreateNodeState(TreeTableNode node)
         {
             TreeTableNode parent = node.Parent;
             NodeState nsParent = null;
@@ -313,108 +312,108 @@ namespace XNATWL
             return newNS;
         }
 
-        protected void expandedChanged(NodeState ns)
+        protected void ExpandedChanged(NodeState ns)
         {
-            TreeTableNode node = ns.key;
-            int count = ns.getChildRows();
-            int size = ns.expanded ? count : 0;
+            TreeTableNode node = ns._key;
+            int count = ns.GetChildRows();
+            int size = ns._expanded ? count : 0;
 
             TreeTableNode parent = node.Parent;
             while (parent != null)
             {
                 NodeState nsParent = this._states[parent];
-                if (nsParent.childSizes == null)
+                if (nsParent._childSizes == null)
                 {
-                    nsParent.initChildSizes();
+                    nsParent.InitChildSizes();
                 }
 
-                int idx = nsParent.key.ChildIndexOf(node);
-                nsParent.childSizes.SetSize(idx, size + 1);
-                size = nsParent.childSizes.GetEndPosition();
+                int idx = nsParent._key.ChildIndexOf(node);
+                nsParent._childSizes.SetSize(idx, size + 1);
+                size = nsParent._childSizes.GetEndPosition();
 
                 node = parent;
                 parent = node.Parent;
             }
 
-            numRows = computeNumRows();
-            int row = getRowFromNode(ns.key);
-            if (ns.expanded)
+            _numRows = ComputeNumRows();
+            int row = GetRowFromNode(ns._key);
+            if (ns._expanded)
             {
-                modelRowsInserted(row + 1, count);
+                ModelRowsInserted(row + 1, count);
             }
             else
             {
-                modelRowsDeleted(row + 1, count);
+                ModelRowsDeleted(row + 1, count);
             }
-            modelRowsChanged(row, 1);
+            ModelRowsChanged(row, 1);
 
-            if (ns.expanded)
+            if (ns._expanded)
             {
-                ScrollPane scrollPane = ScrollPane.getContainingScrollPane(this);
+                ScrollPane scrollPane = ScrollPane.GetContainingScrollPane(this);
                 if (scrollPane != null)
                 {
-                    scrollPane.validateLayout();
-                    int rowStart = getRowStartPosition(row);
-                    int rowEnd = getRowEndPosition(row + count);
+                    scrollPane.ValidateLayout();
+                    int rowStart = GetRowStartPosition(row);
+                    int rowEnd = GetRowEndPosition(row + count);
                     int height = rowEnd - rowStart;
-                    scrollPane.scrollToAreaY(rowStart, height, rowHeight / 2);
+                    scrollPane.ScrollToAreaY(rowStart, height, _rowHeight / 2);
                 }
             }
 
-            if (ns.expanded)
+            if (ns._expanded)
             {
                 if (this.NodeExpanded != null)
                 {
-                    this.NodeExpanded.Invoke(this, new TreeTableNodeExpandedEventArgs(row, ns.key));
+                    this.NodeExpanded.Invoke(this, new TreeTableNodeExpandedEventArgs(row, ns._key));
                 }
             }
             else
             {
                 if (this.NodeCollapsed != null)
                 {
-                    this.NodeCollapsed.Invoke(this, new TreeTableNodeCollapsedEventArgs(row, ns.key));
+                    this.NodeCollapsed.Invoke(this, new TreeTableNodeCollapsedEventArgs(row, ns._key));
                 }
             }
         }
 
-        protected int computeNumRows()
+        protected int ComputeNumRows()
         {
-            return rootNodeState.childSizes.GetEndPosition();
+            return _rootNodeState._childSizes.GetEndPosition();
         }
 
-        public override Object getCellData(int row, int column, TreeTableNode node)
+        public override Object GetCellData(int row, int column, TreeTableNode node)
         {
             if (node == null)
             {
-                node = getNodeFromRow(row);
+                node = GetNodeFromRow(row);
             }
             return node.DataAtColumn(column);
         }
 
-        protected override CellRenderer getCellRenderer(int row, int col, TreeTableNode node)
+        protected override CellRenderer GetCellRenderer(int row, int col, TreeTableNode node)
         {
             if (node == null)
             {
-                node = getNodeFromRow(row);
+                node = GetNodeFromRow(row);
             }
             if (col == 0)
             {
                 Object data = node.DataAtColumn(col);
                 if (node.IsLeaf)
                 {
-                    leafRenderer.setCellData(row, col, data, node);
-                    return leafRenderer;
+                    _leafRenderer.SetCellData(row, col, data, node);
+                    return _leafRenderer;
                 }
-                NodeState nodeState = getOrCreateNodeState(node);
-                nodeRenderer.setCellData(row, col, data, nodeState);
-                return nodeRenderer;
+                NodeState nodeState = GetOrCreateNodeState(node);
+                _nodeRenderer.SetCellData(row, col, data, nodeState);
+                return _nodeRenderer;
             }
-            return base.getCellRenderer(row, col, node);
+            return base.GetCellRenderer(row, col, node);
         }
 
-        public override Object getTooltipContentFromRow(int row, int column)
+        public override Object GetTooltipContentFromRow(int row, int column)
         {
-            TreeTableNode node = getNodeFromRow(row);
+            TreeTableNode node = GetNodeFromRow(row);
             if (node != null)
             {
                 return node.TooltipContentAtColumn(column);
@@ -422,21 +421,21 @@ namespace XNATWL
             return null;
         }
 
-        private bool updateParentSizes(NodeState ns)
+        private bool UpdateParentSizes(NodeState ns)
         {
-            while (ns.expanded && ns.parent != null)
+            while (ns._expanded && ns._parent != null)
             {
-                NodeState parent = ns.parent;
-                int idx = parent.key.ChildIndexOf(ns.key);
-                System.Diagnostics.Debug.Assert(parent.childSizes._size == parent.key.Children);
-                parent.childSizes.SetSize(idx, ns.getChildRows() + 1);
+                NodeState parent = ns._parent;
+                int idx = parent._key.ChildIndexOf(ns._key);
+                System.Diagnostics.Debug.Assert(parent._childSizes._size == parent._key.Children);
+                parent._childSizes.SetSize(idx, ns.GetChildRows() + 1);
                 ns = parent;
             }
-            numRows = computeNumRows();
-            return ns.parent == null;
+            _numRows = ComputeNumRows();
+            return ns._parent == null;
         }
 
-        protected void modelNodesAdded(TreeTableNode parent, int idx, int count)
+        protected void ModelNodesAdded(TreeTableNode parent, int idx, int count)
         {
             if (!this._states.ContainsKey(parent))
             {
@@ -447,45 +446,45 @@ namespace XNATWL
             // if ns is null then this node has not yet been displayed
             if (ns != null)
             {
-                if (ns.childSizes != null)
+                if (ns._childSizes != null)
                 {
-                    System.Diagnostics.Debug.Assert(idx <= ns.childSizes._size);
-                    ns.childSizes.Insert(idx, count);
-                    System.Diagnostics.Debug.Assert(ns.childSizes._size == parent.Children);
+                    System.Diagnostics.Debug.Assert(idx <= ns._childSizes._size);
+                    ns._childSizes.Insert(idx, count);
+                    System.Diagnostics.Debug.Assert(ns._childSizes._size == parent.Children);
                 }
-                if (ns.children != null)
+                if (ns._children != null)
                 {
                     NodeState[] newChilds = new NodeState[parent.Children];
-                    Array.Copy(ns.children, 0, newChilds, 0, idx);
-                    Array.Copy(ns.children, idx, newChilds, idx + count, ns.children.Length - idx);
-                    ns.children = newChilds;
+                    Array.Copy(ns._children, 0, newChilds, 0, idx);
+                    Array.Copy(ns._children, idx, newChilds, idx + count, ns._children.Length - idx);
+                    ns._children = newChilds;
                 }
-                if (updateParentSizes(ns))
+                if (UpdateParentSizes(ns))
                 {
-                    int row = getRowFromNode(parent.ChildAt(idx));
-                    System.Diagnostics.Debug.Assert(row < numRows);
-                    modelRowsInserted(row, count);
+                    int row = GetRowFromNode(parent.ChildAt(idx));
+                    System.Diagnostics.Debug.Assert(row < _numRows);
+                    ModelRowsInserted(row, count);
                 }
             }
         }
 
-        protected void recursiveRemove(NodeState ns)
+        protected void RecursiveRemove(NodeState ns)
         {
             if (ns != null)
             {
-                --nodeStateTableSize;
-                this._states.Remove(ns.key);
-                if (ns.children != null)
+                //--nodeStateTableSize;
+                this._states.Remove(ns._key);
+                if (ns._children != null)
                 {
-                    foreach (NodeState nsChild in ns.children)
+                    foreach (NodeState nsChild in ns._children)
                     {
-                        recursiveRemove(nsChild);
+                        RecursiveRemove(nsChild);
                     }
                 }
             }
         }
 
-        protected void modelNodesRemoved(TreeTableNode parent, int idx, int count)
+        protected void ModelNodesRemoved(TreeTableNode parent, int idx, int count)
         {
             NodeState ns = null;
             // if ns is null then this node has not yet been displayed
@@ -495,53 +494,53 @@ namespace XNATWL
             }
             if (ns != null)
             {
-                int rowsBase = getRowFromNode(parent) + 1;
+                int rowsBase = GetRowFromNode(parent) + 1;
                 int rowsStart = rowsBase + idx;
                 int rowsEnd = rowsBase + idx + count;
-                if (ns.childSizes != null)
+                if (ns._childSizes != null)
                 {
-                    System.Diagnostics.Debug.Assert(ns.childSizes._size == parent.Children + count);
-                    rowsStart = rowsBase + ns.childSizes.GetPosition(idx);
-                    rowsEnd = rowsBase + ns.childSizes.GetPosition(idx + count);
-                    ns.childSizes.Remove(idx, count);
-                    System.Diagnostics.Debug.Assert(ns.childSizes._size == parent.Children);
+                    System.Diagnostics.Debug.Assert(ns._childSizes._size == parent.Children + count);
+                    rowsStart = rowsBase + ns._childSizes.GetPosition(idx);
+                    rowsEnd = rowsBase + ns._childSizes.GetPosition(idx + count);
+                    ns._childSizes.Remove(idx, count);
+                    System.Diagnostics.Debug.Assert(ns._childSizes._size == parent.Children);
                 }
-                if (ns.children != null)
+                if (ns._children != null)
                 {
                     for (int i = 0; i < count; i++)
                     {
-                        recursiveRemove(ns.children[idx + i]);
+                        RecursiveRemove(ns._children[idx + i]);
                     }
                     int numChildren = parent.Children;
                     if (numChildren > 0)
                     {
                         NodeState[] newChilds = new NodeState[numChildren];
-                        Array.Copy(ns.children, 0, newChilds, 0, idx);
-                        Array.Copy(ns.children, idx + count, newChilds, idx, newChilds.Length - idx);
-                        ns.children = newChilds;
+                        Array.Copy(ns._children, 0, newChilds, 0, idx);
+                        Array.Copy(ns._children, idx + count, newChilds, idx, newChilds.Length - idx);
+                        ns._children = newChilds;
                     }
                     else
                     {
-                        ns.children = null;
+                        ns._children = null;
                     }
                 }
-                if (updateParentSizes(ns))
+                if (UpdateParentSizes(ns))
                 {
-                    modelRowsDeleted(rowsStart, rowsEnd - rowsStart);
+                    ModelRowsDeleted(rowsStart, rowsEnd - rowsStart);
                 }
             }
         }
 
-        protected bool isVisible(NodeState ns)
+        protected bool IsVisible(NodeState ns)
         {
-            while (ns.expanded && ns.parent != null)
+            while (ns._expanded && ns._parent != null)
             {
-                ns = ns.parent;
+                ns = ns._parent;
             }
-            return ns.expanded;
+            return ns._expanded;
         }
 
-        protected void modelNodesChanged(TreeTableNode parent, int idx, int count)
+        protected void ModelNodesChanged(TreeTableNode parent, int idx, int count)
         {
             NodeState ns = null;
             // if ns is null then this node has not yet been displayed
@@ -550,46 +549,46 @@ namespace XNATWL
                 ns = this._states[parent];
             }
             // if ns is null then this node has not yet been displayed
-            if (ns != null && isVisible(ns))
+            if (ns != null && IsVisible(ns))
             {
-                int rowsBase = getRowFromNode(parent) + 1;
+                int rowsBase = GetRowFromNode(parent) + 1;
                 int rowsStart = rowsBase + idx;
                 int rowsEnd = rowsBase + idx + count;
-                if (ns.childSizes != null)
+                if (ns._childSizes != null)
                 {
-                    rowsStart = rowsBase + ns.childSizes.GetPosition(idx);
-                    rowsEnd = rowsBase + ns.childSizes.GetPosition(idx + count);
+                    rowsStart = rowsBase + ns._childSizes.GetPosition(idx);
+                    rowsEnd = rowsBase + ns._childSizes.GetPosition(idx + count);
                 }
-                modelRowsChanged(rowsStart, rowsEnd - rowsStart);
+                ModelRowsChanged(rowsStart, rowsEnd - rowsStart);
             }
         }
 
         public class NodeState : BooleanModel
         {
-            protected internal NodeState parent;
-            protected internal bool expanded;
-            protected internal bool bHasNoChildren;
-            protected internal SizeSequence childSizes;
-            protected internal NodeState[] children;
-            protected internal int level;
-            protected internal TreeTableNode key;
+            protected internal NodeState _parent;
+            protected internal bool _expanded;
+            protected internal bool _bHasNoChildren;
+            protected internal SizeSequence _childSizes;
+            protected internal NodeState[] _children;
+            protected internal int _level;
+            protected internal TreeTableNode _key;
 
-            protected internal TreeTable treeTable;
+            protected internal TreeTable _treeTable;
 
             public bool Value
             {
                 get
                 {
-                    return expanded;
+                    return _expanded;
                 }
                 set
                 {
-                    bool old = this.expanded;
-                    if (this.expanded != value)
+                    bool old = this._expanded;
+                    if (this._expanded != value)
                     {
-                        this.expanded = value;
-                        this.treeTable.expandedChanged(this);
-                        this.Changed.Invoke(this, new BooleanChangedEventArgs(old, this.expanded));
+                        this._expanded = value;
+                        this._treeTable.ExpandedChanged(this);
+                        this.Changed.Invoke(this, new BooleanChangedEventArgs(old, this._expanded));
                     }
                 }
             }
@@ -598,46 +597,46 @@ namespace XNATWL
 
             public NodeState(TreeTable treeTable, TreeTableNode key, NodeState parent)
             {
-                this.treeTable = treeTable;
-                this.key = key;
-                this.parent = parent;
-                this.level = (parent != null) ? parent.level + 1 : 0;
+                this._treeTable = treeTable;
+                this._key = key;
+                this._parent = parent;
+                this._level = (parent != null) ? parent._level + 1 : 0;
 
                 if (parent != null)
                 {
-                    if (parent.children == null)
+                    if (parent._children == null)
                     {
-                        parent.children = new NodeState[parent.key.Children];
+                        parent._children = new NodeState[parent._key.Children];
                     }
-                    parent.children[parent.key.ChildIndexOf(key)] = this;
+                    parent._children[parent._key.ChildIndexOf(key)] = this;
                 }
             }
 
-            protected internal void initChildSizes()
+            protected internal void InitChildSizes()
             {
-                childSizes = new SizeSequence();
-                childSizes.SetDefaultValue(1);
-                childSizes.InitializeAll(key.Children);
+                _childSizes = new SizeSequence();
+                _childSizes.SetDefaultValue(1);
+                _childSizes.InitializeAll(_key.Children);
             }
 
-            protected internal int getChildRows()
+            protected internal int GetChildRows()
             {
-                if (childSizes != null)
+                if (_childSizes != null)
                 {
-                    return childSizes.GetEndPosition();
+                    return _childSizes.GetEndPosition();
                 }
-                int childCount = key.Children;
-                bHasNoChildren = childCount == 0;
+                int childCount = _key.Children;
+                _bHasNoChildren = childCount == 0;
                 return childCount;
             }
 
-            protected internal bool hasNoChildren()
+            protected internal bool HasNoChildren()
             {
-                return bHasNoChildren;
+                return _bHasNoChildren;
             }
         }
 
-        static int getLevel(TreeTableNode node)
+        static int GetLevel(TreeTableNode node)
         {
             int level = -2;
             while (node != null)
@@ -650,126 +649,126 @@ namespace XNATWL
 
         public class TreeLeafCellRenderer : CellRenderer, CellWidgetCreator
         {
-            protected int treeIndent;
-            protected int level;
-            protected Dimension treeButtonSize = new Dimension(5, 5);
-            protected CellRenderer subRenderer;
-            private TreeTable treeTable;
+            protected int _treeIndent;
+            protected int _level;
+            protected Dimension _treeButtonSize = new Dimension(5, 5);
+            protected CellRenderer _subRenderer;
+            private TreeTable _treeTable;
 
             public TreeLeafCellRenderer(TreeTable treeTable)
             {
-                this.treeTable = treeTable;
-                this.treeTable.setClip(true);
+                this._treeTable = treeTable;
+                this._treeTable.SetClip(true);
             }
 
-            public void applyTheme(ThemeInfo themeInfo)
+            public void ApplyTheme(ThemeInfo themeInfo)
             {
-                treeIndent = themeInfo.GetParameter("treeIndent", 10);
-                treeButtonSize = themeInfo.GetParameterValue("treeButtonSize", true, typeof(Dimension), Dimension.ZERO);
+                _treeIndent = themeInfo.GetParameter("treeIndent", 10);
+                _treeButtonSize = themeInfo.GetParameterValue("treeButtonSize", true, typeof(Dimension), Dimension.ZERO);
             }
 
-            public String getTheme()
+            public String GetTheme()
             {
                 return GetType().Name;
             }
 
-            public void setCellData(int row, int column, Object data)
+            public void SetCellData(int row, int column, Object data)
             {
                 throw new InvalidOperationException("Don't call this method");
             }
 
-            public void setCellData(int row, int column, Object data, TreeTableNode node)
+            public void SetCellData(int row, int column, Object data, TreeTableNode node)
             {
-                level = getLevel(node);
-                setSubRenderer(row, column, data);
+                _level = GetLevel(node);
+                SetSubRenderer(row, column, data);
             }
 
-            protected int getIndentation()
+            protected int GetIndentation()
             {
-                return level * treeIndent + treeButtonSize.X;
+                return _level * _treeIndent + _treeButtonSize.X;
             }
 
-            protected virtual void setSubRenderer(int row, int column, Object colData)
+            protected virtual void SetSubRenderer(int row, int column, Object colData)
             {
-                subRenderer = this.treeTable.getCellRenderer(colData, column);
-                if (subRenderer != null)
+                _subRenderer = this._treeTable.GetCellRenderer(colData, column);
+                if (_subRenderer != null)
                 {
-                    subRenderer.setCellData(row, column, colData);
+                    _subRenderer.SetCellData(row, column, colData);
                 }
             }
 
-            public virtual int getColumnSpan()
+            public virtual int GetColumnSpan()
             {
-                return (subRenderer != null) ? subRenderer.getColumnSpan() : 1;
+                return (_subRenderer != null) ? _subRenderer.GetColumnSpan() : 1;
             }
 
-            public int getPreferredHeight()
+            public int GetPreferredHeight()
             {
-                if (subRenderer != null)
+                if (_subRenderer != null)
                 {
-                    return Math.Max(treeButtonSize.Y, subRenderer.getPreferredHeight());
+                    return Math.Max(_treeButtonSize.Y, _subRenderer.GetPreferredHeight());
                 }
-                return treeButtonSize.Y;
+                return _treeButtonSize.Y;
             }
 
-            public virtual Widget getCellRenderWidget(int x, int y, int width, int height, bool isSelected)
+            public virtual Widget GetCellRenderWidget(int x, int y, int width, int height, bool isSelected)
             {
-                if (subRenderer != null)
+                if (_subRenderer != null)
                 {
-                    int indent = getIndentation();
-                    Widget widget = subRenderer.getCellRenderWidget(
+                    int indent = GetIndentation();
+                    Widget widget = _subRenderer.GetCellRenderWidget(
                             x + indent, y, Math.Max(0, width - indent), height, isSelected);
                     return widget;
                 }
                 return null;
             }
 
-            public virtual Widget updateWidget(Widget existingWidget)
+            public virtual Widget UpdateWidget(Widget existingWidget)
             {
-                if (subRenderer is CellWidgetCreator)
+                if (_subRenderer is CellWidgetCreator)
                 {
-                    CellWidgetCreator subCreator = (CellWidgetCreator)subRenderer;
-                    return subCreator.updateWidget(existingWidget);
+                    CellWidgetCreator subCreator = (CellWidgetCreator)_subRenderer;
+                    return subCreator.UpdateWidget(existingWidget);
                 }
                 return null;
             }
 
-            public virtual void positionWidget(Widget widget, int x, int y, int w, int h)
+            public virtual void PositionWidget(Widget widget, int x, int y, int w, int h)
             {
-                if (subRenderer is CellWidgetCreator)
+                if (_subRenderer is CellWidgetCreator)
                 {
-                    CellWidgetCreator subCreator = (CellWidgetCreator)subRenderer;
-                    int indent = level * treeIndent;
-                    subCreator.positionWidget(widget, x + indent, y, Math.Max(0, w - indent), h);
+                    CellWidgetCreator subCreator = (CellWidgetCreator)_subRenderer;
+                    int indent = _level * _treeIndent;
+                    subCreator.PositionWidget(widget, x + indent, y, Math.Max(0, w - indent), h);
                 }
             }
         }
 
         class WidgetChain : Widget
         {
-            protected internal ToggleButton expandButton;
-            protected internal Widget userWidget;
+            protected internal ToggleButton _expandButton;
+            protected internal Widget _userWidget;
 
             protected internal WidgetChain()
             {
-                setTheme("");
-                expandButton = new ToggleButton();
-                expandButton.setTheme("treeButton");
-                add(expandButton);
+                SetTheme("");
+                _expandButton = new ToggleButton();
+                _expandButton.SetTheme("treeButton");
+                Add(_expandButton);
             }
 
-            protected internal void setUserWidget(Widget userWidget)
+            protected internal void SetUserWidget(Widget userWidget)
             {
-                if (this.userWidget != userWidget)
+                if (this._userWidget != userWidget)
                 {
-                    if (this.userWidget != null)
+                    if (this._userWidget != null)
                     {
-                        removeChild(1);
+                        RemoveChild(1);
                     }
-                    this.userWidget = userWidget;
+                    this._userWidget = userWidget;
                     if (userWidget != null)
                     {
-                        insertChild(userWidget, 1);
+                        InsertChild(userWidget, 1);
                     }
                 }
             }
@@ -784,33 +783,33 @@ namespace XNATWL
 
             }
 
-            public override Widget updateWidget(Widget existingWidget)
+            public override Widget UpdateWidget(Widget existingWidget)
             {
-                if (subRenderer is CellWidgetCreator)
+                if (_subRenderer is CellWidgetCreator)
                 {
-                    CellWidgetCreator subCreator = (CellWidgetCreator)subRenderer;
+                    CellWidgetCreator subCreator = (CellWidgetCreator)_subRenderer;
                     WidgetChain widgetChain = null;
                     if (existingWidget is WidgetChain)
                     {
                         widgetChain = (WidgetChain)existingWidget;
                     }
-                    if (nodeState.hasNoChildren())
+                    if (nodeState.HasNoChildren())
                     {
                         if (widgetChain != null)
                         {
                             existingWidget = null;
                         }
-                        return subCreator.updateWidget(existingWidget);
+                        return subCreator.UpdateWidget(existingWidget);
                     }
                     if (widgetChain == null)
                     {
                         widgetChain = new WidgetChain();
                     }
-                    widgetChain.expandButton.setModel(nodeState);
-                    widgetChain.setUserWidget(subCreator.updateWidget(widgetChain.userWidget));
+                    widgetChain._expandButton.SetModel(nodeState);
+                    widgetChain.SetUserWidget(subCreator.UpdateWidget(widgetChain._userWidget));
                     return widgetChain;
                 }
-                if (nodeState.hasNoChildren())
+                if (nodeState.HasNoChildren())
                 {
                     return null;
                 }
@@ -818,43 +817,43 @@ namespace XNATWL
                 if (tb == null)
                 {
                     tb = new ToggleButton();
-                    tb.setTheme("treeButton");
+                    tb.SetTheme("treeButton");
                 }
-                tb.setModel(nodeState);
+                tb.SetModel(nodeState);
                 return tb;
             }
 
-            public override void positionWidget(Widget widget, int x, int y, int w, int h)
+            public override void PositionWidget(Widget widget, int x, int y, int w, int h)
             {
-                int indent = level * treeIndent;
+                int indent = _level * _treeIndent;
                 int availWidth = Math.Max(0, w - indent);
-                int expandButtonWidth = Math.Min(availWidth, treeButtonSize.X);
-                widget.setPosition(x + indent, y + (h - treeButtonSize.Y) / 2);
-                if (subRenderer is CellWidgetCreator)
+                int expandButtonWidth = Math.Min(availWidth, _treeButtonSize.X);
+                widget.SetPosition(x + indent, y + (h - _treeButtonSize.Y) / 2);
+                if (_subRenderer is CellWidgetCreator)
                 {
-                    CellWidgetCreator subCreator = (CellWidgetCreator)subRenderer;
+                    CellWidgetCreator subCreator = (CellWidgetCreator)_subRenderer;
                     WidgetChain widgetChain = (WidgetChain)widget;
-                    ToggleButton expandButton = widgetChain.expandButton;
-                    widgetChain.setSize(Math.Max(0, w - indent), h);
-                    expandButton.setSize(expandButtonWidth, treeButtonSize.Y);
-                    if (widgetChain.userWidget != null)
+                    ToggleButton expandButton = widgetChain._expandButton;
+                    widgetChain.SetSize(Math.Max(0, w - indent), h);
+                    expandButton.SetSize(expandButtonWidth, _treeButtonSize.Y);
+                    if (widgetChain._userWidget != null)
                     {
-                        subCreator.positionWidget(widgetChain.userWidget,
-                                expandButton.getRight(), y, widget.getWidth(), h);
+                        subCreator.PositionWidget(widgetChain._userWidget,
+                                expandButton.GetRight(), y, widget.GetWidth(), h);
                     }
                 }
                 else
                 {
-                    widget.setSize(expandButtonWidth, treeButtonSize.Y);
+                    widget.SetSize(expandButtonWidth, _treeButtonSize.Y);
                 }
             }
 
-            public virtual void setCellData(int row, int column, Object data, NodeState nodeState)
+            public virtual void SetCellData(int row, int column, Object data, NodeState nodeState)
             {
                 System.Diagnostics.Debug.Assert(nodeState != null);
                 this.nodeState = nodeState;
-                setSubRenderer(row, column, data);
-                level = nodeState.level;
+                SetSubRenderer(row, column, data);
+                _level = nodeState._level;
             }
         }
     }

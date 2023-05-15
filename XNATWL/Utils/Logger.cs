@@ -31,13 +31,13 @@ namespace XNATWL.Utils
             this._name = name;
         }
 
-        public void log(Level level, string message, Exception e)
+        public void Log(Level level, string message, Exception e)
         {
-            this.log(level, message + ", error: " + e.ToString());
+            this.Log(level, message + ", error: " + e.ToString());
             
         }
 
-        public void log(Level level, string message)
+        public void Log(Level level, string message)
         {
             System.Diagnostics.Debug.WriteLine("[" + this._name + "] " + message);
         }

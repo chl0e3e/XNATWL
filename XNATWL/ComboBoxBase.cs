@@ -37,140 +37,142 @@ namespace XNATWL
     {
         class ComboBoxBasePopupWindow : PopupWindow
         {
-            private ComboBoxBase comboBoxBase;
+            private ComboBoxBase _comboBoxBase;
 
             public ComboBoxBasePopupWindow(ComboBoxBase owner) : base(owner)
             {
-                this.comboBoxBase = owner;
+                this._comboBoxBase = owner;
             }
 
-            protected override void escapePressed(Event evt)
+            protected override void EscapePressed(Event evt)
             {
-                this.comboBoxBase.popupEscapePressed(evt);
+                this._comboBoxBase.PopupEscapePressed(evt);
             }
 
         }
         public static StateKey STATE_COMBOBOX_KEYBOARD_FOCUS = StateKey.Get("comboboxKeyboardFocus");
 
-        protected Button button;
-        protected PopupWindow popup;
+        protected Button _button;
+        protected PopupWindow _popup;
 
         protected ComboBoxBase()
         {
-            this.button = new Button(getAnimationState());
-            this.popup = new ComboBoxBasePopupWindow(this);
-            button.Action += (sender, e) =>
+            this._button = new Button(GetAnimationState());
+            this._popup = new ComboBoxBasePopupWindow(this);
+            _button.Action += (sender, e) =>
             {
-                openPopup();
+                OpenPopup();
             };
 
-            add(button);
-            setCanAcceptKeyboardFocus(true);
-            setDepthFocusTraversal(false);
+            Add(_button);
+            SetCanAcceptKeyboardFocus(true);
+            SetDepthFocusTraversal(false);
         }
 
-        protected abstract Widget getLabel();
+        protected abstract Widget GetLabel();
 
-        protected virtual bool openPopup()
+        protected virtual bool OpenPopup()
         {
-            if (popup.openPopup())
+            if (_popup.OpenPopup())
             {
-                setPopupSize();
+                SetPopupSize();
                 return true;
             }
             return false;
         }
 
-        public override int getPreferredInnerWidth()
+        public override int GetPreferredInnerWidth()
         {
-            return getLabel().getPreferredWidth() + button.getPreferredWidth();
+            return GetLabel().GetPreferredWidth() + _button.GetPreferredWidth();
         }
 
-        public override int getPreferredInnerHeight()
+        public override int GetPreferredInnerHeight()
         {
-            return Math.Max(getLabel().getPreferredHeight(), button.getPreferredHeight());
+            return Math.Max(GetLabel().GetPreferredHeight(), _button.GetPreferredHeight());
         }
 
-        public override int getMinWidth()
+        public override int GetMinWidth()
         {
-            int minWidth = base.getMinWidth();
-            minWidth = Math.Max(minWidth, getLabel().getMinWidth() + button.getMinWidth());
+            int minWidth = base.GetMinWidth();
+            minWidth = Math.Max(minWidth, GetLabel().GetMinWidth() + _button.GetMinWidth());
             return minWidth;
         }
 
-        public override int getMinHeight()
+        public override int GetMinHeight()
         {
-            int minInnerHeight = Math.Max(getLabel().getMinHeight(), button.getMinHeight());
-            return Math.Max(base.getMinHeight(), minInnerHeight + getBorderVertical());
+            int minInnerHeight = Math.Max(GetLabel().GetMinHeight(), _button.GetMinHeight());
+            return Math.Max(base.GetMinHeight(), minInnerHeight + GetBorderVertical());
         }
 
-        protected virtual void setPopupSize()
+        protected virtual void SetPopupSize()
         {
-            int minHeight = popup.getMinHeight();
-            int popupHeight = computeSize(minHeight,
-                    popup.getPreferredHeight(),
-                    popup.getMaxHeight());
-            int popupMaxBottom = popup.getParent().getInnerBottom();
-            if (getBottom() + minHeight > popupMaxBottom)
+            int minHeight = _popup.GetMinHeight();
+            int popupHeight = ComputeSize(minHeight,
+                    _popup.GetPreferredHeight(),
+                    _popup.GetMaxHeight());
+            int popupMaxBottom = _popup.GetParent().GetInnerBottom();
+
+            if (GetBottom() + minHeight > popupMaxBottom)
             {
-                if (getY() - popupHeight >= popup.getParent().getInnerY())
+                if (GetY() - popupHeight >= _popup.GetParent().GetInnerY())
                 {
-                    popup.setPosition(getX(), getY() - popupHeight);
+                    _popup.SetPosition(GetX(), GetY() - popupHeight);
                 }
                 else
                 {
-                    popup.setPosition(getX(), popupMaxBottom - minHeight);
+                    _popup.SetPosition(GetX(), popupMaxBottom - minHeight);
                 }
             }
             else
             {
-                popup.setPosition(getX(), getBottom());
+                _popup.SetPosition(GetX(), GetBottom());
             }
-            popupHeight = Math.Min(popupHeight, popupMaxBottom - popup.getY());
-            popup.setSize(getWidth(), popupHeight);
+
+            popupHeight = Math.Min(popupHeight, popupMaxBottom - _popup.GetY());
+            _popup.SetSize(GetWidth(), popupHeight);
         }
 
-        protected override void layout()
+        protected override void Layout()
         {
-            int btnWidth = button.getPreferredWidth();
-            int innerHeight = getInnerHeight();
-            int innerX = getInnerX();
-            int innerY = getInnerY();
-            button.setPosition(getInnerRight() - btnWidth, innerY);
-            button.setSize(btnWidth, innerHeight);
-            getLabel().setPosition(innerX, innerY);
-            getLabel().setSize(Math.Max(0, button.getX() - innerX), innerHeight);
+            int btnWidth = _button.GetPreferredWidth();
+            int innerHeight = GetInnerHeight();
+            int innerX = GetInnerX();
+            int innerY = GetInnerY();
+            _button.SetPosition(GetInnerRight() - btnWidth, innerY);
+            _button.SetSize(btnWidth, innerHeight);
+            GetLabel().SetPosition(innerX, innerY);
+            GetLabel().SetSize(Math.Max(0, _button.GetX() - innerX), innerHeight);
         }
 
-        protected override void sizeChanged()
+        protected override void SizeChanged()
         {
-            base.sizeChanged();
-            if (popup.isOpen())
+            base.SizeChanged();
+            if (_popup.IsOpen())
             {
-                setPopupSize();
+                SetPopupSize();
             }
         }
 
-        private static void setRecursive(Widget w, StateKey what, bool state)
+        private static void SetRecursive(Widget w, StateKey what, bool state)
         {
-            w.getAnimationState().setAnimationState(what, state);
-            for (int i = 0; i < w.getNumChildren(); ++i)
+            w.GetAnimationState().SetAnimationState(what, state);
+            for (int i = 0; i < w.GetNumChildren(); ++i)
             {
-                Widget child = w.getChild(i);
-                setRecursive(child, what, state);
+                Widget child = w.GetChild(i);
+                SetRecursive(child, what, state);
             }
         }
 
-        protected override void keyboardFocusGained()
+        protected override void KeyboardFocusGained()
         {
-            base.keyboardFocusGained();
-            setRecursive(getLabel(), STATE_COMBOBOX_KEYBOARD_FOCUS, true);
+            base.KeyboardFocusGained();
+            SetRecursive(GetLabel(), STATE_COMBOBOX_KEYBOARD_FOCUS, true);
         }
 
-        protected override void keyboardFocusLost()
+        protected override void KeyboardFocusLost()
         {
-            base.keyboardFocusLost();
-            setRecursive(getLabel(), STATE_COMBOBOX_KEYBOARD_FOCUS, false);
+            base.KeyboardFocusLost();
+            SetRecursive(GetLabel(), STATE_COMBOBOX_KEYBOARD_FOCUS, false);
         }
 
         /**
@@ -180,9 +182,9 @@ namespace XNATWL
          * 
          * @param evt the event
          */
-        protected virtual void popupEscapePressed(Event evt)
+        protected virtual void PopupEscapePressed(Event evt)
         {
-            popup.closePopup();
+            _popup.ClosePopup();
         }
     }
 }

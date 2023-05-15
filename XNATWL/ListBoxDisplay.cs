@@ -34,20 +34,19 @@ namespace XNATWL
 {
     public interface ListBoxDisplay
     {
+        bool IsSelected();
 
-        bool isSelected();
+        void SetSelected(bool selected);
 
-        void setSelected(bool selected);
+        bool IsFocused();
 
-        bool isFocused();
+        void SetFocused(bool focused);
 
-        void setFocused(bool focused);
+        void SetData(Object data);
 
-        void setData(Object data);
+        void SetTooltipContent(Object content);
 
-        void setTooltipContent(Object content);
-
-        Widget getWidget();
+        Widget GetWidget();
 
         event EventHandler<ListBoxEventArgs> Callback;
     }

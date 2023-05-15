@@ -246,17 +246,17 @@ namespace XNATWL.Theme
 
         protected void WrongParameterType(String paramName, Type expectedType, Type foundType)
         {
-            DebugHook.getDebugHook().wrongParameterType(this, paramName, expectedType, foundType, GetParentDescription());
+            DebugHook.getDebugHook().WrongParameterType(this, paramName, expectedType, foundType, GetParentDescription());
         }
 
         protected void MissingParameter(String paramName, Type dataType)
         {
-            DebugHook.getDebugHook().missingParameter(this, paramName, GetParentDescription(), dataType);
+            DebugHook.getDebugHook().MissingParameter(this, paramName, GetParentDescription(), dataType);
         }
 
         protected void ReplacingWithDifferentType(String paramName, Type oldType, Type newType)
         {
-            DebugHook.getDebugHook().replacingWithDifferentType(this, paramName, oldType, newType, GetParentDescription());
+            DebugHook.getDebugHook().ReplacingWithDifferentType(this, paramName, oldType, newType, GetParentDescription());
         }
 
         public object GetParam(String name)

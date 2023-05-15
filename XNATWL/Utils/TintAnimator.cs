@@ -344,9 +344,9 @@ namespace XNATWL.Utils
                     if (_pendingReset)
                     {
                         _pendingReset = false;
-                        _startTime = g.getCurrentTime();
+                        _startTime = g.GetCurrentTime();
                     }
-                    return (int)(g.getCurrentTime() - _startTime) & Int32.MaxValue;
+                    return (int)(g.GetCurrentTime() - _startTime) & Int32.MaxValue;
                 }
                 return 0;
             }
@@ -356,7 +356,7 @@ namespace XNATWL.Utils
                 GUI g = GetGUI();
                 if (g != null)
                 {
-                    _startTime = g.getCurrentTime();
+                    _startTime = g.GetCurrentTime();
                     _pendingReset = false;
                 }
                 else
@@ -367,7 +367,7 @@ namespace XNATWL.Utils
 
             private GUI GetGUI()
             {
-                return (_gui != null) ? _gui : _owner.getGUI();
+                return (_gui != null) ? _gui : _owner.GetGUI();
             }
         }
 
@@ -409,7 +409,7 @@ namespace XNATWL.Utils
              */
             public void ResetTime()
             {
-                _animState.resetAnimationTime(_animStateKey);
+                _animState.ResetAnimationTime(_animStateKey);
             }
         }
     }

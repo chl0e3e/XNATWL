@@ -35,16 +35,16 @@ namespace XNATWL.Renderer
 {
     public enum GradientType
     {
-        HORIZONTAL,
-        VERTICAL
+        Horizontal,
+        Vertical
     }
 
     public enum GradientWrap
     {
-        SCALE,
-        CLAMP,
-        REPEAT,
-        MIRROR
+        Scale,
+        Clamp,
+        Repeat,
+        Mirror
     }
 
     public class Gradient
@@ -56,7 +56,7 @@ namespace XNATWL.Renderer
         public Gradient(GradientType type)
         {
             this._gradientType = type;
-            this._gradientWrap = GradientWrap.SCALE;
+            this._gradientWrap = GradientWrap.Scale;
             this._stops = new List<GradientStop>();
         }
 

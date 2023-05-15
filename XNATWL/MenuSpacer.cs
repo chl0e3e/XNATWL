@@ -32,10 +32,10 @@ namespace XNATWL
 {
     public class MenuSpacer : MenuElement
     {
-        protected internal override Widget createMenuWidget(MenuManager mm, int level)
+        protected internal override Widget CreateMenuWidget(MenuManager mm, int level)
         {
             Widget w = new Widget();
-            setWidgetTheme(w, "spacer");
+            SetWidgetTheme(w, "spacer");
             return w;
         }
     }

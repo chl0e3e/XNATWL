@@ -32,20 +32,20 @@ namespace XNATWL.Model
 {
     public enum SortOrder
     {
-        ASCENDING,
-        DESCENDING
+        Ascending,
+        Descending
     }
 
     public class SortOrderStatics
     {
         public static SortOrder SortOrder_Invert(SortOrder order)
         {
-            if (order == SortOrder.ASCENDING)
+            if (order == SortOrder.Ascending)
             {
-                return SortOrder.DESCENDING;
+                return SortOrder.Descending;
             }
 
-            return SortOrder.ASCENDING;
+            return SortOrder.Ascending;
         }
     }
 }

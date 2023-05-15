@@ -39,31 +39,31 @@ namespace XNATWL
 
     public class Alignment
     {
-        public static Alignment LEFT = new Alignment(HAlignment.LEFT, 0, 1);
-        public static Alignment CENTER = new Alignment(HAlignment.CENTER, 1, 1);
-        public static Alignment RIGHT = new Alignment(HAlignment.RIGHT, 2, 1);
-        public static Alignment TOP = new Alignment(HAlignment.CENTER, 1, 0);
-        public static Alignment BOTTOM = new Alignment(HAlignment.CENTER, 1, 2);
-        public static Alignment TOPLEFT = new Alignment(HAlignment.LEFT, 0, 0);
-        public static Alignment TOPRIGHT = new Alignment(HAlignment.RIGHT, 2, 0);
-        public static Alignment BOTTOMLEFT = new Alignment(HAlignment.LEFT, 0, 2);
-        public static Alignment BOTTOMRIGHT = new Alignment(HAlignment.RIGHT, 2, 2);
-        public static Alignment FILL = new Alignment(HAlignment.CENTER,1,1);
+        public static Alignment LEFT = new Alignment(HAlignment.Left, 0, 1);
+        public static Alignment CENTER = new Alignment(HAlignment.Center, 1, 1);
+        public static Alignment RIGHT = new Alignment(HAlignment.Right, 2, 1);
+        public static Alignment TOP = new Alignment(HAlignment.Center, 1, 0);
+        public static Alignment BOTTOM = new Alignment(HAlignment.Center, 1, 2);
+        public static Alignment TOPLEFT = new Alignment(HAlignment.Left, 0, 0);
+        public static Alignment TOPRIGHT = new Alignment(HAlignment.Right, 2, 0);
+        public static Alignment BOTTOMLEFT = new Alignment(HAlignment.Left, 0, 2);
+        public static Alignment BOTTOMRIGHT = new Alignment(HAlignment.Right, 2, 2);
+        public static Alignment FILL = new Alignment(HAlignment.Center,1,1);
 
-        HAlignment fontHAlignment;
-        byte hpos;
-        byte vpos;
+        HAlignment _fontHAlignment;
+        byte _hPos;
+        byte _vPos;
 
-        private Alignment(HAlignment fontHAlignment, int hpos, int vpos)
+        private Alignment(HAlignment fontHAlignment, int hPos, int vPos)
         {
-            this.fontHAlignment = fontHAlignment;
-            this.hpos = (byte)hpos;
-            this.vpos = (byte)vpos;
+            this._fontHAlignment = fontHAlignment;
+            this._hPos = (byte)hPos;
+            this._vPos = (byte)vPos;
         }
 
-        public HAlignment getFontHAlignment()
+        public HAlignment GetFontHAlignment()
         {
-            return fontHAlignment;
+            return _fontHAlignment;
         }
 
         public static Alignment ByName(string name)
@@ -97,29 +97,29 @@ namespace XNATWL
          * Returns the horizontal position for this alignment.
          * @return 0 for left, 1 for center and 2 for right
          */
-        public int getHPosition()
+        public int GetHPosition()
         {
-            return hpos;
+            return _hPos;
         }
 
         /**
          * Returns the vertical position for this alignment.
          * @return 0 for top, 1 for center and 2 for bottom
          */
-        public int getVPosition()
+        public int GetVPosition()
         {
-            return vpos;
+            return _vPos;
         }
 
 
-        public int computePositionX(int containerWidth, int objectWidth)
+        public int ComputePositionX(int containerWidth, int objectWidth)
         {
-            return Math.Max(0, containerWidth - objectWidth) * hpos / 2;
+            return Math.Max(0, containerWidth - objectWidth) * _hPos / 2;
         }
 
-        public int computePositionY(int containerHeight, int objectHeight)
+        public int ComputePositionY(int containerHeight, int objectHeight)
         {
-            return Math.Max(0, containerHeight - objectHeight) * vpos / 2;
+            return Math.Max(0, containerHeight - objectHeight) * _vPos / 2;
         }
     }
 }

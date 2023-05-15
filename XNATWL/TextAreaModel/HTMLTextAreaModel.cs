@@ -230,7 +230,7 @@ namespace XNATWL.TextAreaModel
             }
             catch (Exception ex)
             {
-                Logger.GetLogger(typeof(HTMLTextAreaModel)).log(Level.SEVERE, "Unable to parse XHTML document", ex);
+                Logger.GetLogger(typeof(HTMLTextAreaModel)).Log(Level.SEVERE, "Unable to parse XHTML document", ex);
             }
             finally
             {

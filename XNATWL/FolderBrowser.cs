@@ -36,19 +36,16 @@ using XNATWL.Utils;
 
 namespace XNATWL
 {
-
     public class FolderBrowser : Widget
     {
+        FileSystemModel _fileSystemModel;
+        ListBox<Object> _listBox;
+        FolderModel _model;
+        private BoxLayout _curFolderGroup;
 
-        FileSystemModel fsm;
-        ListBox<Object> listbox;
-        FolderModel model;
-        private BoxLayout curFolderGroup;
-        private Runnable[] selectionChangedCallbacks;
+        IComparer<String> _folderComparator;
+        private Object _currentFolder;
 
-        IComparer<String> folderComparator;
-        private Object currentFolder;
-        private Runnable[] callbacks;
         public event EventHandler<FolderBrowserSelectionChangedEventArgs> SelectionChanged;
         public event EventHandler<FolderBrowserCompletedEventArgs> Completed;
 
@@ -64,17 +61,17 @@ namespace XNATWL
                 throw new NullReferenceException("fsm");
             }
 
-            this.fsm = fsm;
-            this.model = new FolderModel(this);
-            this.listbox = new ListBox<Object>(model);
-            this.curFolderGroup = new BoxLayout();
+            this._fileSystemModel = fsm;
+            this._model = new FolderModel(this);
+            this._listBox = new ListBox<Object>(_model);
+            this._curFolderGroup = new BoxLayout();
 
-            curFolderGroup.setTheme("currentpathbox");
-            curFolderGroup.setScroll(true);
-            curFolderGroup.setClip(true);
-            curFolderGroup.setAlignment(Alignment.BOTTOM);
+            _curFolderGroup.SetTheme("currentpathbox");
+            _curFolderGroup.SetScroll(true);
+            _curFolderGroup.SetClip(true);
+            _curFolderGroup.SetAlignment(Alignment.BOTTOM);
 
-            listbox.Callback += Listbox_Callback;
+            _listBox.Callback += Listbox_Callback;
             /*listbox.addCallback(new CallbackWithReason<ListBox.CallbackReason>() {
                 private Object lastSelection;
                 public void callback(ListBox.CallbackReason reason) {
@@ -91,24 +88,24 @@ namespace XNATWL
                 }
             });*/
 
-            add(listbox);
-            add(curFolderGroup);
+            Add(_listBox);
+            Add(_curFolderGroup);
 
-            setCurrentFolder(null);
+            SetCurrentFolder(null);
         }
 
         private Object lastSelection;
         private void Listbox_Callback(object sender, ListBoxEventArgs e)
         {
-            if (listbox.getSelected() != ListBox<Object>.NO_SELECTION)
+            if (_listBox.GetSelected() != ListBox<Object>.NO_SELECTION)
             {
                 if (ListBox<Object>.CallbackReason_ActionRequested(e.Reason))
                 {
-                    setCurrentFolder(model.getFolder(listbox.getSelected()));
+                    SetCurrentFolder(_model.GetFolder(_listBox.GetSelected()));
                 }
             }
 
-            Object selection = getSelectedFolder();
+            Object selection = GetSelectedFolder();
             if (selection != lastSelection)
             {
                 lastSelection = selection;
@@ -116,47 +113,47 @@ namespace XNATWL
             }
         }
 
-        public IComparer<String> getFolderComparator()
+        public IComparer<String> GetFolderComparator()
         {
-            return folderComparator;
+            return _folderComparator;
         }
 
-        public void setFolderComparator(IComparer<String> folderComparator)
+        public void SetFolderComparator(IComparer<String> folderComparator)
         {
-            this.folderComparator = folderComparator;
+            this._folderComparator = folderComparator;
         }
 
-        public FileSystemModel getFileSystemModel()
+        public FileSystemModel GetFileSystemModel()
         {
-            return fsm;
+            return _fileSystemModel;
         }
 
         /**
          * Get the current displayed folder
          * @return the displayed folder or null if root is displayed
          */
-        public Object getCurrentFolder()
+        public Object GetCurrentFolder()
         {
-            return currentFolder;
+            return _currentFolder;
         }
 
-        public bool setCurrentFolder(Object folder)
+        public bool SetCurrentFolder(Object folder)
         {
-            if (model.listFolders(folder))
+            if (_model.ListFolders(folder))
             {
                 // if we show root and it has only a single entry go directly into it
-                if (folder == null && model.Entries == 1)
+                if (folder == null && _model.Entries == 1)
                 {
-                    if (setCurrentFolder(model.getFolder(0)))
+                    if (SetCurrentFolder(_model.GetFolder(0)))
                     {
                         return true;
                     }
                 }
 
-                currentFolder = folder;
-                listbox.setSelected(ListBox<Object>.NO_SELECTION);
+                _currentFolder = folder;
+                _listBox.SetSelected(ListBox<Object>.NO_SELECTION);
 
-                rebuildCurrentFolderGroup();
+                RebuildCurrentFolderGroup();
 
                 this.Completed.Invoke(this, new FolderBrowserCompletedEventArgs());
                 return true;
@@ -164,14 +161,14 @@ namespace XNATWL
             return false;
         }
 
-        public bool goToParentFolder()
+        public bool GoToParentFolder()
         {
-            if (currentFolder != null)
+            if (_currentFolder != null)
             {
-                Object current = currentFolder;
-                if (setCurrentFolder(fsm.Parent(current)))
+                Object current = _currentFolder;
+                if (SetCurrentFolder(_fileSystemModel.Parent(current)))
                 {
-                    selectFolder(current);
+                    SelectFolder(current);
                     return true;
                 }
             }
@@ -182,68 +179,68 @@ namespace XNATWL
          * Get the current selected folder in the list box
          * @return a folder or null if nothing is selected
          */
-        public Object getSelectedFolder()
+        public Object GetSelectedFolder()
         {
-            if (listbox.getSelected() != ListBox<Object>.NO_SELECTION)
+            if (_listBox.GetSelected() != ListBox<Object>.NO_SELECTION)
             {
-                return model.getFolder(listbox.getSelected());
+                return _model.GetFolder(_listBox.GetSelected());
             }
             return null;
         }
 
-        public bool selectFolder(Object current)
+        public bool SelectFolder(Object current)
         {
-            int idx = model.findFolder(current);
-            listbox.setSelected(idx);
+            int idx = _model.FindFolder(current);
+            _listBox.SetSelected(idx);
             return idx != ListBox<Object>.NO_SELECTION;
         }
 
         //@Override
-        public override bool handleEvent(Event evt)
+        public override bool HandleEvent(Event evt)
         {
-            if (evt.isKeyPressedEvent())
+            if (evt.IsKeyPressedEvent())
             {
-                switch (evt.getKeyCode())
+                switch (evt.GetKeyCode())
                 {
                     case Event.KEY_BACK:
-                        goToParentFolder();
+                        GoToParentFolder();
                         return true;
                 }
             }
-            return base.handleEvent(evt);
+            return base.HandleEvent(evt);
         }
 
-        private void rebuildCurrentFolderGroup()
+        private void RebuildCurrentFolderGroup()
         {
-            curFolderGroup.removeAllChildren();
-            recursiveAddFolder(currentFolder, null);
+            _curFolderGroup.RemoveAllChildren();
+            RecursiveAddFolder(_currentFolder, null);
         }
 
-        private void recursiveAddFolder(Object folder, Object subFolder)
+        private void RecursiveAddFolder(Object folder, Object subFolder)
         {
             if (folder != null)
             {
-                recursiveAddFolder(fsm.Parent(folder), folder);
+                RecursiveAddFolder(_fileSystemModel.Parent(folder), folder);
             }
-            if (curFolderGroup.getNumChildren() > 0)
+            if (_curFolderGroup.GetNumChildren() > 0)
             {
-                Label l = new Label(fsm.Separator);
-                l.setTheme("pathseparator");
-                curFolderGroup.add(l);
+                Label l = new Label(_fileSystemModel.Separator);
+                l.SetTheme("pathseparator");
+                _curFolderGroup.Add(l);
             }
-            String name = getFolderName(folder);
-            if (name.EndsWith(fsm.Separator))
+            String name = GetFolderName(folder);
+            if (name.EndsWith(_fileSystemModel.Separator))
             {
                 name = name.Substring(0, name.Length - 1);
             }
             Button btn = new Button(name);
-            btn.Action += (sender, e ) =>
+            btn.Action += (sender, e) =>
             {
-                if (setCurrentFolder(folder))
+                if (SetCurrentFolder(folder))
                 {
-                    selectFolder(subFolder);
+                    SelectFolder(subFolder);
                 }
-                listbox.requestKeyboardFocus();
+                _listBox.RequestKeyboardFocus();
             };
             /*btn.addCallback(new Runnable() {
                 public void run() {
@@ -253,29 +250,29 @@ namespace XNATWL
                     listbox.requestKeyboardFocus();
                 }
             });*/
-            btn.setTheme("pathbutton");
-            curFolderGroup.add(btn);
+            btn.SetTheme("pathbutton");
+            _curFolderGroup.Add(btn);
         }
 
         //@Override
-        public override void adjustSize()
+        public override void AdjustSize()
         {
         }
 
         //@Override
-        protected override void layout()
+        protected override void Layout()
         {
-            curFolderGroup.setPosition(getInnerX(), getInnerY());
-            curFolderGroup.setSize(getInnerWidth(), curFolderGroup.getHeight());
-            listbox.setPosition(getInnerX(), curFolderGroup.getBottom());
-            listbox.setSize(getInnerWidth(), Math.Max(0, getInnerBottom() - listbox.getY()));
+            _curFolderGroup.SetPosition(GetInnerX(), GetInnerY());
+            _curFolderGroup.SetSize(GetInnerWidth(), _curFolderGroup.GetHeight());
+            _listBox.SetPosition(GetInnerX(), _curFolderGroup.GetBottom());
+            _listBox.SetSize(GetInnerWidth(), Math.Max(0, GetInnerBottom() - _listBox.GetY()));
         }
 
-        String getFolderName(Object folder)
+        String GetFolderName(Object folder)
         {
             if (folder != null)
             {
-                return fsm.NameOf(folder);
+                return _fileSystemModel.NameOf(folder);
             }
             else
             {
@@ -285,8 +282,8 @@ namespace XNATWL
 
         class FolderModel : SimpleListModel<Object>
         {
-            private Object[] folders = new Object[0];
-            private FolderBrowser folderBrowser;
+            private Object[] _folders = new Object[0];
+            private FolderBrowser _folderBrowser;
 
             public override event EventHandler<ListSubsetChangedEventArgs> EntriesInserted;
             public override event EventHandler<ListSubsetChangedEventArgs> EntriesDeleted;
@@ -295,7 +292,7 @@ namespace XNATWL
 
             public FolderModel(FolderBrowser folderBrowser)
             {
-                this.folderBrowser = folderBrowser;
+                this._folderBrowser = folderBrowser;
             }
 
             public void FireAllChanged()
@@ -303,26 +300,26 @@ namespace XNATWL
                 this.AllChanged.Invoke(this, new ListAllChangedEventArgs());
             }
 
-            public bool listFolders(Object parent)
+            public bool ListFolders(Object parent)
             {
                 Object[] newFolders;
                 if (parent == null)
                 {
-                    newFolders = this.folderBrowser.fsm.ListRoots();
+                    newFolders = this._folderBrowser._fileSystemModel.ListRoots();
                 }
                 else
                 {
-                    newFolders = this.folderBrowser.fsm.ListFolder(parent, FolderFilter.Instance);
+                    newFolders = this._folderBrowser._fileSystemModel.ListFolder(parent, FolderFilter.Instance);
                 }
                 if (newFolders == null)
                 {
-                    Logger.GetLogger(typeof(FolderModel)).log(Level.WARNING, "can''t list folder: " + parent.ToString());
+                    Logger.GetLogger(typeof(FolderModel)).Log(Level.WARNING, "can''t list folder: " + parent.ToString());
                     return false;
                 }
-                Array.Sort(newFolders, new FileSelector.NameSorter(this.folderBrowser.fsm, (this.folderBrowser.folderComparator != null)
-                        ? this.folderBrowser.folderComparator
+                Array.Sort(newFolders, new FileSelector.NameSorter(this._folderBrowser._fileSystemModel, (this._folderBrowser._folderComparator != null)
+                        ? this._folderBrowser._folderComparator
                         : Comparer<string>.Default));
-                folders = newFolders;
+                _folders = newFolders;
 
                 this.FireAllChanged();
                 return true;
@@ -332,24 +329,24 @@ namespace XNATWL
             {
                 get
                 {
-                    return folders.Length;
+                    return _folders.Length;
                 }
             }
 
-            public Object getFolder(int index)
+            public Object GetFolder(int index)
             {
-                return folders[index];
+                return _folders[index];
             }
 
             public override object EntryAt(int index)
             {
-                Object folder = getFolder(index);
-                return this.folderBrowser.getFolderName(folder);
+                Object folder = GetFolder(index);
+                return this._folderBrowser.GetFolderName(folder);
             }
 
-            public int findFolder(Object folder)
+            public int FindFolder(Object folder)
             {
-                int idx = this.folderBrowser.fsm.Find(folders, folder);
+                int idx = this._folderBrowser._fileSystemModel.Find(_folders, folder);
                 return (idx < 0) ? ListBox<Object>.NO_SELECTION : idx;
             }
         }

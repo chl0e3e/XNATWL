@@ -78,7 +78,7 @@ namespace XNATWL.Test
 
             base.Update(gameTime);
 
-            this.simpleTest.update(gameTime);
+            this.simpleTest.Update(gameTime);
         }
 
         private void HandleGamePad()
@@ -151,7 +151,7 @@ namespace XNATWL.Test
 
             base.Draw(gameTime);
             GraphicsDevice.Clear(Microsoft.Xna.Framework.Color.Black);
-            this.simpleTest.draw();
+            this.simpleTest.Draw();
         }
     }
 }

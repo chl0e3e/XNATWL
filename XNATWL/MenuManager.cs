@@ -34,23 +34,19 @@ using XNATWL.Utils;
 
 namespace XNATWL
 {
-
     public class MenuManager : PopupWindow
     {
+        private bool _isMenuBar;
+        private Dictionary<MenuElement, Widget> _popups;
 
-        private bool isMenuBar;
-        private Dictionary<MenuElement, Widget> popups;
-        private Runnable closeCB;
-        private Runnable timerCB;
-
-        private bool mouseOverOwner;
-        private Widget lastMouseOverWidget;
-        private Timer timer;
+        private bool _mouseOverOwner;
+        private Widget _lastMouseOverWidget;
+        private Timer _timer;
 
         public MenuManager(Widget owner, bool isMenuBar) : base(owner)
         {
-            this.isMenuBar = isMenuBar;
-            this.popups = new Dictionary<MenuElement, Widget>();
+            this._isMenuBar = isMenuBar;
+            this._popups = new Dictionary<MenuElement, Widget>();
             /*this.closeCB = new Runnable() {
                 public void run() {
                     closePopup();
@@ -63,115 +59,109 @@ namespace XNATWL
             };*/
         }
 
-        public Runnable getCloseCallback()
+        bool IsSubMenuOpen(Menu menu)
         {
-            return closeCB;
-        }
-
-        bool isSubMenuOpen(Menu menu)
-        {
-            Widget popup = popups[menu];
+            Widget popup = _popups[menu];
             if (popup != null)
             {
-                return popup.getParent() == this;
+                return popup.GetParent() == this;
             }
             return false;
         }
 
-        void closeSubMenu(int level)
+        void CloseSubMenu(int level)
         {
-            while (getNumChildren() > level)
+            while (GetNumChildren() > level)
             {
-                closeSubMenu();
+                CloseSubMenu();
             }
         }
 
-        internal Widget openSubMenu(int level, Menu menu, Widget btn, bool setPosition)
+        internal Widget OpenSubMenu(int level, Menu menu, Widget btn, bool setPosition)
         {
             Widget popup = null;
-            if (popups.ContainsKey(menu))
+            if (_popups.ContainsKey(menu))
             {
-                popup = popups[menu];
+                popup = _popups[menu];
             }
             if (popup == null)
             {
-                popup = menu.createPopup(this, level + 1, btn);
-                popups.Add(menu, popup);
+                popup = menu.CreatePopup(this, level + 1, btn);
+                _popups.Add(menu, popup);
             }
 
-            if (popup.getParent() == this)
+            if (popup.GetParent() == this)
             {
-                closeSubMenu(level + 1);
+                CloseSubMenu(level + 1);
                 return popup;
             }
 
-            if (!isOpen())
+            if (!IsOpen())
             {
-                if (!openPopup())
+                if (!OpenPopup())
                 {
-                    closePopup();
+                    ClosePopup();
                     return null;
                 }
-                getParent().layoutChildFullInnerArea(this);
+                GetParent().LayoutChildFullInnerArea(this);
             }
 
-            while (getNumChildren() > level)
+            while (GetNumChildren() > level)
             {
-                closeSubMenu();
+                CloseSubMenu();
             }
-            add(popup);
+            Add(popup);
 
-            popup.adjustSize();
+            popup.AdjustSize();
 
             if (setPosition)
             {
-                int popupWidth = popup.getWidth();
-                int popupX = btn.getRight();
-                int popupY = btn.getY();
+                int popupWidth = popup.GetWidth();
+                int popupX = btn.GetRight();
+                int popupY = btn.GetY();
 
                 if (level == 0)
                 {
-                    popupX = btn.getX();
-                    popupY = btn.getBottom();
+                    popupX = btn.GetX();
+                    popupY = btn.GetBottom();
                 }
 
-                if (popupWidth + btn.getRight() > getInnerRight())
+                if (popupWidth + btn.GetRight() > GetInnerRight())
                 {
-                    popupX = btn.getX() - popupWidth;
-                    if (popupX < getInnerX())
+                    popupX = btn.GetX() - popupWidth;
+                    if (popupX < GetInnerX())
                     {
-                        popupX = getInnerRight() - popupWidth;
+                        popupX = GetInnerRight() - popupWidth;
                     }
                 }
 
-                int popupHeight = popup.getHeight();
-                if (popupY + popupHeight > getInnerBottom())
+                int popupHeight = popup.GetHeight();
+                if (popupY + popupHeight > GetInnerBottom())
                 {
-                    popupY = Math.Max(getInnerY(), getInnerBottom() - popupHeight);
+                    popupY = Math.Max(GetInnerY(), GetInnerBottom() - popupHeight);
                 }
 
-                popup.setPosition(popupX, popupY);
+                popup.SetPosition(popupX, popupY);
             }
 
             return popup;
         }
 
-        void closeSubMenu()
+        void CloseSubMenu()
         {
-            removeChild(getNumChildren() - 1);
+            RemoveChild(GetNumChildren() - 1);
         }
 
-        //@Override
-        public override void closePopup()
+        public override void ClosePopup()
         {
-            stopTimer();
-            GUI gui = getGUI();
-            base.closePopup();
-            removeAllChildren();
-            popups.Clear();
+            StopTimer();
+            GUI gui = GetGUI();
+            base.ClosePopup();
+            RemoveAllChildren();
+            _popups.Clear();
             if (gui != null)
             {
-                gui.resendLastMouseMove();
+                gui.ResendLastMouseMove();
             }
         }
 
@@ -180,130 +170,124 @@ namespace XNATWL
          * @param menu the menu for which to return the popup
          * @return the popup widget or null if not open
          */
-        public Widget getPopupForMenu(Menu menu)
+        public Widget GetPopupForMenu(Menu menu)
         {
-            return popups[menu];
+            return _popups[menu];
         }
 
-        //@Override
-        protected override void afterAddToGUI(GUI gui)
+        protected override void AfterAddToGUI(GUI gui)
         {
-            base.afterAddToGUI(gui);
-            timer = gui.createTimer();
-            timer.setDelay(300);
-            timer.Tick += Timer_Tick;
+            base.AfterAddToGUI(gui);
+            _timer = gui.CreateTimer();
+            _timer.SetDelay(300);
+            _timer.Tick += Timer_Tick;
         }
 
         private void Timer_Tick(object sender, TimerTickEventArgs e)
         {
-            this.popupTimer();
+            this.PopupTimer();
         }
 
-        //@Override
-        protected override void layout()
+        protected override void Layout()
         {
         }
 
-        //@Override
-        internal override Widget routeMouseEvent(Event evt)
+        internal override Widget RouteMouseEvent(Event evt)
         {
-            mouseOverOwner = false;
-            Widget widget = base.routeMouseEvent(evt);
-            if (widget == this && isMenuBar && getOwner().isMouseInside(evt))
+            _mouseOverOwner = false;
+            Widget widget = base.RouteMouseEvent(evt);
+            if (widget == this && _isMenuBar && GetOwner().IsMouseInside(evt))
             {
-                Widget menuBarWidget = getOwner().routeMouseEvent(evt);
+                Widget menuBarWidget = GetOwner().RouteMouseEvent(evt);
                 if (menuBarWidget != null)
                 {
-                    mouseOverOwner = true;
+                    _mouseOverOwner = true;
                     widget = menuBarWidget;
                 }
             }
 
-            Widget mouseOverWidget = getWidgetUnderMouse();
-            if (lastMouseOverWidget != mouseOverWidget)
+            Widget mouseOverWidget = GetWidgetUnderMouse();
+            if (_lastMouseOverWidget != mouseOverWidget)
             {
-                lastMouseOverWidget = mouseOverWidget;
-                if (isMenuBar && widget.getParent() == getOwner() && (widget is Menu.SubMenuBtn))
+                _lastMouseOverWidget = mouseOverWidget;
+                if (_isMenuBar && widget.GetParent() == GetOwner() && (widget is Menu.SubMenuBtn))
                 {
-                    popupTimer();   // no delay on menu bar itself
+                    PopupTimer();   // no delay on menu bar itself
                 }
                 else
                 {
-                    startTimer();
+                    StartTimer();
                 }
             }
 
             return widget;
         }
 
-        //@Override
-        protected override bool handleEventPopup(Event evt)
+        protected override bool HandleEventPopup(Event evt)
         {
-            if (isMenuBar && getOwner().handleEvent(evt))
+            if (_isMenuBar && GetOwner().HandleEvent(evt))
             {
                 return true;
             }
-            if (base.handleEventPopup(evt))
+            if (base.HandleEventPopup(evt))
             {
                 return true;
             }
-            if (evt.getEventType() == EventType.MOUSE_CLICKED)
+            if (evt.GetEventType() == EventType.MOUSE_CLICKED)
             {
-                mouseClickedOutside(evt);
+                MouseClickedOutside(evt);
                 return true;
             }
             return false;
         }
 
-        //@Override
-        internal override Widget getWidgetUnderMouse()
+        internal override Widget GetWidgetUnderMouse()
         {
-            if (mouseOverOwner)
+            if (_mouseOverOwner)
             {
-                return getOwner().getWidgetUnderMouse();
+                return GetOwner().GetWidgetUnderMouse();
             }
-            return base.getWidgetUnderMouse();
+            return base.GetWidgetUnderMouse();
         }
 
-        void popupTimer()
+        void PopupTimer()
         {
-            if ((lastMouseOverWidget is Menu.SubMenuBtn) && lastMouseOverWidget.isEnabled())
+            if ((_lastMouseOverWidget is Menu.SubMenuBtn) && _lastMouseOverWidget.IsEnabled())
             {
-                ((Menu.SubMenuBtn)lastMouseOverWidget).OpenSubMenu();
+                ((Menu.SubMenuBtn)_lastMouseOverWidget).OpenSubMenu();
             }
-            else if (lastMouseOverWidget != this)
+            else if (_lastMouseOverWidget != this)
             {
                 int level = 0;
                 // search for the MenuPopup containing this widget
                 // it knows which menu level we need to close
-                for (Widget w = lastMouseOverWidget; w != null; w = w.getParent())
+                for (Widget w = _lastMouseOverWidget; w != null; w = w.GetParent())
                 {
                     if (w is Menu.MenuPopup)
                     {
-                        level = ((Menu.MenuPopup)w).level;
+                        level = ((Menu.MenuPopup)w)._level;
                         break;
                     }
                 }
-                closeSubMenu(level);
+                CloseSubMenu(level);
             }
         }
 
-        void startTimer()
+        void StartTimer()
         {
-            if (timer != null)
+            if (_timer != null)
             {
-                timer.stop();
-                timer.start();
+                _timer.Stop();
+                _timer.Start();
             }
         }
 
-        void stopTimer()
+        void StopTimer()
         {
-            if (timer != null)
+            if (_timer != null)
             {
-                timer.stop();
+                _timer.Stop();
             }
         }
     }
-
 }

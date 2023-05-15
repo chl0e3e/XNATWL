@@ -37,26 +37,26 @@ namespace XNATWL
     {
         public static Dimension ZERO = new Dimension(0, 0);
 
-        private int x;
-        private int y;
+        private int _x;
+        private int _y;
 
         public Dimension(int x, int y)
         {
-            this.x = x;
-            this.y = y;
+            this._x = x;
+            this._y = y;
         }
 
         public Dimension(Number x, Number y)
         {
-            this.x = x.IntValue();
-            this.y = y.IntValue();
+            this._x = x.IntValue();
+            this._y = y.IntValue();
         }
 
         public int X
         {
             get
             {
-                return x;
+                return _x;
             }
         }
 
@@ -64,7 +64,7 @@ namespace XNATWL
         {
             get
             {
-                return y;
+                return _y;
             }
         }
 
@@ -77,20 +77,20 @@ namespace XNATWL
 
             Dimension other = (Dimension)obj;
 
-            return (this.x == other.x) && (this.y == other.y);
+            return (this._x == other._x) && (this._y == other._y);
         }
 
         public override int GetHashCode()
         {
             int hash = 3;
-            hash = 71 * hash + this.x;
-            hash = 71 * hash + this.y;
+            hash = 71 * hash + this._x;
+            hash = 71 * hash + this._y;
             return hash;
         }
 
         public override string ToString()
         {
-            return "Dimension[x=" + x + ", y=" + y + "]";
+            return "Dimension[x=" + _x + ", y=" + _y + "]";
         }
     }
 }

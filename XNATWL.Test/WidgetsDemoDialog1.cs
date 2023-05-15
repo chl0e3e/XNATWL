@@ -7,26 +7,26 @@ using XNATWL.Model;
 
 namespace XNATWL.Test
 {
-
     public class WidgetsDemoDialog1 : FadeFrame
     {
-
         class WidgetsDemoAutoCompletionDataSource : AutoCompletionDataSource
         {
-            private SimpleChangeableListModel<String> lm;
+            private SimpleChangeableListModel<String> _lm;
+
             public WidgetsDemoAutoCompletionDataSource(SimpleChangeableListModel<String> lm)
             {
-                this.lm = lm;
+                this._lm = lm;
             }
+
             public AutoCompletionResult CollectSuggestions(String text, int cursorPos, AutoCompletionResult prev)
             {
                 text = text.Substring(0, cursorPos);
                 List<String> result = new List<String>();
-                for (int i = 0; i < lm.Entries; i++)
+                for (int i = 0; i < _lm.Entries; i++)
                 {
-                    if (lm.EntryMatchesPrefix(i, text))
+                    if (_lm.EntryMatchesPrefix(i, text))
                     {
-                        result.Add(lm.EntryAt(i));
+                        result.Add(_lm.EntryAt(i));
                     }
                 }
                 if (result.Count == 0)
@@ -36,143 +36,141 @@ namespace XNATWL.Test
                 return new SimpleAutoCompletionResult(text, 0, result);
             }
         }
-        private IntegerModel mSpeed;
-        private ProgressBar progressBar;
+        private IntegerModel _mSpeed;
+        private ProgressBar _progressBar;
 
-        private int progress;
-        private int timeout = 100;
-        private bool onoff = true;
-        private Random r = new Random();
+        private int _progress;
+        private int _timeout = 100;
+        private bool _onoff = true;
+        private Random _r = new Random();
 
         public WidgetsDemoDialog1()
         {
             Label l1 = new Label("new Entry");
             EditField e1 = new EditField();
-            e1.setText("edit me");
-            e1.setMaxTextLength(40);
-            l1.setLabelFor(e1);
+            e1.SetText("edit me");
+            e1.SetMaxTextLength(40);
+            l1.SetLabelFor(e1);
 
             Label l2 = new Label("Me");
             EditField e2 = new EditField();
-            e2.setText("too!");
-            e2.setMaxTextLength(40);
-            e2.setPasswordMasking(true);
-            l2.setLabelFor(e2);
+            e2.SetText("too!");
+            e2.SetMaxTextLength(40);
+            e2.SetPasswordMasking(true);
+            l2.SetLabelFor(e2);
 
             SimpleChangeableListModel<String> lm = new SimpleChangeableListModel<String>(
                     "Entry 1", "Entry 2", "Entry 3", "Another one", "ok, one more");
 
             Button addBtn = new Button("Add to list");
             addBtn.Action += (sender, e) => {
-                lm.AddElement(e1.getText());
+                lm.AddElement(e1.GetText());
             };
-            addBtn.setTooltipContent("Adds the text from the edit field to the list box");
+            addBtn.SetTooltipContent("Adds the text from the edit field to the list box");
 
             e1.Callback += (sender, e) => {
-                addBtn.setEnabled(e1.getTextLength() > 0);
+                addBtn.SetEnabled(e1.GetTextLength() > 0);
             };
 
-            e1.setAutoCompletion(new WidgetsDemoAutoCompletionDataSource(lm));
+            e1.SetAutoCompletion(new WidgetsDemoAutoCompletionDataSource(lm));
 
             EditField e3 = new EditField();
-            e3.setText("This is a multi line Editfield\nTry it :)");
-            e3.setMultiLine(true);
+            e3.SetText("This is a multi line Editfield\nTry it :)");
+            e3.SetMultiLine(true);
 
             ScrollPane sp = new ScrollPane(e3);
-            sp.setFixed(ScrollPane.Fixed.HORIZONTAL);
-            sp.setExpandContentSize(true);
+            sp.SetFixed(ScrollPane.Fixed.HORIZONTAL);
+            sp.SetExpandContentSize(true);
 
-            SimpleChangeableListModel<StyleItem> lmStyle = new SimpleChangeableListModel<StyleItem>(
-                    new StyleItem("progressbar", "Simple"),
-                    new StyleItem("progressbar-glow", "Glow"),
-                    new StyleItem("progressbar-glow-anim", "Animated"));
+            SimpleChangeableListModel<SimpleTest.StyleItem> lmStyle = new SimpleChangeableListModel<SimpleTest.StyleItem>(
+                    new SimpleTest.StyleItem("progressbar", "Simple"),
+                    new SimpleTest.StyleItem("progressbar-glow", "Glow"),
+                    new SimpleTest.StyleItem("progressbar-glow-anim", "Animated"));
 
-            progressBar = new ProgressBar();
+            _progressBar = new ProgressBar();
 
             ListBox<String> lb = new ListBox<String>(lm);
 
             ToggleButton tb = new ToggleButton("");
-            tb.setTheme("checkbox");
-            tb.setActive(true);
-            tb.setTooltipContent("Toggles the Frame title on/off");
+            tb.SetTheme("checkbox");
+            tb.SetActive(true);
+            tb.SetTooltipContent("Toggles the Frame title on/off");
             tb.Action += (sender, e) => {
-                if (tb.isActive())
+                if (tb.IsActive())
                 {
-                    setTheme(SimpleTest.WITH_TITLE);
+                    SetTheme(SimpleTest.WITH_TITLE);
                 }
                 else
                 {
-                    setTheme(SimpleTest.WITHOUT_TITLE);
+                    SetTheme(SimpleTest.WITHOUT_TITLE);
                 }
-                reapplyTheme();
+                ReapplyTheme();
             };
 
             Label tbLabel = new Label("show title");
-            tbLabel.setLabelFor(tb);
+            tbLabel.SetLabelFor(tb);
 
-            ComboBox<StyleItem> cb = new ComboBox<StyleItem>(lmStyle);
+            ComboBox<SimpleTest.StyleItem> cb = new ComboBox<SimpleTest.StyleItem>(lmStyle);
             cb.SelectionChanged += (sender, e) => {
-                int idx = cb.getSelected();
-                progressBar.setTheme(lmStyle.EntryAt(idx).theme);
-                progressBar.reapplyTheme();
+                int idx = cb.GetSelected();
+                _progressBar.SetTheme(lmStyle.EntryAt(idx).Theme);
+                _progressBar.ReapplyTheme();
             };
-            cb.setSelected(2);
-            cb.setComputeWidthFromModel(true);
+            cb.SetSelected(2);
+            cb.SetComputeWidthFromModel(true);
 
-            mSpeed = new SimpleIntegerModel(0, 100, 10);
-            ValueAdjusterInt vai = new ValueAdjusterInt(mSpeed);
+            _mSpeed = new SimpleIntegerModel(0, 100, 10);
+            ValueAdjusterInt vai = new ValueAdjusterInt(_mSpeed);
             Label l4 = new Label("Progressbar speed");
-            l4.setLabelFor(vai);
+            l4.SetLabelFor(vai);
 
             ToggleButton[] optionBtns = new ToggleButton[4];
             SimpleIntegerModel optionModel = new SimpleIntegerModel(1, optionBtns.Length, 1);
             for (int i = 0; i < optionBtns.Length; i++)
             {
                 optionBtns[i] = new ToggleButton(new OptionBooleanModel(optionModel, i + 1));
-                optionBtns[i].setText((i + 1).ToString());
-                optionBtns[i].setTheme("radiobutton");
+                optionBtns[i].SetText((i + 1).ToString());
+                optionBtns[i].SetTheme("radiobutton");
             }
 
             DialogLayout box = new DialogLayout();
-            box.setTheme("/optionsdialog"); // the '/' causes this theme to start at the root again
-            box.setHorizontalGroup(box.createParallelGroup().addGroup(
-                    box.createSequentialGroup(
-                        box.createParallelGroup(l1, l2, l4),
-                        box.createParallelGroup().addGroup(box.createSequentialGroup(e1, addBtn)).addWidgets(e2, vai))).
-                    addWidget(progressBar).addWidget(lb).
-                    addWidget(sp).
-                    addGroup(box.createSequentialGroup(cb).addGap()).
-                    addGroup(box.createSequentialGroup(optionBtns).addGap()).
-                    addGroup(box.createSequentialGroup().addGap().addWidgets(tbLabel, tb)));
-            box.setVerticalGroup(box.createSequentialGroup().
-                    addGroup(box.createParallelGroup(l1, e1, addBtn)).
-                    addGroup(box.createParallelGroup(l2, e2)).
-                    addGroup(box.createParallelGroup(l4, vai)).
-                    addWidgets(progressBar, lb, sp, cb).
-                    addGroup(box.createParallelGroup(optionBtns)).
-                    addGroup(box.createParallelGroup(tbLabel, tb)));
+            box.SetTheme("/optionsdialog"); // the '/' causes this theme to start at the root again
+            box.SetHorizontalGroup(box.CreateParallelGroup().AddGroup(
+                    box.CreateSequentialGroup(
+                        box.CreateParallelGroup(l1, l2, l4),
+                        box.CreateParallelGroup().AddGroup(box.CreateSequentialGroup(e1, addBtn)).AddWidgets(e2, vai))).
+                    AddWidget(_progressBar).AddWidget(lb).
+                    AddWidget(sp).
+                    AddGroup(box.CreateSequentialGroup(cb).AddGap()).
+                    AddGroup(box.CreateSequentialGroup(optionBtns).AddGap()).
+                    AddGroup(box.CreateSequentialGroup().AddGap().AddWidgets(tbLabel, tb)));
+            box.SetVerticalGroup(box.CreateSequentialGroup().
+                    AddGroup(box.CreateParallelGroup(l1, e1, addBtn)).
+                    AddGroup(box.CreateParallelGroup(l2, e2)).
+                    AddGroup(box.CreateParallelGroup(l4, vai)).
+                    AddWidgets(_progressBar, lb, sp, cb).
+                    AddGroup(box.CreateParallelGroup(optionBtns)).
+                    AddGroup(box.CreateParallelGroup(tbLabel, tb)));
 
-            setTheme(SimpleTest.WITH_TITLE);
-            add(box);
-            setTitle("TWL Example");
+            SetTheme(SimpleTest.WITH_TITLE);
+            Add(box);
+            SetTitle("TWL Example");
         }
 
-        protected override void paint(GUI gui)
+        protected override void Paint(GUI gui)
         {
-            base.paint(gui);
+            base.Paint(gui);
 
-            if (onoff)
+            if (_onoff)
             {
-                progressBar.setValue(progress / 5000f);
-                progress = (progress + mSpeed.Value) % 5000;
+                _progressBar.SetValue(_progress / 5000f);
+                _progress = (_progress + _mSpeed.Value) % 5000;
             }
-            if (--timeout == 0)
+            if (--_timeout == 0)
             {
-                onoff ^= true;
-                timeout = 100 + r.Next(200);
+                _onoff ^= true;
+                _timeout = 100 + _r.Next(200);
             }
         }
-
     }
-
 }

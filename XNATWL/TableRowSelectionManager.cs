@@ -72,11 +72,10 @@ namespace XNATWL
      */
     public class TableRowSelectionManager : TableSelectionManager
     {
+        protected ActionMap _actionMap;
+        protected TableSelectionModel _selectionModel;
 
-        protected ActionMap actionMap;
-        protected TableSelectionModel selectionModel;
-
-        protected TableBase tableBase;
+        protected TableBase _tableBase;
 
         public TableRowSelectionManager(TableSelectionModel selectionModel)
         {
@@ -84,10 +83,10 @@ namespace XNATWL
             {
                 throw new ArgumentNullException("selectionModel");
             }
-            this.selectionModel = selectionModel;
-            this.actionMap = new ActionMap();
+            this._selectionModel = selectionModel;
+            this._actionMap = new ActionMap();
 
-            actionMap.addMapping(this);
+            _actionMap.AddMapping(this);
         }
 
         /**
@@ -100,53 +99,53 @@ namespace XNATWL
             
         }
 
-        public TableSelectionModel getSelectionModel()
+        public TableSelectionModel GetSelectionModel()
         {
-            return selectionModel;
+            return _selectionModel;
         }
 
-        public void setAssociatedTable(TableBase tableBase)
+        public void SetAssociatedTable(TableBase tableBase)
         {
-            if (tableBase != tableBase)
+            if (tableBase != _tableBase)
             {
-                if (tableBase != null && tableBase != null)
+                if (tableBase != null && _tableBase != null)
                 {
                     throw new InvalidOperationException("selection manager still in use");
                 }
-                this.tableBase = tableBase;
-                modelChanged();
+                this._tableBase = tableBase;
+                ModelChanged();
             }
         }
 
-        public TableSelectionGranularity getSelectionGranularity()
+        public TableSelectionGranularity GetSelectionGranularity()
         {
-            return TableSelectionGranularity.ROWS;
+            return TableSelectionGranularity.Rows;
         }
 
-        public bool handleKeyStrokeAction(String action, Event evt)
+        public bool HandleKeyStrokeAction(String action, Event evt)
         {
-            return actionMap.invoke(action, evt);
+            return _actionMap.Invoke(action, evt);
         }
 
-        public bool handleMouseEvent(int row, int column, Event evt)
+        public bool HandleMouseEvent(int row, int column, Event evt)
         {
-            bool isShift = (evt.getModifiers() & Event.MODIFIER_SHIFT) != 0;
-            bool isCtrl = (evt.getModifiers() & Event.MODIFIER_CTRL) != 0;
-            if (evt.getEventType() == EventType.MOUSE_BTNDOWN && evt.getMouseButton() == Event.MOUSE_LBUTTON)
+            bool isShift = (evt.GetModifiers() & Event.MODIFIER_SHIFT) != 0;
+            bool isCtrl = (evt.GetModifiers() & Event.MODIFIER_CTRL) != 0;
+            if (evt.GetEventType() == EventType.MOUSE_BTNDOWN && evt.GetMouseButton() == Event.MOUSE_LBUTTON)
             {
-                handleMouseDown(row, column, isShift, isCtrl);
+                HandleMouseDown(row, column, isShift, isCtrl);
                 return true;
             }
-            if (evt.getEventType() == EventType.MOUSE_CLICKED)
+            if (evt.GetEventType() == EventType.MOUSE_CLICKED)
             {
-                return handleMouseClick(row, column, isShift, isCtrl);
+                return HandleMouseClick(row, column, isShift, isCtrl);
             }
             return false;
         }
 
-        public bool isRowSelected(int row)
+        public bool IsRowSelected(int row)
         {
-            return selectionModel.IsSelected(row);
+            return _selectionModel.IsSelected(row);
         }
 
         /**
@@ -157,202 +156,202 @@ namespace XNATWL
          * @param column ignored
          * @return always false
          */
-        public bool isCellSelected(int row, int column)
+        public bool IsCellSelected(int row, int column)
         {
             return false;
         }
 
-        public int getLeadRow()
+        public int GetLeadRow()
         {
-            return selectionModel.LeadIndex;
+            return _selectionModel.LeadIndex;
         }
 
-        public int getLeadColumn()
+        public int GetLeadColumn()
         {
             return -1;
         }
 
-        public void modelChanged()
+        public void ModelChanged()
         {
-            selectionModel.ClearSelection();
-            selectionModel.AnchorIndex = -1;
-            selectionModel.LeadIndex = -1;
+            _selectionModel.ClearSelection();
+            _selectionModel.AnchorIndex = -1;
+            _selectionModel.LeadIndex = -1;
         }
 
-        public void rowsInserted(int index, int count)
+        public void RowsInserted(int index, int count)
         {
-            selectionModel.RowsInserted(index, count);
+            _selectionModel.RowsInserted(index, count);
         }
 
-        public void rowsDeleted(int index, int count)
+        public void RowsDeleted(int index, int count)
         {
-            selectionModel.RowsDeleted(index, count);
+            _selectionModel.RowsDeleted(index, count);
         }
 
-        public void columnInserted(int index, int count)
-        {
-        }
-
-        public void columnsDeleted(int index, int count)
+        public void ColumnInserted(int index, int count)
         {
         }
 
-        [ActionMap.Action]
-        public void selectNextRow()
+        public void ColumnsDeleted(int index, int count)
         {
-            handleRelativeAction(1, SET);
         }
 
         [ActionMap.Action]
-        public void selectPreviousRow()
+        public void SelectNextRow()
         {
-            handleRelativeAction(-1, SET);
+            HandleRelativeAction(1, SET);
         }
 
         [ActionMap.Action]
-        public void selectNextPage()
+        public void SelectPreviousRow()
         {
-            handleRelativeAction(getPageSize(), SET);
+            HandleRelativeAction(-1, SET);
         }
 
         [ActionMap.Action]
-        public void selectPreviousPage()
+        public void SelectNextPage()
         {
-            handleRelativeAction(-getPageSize(), SET);
+            HandleRelativeAction(GetPageSize(), SET);
         }
 
         [ActionMap.Action]
-        public void selectFirstRow()
+        public void SelectPreviousPage()
         {
-            int numRows = getNumRows();
+            HandleRelativeAction(-GetPageSize(), SET);
+        }
+
+        [ActionMap.Action]
+        public void SelectFirstRow()
+        {
+            int numRows = GetNumRows();
             if (numRows > 0)
             {
-                handleAbsoluteAction(0, SET);
+                HandleAbsoluteAction(0, SET);
             }
         }
 
         [ActionMap.Action]
-        public void selectLastRow()
+        public void SelectLastRow()
         {
-            int numRows = getNumRows();
+            int numRows = GetNumRows();
             if (numRows > 0)
             {
-                handleRelativeAction(numRows - 1, SET);
+                HandleRelativeAction(numRows - 1, SET);
             }
         }
 
         [ActionMap.Action]
-        public void extendSelectionToNextRow()
+        public void ExtendSelectionToNextRow()
         {
-            handleRelativeAction(1, EXTEND);
+            HandleRelativeAction(1, EXTEND);
         }
 
         [ActionMap.Action]
-        public void extendSelectionToPreviousRow()
+        public void ExtendSelectionToPreviousRow()
         {
-            handleRelativeAction(-1, EXTEND);
+            HandleRelativeAction(-1, EXTEND);
         }
 
         [ActionMap.Action]
-        public void extendSelectionToNextPage()
+        public void ExtendSelectionToNextPage()
         {
-            handleRelativeAction(getPageSize(), EXTEND);
+            HandleRelativeAction(GetPageSize(), EXTEND);
         }
 
         [ActionMap.Action]
-        public void extendSelectionToPreviousPage()
+        public void ExtendSelectionToPreviousPage()
         {
-            handleRelativeAction(-getPageSize(), EXTEND);
+            HandleRelativeAction(-GetPageSize(), EXTEND);
         }
 
         [ActionMap.Action]
-        public void extendSelectionToFirstRow()
+        public void ExtendSelectionToFirstRow()
         {
-            int numRows = getNumRows();
+            int numRows = GetNumRows();
             if (numRows > 0)
             {
-                handleAbsoluteAction(0, EXTEND);
+                HandleAbsoluteAction(0, EXTEND);
             }
         }
 
         [ActionMap.Action]
-        public void extendSelectionToLastRow()
+        public void ExtendSelectionToLastRow()
         {
-            int numRows = getNumRows();
+            int numRows = GetNumRows();
             if (numRows > 0)
             {
-                handleRelativeAction(numRows - 1, EXTEND);
+                HandleRelativeAction(numRows - 1, EXTEND);
             }
         }
 
         [ActionMap.Action]
-        public void moveLeadToNextRow()
+        public void MoveLeadToNextRow()
         {
-            handleRelativeAction(1, MOVE);
+            HandleRelativeAction(1, MOVE);
         }
 
         [ActionMap.Action]
-        public void moveLeadToPreviousRow()
+        public void MoveLeadToPreviousRow()
         {
-            handleRelativeAction(-1, MOVE);
+            HandleRelativeAction(-1, MOVE);
         }
 
         [ActionMap.Action]
-        public void moveLeadToNextPage()
+        public void MoveLeadToNextPage()
         {
-            handleRelativeAction(getPageSize(), MOVE);
+            HandleRelativeAction(GetPageSize(), MOVE);
         }
 
         [ActionMap.Action]
-        public void moveLeadToPreviousPage()
+        public void MoveLeadToPreviousPage()
         {
-            handleRelativeAction(-getPageSize(), MOVE);
+            HandleRelativeAction(-GetPageSize(), MOVE);
         }
 
         [ActionMap.Action]
-        public void moveLeadToFirstRow()
+        public void MoveLeadToFirstRow()
         {
-            int numRows = getNumRows();
+            int numRows = GetNumRows();
             if (numRows > 0)
             {
-                handleAbsoluteAction(0, MOVE);
+                HandleAbsoluteAction(0, MOVE);
             }
         }
 
         [ActionMap.Action]
-        public void moveLeadToLastRow()
+        public void MoveLeadToLastRow()
         {
-            int numRows = getNumRows();
+            int numRows = GetNumRows();
             if (numRows > 0)
             {
-                handleAbsoluteAction(numRows - 1, MOVE);
+                HandleAbsoluteAction(numRows - 1, MOVE);
             }
         }
 
         [ActionMap.Action]
-        public void toggleSelectionOnLeadRow()
+        public void ToggleSelectionOnLeadRow()
         {
-            int leadIndex = selectionModel.LeadIndex;
+            int leadIndex = _selectionModel.LeadIndex;
             if (leadIndex > 0)
             {
-                selectionModel.InvertSelection(leadIndex, leadIndex);
+                _selectionModel.InvertSelection(leadIndex, leadIndex);
             }
         }
 
         [ActionMap.Action]
-        public void selectAll()
+        public void SelectAll()
         {
-            int numRows = getNumRows();
+            int numRows = GetNumRows();
             if (numRows > 0)
             {
-                selectionModel.SetSelection(0, numRows - 1);
+                _selectionModel.SetSelection(0, numRows - 1);
             }
         }
 
         [ActionMap.Action]
-        public void selectNone()
+        public void SelectNone()
         {
-            selectionModel.ClearSelection();
+            _selectionModel.ClearSelection();
         }
 
         protected const int TOGGLE = 0;
@@ -360,56 +359,56 @@ namespace XNATWL
         protected const int SET = 2;
         protected const int MOVE = 3;
 
-        protected void handleRelativeAction(int delta, int mode)
+        protected void HandleRelativeAction(int delta, int mode)
         {
-            int numRows = getNumRows();
+            int numRows = GetNumRows();
             if (numRows > 0)
             {
-                int leadIndex = Math.Max(0, selectionModel.LeadIndex);
+                int leadIndex = Math.Max(0, _selectionModel.LeadIndex);
                 int index = Math.Max(0, Math.Min(numRows - 1, leadIndex + delta));
 
-                handleAbsoluteAction(index, mode);
+                HandleAbsoluteAction(index, mode);
             }
         }
 
-        protected void handleAbsoluteAction(int index, int mode)
+        protected void HandleAbsoluteAction(int index, int mode)
         {
-            if (tableBase != null)
+            if (_tableBase != null)
             {
-                tableBase.adjustScrollPosition(index);
+                _tableBase.AdjustScrollPosition(index);
             }
 
             switch (mode)
             {
                 case MOVE:
-                    selectionModel.LeadIndex = index;
+                    _selectionModel.LeadIndex = index;
                     break;
                 case EXTEND:
-                    int anchorIndex = Math.Max(0, selectionModel.AnchorIndex);
-                    selectionModel.SetSelection(anchorIndex, index);
+                    int anchorIndex = Math.Max(0, _selectionModel.AnchorIndex);
+                    _selectionModel.SetSelection(anchorIndex, index);
                     break;
                 case TOGGLE:
-                    selectionModel.InvertSelection(index, index);
+                    _selectionModel.InvertSelection(index, index);
                     break;
                 default:
-                    selectionModel.SetSelection(index, index);
+                    _selectionModel.SetSelection(index, index);
                     break;
             }
         }
 
-        protected void handleMouseDown(int row, int column, bool isShift, bool isCtrl)
+        protected void HandleMouseDown(int row, int column, bool isShift, bool isCtrl)
         {
-            if (row < 0 || row >= getNumRows())
+            if (row < 0 || row >= GetNumRows())
             {
                 if (!isShift)
                 {
-                    selectionModel.ClearSelection();
+                    _selectionModel.ClearSelection();
                 }
             }
             else
             {
-                tableBase.adjustScrollPosition(row);
-                int anchorIndex = selectionModel.AnchorIndex;
+                _tableBase.AdjustScrollPosition(row);
+                int anchorIndex = _selectionModel.AnchorIndex;
                 bool anchorSelected;
                 if (anchorIndex == -1)
                 {
@@ -418,7 +417,7 @@ namespace XNATWL
                 }
                 else
                 {
-                    anchorSelected = selectionModel.IsSelected(anchorIndex);
+                    anchorSelected = _selectionModel.IsSelected(anchorIndex);
                 }
 
                 if (isCtrl)
@@ -427,52 +426,52 @@ namespace XNATWL
                     {
                         if (anchorSelected)
                         {
-                            selectionModel.AddSelection(anchorIndex, row);
+                            _selectionModel.AddSelection(anchorIndex, row);
                         }
                         else
                         {
-                            selectionModel.RemoveSelection(anchorIndex, row);
+                            _selectionModel.RemoveSelection(anchorIndex, row);
                         }
                     }
-                    else if (selectionModel.IsSelected(row))
+                    else if (_selectionModel.IsSelected(row))
                     {
-                        selectionModel.RemoveSelection(row, row);
+                        _selectionModel.RemoveSelection(row, row);
                     }
                     else
                     {
-                        selectionModel.AddSelection(row, row);
+                        _selectionModel.AddSelection(row, row);
                     }
                 }
                 else if (isShift)
                 {
-                    selectionModel.SetSelection(anchorIndex, row);
+                    _selectionModel.SetSelection(anchorIndex, row);
                 }
                 else
                 {
-                    selectionModel.SetSelection(row, row);
+                    _selectionModel.SetSelection(row, row);
                 }
             }
         }
 
-        protected virtual bool handleMouseClick(int row, int column, bool isShift, bool isCtrl)
+        protected virtual bool HandleMouseClick(int row, int column, bool isShift, bool isCtrl)
         {
             return false;
         }
 
-        protected int getNumRows()
+        protected int GetNumRows()
         {
-            if (tableBase != null)
+            if (_tableBase != null)
             {
-                return tableBase.getNumRows();
+                return _tableBase.GetNumRows();
             }
             return 0;
         }
 
-        protected int getPageSize()
+        protected int GetPageSize()
         {
-            if (tableBase != null)
+            if (_tableBase != null)
             {
-                return Math.Max(1, tableBase.getNumVisibleRows());
+                return Math.Max(1, _tableBase.GetNumVisibleRows());
             }
             return 1;
         }

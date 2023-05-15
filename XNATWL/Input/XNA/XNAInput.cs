@@ -56,7 +56,7 @@ namespace XNATWL.Input.XNA
                 {
                     _pressedKeys.Add(key);
                     KeyInfo keyInfo = this._keyboardLayout.KeyInfoFor(key);
-                    gui.handleKey(keyInfo.TWL, shiftPressed ? keyInfo.ShiftChar : keyInfo.Char, true);
+                    gui.HandleKey(keyInfo.TWL, shiftPressed ? keyInfo.ShiftChar : keyInfo.Char, true);
                 }
             }
 
@@ -73,7 +73,7 @@ namespace XNATWL.Input.XNA
             for (int i = 0; i < keyToRemove.Count; i++)
             {
                 KeyInfo keyInfo = this._keyboardLayout.KeyInfoFor(keyToRemove[i]);
-                gui.handleKey(keyInfo.TWL, shiftPressed ? keyInfo.ShiftChar : keyInfo.Char, false);
+                gui.HandleKey(keyInfo.TWL, shiftPressed ? keyInfo.ShiftChar : keyInfo.Char, false);
                 _pressedKeys.Remove(keyToRemove[i]);
             }
 
@@ -95,30 +95,30 @@ namespace XNATWL.Input.XNA
             bool buzzed = false;
             if (consumedActions.Contains(CMSAction.LeftChanged) || consumedActions.Contains(CMSAction.XChangedLeft) || consumedActions.Contains(CMSAction.YChangedLeft))
             {
-                gui.handleMouse(this._consumingMouseState.X, this._consumingMouseState.Y, Event.MOUSE_LBUTTON, this._consumingMouseState.Left == ButtonState.Pressed);
+                gui.HandleMouse(this._consumingMouseState.X, this._consumingMouseState.Y, Event.MOUSE_LBUTTON, this._consumingMouseState.Left == ButtonState.Pressed);
                 buzzed = true;
             }
 
             if (consumedActions.Contains(CMSAction.RightChanged) || consumedActions.Contains(CMSAction.XChangedRight) || consumedActions.Contains(CMSAction.YChangedRight))
             {
-                gui.handleMouse(this._consumingMouseState.X, this._consumingMouseState.Y, Event.MOUSE_RBUTTON, this._consumingMouseState.Right == ButtonState.Pressed);
+                gui.HandleMouse(this._consumingMouseState.X, this._consumingMouseState.Y, Event.MOUSE_RBUTTON, this._consumingMouseState.Right == ButtonState.Pressed);
                 buzzed = true;
             }
 
             if (consumedActions.Contains(CMSAction.MiddleChanged) || consumedActions.Contains(CMSAction.XChangedMiddle) || consumedActions.Contains(CMSAction.YChangedMiddle))
             {
-                gui.handleMouse(this._consumingMouseState.X, this._consumingMouseState.Y, Event.MOUSE_MBUTTON, this._consumingMouseState.Middle == ButtonState.Pressed);
+                gui.HandleMouse(this._consumingMouseState.X, this._consumingMouseState.Y, Event.MOUSE_MBUTTON, this._consumingMouseState.Middle == ButtonState.Pressed);
                 buzzed = true;
             }
 
             if (consumedActions.Contains(CMSAction.Scroll))
             {
-                gui.handleMouseWheel(this._consumingMouseState.ScrollDelta);
+                gui.HandleMouseWheel(this._consumingMouseState.ScrollDelta);
             }
 
             if (!buzzed && (consumedActions.Contains(CMSAction.XChanged) || consumedActions.Contains(CMSAction.YChanged)))
             {
-                gui.handleMouse(this._consumingMouseState.X, this._consumingMouseState.Y, -1, false);
+                gui.HandleMouse(this._consumingMouseState.X, this._consumingMouseState.Y, -1, false);
             }
 
             this._counter++;

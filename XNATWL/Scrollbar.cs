@@ -34,117 +34,114 @@ using XNATWL.Utils;
 
 namespace XNATWL
 {
-
     public class Scrollbar : Widget
     {
-
         public enum Orientation
         {
-            HORIZONTAL,
-            VERTICAL
+            Horizontal,
+            Vertical
         };
 
         private static int INITIAL_DELAY = 300;
         private static int REPEAT_DELAY = 75;
 
-        private Orientation orientation;
-        private Button btnUpLeft;
-        private Button btnDownRight;
-        private DraggableButton thumb;
-        private L dragTimerCB;
-        private Timer timer;
-        private int trackClicked;
-        private int trackClickLimit;
-        private Runnable[] callbacks;
-        private Renderer.Image trackImageUpLeft;
-        private Renderer.Image trackImageDownRight;
-        private IntegerModel model;
-        private Runnable modelCB;
+        private Orientation _orientation;
+        private Button _btnUpLeft;
+        private Button _btnDownRight;
+        private DraggableButton _thumb;
+        private L _dragTimerCB;
+        private Timer _timer;
+        private int _trackClicked;
+        private int _trackClickLimit;
+        private Renderer.Image _trackImageUpLeft;
+        private Renderer.Image _trackImageDownRight;
+        private IntegerModel _model;
+        private Runnable _modelCB;
 
-        private int pageSize;
-        private int stepSize;
-        private bool scaleThumb;
+        private int _pageSize;
+        private int _stepSize;
+        private bool _scaleThumb;
 
-        private int minValue;
-        private int maxValue;
-        private int value;
+        private int _minValue;
+        private int _maxValue;
+        private int _value;
 
         public event EventHandler<ScrollbarChangedPositionEventArgs> PositionChanged;
 
-        public Scrollbar() : this(Orientation.VERTICAL)
+        public Scrollbar() : this(Orientation.Vertical)
         {
             
         }
 
         public Scrollbar(Orientation orientation)
         {
-            this.orientation = orientation;
-            this.btnUpLeft = new Button();
-            this.btnDownRight = new Button();
-            this.thumb = new DraggableButton();
+            this._orientation = orientation;
+            this._btnUpLeft = new Button();
+            this._btnDownRight = new Button();
+            this._thumb = new DraggableButton();
 
-            if (orientation == Orientation.HORIZONTAL)
+            if (orientation == Orientation.Horizontal)
             {
-                setTheme("hscrollbar");
-                btnUpLeft.setTheme("leftbutton");
-                btnDownRight.setTheme("rightbutton");
+                SetTheme("hscrollbar");
+                _btnUpLeft.SetTheme("leftbutton");
+                _btnDownRight.SetTheme("rightbutton");
             }
             else
             {
-                setTheme("vscrollbar");
-                btnUpLeft.setTheme("upbutton");
-                btnDownRight.setTheme("downbutton");
+                SetTheme("vscrollbar");
+                _btnUpLeft.SetTheme("upbutton");
+                _btnDownRight.SetTheme("downbutton");
             }
 
-            dragTimerCB = new L(this);
+            _dragTimerCB = new L(this);
 
-            btnUpLeft.setCanAcceptKeyboardFocus(false);
-            btnUpLeft.getModel().State += Scrollbar_State;
-            btnDownRight.setCanAcceptKeyboardFocus(false);
-            btnDownRight.getModel().State += Scrollbar_State;
-            thumb.setCanAcceptKeyboardFocus(false);
-            thumb.setTheme("thumb");
-            thumb.setListener(dragTimerCB);
+            _btnUpLeft.SetCanAcceptKeyboardFocus(false);
+            _btnUpLeft.GetModel().State += Scrollbar_State;
+            _btnDownRight.SetCanAcceptKeyboardFocus(false);
+            _btnDownRight.GetModel().State += Scrollbar_State;
+            _thumb.SetCanAcceptKeyboardFocus(false);
+            _thumb.SetTheme("thumb");
+            _thumb.SetListener(_dragTimerCB);
 
-            add(btnUpLeft);
-            add(btnDownRight);
-            add(thumb);
+            Add(_btnUpLeft);
+            Add(_btnDownRight);
+            Add(_thumb);
 
-            this.pageSize = 10;
-            this.stepSize = 1;
-            this.maxValue = 100;
+            this._pageSize = 10;
+            this._stepSize = 1;
+            this._maxValue = 100;
 
-            setSize(30, 200);
-            setDepthFocusTraversal(false);
+            SetSize(30, 200);
+            SetDepthFocusTraversal(false);
         }
 
         private void Scrollbar_State(object sender, ButtonStateChangedEventArgs e)
         {
-            this.updateTimer();
+            this.UpdateTimer();
         }
 
-        public Orientation getOrientation()
+        public Orientation GetOrientation()
         {
-            return orientation;
+            return _orientation;
         }
 
-        public IntegerModel getModel()
+        public IntegerModel GetModel()
         {
-            return model;
+            return _model;
         }
 
-        public void setModel(IntegerModel model)
+        public void SetModel(IntegerModel model)
         {
-            if (this.model != model)
+            if (this._model != model)
             {
-                if (this.model != null)
+                if (this._model != null)
                 {
-                    this.model.Changed -= Model_Changed;
+                    this._model.Changed -= Model_Changed;
                 }
-                this.model = model;
+                this._model = model;
                 if (model != null)
                 {
-                    if (modelCB == null)
+                    if (_modelCB == null)
                     {
                         //modelCB = new Runnable() {
                         //    public void run() {
@@ -152,39 +149,39 @@ namespace XNATWL
                         //    }
                         //};
                     }
-                    this.model.Changed += Model_Changed;
-                    syncModel();
+                    this._model.Changed += Model_Changed;
+                    SyncModel();
                 }
             }
         }
 
         private void Model_Changed(object sender, IntegerChangedEventArgs e)
         {
-            syncModel();
+            SyncModel();
         }
 
-        public int getValue()
+        public int GetValue()
         {
-            return value;
+            return _value;
         }
 
-        public void setValue(int current)
+        public void SetValue(int current)
         {
-            setValue(current, true);
+            SetValue(current, true);
         }
 
-        public void setValue(int value, bool fireCallbacks)
+        public void SetValue(int value, bool fireCallbacks)
         {
-            value = range(value);
-            int oldValue = this.value;
+            value = Range(value);
+            int oldValue = this._value;
             if (oldValue != value)
             {
-                this.value = value;
-                setThumbPos();
-                firePropertyChange("value", oldValue, value);
-                if (model != null)
+                this._value = value;
+                SetThumbPos();
+                FirePropertyChange("value", oldValue, value);
+                if (_model != null)
                 {
-                    this.model.Value = value;
+                    this._model.Value = value;
                 }
                 if (fireCallbacks)
                 {
@@ -193,15 +190,15 @@ namespace XNATWL
             }
         }
 
-        public void scroll(int amount)
+        public void Scroll(int amount)
         {
-            if (minValue < maxValue)
+            if (_minValue < _maxValue)
             {
-                setValue(value + amount);
+                SetValue(_value + amount);
             }
             else
             {
-                setValue(value - amount);
+                SetValue(_value - amount);
             }
         }
 
@@ -213,7 +210,7 @@ namespace XNATWL
          * @param size size of the area
          * @param extra the extra space which should be visible around the area
          */
-        public void scrollToArea(int start, int size, int extra)
+        public void ScrollToArea(int start, int size, int extra)
         {
             if (size <= 0)
             {
@@ -225,527 +222,523 @@ namespace XNATWL
             }
 
             int end = start + size;
-            start = range(start);
-            int pos = value;
+            start = Range(start);
+            int pos = _value;
 
-            int startWithExtra = range(start - extra);
+            int startWithExtra = Range(start - extra);
             if (startWithExtra < pos)
             {
                 pos = startWithExtra;
             }
-            int pageEnd = pos + pageSize;
+            int pageEnd = pos + _pageSize;
             int endWithExtra = end + extra;
             if (endWithExtra > pageEnd)
             {
-                pos = range(endWithExtra - pageSize);
+                pos = Range(endWithExtra - _pageSize);
                 if (pos > startWithExtra)
                 {
                     size = end - start;
-                    pos = start - Math.Max(0, pageSize - size) / 2;
+                    pos = start - Math.Max(0, _pageSize - size) / 2;
                 }
             }
 
-            setValue(pos);
+            SetValue(pos);
         }
 
-        public int getMinValue()
+        public int GetMinValue()
         {
-            return minValue;
+            return _minValue;
         }
 
-        public int getMaxValue()
+        public int GetMaxValue()
         {
-            return maxValue;
+            return _maxValue;
         }
 
-        public void setMinMaxValue(int minValue, int maxValue)
+        public void SetMinMaxValue(int minValue, int maxValue)
         {
             if (maxValue < minValue)
             {
                 throw new ArgumentOutOfRangeException("maxValue < minValue");
             }
-            this.minValue = minValue;
-            this.maxValue = maxValue;
-            this.value = range(value);
-            setThumbPos();
-            thumb.setVisible(minValue != maxValue);
+            this._minValue = minValue;
+            this._maxValue = maxValue;
+            this._value = Range(_value);
+            SetThumbPos();
+            _thumb.SetVisible(minValue != maxValue);
         }
 
-        public int getPageSize()
+        public int GetPageSize()
         {
-            return pageSize;
+            return _pageSize;
         }
 
-        public void setPageSize(int pageSize)
+        public void SetPageSize(int pageSize)
         {
             if (pageSize < 1)
             {
                 throw new ArgumentOutOfRangeException("pageSize < 1");
             }
-            this.pageSize = pageSize;
-            if (scaleThumb)
+            this._pageSize = pageSize;
+            if (_scaleThumb)
             {
-                setThumbPos();
+                SetThumbPos();
             }
         }
 
-        public int getStepSize()
+        public int GetStepSize()
         {
-            return stepSize;
+            return _stepSize;
         }
 
-        public void setStepSize(int stepSize)
+        public void SetStepSize(int stepSize)
         {
             if (stepSize < 1)
             {
                 throw new ArgumentOutOfRangeException("stepSize < 1");
             }
-            this.stepSize = stepSize;
+            this._stepSize = stepSize;
         }
 
-        public bool isScaleThumb()
+        public bool IsScaleThumb()
         {
-            return scaleThumb;
+            return _scaleThumb;
         }
 
-        public void setScaleThumb(bool scaleThumb)
+        public void SetScaleThumb(bool scaleThumb)
         {
-            this.scaleThumb = scaleThumb;
-            setThumbPos();
+            this._scaleThumb = scaleThumb;
+            SetThumbPos();
         }
 
-        public void externalDragStart()
+        public void ExternalDragStart()
         {
-            thumb.getAnimationState().setAnimationState(Button.STATE_PRESSED, true);
-            dragTimerCB.dragStarted();
+            _thumb.GetAnimationState().SetAnimationState(Button.STATE_PRESSED, true);
+            _dragTimerCB.DragStarted();
         }
 
-        public void externalDragged(int deltaX, int deltaY)
+        public void ExternalDragged(int deltaX, int deltaY)
         {
-            dragTimerCB.dragged(deltaX, deltaY);
+            _dragTimerCB.Dragged(deltaX, deltaY);
         }
 
-        public void externalDragStopped()
+        public void ExternalDragStopped()
         {
             // dragTimerCB.dragStopped(); (it's empty anyway)
-            thumb.getAnimationState().setAnimationState(Button.STATE_PRESSED, false);
+            _thumb.GetAnimationState().SetAnimationState(Button.STATE_PRESSED, false);
         }
 
-        public bool isUpLeftButtonArmed()
+        public bool IsUpLeftButtonArmed()
         {
-            return btnUpLeft.getModel().Armed;
+            return _btnUpLeft.GetModel().Armed;
         }
 
-        public bool isDownRightButtonArmed()
+        public bool IsDownRightButtonArmed()
         {
-            return btnDownRight.getModel().Armed;
+            return _btnDownRight.GetModel().Armed;
         }
 
-        public bool isThumbDragged()
+        public bool IsThumbDragged()
         {
-            return thumb.getModel().Pressed;
+            return _thumb.GetModel().Pressed;
         }
 
-        public void setThumbTooltipContent(Object tooltipContent)
+        public void SetThumbTooltipContent(Object tooltipContent)
         {
-            thumb.setTooltipContent(tooltipContent);
+            _thumb.SetTooltipContent(tooltipContent);
         }
 
-        public Object getThumbTooltipContent()
+        public Object GetThumbTooltipContent()
         {
-            return thumb.getTooltipContent();
+            return _thumb.GetTooltipContent();
         }
 
-        //@Override
-        protected override void applyTheme(ThemeInfo themeInfo)
+        protected override void ApplyTheme(ThemeInfo themeInfo)
         {
-            base.applyTheme(themeInfo);
-            applyThemeScrollbar(themeInfo);
+            base.ApplyTheme(themeInfo);
+            ApplyThemeScrollbar(themeInfo);
         }
 
-        protected void applyThemeScrollbar(ThemeInfo themeInfo)
+        protected void ApplyThemeScrollbar(ThemeInfo themeInfo)
         {
-            setScaleThumb(themeInfo.GetParameter("scaleThumb", false));
-            if (orientation == Orientation.HORIZONTAL)
+            SetScaleThumb(themeInfo.GetParameter("scaleThumb", false));
+            if (_orientation == Orientation.Horizontal)
             {
-                trackImageUpLeft = (Renderer.Image) themeInfo.GetParameterValue("trackImageLeft", false, typeof(Renderer.Image));
-                trackImageDownRight = (Renderer.Image)themeInfo.GetParameterValue("trackImageRight", false, typeof(Renderer.Image));
+                _trackImageUpLeft = (Renderer.Image) themeInfo.GetParameterValue("trackImageLeft", false, typeof(Renderer.Image));
+                _trackImageDownRight = (Renderer.Image)themeInfo.GetParameterValue("trackImageRight", false, typeof(Renderer.Image));
             }
             else
             {
-                trackImageUpLeft = (Renderer.Image)themeInfo.GetParameterValue("trackImageUp", false, typeof(Renderer.Image));
-                trackImageDownRight = (Renderer.Image)themeInfo.GetParameterValue("trackImageDown", false, typeof(Renderer.Image));
+                _trackImageUpLeft = (Renderer.Image)themeInfo.GetParameterValue("trackImageUp", false, typeof(Renderer.Image));
+                _trackImageDownRight = (Renderer.Image)themeInfo.GetParameterValue("trackImageDown", false, typeof(Renderer.Image));
             }
         }
 
-        //@Override
-        protected override void paintWidget(GUI gui)
+        protected override void PaintWidget(GUI gui)
         {
-            int x = getInnerX();
-            int y = getInnerY();
-            if (orientation == Orientation.HORIZONTAL)
+            int x = GetInnerX();
+            int y = GetInnerY();
+            if (_orientation == Orientation.Horizontal)
             {
-                int h = getInnerHeight();
-                if (trackImageUpLeft != null)
+                int h = GetInnerHeight();
+                if (_trackImageUpLeft != null)
                 {
-                    trackImageUpLeft.Draw(getAnimationState(), x, y, thumb.getX() - x, h);
+                    _trackImageUpLeft.Draw(GetAnimationState(), x, y, _thumb.GetX() - x, h);
                 }
-                if (trackImageDownRight != null)
+                if (_trackImageDownRight != null)
                 {
-                    int thumbRight = thumb.getRight();
-                    trackImageDownRight.Draw(getAnimationState(), thumbRight, y, getInnerRight() - thumbRight, h);
+                    int thumbRight = _thumb.GetRight();
+                    _trackImageDownRight.Draw(GetAnimationState(), thumbRight, y, GetInnerRight() - thumbRight, h);
                 }
             }
             else
             {
-                int w = getInnerWidth();
-                if (trackImageUpLeft != null)
+                int w = GetInnerWidth();
+                if (_trackImageUpLeft != null)
                 {
-                    trackImageUpLeft.Draw(getAnimationState(), x, y, w, thumb.getY() - y);
+                    _trackImageUpLeft.Draw(GetAnimationState(), x, y, w, _thumb.GetY() - y);
                 }
-                if (trackImageDownRight != null)
+                if (_trackImageDownRight != null)
                 {
-                    int thumbBottom = thumb.getBottom();
-                    trackImageDownRight.Draw(getAnimationState(), x, thumbBottom, w, getInnerBottom() - thumbBottom);
+                    int thumbBottom = _thumb.GetBottom();
+                    _trackImageDownRight.Draw(GetAnimationState(), x, thumbBottom, w, GetInnerBottom() - thumbBottom);
                 }
             }
         }
 
-        //@Override
-        protected override void afterAddToGUI(GUI gui)
+        protected override void AfterAddToGUI(GUI gui)
         {
-            base.afterAddToGUI(gui);
-            timer = gui.createTimer();
-            timer.Tick += Timer_Tick;
-            timer.setContinuous(true);
-            if (model != null)
+            base.AfterAddToGUI(gui);
+            _timer = gui.CreateTimer();
+            _timer.Tick += Timer_Tick;
+            _timer.SetContinuous(true);
+            if (_model != null)
             {
                 // modelCB is created when the model was set
-                this.model.Changed += Model_Changed;
+                this._model.Changed += Model_Changed;
             }
         }
 
         private void Timer_Tick(object sender, TimerTickEventArgs e)
         {
-            this.onTimer(REPEAT_DELAY);
+            this.OnTimer(REPEAT_DELAY);
+        }
+
+        protected override void BeforeRemoveFromGUI(GUI gui)
+        {
+            base.BeforeRemoveFromGUI(gui);
+            if (_model != null)
+            {
+                this._model.Changed -= Model_Changed;
+            }
+            if (_timer != null)
+            {
+                _timer.Stop();
+            }
+            _timer = null;
         }
 
         //@Override
-        protected override void beforeRemoveFromGUI(GUI gui)
+        public override bool HandleEvent(Event evt)
         {
-            base.beforeRemoveFromGUI(gui);
-            if (model != null)
+            if (evt.GetEventType() == EventType.MOUSE_BTNUP &&
+                    evt.GetMouseButton() == Event.MOUSE_LBUTTON)
             {
-                this.model.Changed -= Model_Changed;
-            }
-            if (timer != null)
-            {
-                timer.stop();
-            }
-            timer = null;
-        }
-
-        //@Override
-        public override bool handleEvent(Event evt)
-        {
-            if (evt.getEventType() == EventType.MOUSE_BTNUP &&
-                    evt.getMouseButton() == Event.MOUSE_LBUTTON)
-            {
-                trackClicked = 0;
-                updateTimer();
+                _trackClicked = 0;
+                UpdateTimer();
             }
 
-            if (!base.handleEvent(evt))
+            if (!base.HandleEvent(evt))
             {
-                if (evt.getEventType() == EventType.MOUSE_BTNDOWN &&
-                        evt.getMouseButton() == Event.MOUSE_LBUTTON)
+                if (evt.GetEventType() == EventType.MOUSE_BTNDOWN &&
+                        evt.GetMouseButton() == Event.MOUSE_LBUTTON)
                 {
-                    if (isMouseInside(evt))
+                    if (IsMouseInside(evt))
                     {
-                        if (orientation == Orientation.HORIZONTAL)
+                        if (_orientation == Orientation.Horizontal)
                         {
-                            trackClickLimit = evt.getMouseX();
-                            if (evt.getMouseX() < thumb.getX())
+                            _trackClickLimit = evt.GetMouseX();
+                            if (evt.GetMouseX() < _thumb.GetX())
                             {
-                                trackClicked = -1;
+                                _trackClicked = -1;
                             }
                             else
                             {
-                                trackClicked = 1;
+                                _trackClicked = 1;
                             }
                         }
                         else
                         {
-                            trackClickLimit = evt.getMouseY();
-                            if (evt.getMouseY() < thumb.getY())
+                            _trackClickLimit = evt.GetMouseY();
+                            if (evt.GetMouseY() < _thumb.GetY())
                             {
-                                trackClicked = -1;
+                                _trackClicked = -1;
                             }
                             else
                             {
-                                trackClicked = 1;
+                                _trackClicked = 1;
                             }
                         }
-                        updateTimer();
+                        UpdateTimer();
                     }
                 }
             }
 
-            bool page = (evt.getModifiers() & Event.MODIFIER_CTRL) != 0;
-            int step = page ? pageSize : stepSize;
+            bool page = (evt.GetModifiers() & Event.MODIFIER_CTRL) != 0;
+            int step = page ? _pageSize : _stepSize;
 
-            if (evt.getEventType() == EventType.KEY_PRESSED)
+            if (evt.GetEventType() == EventType.KEY_PRESSED)
             {
-                switch (evt.getKeyCode())
+                switch (evt.GetKeyCode())
                 {
                     case Event.KEY_LEFT:
-                        if (orientation == Orientation.HORIZONTAL)
+                        if (_orientation == Orientation.Horizontal)
                         {
-                            setValue(value - step);
+                            SetValue(_value - step);
                             return true;
                         }
                         break;
                     case Event.KEY_RIGHT:
-                        if (orientation == Orientation.HORIZONTAL)
+                        if (_orientation == Orientation.Horizontal)
                         {
-                            setValue(value + step);
+                            SetValue(_value + step);
                             return true;
                         }
                         break;
                     case Event.KEY_UP:
-                        if (orientation == Orientation.VERTICAL)
+                        if (_orientation == Orientation.Vertical)
                         {
-                            setValue(value - step);
+                            SetValue(_value - step);
                             return true;
                         }
                         break;
                     case Event.KEY_DOWN:
-                        if (orientation == Orientation.VERTICAL)
+                        if (_orientation == Orientation.Vertical)
                         {
-                            setValue(value + step);
+                            SetValue(_value + step);
                             return true;
                         }
                         break;
                     case Event.KEY_PRIOR:
-                        if (orientation == Orientation.VERTICAL)
+                        if (_orientation == Orientation.Vertical)
                         {
-                            setValue(value - pageSize);
+                            SetValue(_value - _pageSize);
                             return true;
                         }
                         break;
                     case Event.KEY_NEXT:
-                        if (orientation == Orientation.VERTICAL)
+                        if (_orientation == Orientation.Vertical)
                         {
-                            setValue(value + pageSize);
+                            SetValue(_value + _pageSize);
                             return true;
                         }
                         break;
                 }
             }
 
-            if (evt.getEventType() == EventType.MOUSE_WHEEL)
+            if (evt.GetEventType() == EventType.MOUSE_WHEEL)
             {
-                setValue(value - step * evt.getMouseWheelDelta());
+                SetValue(_value - step * evt.GetMouseWheelDelta());
             }
 
             // eat all mouse events
-            return evt.isMouseEvent();
+            return evt.IsMouseEvent();
         }
 
-        int range(int current)
+        int Range(int current)
         {
-            if (minValue < maxValue)
+            if (_minValue < _maxValue)
             {
-                if (current < minValue)
+                if (current < _minValue)
                 {
-                    current = minValue;
+                    current = _minValue;
                 }
-                else if (current > maxValue)
+                else if (current > _maxValue)
                 {
-                    current = maxValue;
+                    current = _maxValue;
                 }
             }
             else
             {
-                if (current > minValue)
+                if (current > _minValue)
                 {
-                    current = minValue;
+                    current = _minValue;
                 }
-                else if (current < maxValue)
+                else if (current < _maxValue)
                 {
-                    current = maxValue;
+                    current = _maxValue;
                 }
             }
             return current;
         }
 
-        void onTimer(int nextDelay)
+        void OnTimer(int nextDelay)
         {
-            timer.setDelay(nextDelay);
-            if (trackClicked != 0)
+            _timer.SetDelay(nextDelay);
+            if (_trackClicked != 0)
             {
                 int thumbPos;
-                if (orientation == Orientation.HORIZONTAL)
+                if (_orientation == Orientation.Horizontal)
                 {
-                    thumbPos = thumb.getX();
+                    thumbPos = _thumb.GetX();
                 }
                 else
                 {
-                    thumbPos = thumb.getY();
+                    thumbPos = _thumb.GetY();
                 }
-                if ((trackClickLimit - thumbPos) * trackClicked > 0)
+                if ((_trackClickLimit - thumbPos) * _trackClicked > 0)
                 {
-                    scroll(trackClicked * pageSize);
+                    Scroll(_trackClicked * _pageSize);
                 }
             }
-            else if (btnUpLeft.getModel().Armed)
+            else if (_btnUpLeft.GetModel().Armed)
             {
-                scroll(-stepSize);
+                Scroll(-_stepSize);
             }
-            else if (btnDownRight.getModel().Armed)
+            else if (_btnDownRight.GetModel().Armed)
             {
-                scroll(stepSize);
+                Scroll(_stepSize);
             }
         }
 
-        void updateTimer()
+        void UpdateTimer()
         {
-            if (timer != null)
+            if (_timer != null)
             {
-                if (trackClicked != 0 ||
-                        btnUpLeft.getModel().Armed ||
-                        btnDownRight.getModel().Armed)
+                if (_trackClicked != 0 ||
+                        _btnUpLeft.GetModel().Armed ||
+                        _btnDownRight.GetModel().Armed)
                 {
-                    if (!timer.isRunning())
+                    if (!_timer.IsRunning())
                     {
-                        onTimer(INITIAL_DELAY);
+                        OnTimer(INITIAL_DELAY);
                         // onTimer() can call setValue() which calls user code
                         // that user code could potentially remove the Scrollbar from GUI
-                        if (timer != null)
+                        if (_timer != null)
                         {
-                            timer.start();
+                            _timer.Start();
                         }
                     }
                 }
                 else
                 {
-                    timer.stop();
+                    _timer.Stop();
                 }
             }
         }
 
-        void syncModel()
+        void SyncModel()
         {
-            setMinMaxValue(model.MinValue, model.MaxValue);
-            setValue(model.Value);
+            SetMinMaxValue(_model.MinValue, _model.MaxValue);
+            SetValue(_model.Value);
         }
 
         //@Override
-        public override int getMinWidth()
+        public override int GetMinWidth()
         {
-            if (orientation == Orientation.HORIZONTAL)
+            if (_orientation == Orientation.Horizontal)
             {
-                return Math.Max(base.getMinWidth(), btnUpLeft.getMinWidth() + thumb.getMinWidth() + btnDownRight.getMinWidth());
+                return Math.Max(base.GetMinWidth(), _btnUpLeft.GetMinWidth() + _thumb.GetMinWidth() + _btnDownRight.GetMinWidth());
             }
             else
             {
-                return Math.Max(base.getMinWidth(), thumb.getMinWidth());
+                return Math.Max(base.GetMinWidth(), _thumb.GetMinWidth());
             }
         }
 
         //@Override
-        public override int getMinHeight()
+        public override int GetMinHeight()
         {
-            if (orientation == Orientation.HORIZONTAL)
+            if (_orientation == Orientation.Horizontal)
             {
-                return Math.Max(base.getMinHeight(), thumb.getMinHeight());
+                return Math.Max(base.GetMinHeight(), _thumb.GetMinHeight());
             }
             else
             {
-                return Math.Max(base.getMinHeight(), btnUpLeft.getMinHeight() + thumb.getMinHeight() + btnDownRight.getMinHeight());
+                return Math.Max(base.GetMinHeight(), _btnUpLeft.GetMinHeight() + _thumb.GetMinHeight() + _btnDownRight.GetMinHeight());
             }
         }
 
         //@Override
-        public override int getPreferredWidth()
+        public override int GetPreferredWidth()
         {
-            return getMinWidth();
+            return GetMinWidth();
         }
 
         //@Override
-        public override int getPreferredHeight()
+        public override int GetPreferredHeight()
         {
-            return getMinHeight();
+            return GetMinHeight();
         }
 
         //@Override
-        protected override void layout()
+        protected override void Layout()
         {
-            if (orientation == Orientation.HORIZONTAL)
+            if (_orientation == Orientation.Horizontal)
             {
-                btnUpLeft.setSize(btnUpLeft.getPreferredWidth(), getHeight());
-                btnUpLeft.setPosition(getX(), getY());
-                btnDownRight.setSize(btnUpLeft.getPreferredWidth(), getHeight());
-                btnDownRight.setPosition(getX() + getWidth() - btnDownRight.getWidth(), getY());
+                _btnUpLeft.SetSize(_btnUpLeft.GetPreferredWidth(), GetHeight());
+                _btnUpLeft.SetPosition(GetX(), GetY());
+                _btnDownRight.SetSize(_btnUpLeft.GetPreferredWidth(), GetHeight());
+                _btnDownRight.SetPosition(GetX() + GetWidth() - _btnDownRight.GetWidth(), GetY());
             }
             else
             {
-                btnUpLeft.setSize(getWidth(), btnUpLeft.getPreferredHeight());
-                btnUpLeft.setPosition(getX(), getY());
-                btnDownRight.setSize(getWidth(), btnDownRight.getPreferredHeight());
-                btnDownRight.setPosition(getX(), getY() + getHeight() - btnDownRight.getHeight());
+                _btnUpLeft.SetSize(GetWidth(), _btnUpLeft.GetPreferredHeight());
+                _btnUpLeft.SetPosition(GetX(), GetY());
+                _btnDownRight.SetSize(GetWidth(), _btnDownRight.GetPreferredHeight());
+                _btnDownRight.SetPosition(GetX(), GetY() + GetHeight() - _btnDownRight.GetHeight());
             }
-            setThumbPos();
+            SetThumbPos();
         }
 
-        int calcThumbArea()
+        int CalcThumbArea()
         {
-            if (orientation == Orientation.HORIZONTAL)
+            if (_orientation == Orientation.Horizontal)
             {
-                return Math.Max(1, getWidth() - btnUpLeft.getWidth() - thumb.getWidth() - btnDownRight.getWidth());
+                return Math.Max(1, GetWidth() - _btnUpLeft.GetWidth() - _thumb.GetWidth() - _btnDownRight.GetWidth());
             }
             else
             {
-                return Math.Max(1, getHeight() - btnUpLeft.getHeight() - thumb.getHeight() - btnDownRight.getHeight());
+                return Math.Max(1, GetHeight() - _btnUpLeft.GetHeight() - _thumb.GetHeight() - _btnDownRight.GetHeight());
             }
         }
 
-        private void setThumbPos()
+        private void SetThumbPos()
         {
-            int delta = maxValue - minValue;
-            if (orientation == Orientation.HORIZONTAL)
+            int delta = _maxValue - _minValue;
+            if (_orientation == Orientation.Horizontal)
             {
-                int thumbWidth = thumb.getPreferredWidth();
-                if (scaleThumb)
+                int thumbWidth = _thumb.GetPreferredWidth();
+                if (_scaleThumb)
                 {
-                    long availArea = Math.Max(1, getWidth() - btnUpLeft.getWidth() - btnDownRight.getWidth());
-                    thumbWidth = (int)Math.Max(thumbWidth, availArea * pageSize / (pageSize + delta + 1));
+                    long availArea = Math.Max(1, GetWidth() - _btnUpLeft.GetWidth() - _btnDownRight.GetWidth());
+                    thumbWidth = (int)Math.Max(thumbWidth, availArea * _pageSize / (_pageSize + delta + 1));
                 }
-                thumb.setSize(thumbWidth, getHeight());
+                _thumb.SetSize(thumbWidth, GetHeight());
 
-                int xpos = btnUpLeft.getX() + btnUpLeft.getWidth();
+                int xpos = _btnUpLeft.GetX() + _btnUpLeft.GetWidth();
                 if (delta != 0)
                 {
-                    xpos += (value - minValue) * calcThumbArea() / delta;
+                    xpos += (_value - _minValue) * CalcThumbArea() / delta;
                 }
-                thumb.setPosition(xpos, getY());
+                _thumb.SetPosition(xpos, GetY());
             }
             else
             {
-                int thumbHeight = thumb.getPreferredHeight();
-                if (scaleThumb)
+                int thumbHeight = _thumb.GetPreferredHeight();
+                if (_scaleThumb)
                 {
-                    long availArea = Math.Max(1, getHeight() - btnUpLeft.getHeight() - btnDownRight.getHeight());
-                    thumbHeight = (int)Math.Max(thumbHeight, availArea * pageSize / (pageSize + delta + 1));
+                    long availArea = Math.Max(1, GetHeight() - _btnUpLeft.GetHeight() - _btnDownRight.GetHeight());
+                    thumbHeight = (int)Math.Max(thumbHeight, availArea * _pageSize / (_pageSize + delta + 1));
                 }
-                thumb.setSize(getWidth(), thumbHeight);
+                _thumb.SetSize(GetWidth(), thumbHeight);
 
-                int ypos = btnUpLeft.getY() + btnUpLeft.getHeight();
+                int ypos = _btnUpLeft.GetY() + _btnUpLeft.GetHeight();
                 if (delta != 0)
                 {
-                    ypos += (value - minValue) * calcThumbArea() / delta;
+                    ypos += (_value - _minValue) * CalcThumbArea() / delta;
                 }
-                thumb.setPosition(getX(), ypos);
+                _thumb.SetPosition(GetX(), ypos);
             }
         }
 
@@ -756,15 +749,15 @@ namespace XNATWL
             {
                 this._scrollbar = scrollbar;
             }
-            private int startValue;
-            public void dragStarted()
+            private int _startValue;
+            public void DragStarted()
             {
-                startValue = this._scrollbar.getValue();
+                _startValue = this._scrollbar.GetValue();
             }
-            public void dragged(int deltaX, int deltaY)
+            public void Dragged(int deltaX, int deltaY)
             {
                 int mouseDelta;
-                if (this._scrollbar.getOrientation() == Orientation.HORIZONTAL)
+                if (this._scrollbar.GetOrientation() == Orientation.Horizontal)
                 {
                     mouseDelta = deltaX;
                 }
@@ -772,11 +765,11 @@ namespace XNATWL
                 {
                     mouseDelta = deltaY;
                 }
-                int delta = (this._scrollbar.getMaxValue() - this._scrollbar.getMinValue()) * mouseDelta / this._scrollbar.calcThumbArea();
-                int newValue = this._scrollbar.range(startValue + delta);
-                this._scrollbar.setValue(newValue);
+                int delta = (this._scrollbar.GetMaxValue() - this._scrollbar.GetMinValue()) * mouseDelta / this._scrollbar.CalcThumbArea();
+                int newValue = this._scrollbar.Range(_startValue + delta);
+                this._scrollbar.SetValue(newValue);
             }
-            public void dragStopped()
+            public void DragStopped()
             {
             }
         };

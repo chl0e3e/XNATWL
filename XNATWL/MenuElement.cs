@@ -35,12 +35,12 @@ namespace XNATWL
 {
     public abstract class MenuElement
     {
-        private String name;
-        private String theme;
-        private bool enabled = true;
-        private Object tooltipContent;
-        private PropertyChangeSupport pcs;
-        private Alignment alignment;
+        private String _name;
+        private String _theme;
+        private bool _enabled = true;
+        private Object _tooltipContent;
+        private PropertyChangeSupport _pcs;
+        private Alignment _alignment;
 
         public MenuElement()
         {
@@ -48,64 +48,64 @@ namespace XNATWL
 
         public MenuElement(String name)
         {
-            this.name = name;
+            this._name = name;
         }
 
-        public String getName()
+        public String GetName()
         {
-            return name;
+            return _name;
         }
 
-        public MenuElement setName(String name)
+        public MenuElement SetName(String name)
         {
-            String oldName = this.name;
-            this.name = name;
-            firePropertyChange("name", oldName, name);
+            String oldName = this._name;
+            this._name = name;
+            FirePropertyChange("name", oldName, name);
             return this;
         }
 
-        public String getTheme()
+        public String GetTheme()
         {
-            return theme;
+            return _theme;
         }
 
-        public MenuElement setTheme(String theme)
+        public MenuElement SetTheme(String theme)
         {
-            String oldTheme = this.theme;
-            this.theme = theme;
-            firePropertyChange("theme", oldTheme, theme);
+            String oldTheme = this._theme;
+            this._theme = theme;
+            FirePropertyChange("theme", oldTheme, theme);
             return this;
         }
 
-        public bool isEnabled()
+        public bool IsEnabled()
         {
-            return enabled;
+            return _enabled;
         }
 
-        public MenuElement setEnabled(bool enabled)
+        public MenuElement SetEnabled(bool enabled)
         {
-            bool oldEnabled = this.enabled;
-            this.enabled = enabled;
-            firePropertyChange("enabled", oldEnabled, enabled);
+            bool oldEnabled = this._enabled;
+            this._enabled = enabled;
+            FirePropertyChange("enabled", oldEnabled, enabled);
             return this;
         }
 
-        public Object getTooltipContent()
+        public Object GetTooltipContent()
         {
-            return tooltipContent;
+            return _tooltipContent;
         }
 
-        public MenuElement setTooltipContent(Object tooltip)
+        public MenuElement SetTooltipContent(Object tooltip)
         {
-            Object oldTooltip = this.tooltipContent;
-            this.tooltipContent = tooltip;
-            firePropertyChange("tooltipContent", oldTooltip, tooltip);
+            Object oldTooltip = this._tooltipContent;
+            this._tooltipContent = tooltip;
+            FirePropertyChange("tooltipContent", oldTooltip, tooltip);
             return this;
         }
 
-        public Alignment getAlignment()
+        public Alignment GetAlignment()
         {
-            return alignment;
+            return _alignment;
         }
 
         /**
@@ -118,71 +118,73 @@ namespace XNATWL
          * @see Menu#setClassAlignment(java.lang.Class, de.matthiasmann.twl.Alignment) 
          * @see Menu#getClassAlignment(java.lang.Class) 
          */
-        public MenuElement setAlignment(Alignment alignment)
+        public MenuElement SetAlignment(Alignment alignment)
         {
-            Alignment oldAlignment = this.alignment;
-            this.alignment = alignment;
-            firePropertyChange("alignment", oldAlignment, alignment);
+            Alignment oldAlignment = this._alignment;
+            this._alignment = alignment;
+            FirePropertyChange("alignment", oldAlignment, alignment);
             return this;
         }
 
-        protected internal abstract Widget createMenuWidget(MenuManager mm, int level);
+        protected internal abstract Widget CreateMenuWidget(MenuManager mm, int level);
 
-        public void addPropertyChangeListener(PropertyChangeListener listener)
+        public void AddPropertyChangeListener(PropertyChangeListener listener)
         {
-            if (pcs == null)
+            if (_pcs == null)
             {
-                pcs = new PropertyChangeSupport(this);
+                _pcs = new PropertyChangeSupport(this);
             }
-            pcs.AddPropertyChangeListener(listener);
+
+            _pcs.AddPropertyChangeListener(listener);
         }
 
-        public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener)
+        public void AddPropertyChangeListener(String propertyName, PropertyChangeListener listener)
         {
-            if (pcs == null)
+            if (_pcs == null)
             {
-                pcs = new PropertyChangeSupport(this);
+                _pcs = new PropertyChangeSupport(this);
             }
-            pcs.AddPropertyChangeListener(propertyName, listener);
+
+            _pcs.AddPropertyChangeListener(propertyName, listener);
         }
 
-        public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener)
+        public void RemovePropertyChangeListener(String propertyName, PropertyChangeListener listener)
         {
-            if (pcs != null)
+            if (_pcs != null)
             {
-                pcs.RemovePropertyChangeListener(propertyName, listener);
-            }
-        }
-
-        public void removePropertyChangeListener(PropertyChangeListener listener)
-        {
-            if (pcs != null)
-            {
-                pcs.RemovePropertyChangeListener(listener);
+                _pcs.RemovePropertyChangeListener(propertyName, listener);
             }
         }
 
-        protected void firePropertyChange(String propertyName, bool oldValue, bool newValue)
+        public void RemovePropertyChangeListener(PropertyChangeListener listener)
         {
-            if (pcs != null)
+            if (_pcs != null)
             {
-                pcs.FirePropertyChange(propertyName, oldValue, newValue);
+                _pcs.RemovePropertyChangeListener(listener);
             }
         }
 
-        protected void firePropertyChange(String propertyName, int oldValue, int newValue)
+        protected void FirePropertyChange(String propertyName, bool oldValue, bool newValue)
         {
-            if (pcs != null)
+            if (_pcs != null)
             {
-                pcs.FirePropertyChange(propertyName, oldValue, newValue);
+                _pcs.FirePropertyChange(propertyName, oldValue, newValue);
             }
         }
 
-        protected void firePropertyChange(String propertyName, Object oldValue, Object newValue)
+        protected void FirePropertyChange(String propertyName, int oldValue, int newValue)
         {
-            if (pcs != null)
+            if (_pcs != null)
             {
-                pcs.FirePropertyChange(propertyName, oldValue, newValue);
+                _pcs.FirePropertyChange(propertyName, oldValue, newValue);
+            }
+        }
+
+        protected void FirePropertyChange(String propertyName, Object oldValue, Object newValue)
+        {
+            if (_pcs != null)
+            {
+                _pcs.FirePropertyChange(propertyName, oldValue, newValue);
             }
         }
 
@@ -192,15 +194,15 @@ namespace XNATWL
          * @param w the Widget to which the theme should be applied
          * @param defaultTheme the defaultTheme when none was set 
          */
-        protected void setWidgetTheme(Widget w, String defaultTheme)
+        protected void SetWidgetTheme(Widget w, String defaultTheme)
         {
-            if (theme != null)
+            if (_theme != null)
             {
-                w.setTheme(theme);
+                w.SetTheme(_theme);
             }
             else
             {
-                w.setTheme(defaultTheme);
+                w.SetTheme(defaultTheme);
             }
         }
 
@@ -210,31 +212,31 @@ namespace XNATWL
             public MenuBtn(MenuElement menuElement)
             {
                 this._menuElement = menuElement;
-                sync();
+                Sync();
             }
             
-            protected override void afterAddToGUI(GUI gui)
+            protected override void AfterAddToGUI(GUI gui)
             {
-                base.afterAddToGUI(gui);
-                this._menuElement.addPropertyChangeListener(this);
+                base.AfterAddToGUI(gui);
+                this._menuElement.AddPropertyChangeListener(this);
             }
 
-            protected override void beforeRemoveFromGUI(GUI gui)
+            protected override void BeforeRemoveFromGUI(GUI gui)
             {
-                this._menuElement.removePropertyChangeListener(this);
-                base.beforeRemoveFromGUI(gui);
+                this._menuElement.RemovePropertyChangeListener(this);
+                base.BeforeRemoveFromGUI(gui);
             }
 
             public virtual void PropertyChange(PropertyChangeEvent evt)
             {
-                sync();
+                Sync();
             }
 
-            protected void sync()
+            protected void Sync()
             {
-                setEnabled(this._menuElement.isEnabled());
-                setTooltipContent(this._menuElement.getTooltipContent());
-                setText(this._menuElement.getName());
+                SetEnabled(this._menuElement.IsEnabled());
+                SetTooltipContent(this._menuElement.GetTooltipContent());
+                SetText(this._menuElement.GetName());
             }
         }
     }

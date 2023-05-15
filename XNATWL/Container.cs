@@ -34,26 +34,31 @@ namespace XNATWL
 {
     public class Container : Widget
     {
-        public override int getMinWidth() {
-            return Math.Max(base.getMinWidth(), getBorderHorizontal() +
-                    BoxLayout.computeMinWidthVertical(this));
+        public override int GetMinWidth()
+        {
+            return Math.Max(base.GetMinWidth(), GetBorderHorizontal() +
+                    BoxLayout.ComputeMinWidthVertical(this));
         }
 
-        public override int getMinHeight() {
-            return Math.Max(base.getMinHeight(), getBorderVertical() +
-                    BoxLayout.computeMinHeightHorizontal(this));
+        public override int GetMinHeight()
+        {
+            return Math.Max(base.GetMinHeight(), GetBorderVertical() +
+                    BoxLayout.ComputeMinHeightHorizontal(this));
         }
 
-        public override int getPreferredInnerWidth() {
-            return BoxLayout.computePreferredWidthVertical(this);
+        public override int GetPreferredInnerWidth()
+        {
+            return BoxLayout.ComputePreferredWidthVertical(this);
         }
 
-        public override int getPreferredInnerHeight() {
-            return BoxLayout.computePreferredHeightHorizontal(this);
+        public override int GetPreferredInnerHeight()
+        {
+            return BoxLayout.ComputePreferredHeightHorizontal(this);
         }
 
-        protected override void layout() {
-            layoutChildrenFullInnerArea();
+        protected override void Layout()
+        {
+            LayoutChildrenFullInnerArea();
         }
     }
 }

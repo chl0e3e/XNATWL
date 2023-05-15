@@ -106,12 +106,12 @@ namespace XNATWL
          */
         public static EventType CLEAR_KEYBOARD_STATE = new EventType(false, false);
 
-        public bool isMouseEvent;
-        public bool isKeyEvent;
+        public bool IsMouseEvent;
+        public bool IsKeyEvent;
         public EventType(bool isMouseEvent, bool isKeyEvent)
         {
-            this.isMouseEvent = isMouseEvent;
-            this.isKeyEvent = isKeyEvent;
+            this.IsMouseEvent = isMouseEvent;
+            this.IsKeyEvent = isKeyEvent;
         }
     }
 
@@ -311,18 +311,18 @@ namespace XNATWL
         public const int KEY_POWER = 0xDE;
         public const int KEY_SLEEP = 0xDF;
 
-        internal EventType type;
-        internal int mouseX;
-        internal int mouseY;
-        internal int mouseWheelDelta;
-        internal int mouseButton;
-        internal int mouseClickCount;
-        internal bool dragEvent;
-        internal bool keyRepeated;
-        internal char keyChar;
-        internal int keyCode;
-        internal int modifier;
-        private Event subEvent;
+        internal EventType _type;
+        internal int _mouseX;
+        internal int _mouseY;
+        internal int _mouseWheelDelta;
+        internal int _mouseButton;
+        internal int _mouseClickCount;
+        internal bool _dragEvent;
+        internal bool _keyRepeated;
+        internal char _keyChar;
+        internal int _keyCode;
+        internal int _modifier;
+        private Event _subEvent;
 
         internal Event()
         {
@@ -332,81 +332,81 @@ namespace XNATWL
          * Returns the type of the event.
          * @return the type of the event.
          */
-        public EventType getEventType()
+        public EventType GetEventType()
         {
-            return type;
+            return _type;
         }
 
         /**
          * Returns true for all MOUSE_* event types.
          * @return true if this is a mouse event.
          */
-        public bool isMouseEvent()
+        public bool IsMouseEvent()
         {
-            return type.isMouseEvent;
+            return _type.IsMouseEvent;
         }
 
         /**
          * Returns true for all MOUSE_* event types except MOUSE_WHEEL.
          * @return true if this is a mouse event but not a mouse wheel event.
          */
-        public bool isMouseEventNoWheel()
+        public bool IsMouseEventNoWheel()
         {
-            return type.isMouseEvent && type != EventType.MOUSE_WHEEL;
+            return _type.IsMouseEvent && _type != EventType.MOUSE_WHEEL;
         }
 
         /**
          * Returns true for all KEY_* event types.
          * @return true if this is a key event.
          */
-        public bool isKeyEvent()
+        public bool IsKeyEvent()
         {
-            return type.isKeyEvent;
+            return _type.IsKeyEvent;
         }
 
         /**
          * Returns true for the KEY_PRESSED event type.
          * @return true if this is key pressed event.
          */
-        public bool isKeyPressedEvent()
+        public bool IsKeyPressedEvent()
         {
-            return type == EventType.KEY_PRESSED;
+            return _type == EventType.KEY_PRESSED;
         }
 
         /**
          * Returns true if this event is part of a drag operation
          * @return true if this event is part of a drag operation
          */
-        public bool isMouseDragEvent()
+        public bool IsMouseDragEvent()
         {
-            return dragEvent;
+            return _dragEvent;
         }
 
         /**
          * Returns true if this event ends a drag operation
          * @return true if this event ends a drag operation
          */
-        public bool isMouseDragEnd()
+        public bool IsMouseDragEnd()
         {
-            return (modifier & MODIFIER_BUTTON) == 0;
+            return (_modifier & MODIFIER_BUTTON) == 0;
         }
 
         /**
          * Returns the current absolute mouse X coordinate
          * @return the current absolute mouse X coordinate
          */
-        public int getMouseX()
+        public int GetMouseX()
         {
-            return mouseX;
+            return _mouseX;
         }
 
         /**
          * Returns the current absolute mouse Y coordinate
          * @return the current absolute mouse Y coordinate
          */
-        public int getMouseY()
+        public int GetMouseY()
         {
-            return mouseY;
+            return _mouseY;
         }
 
         /**
@@ -418,9 +418,9 @@ namespace XNATWL
          * @see #MOUSE_RBUTTON
          * @see #MOUSE_MBUTTON
          */
-        public int getMouseButton()
+        public int GetMouseButton()
         {
-            return mouseButton;
+            return _mouseButton;
         }
 
         /**
@@ -428,9 +428,9 @@ namespace XNATWL
          * @return the mouse wheel delta
          * @see EventType#MOUSE_WHEEL
          */
-        public int getMouseWheelDelta()
+        public int GetMouseWheelDelta()
         {
-            return mouseWheelDelta;
+            return _mouseWheelDelta;
         }
 
         /**
@@ -438,18 +438,18 @@ namespace XNATWL
          * @return the mouse click count
          * @see EventType#MOUSE_CLICKED
          */
-        public int getMouseClickCount()
+        public int GetMouseClickCount()
         {
-            return mouseClickCount;
+            return _mouseClickCount;
         }
 
         /**
          * Returns the key code. Only valid for KEY_PRESSED or KEY_RELEASED events
          * @return the key code (one of the KEY_* constants)
          */
-        public int getKeyCode()
+        public int GetKeyCode()
         {
-            return keyCode;
+            return _keyCode;
         }
 
         /**
@@ -457,9 +457,9 @@ namespace XNATWL
          * @see #hasKeyChar()
          * @return the key character
          */
-        public char getKeyChar()
+        public char GetKeyChar()
         {
-            return keyChar;
+            return _keyChar;
         }
 
         /**
@@ -467,9 +467,9 @@ namespace XNATWL
          * @see #getKeyChar()
          * @return true if a character is available
          */
-        public bool hasKeyChar()
+        public bool HasKeyChar()
         {
-            return type == EventType.KEY_PRESSED && keyChar != CHAR_NONE;
+            return _type == EventType.KEY_PRESSED && _keyChar != CHAR_NONE;
         }
 
         /**
@@ -478,76 +478,76 @@ namespace XNATWL
          * 
          * @return true if it's a character without additional modifiers
          */
-        public bool hasKeyCharNoModifiers()
+        public bool HasKeyCharNoModifiers()
         {
             int MODIFIER_ALTGR = MODIFIER_LCTRL | MODIFIER_RALT;
-            return hasKeyChar() && (
-                    ((modifier & ~MODIFIER_SHIFT) == 0) ||
-                    ((modifier & ~MODIFIER_ALTGR) == 0));
+            return HasKeyChar() && (
+                    ((_modifier & ~MODIFIER_SHIFT) == 0) ||
+                    ((_modifier & ~MODIFIER_ALTGR) == 0));
         }
 
         /**
          * Returns true if this is a repeated KEY_PRESSED event
          * @return true if this is a repeated KEY_PRESSED event
          */
-        public bool isKeyRepeated()
+        public bool IsKeyRepeated()
         {
-            return type == EventType.KEY_PRESSED && keyRepeated;
+            return _type == EventType.KEY_PRESSED && _keyRepeated;
         }
 
         /**
          * Returns the current event modifiers
          * @return the current event modifiers
          */
-        public int getModifiers()
+        public int GetModifiers()
         {
-            return modifier;
+            return _modifier;
         }
 
-        internal Event createSubEvent(EventType newEventType)
+        internal Event CreateSubEvent(EventType newEventType)
         {
-            if (subEvent == null)
+            if (_subEvent == null)
             {
-                subEvent = new Event();
+                _subEvent = new Event();
             }
-            subEvent.type = newEventType;
-            subEvent.mouseX = mouseX;
-            subEvent.mouseY = mouseY;
-            subEvent.mouseButton = mouseButton;
-            subEvent.mouseWheelDelta = mouseWheelDelta;
-            subEvent.mouseClickCount = mouseClickCount;
-            subEvent.dragEvent = dragEvent;
-            subEvent.keyRepeated = keyRepeated;
-            subEvent.keyChar = keyChar;
-            subEvent.keyCode = keyCode;
-            subEvent.modifier = modifier;
-            return subEvent;
+            _subEvent._type = newEventType;
+            _subEvent._mouseX = _mouseX;
+            _subEvent._mouseY = _mouseY;
+            _subEvent._mouseButton = _mouseButton;
+            _subEvent._mouseWheelDelta = _mouseWheelDelta;
+            _subEvent._mouseClickCount = _mouseClickCount;
+            _subEvent._dragEvent = _dragEvent;
+            _subEvent._keyRepeated = _keyRepeated;
+            _subEvent._keyChar = _keyChar;
+            _subEvent._keyCode = _keyCode;
+            _subEvent._modifier = _modifier;
+            return _subEvent;
         }
 
-        internal Event createSubEvent(int x, int y)
+        internal Event CreateSubEvent(int x, int y)
         {
-            Event e = createSubEvent(type);
-            e.mouseX = x;
-            e.mouseY = y;
+            Event e = CreateSubEvent(_type);
+            e._mouseX = x;
+            e._mouseY = y;
             return e;
         }
 
-        internal void setModifier(int mask, bool pressed)
+        internal void SetModifier(int mask, bool pressed)
         {
             if (pressed)
             {
-                modifier |= mask;
+                _modifier |= mask;
             }
             else
             {
-                modifier &= ~mask;
+                _modifier &= ~mask;
             }
         }
 
-        internal void setModifiers(bool pressed)
+        internal void SetModifiers(bool pressed)
         {
             int mask;
-            switch (keyCode)
+            switch (_keyCode)
             {
                 case KEY_LSHIFT: mask = MODIFIER_LSHIFT; break;
                 case KEY_LMETA: mask = MODIFIER_LMETA; break;
@@ -559,7 +559,7 @@ namespace XNATWL
                 case KEY_RMENU: mask = MODIFIER_RALT; break;
                 default: return;
             }
-            setModifier(mask, pressed);
+            SetModifier(mask, pressed);
         }
 
         private static String[] KEY_NAMES = new String[256];
@@ -591,7 +591,7 @@ namespace XNATWL
          * @param key the key code.
          * @return the name of the key or null.
          */
-        public static String getKeyNameForCode(int key)
+        public static String GetKeyNameForCode(int key)
         {
             if (key >= 0 && key < 256)
             {
@@ -607,7 +607,7 @@ namespace XNATWL
          * @param name the key name
          * @return the key code or KEY_NONE
          */
-        public static int getKeyCodeForName(String name)
+        public static int GetKeyCodeForName(String name)
         {
             if (!KEY_MAP.ContainsKey(name))
             {

@@ -75,7 +75,7 @@ namespace XNATWL.Theme
                 }
                 if (info == null && useFallback)
                 {
-                    DebugHook.getDebugHook().missingChildTheme(this, theme);
+                    DebugHook.getDebugHook().MissingChildTheme(this, theme);
                 }
             }
             return info;

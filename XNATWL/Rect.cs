@@ -96,7 +96,7 @@ namespace XNATWL
             }
         }
 
-        public bool isInside(int x, int y)
+        public bool IsInside(int x, int y)
         {
             return (x >= _x0) && (y >= _y0) && (x < _x1) && (y < _y1);
         }
@@ -185,6 +185,5 @@ namespace XNATWL
         {
             return "Rect[x0=" + _x0 + ", y0=" + _y0 + ", x1=" + _x1 + ", y1=" + _y1 + ']';
         }
-
     }
 }

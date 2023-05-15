@@ -132,7 +132,6 @@ namespace XNATWL.TextAreaModel
         }
     }
 
-
     public class TextElement : Element
     {
         private String _text;

@@ -40,35 +40,35 @@ namespace XNATWL
     
 		public static float VALUE_INDETERMINATE = -1;
 
-		private Image progressImage;
-		private float value;
+		private Image _progressImage;
+		private float _value;
 
 		public ProgressBar()
 		{
-			getAnimationState().resetAnimationTime(STATE_VALUE_CHANGED);
+			GetAnimationState().ResetAnimationTime(STATE_VALUE_CHANGED);
 		}
 
 		/**
 		 * Returns the current value or VALUE_INDETERMINATE
 		 * @return the current value or VALUE_INDETERMINATE
 		 */
-		public float getValue()
+		public float GetValue()
 		{
-			return value;
+			return _value;
 		}
 
 		/**
 		 * Sets the progress bar to an indeterminate state.
 		 * @see #STATE_INDETERMINATE
 		 */
-		public void setIndeterminate()
+		public void SetIndeterminate()
 		{
-			if (value >= 0)
+			if (_value >= 0)
 			{
-				value = VALUE_INDETERMINATE;
-				AnimationState animationState = getAnimationState();
-				animationState.setAnimationState(STATE_INDETERMINATE, true);
-				animationState.resetAnimationTime(STATE_VALUE_CHANGED);
+				_value = VALUE_INDETERMINATE;
+				AnimationState animationState = GetAnimationState();
+				animationState.SetAnimationState(STATE_INDETERMINATE, true);
+				animationState.ResetAnimationTime(STATE_VALUE_CHANGED);
 			}
 		}
 
@@ -78,7 +78,7 @@ namespace XNATWL
 		 *
 		 * @param value the progress value between 0.0f and 1.0f.
 		 */
-		public void setValue(float value)
+		public void SetValue(float value)
 		{
 			if (!(value > 0))
 			{  // protect against NaN
@@ -88,32 +88,32 @@ namespace XNATWL
 			{
 				value = 1;
 			}
-			if (this.value != value)
+			if (this._value != value)
 			{
-				this.value = value;
-				AnimationState animationState = getAnimationState();
-				animationState.setAnimationState(STATE_INDETERMINATE, false);
-				animationState.resetAnimationTime(STATE_VALUE_CHANGED);
+				this._value = value;
+				AnimationState animationState = GetAnimationState();
+				animationState.SetAnimationState(STATE_INDETERMINATE, false);
+				animationState.ResetAnimationTime(STATE_VALUE_CHANGED);
 			}
 		}
 
-		public String getText()
+		public String GetText()
 		{
-			return (String)getCharSequence();
+			return (String)GetCharSequence();
 		}
 
 		/**
 		 * Sets the text which is displayed on top of the progress bar image.
 		 * @param text the text
 		 */
-		public void setText(String text)
+		public void SetText(String text)
 		{
-			setCharSequence(text);
+			SetCharSequence(text);
 		}
 
-		public Image getProgressImage()
+		public Image GetProgressImage()
 		{
-			return progressImage;
+			return _progressImage;
 		}
 
 		/**
@@ -127,34 +127,34 @@ namespace XNATWL
 		 *
 		 * @param progressImage the progress image, can be null.
 		 */
-		public void setProgressImage(Image progressImage)
+		public void SetProgressImage(Image progressImage)
 		{
-			this.progressImage = progressImage;
+			this._progressImage = progressImage;
 		}
 
-		protected void applyThemeProgressBar(ThemeInfo themeInfo)
+		protected void ApplyThemeProgressBar(ThemeInfo themeInfo)
 		{
-			setProgressImage(themeInfo.GetImage("progressImage"));
+			SetProgressImage(themeInfo.GetImage("progressImage"));
 		}
 
-		protected override void applyTheme(ThemeInfo themeInfo)
+		protected override void ApplyTheme(ThemeInfo themeInfo)
 		{
-			base.applyTheme(themeInfo);
-			applyThemeProgressBar(themeInfo);
+			base.ApplyTheme(themeInfo);
+			ApplyThemeProgressBar(themeInfo);
 		}
 
-		protected override void paintWidget(GUI gui)
+		protected override void PaintWidget(GUI gui)
 		{
-			int width = getInnerWidth();
-			int height = getInnerHeight();
+			int width = GetInnerWidth();
+			int height = GetInnerHeight();
 
-			if (progressImage != null && value >= 0)
+			if (_progressImage != null && _value >= 0)
 			{
-				int imageWidth = progressImage.Width;
+				int imageWidth = _progressImage.Width;
 
 				int progressWidth = width - imageWidth;
 
-				int scaledWidth = (int)(progressWidth * value);
+				int scaledWidth = (int)(progressWidth * _value);
 				if (scaledWidth < 0)
 				{
 					scaledWidth = 0;
@@ -164,54 +164,52 @@ namespace XNATWL
 					scaledWidth = progressWidth;
 				}
 
-				progressImage.Draw(getAnimationState(), getInnerX(), getInnerY(), imageWidth + scaledWidth, height);
+				_progressImage.Draw(GetAnimationState(), GetInnerX(), GetInnerY(), imageWidth + scaledWidth, height);
 			}
 
-			base.paintWidget(gui);
+			base.PaintWidget(gui);
 		}
 
-		public override int getMinWidth()
+		public override int GetMinWidth()
 		{
-			int minWidth = base.getMinWidth();
-			Image bg = getBackground();
+			int minWidth = base.GetMinWidth();
+			Image bg = GetBackground();
 			if (bg != null)
 			{
-				minWidth = Math.Max(minWidth, bg.Width + getBorderHorizontal());
+				minWidth = Math.Max(minWidth, bg.Width + GetBorderHorizontal());
 			}
 			return minWidth;
 		}
 
-		public override int getMinHeight()
+		public override int GetMinHeight()
 		{
-			int minHeight = base.getMinHeight();
-			Image bg = getBackground();
+			int minHeight = base.GetMinHeight();
+			Image bg = GetBackground();
 			if (bg != null)
 			{
-				minHeight = Math.Max(minHeight, bg.Height + getBorderVertical());
+				minHeight = Math.Max(minHeight, bg.Height + GetBorderVertical());
 			}
 			return minHeight;
 		}
 
-		public override int getPreferredInnerWidth()
+		public override int GetPreferredInnerWidth()
 		{
-			int prefWidth = base.getPreferredInnerWidth();
-			if (progressImage != null)
+			int prefWidth = base.GetPreferredInnerWidth();
+			if (_progressImage != null)
 			{
-				prefWidth = Math.Max(prefWidth, progressImage.Width);
+				prefWidth = Math.Max(prefWidth, _progressImage.Width);
 			}
 			return prefWidth;
 		}
 
-		public override int getPreferredInnerHeight()
+		public override int GetPreferredInnerHeight()
 		{
-			int prefHeight = base.getPreferredInnerHeight();
-			if (progressImage != null)
+			int prefHeight = base.GetPreferredInnerHeight();
+			if (_progressImage != null)
 			{
-				prefHeight = Math.Max(prefHeight, progressImage.Height);
+				prefHeight = Math.Max(prefHeight, _progressImage.Height);
 			}
 			return prefHeight;
 		}
-
 	}
-
 }

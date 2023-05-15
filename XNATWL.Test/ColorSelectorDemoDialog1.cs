@@ -11,118 +11,118 @@ namespace XNATWL.Test
 
     public class ColorSelectorDemoDialog1 : FadeFrame
     {
-        ColorSelector cs;
+        ColorSelector _cs;
         public ColorSelectorDemoDialog1()
         {
-            cs = new ColorSelector(new ColorSpaceHSL());
+            _cs = new ColorSelector(new ColorSpaceHSL());
 
             ToggleButton btnUse2D = new ToggleButton();
-            btnUse2D.setActive(cs.isUseColorArea2D());
+            btnUse2D.SetActive(_cs.IsUseColorArea2D());
             btnUse2D.Action += (sender, e) =>
             {
-                cs.setUseColorArea2D(btnUse2D.isActive());
+                _cs.SetUseColorArea2D(btnUse2D.IsActive());
             };
             Label labelUse2D = new Label("Use 2D color area");
-            labelUse2D.setLabelFor(btnUse2D);
+            labelUse2D.SetLabelFor(btnUse2D);
 
             ToggleButton btnUseLabels = new ToggleButton();
-            btnUseLabels.setActive(cs.isUseColorArea2D());
+            btnUseLabels.SetActive(_cs.IsUseColorArea2D());
             btnUseLabels.Action += (sender, e) =>
             {
-                cs.setUseLabels(btnUseLabels.isActive());
+                _cs.SetUseLabels(btnUseLabels.IsActive());
             };
             Label labelUseLabels = new Label("show labels for adjusters");
-            labelUseLabels.setLabelFor(btnUseLabels);
+            labelUseLabels.SetLabelFor(btnUseLabels);
 
             ToggleButton btnShowPreview = new ToggleButton();
-            btnShowPreview.setActive(cs.isShowPreview());
+            btnShowPreview.SetActive(_cs.IsShowPreview());
             btnShowPreview.Action += (sender, e) =>
             {
-                cs.setShowPreview(btnShowPreview.isActive());
+                _cs.SetShowPreview(btnShowPreview.IsActive());
             };
             Label labelShowPreview = new Label("show color preview");
-            labelShowPreview.setLabelFor(btnShowPreview);
+            labelShowPreview.SetLabelFor(btnShowPreview);
 
             ToggleButton btnShowHexEditField = new ToggleButton();
-            btnShowHexEditField.setActive(cs.isShowHexEditField());
+            btnShowHexEditField.SetActive(_cs.IsShowHexEditField());
             btnShowHexEditField.Action += (sender, e) =>
             {
-                cs.setShowHexEditField(btnShowHexEditField.isActive());
+                _cs.SetShowHexEditField(btnShowHexEditField.IsActive());
             };
             Label labelShowHexEditField = new Label("show hex edit field");
-            labelShowHexEditField.setLabelFor(btnShowHexEditField);
+            labelShowHexEditField.SetLabelFor(btnShowHexEditField);
 
             ToggleButton btnShowNativeAdjuster = new ToggleButton();
             btnShowNativeAdjuster.Action += (sender, e) =>
             {
-                cs.setShowNativeAdjuster(btnShowNativeAdjuster.isActive());
+                _cs.SetShowNativeAdjuster(btnShowNativeAdjuster.IsActive());
             };
-            btnShowNativeAdjuster.setActive(cs.isShowNativeAdjuster());
+            btnShowNativeAdjuster.SetActive(_cs.IsShowNativeAdjuster());
             Label labelShowNativeAdjuster = new Label("show native (HSL) adjuster");
-            labelShowNativeAdjuster.setLabelFor(btnShowNativeAdjuster);
+            labelShowNativeAdjuster.SetLabelFor(btnShowNativeAdjuster);
 
             ToggleButton btnShowRGBAdjuster = new ToggleButton();
             btnShowRGBAdjuster.Action += (sender, e) =>
             {
-                cs.setShowRGBAdjuster(btnShowRGBAdjuster.isActive());
+                _cs.SetShowRGBAdjuster(btnShowRGBAdjuster.IsActive());
             };
-            btnShowRGBAdjuster.setActive(cs.isShowRGBAdjuster());
+            btnShowRGBAdjuster.SetActive(_cs.IsShowRGBAdjuster());
 
             Label labelShowRGBAdjuster = new Label("show RGB adjuster");
-            labelShowRGBAdjuster.setLabelFor(btnShowRGBAdjuster);
+            labelShowRGBAdjuster.SetLabelFor(btnShowRGBAdjuster);
 
             ToggleButton btnShowAlphaAdjuster = new ToggleButton();
-            btnShowAlphaAdjuster.setActive(cs.isShowAlphaAdjuster());
+            btnShowAlphaAdjuster.SetActive(_cs.IsShowAlphaAdjuster());
             btnShowAlphaAdjuster.Action += (sender, e) =>
             {
-                cs.setShowAlphaAdjuster(btnShowAlphaAdjuster.isActive());
+                _cs.SetShowAlphaAdjuster(btnShowAlphaAdjuster.IsActive());
             };
 
             Label labelShowAlphaAdjuster = new Label("show alpha adjuster");
-            labelShowAlphaAdjuster.setLabelFor(btnShowAlphaAdjuster);
+            labelShowAlphaAdjuster.SetLabelFor(btnShowAlphaAdjuster);
 
             TintAnimator tintAnimator = new TintAnimator(new TintAnimator.GUITimeSource(this));
 
             Label testDisplay = new Label("This is a test display");
-            testDisplay.setTheme("testDisplay");
-            testDisplay.setTintAnimator(tintAnimator);
+            testDisplay.SetTheme("testDisplay");
+            testDisplay.GetTintAnimator(tintAnimator);
 
             Label testDisplay2 = new Label("This is a test display");
-            testDisplay2.setTheme("testDisplay2");
-            testDisplay2.setTintAnimator(tintAnimator);
+            testDisplay2.SetTheme("testDisplay2");
+            testDisplay2.GetTintAnimator(tintAnimator);
 
-            cs.ColorChanged += (x, y) =>
+            _cs.ColorChanged += (x, y) =>
             {
-                tintAnimator.SetColor(cs.getColor());
+                tintAnimator.SetColor(_cs.GetColor());
             };
-            tintAnimator.SetColor(cs.getColor());
+            tintAnimator.SetColor(_cs.GetColor());
 
             DialogLayout dl = new DialogLayout();
-            dl.setHorizontalGroup(dl.createParallelGroup()
-                    .addWidgets(cs, testDisplay, testDisplay2)
-                    .addGroup(dl.createSequentialGroup().addGap().addWidgets(labelUse2D, btnUse2D))
-                    .addGroup(dl.createSequentialGroup().addGap().addWidgets(labelUseLabels, btnUseLabels))
-                    .addGroup(dl.createSequentialGroup().addGap().addWidgets(labelShowPreview, btnShowPreview))
-                    .addGroup(dl.createSequentialGroup().addGap().addWidgets(labelShowHexEditField, btnShowHexEditField))
-                    .addGroup(dl.createSequentialGroup().addGap().addWidgets(labelShowNativeAdjuster, btnShowNativeAdjuster))
-                    .addGroup(dl.createSequentialGroup().addGap().addWidgets(labelShowRGBAdjuster, btnShowRGBAdjuster))
-                    .addGroup(dl.createSequentialGroup().addGap().addWidgets(labelShowAlphaAdjuster, btnShowAlphaAdjuster)));
-            dl.setVerticalGroup(dl.createSequentialGroup()
-                    .addWidget(cs)
-                    .addGap(DialogLayout.MEDIUM_GAP)
-                    .addWidget(testDisplay).addGap(0).addWidget(testDisplay2)
-                    .addGap(DialogLayout.MEDIUM_GAP)
-                    .addGroup(dl.createParallelGroup(labelUse2D, btnUse2D))
-                    .addGroup(dl.createParallelGroup(labelUseLabels, btnUseLabels))
-                    .addGroup(dl.createParallelGroup(labelShowPreview, btnShowPreview))
-                    .addGroup(dl.createParallelGroup(labelShowHexEditField, btnShowHexEditField))
-                    .addGroup(dl.createParallelGroup(labelShowNativeAdjuster, btnShowNativeAdjuster))
-                    .addGroup(dl.createParallelGroup(labelShowRGBAdjuster, btnShowRGBAdjuster))
-                    .addGroup(dl.createParallelGroup(labelShowAlphaAdjuster, btnShowAlphaAdjuster)));
+            dl.SetHorizontalGroup(dl.CreateParallelGroup()
+                    .AddWidgets(_cs, testDisplay, testDisplay2)
+                    .AddGroup(dl.CreateSequentialGroup().AddGap().AddWidgets(labelUse2D, btnUse2D))
+                    .AddGroup(dl.CreateSequentialGroup().AddGap().AddWidgets(labelUseLabels, btnUseLabels))
+                    .AddGroup(dl.CreateSequentialGroup().AddGap().AddWidgets(labelShowPreview, btnShowPreview))
+                    .AddGroup(dl.CreateSequentialGroup().AddGap().AddWidgets(labelShowHexEditField, btnShowHexEditField))
+                    .AddGroup(dl.CreateSequentialGroup().AddGap().AddWidgets(labelShowNativeAdjuster, btnShowNativeAdjuster))
+                    .AddGroup(dl.CreateSequentialGroup().AddGap().AddWidgets(labelShowRGBAdjuster, btnShowRGBAdjuster))
+                    .AddGroup(dl.CreateSequentialGroup().AddGap().AddWidgets(labelShowAlphaAdjuster, btnShowAlphaAdjuster)));
+            dl.SetVerticalGroup(dl.CreateSequentialGroup()
+                    .AddWidget(_cs)
+                    .AddGap(DialogLayout.MEDIUM_GAP)
+                    .AddWidget(testDisplay).AddGap(0).AddWidget(testDisplay2)
+                    .AddGap(DialogLayout.MEDIUM_GAP)
+                    .AddGroup(dl.CreateParallelGroup(labelUse2D, btnUse2D))
+                    .AddGroup(dl.CreateParallelGroup(labelUseLabels, btnUseLabels))
+                    .AddGroup(dl.CreateParallelGroup(labelShowPreview, btnShowPreview))
+                    .AddGroup(dl.CreateParallelGroup(labelShowHexEditField, btnShowHexEditField))
+                    .AddGroup(dl.CreateParallelGroup(labelShowNativeAdjuster, btnShowNativeAdjuster))
+                    .AddGroup(dl.CreateParallelGroup(labelShowRGBAdjuster, btnShowRGBAdjuster))
+                    .AddGroup(dl.CreateParallelGroup(labelShowAlphaAdjuster, btnShowAlphaAdjuster)));
 
-            setTheme("colorSelectorDemoFrame");
-            setTitle("Color Selector Demo");
-            add(dl);
+            SetTheme("colorSelectorDemoFrame");
+            SetTitle("Color Selector Demo");
+            Add(dl);
         }
     }
 }

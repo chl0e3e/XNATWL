@@ -36,77 +36,77 @@ namespace XNATWL
 {
     public class ValueAdjusterFloat : ValueAdjuster
     {
-        private float value;
-        private float minValue;
-        private float maxValue = 100f;
-        private float dragStartValue;
-        private float stepSize = 1f;
-        private FloatModel model;
-        private String format = "%.2f";
+        private float _value;
+        private float _minValue;
+        private float _maxValue = 100f;
+        private float _dragStartValue;
+        private float _stepSize = 1f;
+        private FloatModel _model;
+        private String _format = "%.2f";
         //private Locale locale = Locale.ENGLISH;
 
         public ValueAdjusterFloat()
         {
-            setTheme("valueadjuster");
-            setDisplayText();
+            SetTheme("valueadjuster");
+            SetDisplayText();
         }
 
         public ValueAdjusterFloat(FloatModel model)
         {
-            setTheme("valueadjuster");
-            setModel(model);
+            SetTheme("valueadjuster");
+            SetModel(model);
         }
 
-        public float getMaxValue()
+        public float GetMaxValue()
         {
-            return maxValue;
+            return _maxValue;
         }
 
-        public float getMinValue()
+        public float GetMinValue()
         {
-            return minValue;
+            return _minValue;
         }
 
-        public void setMinMaxValue(float minValue, float maxValue)
+        public void SetMinMaxValue(float minValue, float maxValue)
         {
             if (maxValue < minValue)
             {
                 throw new ArgumentOutOfRangeException("maxValue < minValue");
             }
-            this.minValue = minValue;
-            this.maxValue = maxValue;
-            setValue(value);
+            this._minValue = minValue;
+            this._maxValue = maxValue;
+            SetValue(_value);
         }
 
-        public float getValue()
+        public float GetValue()
         {
-            return value;
+            return _value;
         }
 
-        public void setValue(float value)
+        public void SetValue(float value)
         {
-            if (value > maxValue)
+            if (value > _maxValue)
             {
-                value = maxValue;
+                value = _maxValue;
             }
-            else if (value < minValue)
+            else if (value < _minValue)
             {
-                value = minValue;
+                value = _minValue;
             }
-            if (this.value != value)
+            if (this._value != value)
             {
-                this.value = value;
-                if (model != null)
+                this._value = value;
+                if (_model != null)
                 {
-                    model.Value = value;
+                    _model.Value = value;
                 }
-                setDisplayText();
+                SetDisplayText();
             }
         }
 
-        public float getStepSize()
+        public float GetStepSize()
         {
-            return stepSize;
+            return _stepSize;
         }
 
         /**
@@ -118,46 +118,46 @@ namespace XNATWL
          * @param stepSize the new step size
          * @throws IllegalArgumentException if stepSize is NaN or &lt;= 0.
          */
-        public void setStepSize(float stepSize)
+        public void SetStepSize(float stepSize)
         {
             // NaN always compares as false
             if (!(stepSize > 0))
             {
                 throw new ArgumentOutOfRangeException("stepSize");
             }
-            this.stepSize = stepSize;
+            this._stepSize = stepSize;
         }
 
-        public FloatModel getModel()
+        public FloatModel GetModel()
         {
-            return model;
+            return _model;
         }
 
-        public void setModel(FloatModel model)
+        public void SetModel(FloatModel model)
         {
-            if (this.model != model)
+            if (this._model != model)
             {
-                removeModelCallback();
-                this.model = model;
+                RemoveModelCallback();
+                this._model = model;
                 if (model != null)
                 {
-                    this.minValue = model.MinValue;
-                    this.maxValue = model.MaxValue;
-                    addModelCallback();
+                    this._minValue = model.MinValue;
+                    this._maxValue = model.MaxValue;
+                    AddModelCallback();
                 }
             }
         }
 
-        public String getFormat()
+        public String GetFormat()
         {
-            return format;
+            return _format;
         }
 
-        public void setFormat(String format)
+        public void SetFormat(String format)
         {
             // test format
             //String.Format(locale, format, 42f);
-            this.format = format;
+            this._format = format;
         }
 
         /*public Locale getLocale()
@@ -174,16 +174,16 @@ namespace XNATWL
             this.locale = locale;
         }*/
 
-        protected override String onEditStart()
+        protected override String OnEditStart()
         {
-            return formatText();
+            return FormatText();
         }
 
-        protected override bool onEditEnd(String text)
+        protected override bool OnEditEnd(String text)
         {
             try
             {
-                setValue(parseText(text));
+                SetValue(ParseText(text));
                 return true;
             }
             catch (ParseException ex)
@@ -192,11 +192,11 @@ namespace XNATWL
             }
         }
 
-        protected override String validateEdit(String text)
+        protected override String ValidateEdit(String text)
         {
             try
             {
-                parseText(text);
+                ParseText(text);
                 return null;
             }
             catch (ParseException ex)
@@ -205,92 +205,92 @@ namespace XNATWL
             }
         }
 
-        protected override void onEditCanceled()
+        protected override void OnEditCanceled()
         {
         }
 
-        protected override bool shouldStartEdit(char ch)
+        protected override bool ShouldStartEdit(char ch)
         {
             return (ch >= '0' && ch <= '9') || (ch == '-') || (ch == '.');
         }
 
-        protected override void onDragStart()
+        protected override void OnDragStart()
         {
-            dragStartValue = value;
+            _dragStartValue = _value;
         }
 
-        protected override void onDragUpdate(int dragDelta)
+        protected override void OnDragUpdate(int dragDelta)
         {
-            float range = Math.Max(1e-4f, Math.Abs(getMaxValue() - getMinValue()));
-            setValue(dragStartValue + dragDelta / Math.Max(3, getWidth() / range));
+            float range = Math.Max(1e-4f, Math.Abs(GetMaxValue() - GetMinValue()));
+            SetValue(_dragStartValue + dragDelta / Math.Max(3, GetWidth() / range));
         }
 
-        protected override void onDragCancelled()
+        protected override void OnDragCancelled()
         {
-            setValue(dragStartValue);
+            SetValue(_dragStartValue);
         }
 
-        protected override void doDecrement()
+        protected override void DoDecrement()
         {
-            setValue(value - getStepSize());
+            SetValue(_value - GetStepSize());
         }
 
-        protected override void doIncrement()
+        protected override void DoIncrement()
         {
-            setValue(value + getStepSize());
+            SetValue(_value + GetStepSize());
         }
 
-        protected override String formatText()
+        protected override String FormatText()
         {
-            return value.ToString(); // String.format(locale, format, value);
+            return _value.ToString(); // String.format(locale, format, value);
         }
 
-        protected float parseText(String value)
+        protected float ParseText(String value)
         {
             return float.Parse(value);
         }
 
-        protected override void syncWithModel()
+        protected override void SyncWithModel()
         {
-            cancelEdit();
-            this.minValue = model.MinValue;
-            this.maxValue = model.MaxValue;
-            this.value = model.Value;
-            setDisplayText();
+            CancelEdit();
+            this._minValue = _model.MinValue;
+            this._maxValue = _model.MaxValue;
+            this._value = _model.Value;
+            SetDisplayText();
         }
 
-        protected override void afterAddToGUI(GUI gui)
+        protected override void AfterAddToGUI(GUI gui)
         {
-            base.afterAddToGUI(gui);
-            addModelCallback();
+            base.AfterAddToGUI(gui);
+            AddModelCallback();
         }
 
-        protected override void beforeRemoveFromGUI(GUI gui)
+        protected override void BeforeRemoveFromGUI(GUI gui)
         {
-            removeModelCallback();
-            base.beforeRemoveFromGUI(gui);
+            RemoveModelCallback();
+            base.BeforeRemoveFromGUI(gui);
         }
 
-        protected void removeModelCallback()
+        protected void RemoveModelCallback()
         {
-            if (model != null)
+            if (_model != null)
             {
-                model.Changed -= Model_Changed;
+                _model.Changed -= Model_Changed;
             }
         }
 
-        protected void addModelCallback()
+        protected void AddModelCallback()
         {
-            if (model != null && getGUI() != null)
+            if (_model != null && GetGUI() != null)
             {
-                model.Changed += Model_Changed;
-                syncWithModel();
+                _model.Changed += Model_Changed;
+                SyncWithModel();
             }
         }
 
         private void Model_Changed(object sender, FloatChangedEventArgs e)
         {
-            this.syncWithModel();
+            this.SyncWithModel();
         }
     }
 }

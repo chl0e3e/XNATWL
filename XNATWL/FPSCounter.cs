@@ -35,13 +35,13 @@ namespace XNATWL
 {
     public class FPSCounter : Label
     {
-        private long startTime;
-        private int frames;
-        private int framesToCount = 100;
+        private long _startTime;
+        private int _frames;
+        private int _framesToCount = 100;
 
-        private StringBuilder fmtBuffer;
-        private int decimalPoint;
-        private long scale;
+        private StringBuilder _fmtBuffer;
+        private int _decimalPoint;
+        private long _scale;
 
         /**
          * Creates the FPS counter with the given number of integer and decimal digits
@@ -59,10 +59,10 @@ namespace XNATWL
             {
                 throw new ArgumentOutOfRangeException("numDecimalDigits must be >= 0");
             }
-            decimalPoint = numIntegerDigits + 1;
-            startTime = DateTime.Now.Ticks;
-            fmtBuffer = new StringBuilder();
-            fmtBuffer.Length = numIntegerDigits + numDecimalDigits + Math.Sign(numDecimalDigits);
+            _decimalPoint = numIntegerDigits + 1;
+            _startTime = DateTime.Now.Ticks;
+            _fmtBuffer = new StringBuilder();
+            _fmtBuffer.Length = numIntegerDigits + numDecimalDigits + Math.Sign(numDecimalDigits);
 
             // compute the scale based on the number of decimal places
             long tmp = (long)1e9;
@@ -70,10 +70,10 @@ namespace XNATWL
             {
                 tmp *= 10;
             }
-            this.scale = tmp;
+            this._scale = tmp;
 
             // set default text so that initial size is computed correctly
-            updateText(0);
+            UpdateText(0);
         }
 
         /**
@@ -84,9 +84,9 @@ namespace XNATWL
         {
         }
 
-        public int getFramesToCount()
+        public int GetFramesToCount()
         {
-            return framesToCount;
+            return _framesToCount;
         }
 
         /**
@@ -95,43 +95,43 @@ namespace XNATWL
          *
          * @param framesToCount the number of frames to count
          */
-        public void setFramesToCount(int framesToCount)
+        public void SetFramesToCount(int framesToCount)
         {
             if (framesToCount <= 0)
             {
                 throw new ArgumentOutOfRangeException("framesToCount < 1");
             }
-            this.framesToCount = framesToCount;
+            this._framesToCount = framesToCount;
         }
 
-        protected override void paintWidget(GUI gui)
+        protected override void PaintWidget(GUI gui)
         {
-            if (++frames >= framesToCount)
+            if (++_frames >= _framesToCount)
             {
-                updateFPS();
+                UpdateFPS();
             }
-            base.paintWidget(gui);
+            base.PaintWidget(gui);
         }
 
-        private void updateFPS()
+        private void UpdateFPS()
         {
             long curTime = DateTime.Now.Ticks;
-            long elapsed = curTime - startTime;
-            startTime = curTime;
+            long elapsed = curTime - _startTime;
+            _startTime = curTime;
 
-            updateText((int)((frames * scale + (elapsed >> 1)) / elapsed));
-            frames = 0;
+            UpdateText((int)((_frames * _scale + (elapsed >> 1)) / elapsed));
+            _frames = 0;
         }
 
-        private void updateText(int value)
+        private void UpdateText(int value)
         {
-            StringBuilder buf = fmtBuffer;
+            StringBuilder buf = _fmtBuffer;
             int pos = buf.Length;
             do
             {
                 buf[--pos] = (char)('0' + (value % 10));
                 value /= 10;
-                if (decimalPoint == pos)
+                if (_decimalPoint == pos)
                 {
                     buf[--pos] = '.';
                 }
@@ -143,13 +143,13 @@ namespace XNATWL
                 do
                 {
                     buf[--pos] = '9';
-                    if (decimalPoint == pos)
+                    if (_decimalPoint == pos)
                     {
                         --pos;
                     }
                 } while (pos > 0);
             }
-            setCharSequence(buf.ToString());
+            SetCharSequence(buf.ToString());
         }
     }
 }

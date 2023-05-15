@@ -37,125 +37,124 @@ namespace XNATWL
 {
     public class Graph : Widget
     {
-        private GraphArea area;
+        private GraphArea _area;
 
-        GraphModel model;
-        private ParameterMap themeLineStyles;
-        private int sizeMultipleX = 1;
-        private int sizeMultipleY = 1;
+        GraphModel _model;
+        private ParameterMap _themeLineStyles;
+        private int _sizeMultipleX = 1;
+        private int _sizeMultipleY = 1;
 
-        LineStyle[] lineStyles = new LineStyle[8];
-        private float[] renderXYBuffer = new float[128];
+        LineStyle[] _lineStyles = new LineStyle[8];
+        private float[] _renderXYBuffer = new float[128];
 
         public Graph()
         {
-            area = new GraphArea(this);
-            area.setClip(true);
-            add(area);
+            _area = new GraphArea(this);
+            _area.SetClip(true);
+            Add(_area);
         }
 
         public Graph(GraphModel model) : this()
         {
-            setModel(model);
+            SetModel(model);
         }
 
-        public GraphModel getModel()
+        public GraphModel GetModel()
         {
-            return model;
+            return _model;
         }
 
-        public void setModel(GraphModel model)
+        public void SetModel(GraphModel model)
         {
-            this.model = model;
-            invalidateLineStyles();
+            this._model = model;
+            InvalidateLineStyles();
         }
 
-        public int getSizeMultipleX()
+        public int GetSizeMultipleX()
         {
-            return sizeMultipleX;
+            return _sizeMultipleX;
         }
 
-        public void setSizeMultipleX(int sizeMultipleX)
+        public void SetSizeMultipleX(int sizeMultipleX)
         {
             if (sizeMultipleX < 1)
             {
                 throw new ArgumentOutOfRangeException("sizeMultipleX must be >= 1");
             }
-            this.sizeMultipleX = sizeMultipleX;
+            this._sizeMultipleX = sizeMultipleX;
         }
 
-        public int getSizeMultipleY()
+        public int GetSizeMultipleY()
         {
-            return sizeMultipleY;
+            return _sizeMultipleY;
         }
 
-        public void setSizeMultipleY(int sizeMultipleY)
+        public void SetSizeMultipleY(int sizeMultipleY)
         {
             if (sizeMultipleY < 1)
             {
                 throw new ArgumentOutOfRangeException("sizeMultipleX must be >= 1");
             }
-            this.sizeMultipleY = sizeMultipleY;
+            this._sizeMultipleY = sizeMultipleY;
         }
 
-        protected override void applyTheme(ThemeInfo themeInfo)
+        protected override void ApplyTheme(ThemeInfo themeInfo)
         {
-            base.applyTheme(themeInfo);
-            applyThemeGraph(themeInfo);
+            base.ApplyTheme(themeInfo);
+            ApplyThemeGraph(themeInfo);
         }
 
-        protected void applyThemeGraph(ThemeInfo themeInfo)
+        protected void ApplyThemeGraph(ThemeInfo themeInfo)
         {
-            this.themeLineStyles = themeInfo.GetParameterMap("lineStyles");
-            setSizeMultipleX(themeInfo.GetParameter("sizeMultipleX", 1));
-            setSizeMultipleY(themeInfo.GetParameter("sizeMultipleY", 1));
-            invalidateLineStyles();
+            this._themeLineStyles = themeInfo.GetParameterMap("lineStyles");
+            SetSizeMultipleX(themeInfo.GetParameter("sizeMultipleX", 1));
+            SetSizeMultipleY(themeInfo.GetParameter("sizeMultipleY", 1));
+            InvalidateLineStyles();
         }
 
-        protected void invalidateLineStyles()
+        protected void InvalidateLineStyles()
         {
-            for (int i = 0; i < lineStyles.Length; i++)
+            for (int i = 0; i < _lineStyles.Length; i++)
             {
-                lineStyles[i] = null;
+                _lineStyles[i] = null;
             }
         }
 
-        void syncLineStyles()
+        void SyncLineStyles()
         {
-            int numLines = model.Lines;
-            if (lineStyles.Length < numLines)
+            int numLines = _model.Lines;
+            if (_lineStyles.Length < numLines)
             {
                 LineStyle[] newLineStyles = new LineStyle[numLines];
-                Array.Copy(lineStyles, 0, newLineStyles, 0, lineStyles.Length);
-                this.lineStyles = newLineStyles;
+                Array.Copy(_lineStyles, 0, newLineStyles, 0, _lineStyles.Length);
+                this._lineStyles = newLineStyles;
             }
 
             for (int i = 0; i < numLines; i++)
             {
-                GraphLineModel line = model.LineAt(i);
-                LineStyle style = lineStyles[i];
+                GraphLineModel line = _model.LineAt(i);
+                LineStyle style = _lineStyles[i];
                 if (style == null)
                 {
                     style = new LineStyle();
-                    lineStyles[i] = style;
+                    _lineStyles[i] = style;
                 }
                 String visualStyle = TextUtil.NotNull(line.VisualStyleName);
-                if (!style.name.Equals(visualStyle))
+                if (!style._name.Equals(visualStyle))
                 {
                     ParameterMap lineStyle = null;
-                    if (themeLineStyles != null)
+                    if (_themeLineStyles != null)
                     {
-                        lineStyle = themeLineStyles.GetParameterMap(visualStyle);
+                        lineStyle = _themeLineStyles.GetParameterMap(visualStyle);
                     }
-                    style.setStyleName(visualStyle, lineStyle);
+                    style.SetStyleName(visualStyle, lineStyle);
                 }
             }
         }
 
         private static float EPSILON = 1e-4f;
 
-        void renderLine(LineRenderer lineRenderer, GraphLineModel line,
-                float minValue, float maxValue, LineStyle style)
+        void RenderLine(LineRenderer lineRenderer, GraphLineModel line, float minValue, float maxValue, LineStyle style)
         {
             int numPoints = line.Points;
             if (numPoints <= 0)
@@ -164,25 +163,25 @@ namespace XNATWL
                 return;
             }
 
-            if (renderXYBuffer.Length < numPoints * 2)
+            if (_renderXYBuffer.Length < numPoints * 2)
             {
                 // no need to copy - we generate new values anyway
-                renderXYBuffer = new float[numPoints * 2];
+                _renderXYBuffer = new float[numPoints * 2];
             }
 
-            float[] xy = this.renderXYBuffer;
+            float[] xy = this._renderXYBuffer;
 
             float delta = maxValue - minValue;
             if (Math.Abs(delta) < EPSILON)
             {
                 // Math.copySign is Java 1.6+
-                delta = copySign(EPSILON, delta);
+                delta = CopySign(EPSILON, delta);
             }
 
-            float yscale = (float)-getInnerHeight() / delta;
-            float yoff = getInnerBottom();
-            float xscale = (float)getInnerWidth() / (float)Math.Max(1, numPoints - 1);
-            float xoff = getInnerX();
+            float yscale = (float)-GetInnerHeight() / delta;
+            float yoff = GetInnerBottom();
+            float xscale = (float)GetInnerWidth() / (float)Math.Max(1, numPoints - 1);
+            float xoff = GetInnerX();
 
             for (int i = 0; i < numPoints; i++)
             {
@@ -200,10 +199,10 @@ namespace XNATWL
                 numPoints = 2;
             }
 
-            lineRenderer.DrawLine(xy, numPoints, style.lineWidth, style.color, false);
+            lineRenderer.DrawLine(xy, numPoints, style._lineWidth, style._color, false);
         }
 
-        private static float copySign(float magnitude, float sign)
+        private static float CopySign(float magnitude, float sign)
         {
             // this copies the sign bit from sign to magnitude
             // it assumes the magnitude is positive
@@ -214,36 +213,36 @@ namespace XNATWL
             return BitConverter.ToSingle(BitConverter.GetBytes(rawResult), 0);
         }
 
-        public override bool setSize(int width, int height)
+        public override bool SetSize(int width, int height)
         {
-            return base.setSize(
-                    round(width, sizeMultipleX),
-                    round(height, sizeMultipleY));
+            return base.SetSize(
+                    Round(width, _sizeMultipleX),
+                    Round(height, _sizeMultipleY));
         }
 
-        private static int round(int value, int grid)
+        private static int Round(int value, int grid)
         {
             return value - (value % grid);
         }
 
-        protected override void layout()
+        protected override void Layout()
         {
-            layoutChildFullInnerArea(area);
+            LayoutChildFullInnerArea(_area);
         }
 
         public class LineStyle
         {
-            internal String name = "";
-            internal Color color = Color.WHITE;
-            internal float lineWidth = 1.0f;
+            internal String _name = "";
+            internal Color _color = Color.WHITE;
+            internal float _lineWidth = 1.0f;
 
-            internal void setStyleName(String name, ParameterMap lineStyle)
+            internal void SetStyleName(String name, ParameterMap lineStyle)
             {
-                this.name = name;
+                this._name = name;
                 if (lineStyle != null)
                 {
-                    this.color = lineStyle.GetParameter("color", Color.WHITE);
-                    this.lineWidth = Math.Max(EPSILON, lineStyle.GetParameter("width", 1.0f));
+                    this._color = lineStyle.GetParameter("color", Color.WHITE);
+                    this._lineWidth = Math.Max(EPSILON, lineStyle.GetParameter("width", 1.0f));
                 }
             }
         }
@@ -257,22 +256,22 @@ namespace XNATWL
                 this._graph = graph;
             }
 
-            protected override void paintWidget(GUI gui)
+            protected override void PaintWidget(GUI gui)
             {
-                if (this._graph.model != null)
+                if (this._graph._model != null)
                 {
-                    this._graph.syncLineStyles();
-                    LineRenderer lineRenderer = gui.getRenderer().LineRenderer;
+                    this._graph.SyncLineStyles();
+                    LineRenderer lineRenderer = gui.GetRenderer().LineRenderer;
 
-                    int numLines = this._graph.model.Lines;
-                    bool independantScale = this._graph.model.ScaleLinesIndependent();
+                    int numLines = this._graph._model.Lines;
+                    bool independantScale = this._graph._model.ScaleLinesIndependent();
                     float minValue = float.MaxValue;
                     float maxValue = -float.MaxValue;
                     if (independantScale)
                     {
                         for (int i = 0; i < numLines; i++)
                         {
-                            GraphLineModel line = this._graph.model.LineAt(i);
+                            GraphLineModel line = this._graph._model.LineAt(i);
                             minValue = Math.Min(minValue, line.MinValue);
                             maxValue = Math.Max(maxValue, line.MaxValue);
                         }
@@ -280,21 +279,19 @@ namespace XNATWL
 
                     for (int i = 0; i < numLines; i++)
                     {
-                        GraphLineModel line = this._graph.model.LineAt(i);
-                        LineStyle style = this._graph.lineStyles[i];
+                        GraphLineModel line = this._graph._model.LineAt(i);
+                        LineStyle style = this._graph._lineStyles[i];
                         if (independantScale)
                         {
-                            this._graph.renderLine(lineRenderer, line, minValue, maxValue, style);
+                            this._graph.RenderLine(lineRenderer, line, minValue, maxValue, style);
                         }
                         else
                         {
-                            this._graph.renderLine(lineRenderer, line, line.MinValue, line.MaxValue, style);
+                            this._graph.RenderLine(lineRenderer, line, line.MinValue, line.MaxValue, style);
                         }
                     }
                 }
             }
-
         }
     }
-
 }

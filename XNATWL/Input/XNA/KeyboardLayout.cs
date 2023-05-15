@@ -22,7 +22,7 @@ namespace XNATWL.Input.XNA
         public KeyboardLayout(FileSystemObject keyboardLayoutXML)
         {
             Stream fileStream = keyboardLayoutXML.OpenRead();
-            this._Read(fileStream);
+            this.Read(fileStream);
             fileStream.Close();
 
             this._emptyKeyInfo = new KeyInfo();
@@ -31,7 +31,7 @@ namespace XNATWL.Input.XNA
             this._emptyKeyInfo.ShiftChar = '\0';
         }
 
-        private void _Read(Stream stream)
+        private void Read(Stream stream)
         {
             this._document = new XmlDocument();
             this._document.PreserveWhitespace = true;

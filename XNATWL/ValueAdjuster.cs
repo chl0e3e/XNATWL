@@ -41,71 +41,70 @@ namespace XNATWL.Model
         private static int INITIAL_DELAY = 300;
         private static int REPEAT_DELAY = 75;
 
-        private DraggableButton label;
-        private EditField editField;
-        private Button decButton;
-        private Button incButton;
-        private Runnable timerCallback;
-        private L listeners;
-        private Timer timer;
+        private DraggableButton _label;
+        private EditField _editField;
+        private Button _decButton;
+        private Button _incButton;
+        private L _listeners;
+        private Timer _timer;
 
-        private String displayPrefix;
-        private String displayPrefixTheme = "";
-        private bool useMouseWheel = true;
-        private bool acceptValueOnFocusLoss = true;
-        private bool wasInEditOnFocusLost;
-        private int width;
+        private String _displayPrefix;
+        private String _displayPrefixTheme = "";
+        private bool _useMouseWheel = true;
+        private bool _acceptValueOnFocusLoss = true;
+        private bool _wasInEditOnFocusLost;
+        private int _width;
 
         public ValueAdjuster()
         {
-            this.label = new DraggableButton(getAnimationState(), true);
+            this._label = new DraggableButton(GetAnimationState(), true);
             // EditField always inherits from the passed animation state
-            this.editField = new EditField(getAnimationState());
-            this.decButton = new Button(getAnimationState(), true);
-            this.incButton = new Button(getAnimationState(), true);
+            this._editField = new EditField(GetAnimationState());
+            this._decButton = new Button(GetAnimationState(), true);
+            this._incButton = new Button(GetAnimationState(), true);
 
-            label.setClip(true);
-            label.setTheme("valueDisplay");
-            editField.setTheme("valueEdit");
-            decButton.setTheme("decButton");
-            incButton.setTheme("incButton");
+            _label.SetClip(true);
+            _label.SetTheme("valueDisplay");
+            _editField.SetTheme("valueEdit");
+            _decButton.SetTheme("decButton");
+            _incButton.SetTheme("incButton");
 
-            decButton.getModel().State += ValueAdjuster_State;
-            incButton.getModel().State += ValueAdjuster_State;
+            _decButton.GetModel().State += ValueAdjuster_State;
+            _incButton.GetModel().State += ValueAdjuster_State;
 
-            listeners = new L(this);
-            label.Action += Label_Action;
-            label.setListener(listeners);
+            _listeners = new L(this);
+            _label.Action += Label_Action;
+            _label.SetListener(_listeners);
 
-            editField.setVisible(false);
-            editField.Callback += EditField_Callback;
+            _editField.SetVisible(false);
+            _editField.Callback += EditField_Callback;
 
-            add(label);
-            add(editField);
-            add(decButton);
-            add(incButton);
-            setCanAcceptKeyboardFocus(true);
-            setDepthFocusTraversal(false);
+            Add(_label);
+            Add(_editField);
+            Add(_decButton);
+            Add(_incButton);
+            SetCanAcceptKeyboardFocus(true);
+            SetDepthFocusTraversal(false);
         }
 
         private void EditField_Callback(object sender, EditFieldCallbackEventArgs e)
         {
-            this.handleEditCallback(e.Key);
+            this.HandleEditCallback(e.Key);
         }
 
         private void Label_Action(object sender, ButtonActionEventArgs e)
         {
-            startEdit();
+            StartEdit();
         }
 
         private void ValueAdjuster_State(object sender, ButtonStateChangedEventArgs e)
         {
-            updateTimer();
+            UpdateTimer();
         }
 
-        public String getDisplayPrefix()
+        public String GetDisplayPrefix()
         {
-            return displayPrefix;
+            return _displayPrefix;
         }
 
         /**
@@ -116,15 +115,15 @@ namespace XNATWL.Model
          *
          * @param displayPrefix the prefix or null
          */
-        public void setDisplayPrefix(String displayPrefix)
+        public void SetDisplayPrefix(String displayPrefix)
         {
-            this.displayPrefix = displayPrefix;
-            setDisplayText();
+            this._displayPrefix = displayPrefix;
+            SetDisplayText();
         }
 
-        public bool isUseMouseWheel()
+        public bool IsUseMouseWheel()
         {
-            return useMouseWheel;
+            return _useMouseWheel;
         }
 
         /**
@@ -136,14 +135,14 @@ namespace XNATWL.Model
          *
          * @param acceptValueOnFocusLoss true if focus loss should accept the edited value.
          */
-        public void setAcceptValueOnFocusLoss(bool acceptValueOnFocusLoss)
+        public void SetAcceptValueOnFocusLoss(bool acceptValueOnFocusLoss)
         {
-            this.acceptValueOnFocusLoss = acceptValueOnFocusLoss;
+            this._acceptValueOnFocusLoss = acceptValueOnFocusLoss;
         }
 
-        public bool isAcceptValueOnFocusLoss()
+        public bool IsAcceptValueOnFocusLoss()
         {
-            return acceptValueOnFocusLoss;
+            return _acceptValueOnFocusLoss;
         }
 
         /**
@@ -151,280 +150,269 @@ namespace XNATWL.Model
          *
          * @param useMouseWheel true if the mouse wheel is used
          */
-        public void setUseMouseWheel(bool useMouseWheel)
+        public void SetUseMouseWheel(bool useMouseWheel)
         {
-            this.useMouseWheel = useMouseWheel;
+            this._useMouseWheel = useMouseWheel;
         }
 
-        //@Override
-        public override void setTooltipContent(Object tooltipContent)
+        public override void SetTooltipContent(Object tooltipContent)
         {
-            base.setTooltipContent(tooltipContent);
-            label.setTooltipContent(tooltipContent);
+            base.SetTooltipContent(tooltipContent);
+            _label.SetTooltipContent(tooltipContent);
         }
 
-        public void startEdit()
+        public void StartEdit()
         {
-            if (label.isVisible())
+            if (_label.IsVisible())
             {
-                editField.setErrorMessage(null);
-                editField.setText(onEditStart());
-                editField.setVisible(true);
-                editField.requestKeyboardFocus();
-                editField.selectAll();
-                editField.getAnimationState().setAnimationState(EditField.STATE_HOVER, label.getModel().Hover);
-                label.setVisible(false);
-                getAnimationState().setAnimationState(STATE_EDIT_ACTIVE, true);
+                _editField.SetErrorMessage(null);
+                _editField.SetText(OnEditStart());
+                _editField.SetVisible(true);
+                _editField.RequestKeyboardFocus();
+                _editField.SelectAll();
+                _editField.GetAnimationState().SetAnimationState(EditField.STATE_HOVER, _label.GetModel().Hover);
+                _label.SetVisible(false);
+                GetAnimationState().SetAnimationState(STATE_EDIT_ACTIVE, true);
             }
         }
 
-        public void cancelEdit()
+        public void CancelEdit()
         {
-            if (editField.isVisible())
+            if (_editField.IsVisible())
             {
-                onEditCanceled();
-                label.setVisible(true);
-                editField.setVisible(false);
-                label.getModel().Hover = editField.getAnimationState().GetAnimationState(Label.STATE_HOVER);
-                getAnimationState().setAnimationState(STATE_EDIT_ACTIVE, false);
+                OnEditCanceled();
+                _label.SetVisible(true);
+                _editField.SetVisible(false);
+                _label.GetModel().Hover = _editField.GetAnimationState().GetAnimationState(Label.STATE_HOVER);
+                GetAnimationState().SetAnimationState(STATE_EDIT_ACTIVE, false);
             }
         }
 
-        public void cancelOrAcceptEdit()
+        public void CancelOrAcceptEdit()
         {
-            if (editField.isVisible())
+            if (_editField.IsVisible())
             {
-                if (acceptValueOnFocusLoss)
+                if (_acceptValueOnFocusLoss)
                 {
-                    onEditEnd(editField.getText());
+                    OnEditEnd(_editField.GetText());
                 }
-                cancelEdit();
+
+                CancelEdit();
             }
         }
 
-        //@Override
-        protected override void applyTheme(ThemeInfo themeInfo)
+        protected override void ApplyTheme(ThemeInfo themeInfo)
         {
-            base.applyTheme(themeInfo);
-            applyThemeValueAdjuster(themeInfo);
+            base.ApplyTheme(themeInfo);
+            ApplyThemeValueAdjuster(themeInfo);
         }
 
-        protected void applyThemeValueAdjuster(ThemeInfo themeInfo)
+        protected void ApplyThemeValueAdjuster(ThemeInfo themeInfo)
         {
-            width = themeInfo.GetParameter("width", 100);
-            displayPrefixTheme = themeInfo.GetParameter("displayPrefix", "");
-            useMouseWheel = themeInfo.GetParameter("useMouseWheel", useMouseWheel);
+            _width = themeInfo.GetParameter("width", 100);
+            _displayPrefixTheme = themeInfo.GetParameter("displayPrefix", "");
+            _useMouseWheel = themeInfo.GetParameter("useMouseWheel", _useMouseWheel);
         }
 
-        //@Override
-        public override int getMinWidth()
+        public override int GetMinWidth()
         {
-            int minWidth = base.getMinWidth();
+            int minWidth = base.GetMinWidth();
             minWidth = Math.Max(minWidth,
-                    getBorderHorizontal() +
-                    decButton.getMinWidth() +
-                    Math.Max(width, label.getMinWidth()) +
-                    incButton.getMinWidth());
+                    GetBorderHorizontal() +
+                    _decButton.GetMinWidth() +
+                    Math.Max(_width, _label.GetMinWidth()) +
+                    _incButton.GetMinWidth());
             return minWidth;
         }
 
-        //@Override
-        public override int getMinHeight()
+        public override int GetMinHeight()
         {
-            int minHeight = label.getMinHeight();
-            minHeight = Math.Max(minHeight, decButton.getMinHeight());
-            minHeight = Math.Max(minHeight, incButton.getMinHeight());
-            minHeight += getBorderVertical();
-            return Math.Max(minHeight, base.getMinHeight());
+            int minHeight = _label.GetMinHeight();
+            minHeight = Math.Max(minHeight, _decButton.GetMinHeight());
+            minHeight = Math.Max(minHeight, _incButton.GetMinHeight());
+            minHeight += GetBorderVertical();
+            return Math.Max(minHeight, base.GetMinHeight());
         }
 
-        //@Override
-        public override int getPreferredInnerWidth()
+        public override int GetPreferredInnerWidth()
         {
-            return decButton.getPreferredWidth() +
-                    Math.Max(width, label.getPreferredWidth()) +
-                    incButton.getPreferredWidth();
+            return _decButton.GetPreferredWidth() +
+                    Math.Max(_width, _label.GetPreferredWidth()) +
+                    _incButton.GetPreferredWidth();
         }
 
-        //@Override
-        public override int getPreferredInnerHeight()
+        public override int GetPreferredInnerHeight()
         {
             return Math.Max(Math.Max(
-                    decButton.getPreferredHeight(),
-                    incButton.getPreferredHeight()),
-                    label.getPreferredHeight());
+                    _decButton.GetPreferredHeight(),
+                    _incButton.GetPreferredHeight()),
+                    _label.GetPreferredHeight());
         }
 
         //@Override
-        protected override void keyboardFocusLost()
+        protected override void KeyboardFocusLost()
         {
-            wasInEditOnFocusLost = editField.isVisible();
-            cancelOrAcceptEdit();
-            label.getAnimationState().setAnimationState(STATE_KEYBOARD_FOCUS, false);
+            _wasInEditOnFocusLost = _editField.IsVisible();
+            CancelOrAcceptEdit();
+            _label.GetAnimationState().SetAnimationState(STATE_KEYBOARD_FOCUS, false);
         }
 
-        //@Override
-        protected override void keyboardFocusGained()
+        protected override void KeyboardFocusGained()
         {
             // keep in this method to not change subclassing behavior
-            label.getAnimationState().setAnimationState(STATE_KEYBOARD_FOCUS, true);
+            _label.GetAnimationState().SetAnimationState(STATE_KEYBOARD_FOCUS, true);
         }
 
-        //@Override
-        protected override void keyboardFocusGained(FocusGainedCause cause, Widget previousWidget)
+        protected override void KeyboardFocusGained(FocusGainedCause cause, Widget previousWidget)
         {
-            keyboardFocusGained();
-            checkStartEditOnFocusGained(cause, previousWidget);
+            KeyboardFocusGained();
+            CheckStartEditOnFocusGained(cause, previousWidget);
         }
 
-        //@Override
-        public override void setVisible(bool visible)
+        public override void SetVisible(bool visible)
         {
-            base.setVisible(visible);
+            base.SetVisible(visible);
             if (!visible)
             {
-                cancelEdit();
+                CancelEdit();
             }
         }
 
-        //@Override
-        internal override void widgetDisabled()
+        internal override void WidgetDisabled()
         {
-            cancelEdit();
+            CancelEdit();
         }
 
-        //@Override
-        protected override void layout()
+        protected override void Layout()
         {
-            int height = getInnerHeight();
-            int y = getInnerY();
-            decButton.setPosition(getInnerX(), y);
-            decButton.setSize(decButton.getPreferredWidth(), height);
-            incButton.setPosition(getInnerRight() - incButton.getPreferredWidth(), y);
-            incButton.setSize(incButton.getPreferredWidth(), height);
-            int labelX = decButton.getRight();
-            int labelWidth = Math.Max(0, incButton.getX() - labelX);
-            label.setSize(labelWidth, height);
-            label.setPosition(labelX, y);
-            editField.setSize(labelWidth, height);
-            editField.setPosition(labelX, y);
+            int height = GetInnerHeight();
+            int y = GetInnerY();
+            _decButton.SetPosition(GetInnerX(), y);
+            _decButton.SetSize(_decButton.GetPreferredWidth(), height);
+            _incButton.SetPosition(GetInnerRight() - _incButton.GetPreferredWidth(), y);
+            _incButton.SetSize(_incButton.GetPreferredWidth(), height);
+            int labelX = _decButton.GetRight();
+            int labelWidth = Math.Max(0, _incButton.GetX() - labelX);
+            _label.SetSize(labelWidth, height);
+            _label.SetPosition(labelX, y);
+            _editField.SetSize(labelWidth, height);
+            _editField.SetPosition(labelX, y);
         }
 
-        protected void setDisplayText()
+        protected void SetDisplayText()
         {
-            String prefix = (displayPrefix != null) ? displayPrefix : displayPrefixTheme;
-            label.setText(prefix + formatText());
+            String prefix = (_displayPrefix != null) ? _displayPrefix : _displayPrefixTheme;
+            _label.SetText(prefix + FormatText());
         }
 
-        protected abstract String formatText();
+        protected abstract String FormatText();
 
-        void checkStartEditOnFocusGained(FocusGainedCause cause, Widget previousWidget)
+        void CheckStartEditOnFocusGained(FocusGainedCause cause, Widget previousWidget)
         {
-            if (cause == FocusGainedCause.FOCUS_KEY)
+            if (cause == FocusGainedCause.FocusKey)
             {
-                if (previousWidget != null && !(previousWidget is ValueAdjuster)) {
-                    previousWidget = previousWidget.getParent();
+                if (previousWidget != null && !(previousWidget is ValueAdjuster))
+                {
+                    previousWidget = previousWidget.GetParent();
                 }
-                if (previousWidget != this && (previousWidget is ValueAdjuster)) {
-                    if (((ValueAdjuster)previousWidget).wasInEditOnFocusLost)
+                if (previousWidget != this && (previousWidget is ValueAdjuster))
+                {
+                    if (((ValueAdjuster)previousWidget)._wasInEditOnFocusLost)
                     {
-                        startEdit();
+                        StartEdit();
                     }
                 }
             }
         }
 
-        void onTimer(int nextDelay)
+        void OnTimer(int nextDelay)
         {
-            timer.setDelay(nextDelay);
-            if (incButton.getModel().Armed)
+            _timer.SetDelay(nextDelay);
+            if (_incButton.GetModel().Armed)
             {
-                cancelEdit();
-                doIncrement();
+                CancelEdit();
+                DoIncrement();
             }
-            else if (decButton.getModel().Armed)
+            else if (_decButton.GetModel().Armed)
             {
-                cancelEdit();
-                doDecrement();
+                CancelEdit();
+                DoDecrement();
             }
         }
 
-        void updateTimer()
+        void UpdateTimer()
         {
-            if (timer != null)
+            if (_timer != null)
             {
-                if (incButton.getModel().Armed || decButton.getModel().Armed)
+                if (_incButton.GetModel().Armed || _decButton.GetModel().Armed)
                 {
-                    if (!timer.isRunning())
+                    if (!_timer.IsRunning())
                     {
-                        onTimer(INITIAL_DELAY);
-                        timer.start();
+                        OnTimer(INITIAL_DELAY);
+                        _timer.Start();
                     }
                 }
                 else
                 {
-                    timer.stop();
+                    _timer.Stop();
                 }
             }
         }
 
-        //@Override
-        protected override void afterAddToGUI(GUI gui)
+        protected override void AfterAddToGUI(GUI gui)
         {
-            base.afterAddToGUI(gui);
-            timer = gui.createTimer();
-            timer.Tick += Timer_Tick;
-            timer.setContinuous(true);
+            base.AfterAddToGUI(gui);
+            _timer = gui.CreateTimer();
+            _timer.Tick += Timer_Tick;
+            _timer.SetContinuous(true);
         }
 
         private void Timer_Tick(object sender, TimerTickEventArgs e)
         {
-            onTimer(REPEAT_DELAY);
+            OnTimer(REPEAT_DELAY);
         }
 
-        //@Override
-        protected override void beforeRemoveFromGUI(GUI gui)
+        protected override void BeforeRemoveFromGUI(GUI gui)
         {
-            base.beforeRemoveFromGUI(gui);
-            if (timer != null)
+            base.BeforeRemoveFromGUI(gui);
+            if (_timer != null)
             {
-                timer.stop();
+                _timer.Stop();
             }
-            timer = null;
+            _timer = null;
         }
 
-        //@Override
-        public override bool handleEvent(Event evt)
+        public override bool HandleEvent(Event evt)
         {
-            if (evt.isKeyEvent())
+            if (evt.IsKeyEvent())
             {
-                if (evt.isKeyPressedEvent() && evt.getKeyCode() == Event.KEY_ESCAPE && listeners.dragActive)
+                if (evt.IsKeyPressedEvent() && evt.GetKeyCode() == Event.KEY_ESCAPE && _listeners.dragActive)
                 {
-                    listeners.dragActive = false;
-                    onDragCancelled();
+                    _listeners.dragActive = false;
+                    OnDragCancelled();
                     return true;
                 }
-                if (!editField.isVisible())
+                if (!_editField.IsVisible())
                 {
-                    if (evt.getEventType() == EventType.KEY_PRESSED)
+                    if (evt.GetEventType() == EventType.KEY_PRESSED)
                     {
-                        switch (evt.getKeyCode())
+                        switch (evt.GetKeyCode())
                         {
                             case Event.KEY_RIGHT:
-                                doIncrement();
+                                DoIncrement();
                                 return true;
                             case Event.KEY_LEFT:
-                                doDecrement();
+                                DoDecrement();
                                 return true;
                             case Event.KEY_RETURN:
                             case Event.KEY_SPACE:
-                                startEdit();
+                                StartEdit();
                                 return true;
                             default:
-                                if (evt.hasKeyCharNoModifiers() && shouldStartEdit(evt.getKeyChar()))
+                                if (evt.HasKeyCharNoModifiers() && ShouldStartEdit(evt.GetKeyChar()))
                                 {
-                                    startEdit();
-                                    editField.handleEvent(evt);
+                                    StartEdit();
+                                    _editField.HandleEvent(evt);
                                     return true;
                                 }
                                 break;
@@ -434,58 +422,58 @@ namespace XNATWL.Model
                     return false;
                 }
             }
-            else if (!editField.isVisible() && useMouseWheel && evt.getEventType() == EventType.MOUSE_WHEEL)
+            else if (!_editField.IsVisible() && _useMouseWheel && evt.GetEventType() == EventType.MOUSE_WHEEL)
             {
-                if (evt.getMouseWheelDelta() < 0)
+                if (evt.GetMouseWheelDelta() < 0)
                 {
-                    doDecrement();
+                    DoDecrement();
                 }
-                else if (evt.getMouseWheelDelta() > 0)
+                else if (evt.GetMouseWheelDelta() > 0)
                 {
-                    doIncrement();
+                    DoIncrement();
                 }
                 return true;
             }
-            return base.handleEvent(evt);
+            return base.HandleEvent(evt);
         }
 
-        protected abstract String onEditStart();
-        protected abstract bool onEditEnd(String text);
-        protected abstract String validateEdit(String text);
-        protected abstract void onEditCanceled();
-        protected abstract bool shouldStartEdit(char ch);
+        protected abstract String OnEditStart();
+        protected abstract bool OnEditEnd(String text);
+        protected abstract String ValidateEdit(String text);
+        protected abstract void OnEditCanceled();
+        protected abstract bool ShouldStartEdit(char ch);
 
-        protected abstract void onDragStart();
-        protected abstract void onDragUpdate(int dragDelta);
-        protected abstract void onDragCancelled();
-        protected void onDragEnd() { }
+        protected abstract void OnDragStart();
+        protected abstract void OnDragUpdate(int dragDelta);
+        protected abstract void OnDragCancelled();
+        protected void OnDragEnd() { }
 
-        protected abstract void doDecrement();
-        protected abstract void doIncrement();
+        protected abstract void DoDecrement();
+        protected abstract void DoIncrement();
 
-        void handleEditCallback(int key)
+        void HandleEditCallback(int key)
         {
             switch (key)
             {
                 case Event.KEY_RETURN:
-                    if (onEditEnd(editField.getText()))
+                    if (OnEditEnd(_editField.GetText()))
                     {
-                        label.setVisible(true);
-                        editField.setVisible(false);
+                        _label.SetVisible(true);
+                        _editField.SetVisible(false);
                     }
                     break;
 
                 case Event.KEY_ESCAPE:
-                    cancelEdit();
+                    CancelEdit();
                     break;
 
                 default:
-                    editField.setErrorMessage(validateEdit(editField.getText()));
+                    _editField.SetErrorMessage(ValidateEdit(_editField.GetText()));
                     break;
             }
         }
 
-        protected abstract void syncWithModel();
+        protected abstract void SyncWithModel();
 
         class L : DraggableButton.DragListener
         {
@@ -496,24 +484,23 @@ namespace XNATWL.Model
                 this._valueAdjuster = valueAdjuster;
             }
             internal bool dragActive;
-            public void dragStarted()
+            public void DragStarted()
             {
                 dragActive = true;
-                this._valueAdjuster.onDragStart();
+                this._valueAdjuster.OnDragStart();
             }
-            public void dragged(int deltaX, int deltaY)
+            public void Dragged(int deltaX, int deltaY)
             {
                 if (dragActive)
                 {
-                    this._valueAdjuster.onDragUpdate(deltaX);
+                    this._valueAdjuster.OnDragUpdate(deltaX);
                 }
             }
-            public void dragStopped()
+            public void DragStopped()
             {
                 dragActive = false;
-                this._valueAdjuster.onDragEnd();
+                this._valueAdjuster.OnDragEnd();
             }
         }
     }
-
 }

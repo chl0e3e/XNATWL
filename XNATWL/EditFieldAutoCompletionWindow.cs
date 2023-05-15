@@ -36,18 +36,16 @@ using XNATWL.Utils;
 
 namespace XNATWL
 {
-
     public class EditFieldAutoCompletionWindow : InfoWindow
     {
+        private ResultListModel _listModel;
+        private ListBox<String> _listBox;
 
-        private ResultListModel listModel;
-        private ListBox<String> listBox;
-
-        private bool captureKeys;
-        private bool useInvokeAsync;
-        private AutoCompletionDataSource dataSource;
+        private bool _captureKeys;
+        private bool _useInvokeAsync;
+        private AutoCompletionDataSource _dataSource;
         //private ExecutorService executorService;
-        private Task<AutoCompletionResult> future;
+        //private Task<AutoCompletionResult> future;
 
         /**
          * Creates an EditFieldAutoCompletionWindow associated with the specified
@@ -60,20 +58,20 @@ namespace XNATWL
         public EditFieldAutoCompletionWindow(EditField editField) : base(editField)
         {
 
-            this.listModel = new ResultListModel();
-            this.listBox = new ListBox<String>(listModel);
+            this._listModel = new ResultListModel();
+            this._listBox = new ListBox<String>(_listModel);
 
-            add(listBox);
+            Add(_listBox);
 
-            listBox.Callback += ListBox_Callback;
+            _listBox.Callback += ListBox_Callback;
         }
 
         private void ListBox_Callback(object sender, ListBoxEventArgs e)
         {
             switch (e.Reason)
             {
-                case ListBoxCallbackReason.MOUSE_DOUBLE_CLICK:
-                    acceptAutoCompletion();
+                case ListBoxCallbackReason.MouseDoubleClick:
+                    AcceptAutoCompletion();
                     break;
             }
         }
@@ -89,7 +87,7 @@ namespace XNATWL
          */
         public EditFieldAutoCompletionWindow(EditField editField, AutoCompletionDataSource dataSource) : this(editField)
         {
-            this.dataSource = dataSource;
+            this._dataSource = dataSource;
         }
 
         /**
@@ -117,9 +115,9 @@ namespace XNATWL
          * Returns the EditField to which this EditFieldAutoCompletionWindow is attached
          * @return the EditField
          */
-        public EditField getEditField()
+        public EditField GetEditField()
         {
-            return (EditField)getOwner();
+            return (EditField)GetOwner();
         }
 
         /**
@@ -134,9 +132,9 @@ namespace XNATWL
          * Returns true if {@link GUI#invokeAsync} is used
          * @return true if {@code GUI.invokeAsync} is used
          */
-        public bool isUseInvokeAsync()
+        public bool IsUseInvokeAsync()
         {
-            return useInvokeAsync;
+            return _useInvokeAsync;
         }
 
         /**
@@ -190,9 +188,9 @@ namespace XNATWL
          * Returns the current data source
          * @return the current data source
          */
-        public AutoCompletionDataSource getDataSource()
+        public AutoCompletionDataSource GetDataSource()
         {
-            return dataSource;
+            return _dataSource;
         }
 
         /**
@@ -204,13 +202,13 @@ namespace XNATWL
          *
          * @param dataSource the new AutoCompletionDataSource - can be null
          */
-        public void setDataSource(AutoCompletionDataSource dataSource)
+        public void SetDataSource(AutoCompletionDataSource dataSource)
         {
-            this.dataSource = dataSource;
+            this._dataSource = dataSource;
             //cancelFuture();
-            if (isOpen())
+            if (IsOpen())
             {
-                updateAutoCompletion();
+                UpdateAutoCompletion();
             }
         }
 
@@ -218,21 +216,21 @@ namespace XNATWL
          * This will update the auto completion and open the info window when results
          * are available
          */
-        public void updateAutoCompletion()
+        public void UpdateAutoCompletion()
         {
             //cancelFuture();
             AutoCompletionResult result = null;
-            if (dataSource != null)
+            if (_dataSource != null)
             {
-                EditField ef = getEditField();
-                int cursorPos = ef.getCursorPos();
+                EditField ef = GetEditField();
+                int cursorPos = ef.GetCursorPos();
                 if (cursorPos > 0)
                 {
-                    String text = ef.getText();
-                    GUI gui = ef.getGUI();
-                    if (listModel.result != null)
+                    String text = ef.GetText();
+                    GUI gui = ef.GetGUI();
+                    if (_listModel._result != null)
                     {
-                        result = listModel.result.refine(text, cursorPos);
+                        result = _listModel._result.refine(text, cursorPos);
                     }
                     if (result == null)
                     {
@@ -245,17 +243,17 @@ namespace XNATWL
                         {
                             try
                             {
-                                result = dataSource.CollectSuggestions(text, cursorPos, listModel.result);
+                                result = _dataSource.CollectSuggestions(text, cursorPos, _listModel._result);
                             }
                             catch (Exception ex)
                             {
-                                reportQueryException(ex);
+                                ReportQueryException(ex);
                             }
                         }
                     }
                 }
             }
-            updateAutoCompletion(result);
+            UpdateAutoCompletion(result);
         }
 
         /**
@@ -263,22 +261,22 @@ namespace XNATWL
          * 
          * Closes the infow window and discards the collected results.
          */
-        public void stopAutoCompletion()
+        public void StopAutoCompletion()
         {
-            listModel.setResult(null);
-            installAutoCompletion();
+            _listModel.SetResult(null);
+            InstallAutoCompletion();
         }
 
-        protected internal override void infoWindowClosed()
+        protected internal override void InfoWindowClosed()
         {
-            stopAutoCompletion();
+            StopAutoCompletion();
         }
 
-        protected void updateAutoCompletion(AutoCompletionResult results)
+        protected void UpdateAutoCompletion(AutoCompletionResult results)
         {
-            listModel.setResult(results);
-            captureKeys = false;
-            installAutoCompletion();
+            _listModel.SetResult(results);
+            _captureKeys = false;
+            InstallAutoCompletion();
         }
 
         /*void checkFuture()
@@ -316,28 +314,28 @@ namespace XNATWL
             }
         }*/
 
-        protected void reportQueryException(Exception ex)
+        protected void ReportQueryException(Exception ex)
         {
-            Logger.GetLogger(typeof(EditFieldAutoCompletionWindow)).log(
+            Logger.GetLogger(typeof(EditFieldAutoCompletionWindow)).Log(
                     Level.SEVERE, "Exception while collecting auto completion results", ex);
         }
 
-        public override bool handleEvent(Event evt)
+        public override bool HandleEvent(Event evt)
         {
-            if (evt.isKeyEvent())
+            if (evt.IsKeyEvent())
             {
-                if (captureKeys)
+                if (_captureKeys)
                 {
-                    if (evt.isKeyPressedEvent())
+                    if (evt.IsKeyPressedEvent())
                     {
-                        switch (evt.getKeyCode())
+                        switch (evt.GetKeyCode())
                         {
                             case Event.KEY_RETURN:
                             case Event.KEY_NUMPADENTER:
-                                return acceptAutoCompletion();
+                                return AcceptAutoCompletion();
 
                             case Event.KEY_ESCAPE:
-                                stopAutoCompletion();
+                                StopAutoCompletion();
                                 break;
 
                             case Event.KEY_UP:
@@ -346,7 +344,7 @@ namespace XNATWL
                             case Event.KEY_NEXT:
                             case Event.KEY_HOME:
                             case Event.KEY_END:
-                                listBox.handleEvent(evt);
+                                _listBox.HandleEvent(evt);
                                 break;
 
                             case Event.KEY_LEFT:
@@ -354,11 +352,11 @@ namespace XNATWL
                                 return false;
 
                             default:
-                                if (evt.hasKeyChar() || evt.getKeyCode() == Event.KEY_BACK)
+                                if (evt.HasKeyChar() || evt.GetKeyCode() == Event.KEY_BACK)
                                 {
-                                    if (!acceptAutoCompletion())
+                                    if (!AcceptAutoCompletion())
                                     {
-                                        stopAutoCompletion();
+                                        StopAutoCompletion();
                                     }
                                     return false;
                                 }
@@ -369,21 +367,21 @@ namespace XNATWL
                 }
                 else
                 {
-                    switch (evt.getKeyCode())
+                    switch (evt.GetKeyCode())
                     {
                         case Event.KEY_UP:
                         case Event.KEY_DOWN:
                         case Event.KEY_NEXT:
-                            listBox.handleEvent(evt);
-                            startCapture();
-                            return captureKeys;
+                            _listBox.HandleEvent(evt);
+                            StartCapture();
+                            return _captureKeys;
                         case Event.KEY_ESCAPE:
-                            stopAutoCompletion();
+                            StopAutoCompletion();
                             return false;
                         case Event.KEY_SPACE:
-                            if ((evt.getModifiers() & Event.MODIFIER_CTRL) != 0)
+                            if ((evt.GetModifiers() & Event.MODIFIER_CTRL) != 0)
                             {
-                                updateAutoCompletion();
+                                UpdateAutoCompletion();
                                 return true;
                             }
                             return false;
@@ -393,52 +391,52 @@ namespace XNATWL
                 }
             }
 
-            return base.handleEvent(evt);
+            return base.HandleEvent(evt);
         }
 
-        bool acceptAutoCompletion()
+        bool AcceptAutoCompletion()
         {
-            int selected = listBox.getSelected();
+            int selected = _listBox.GetSelected();
             if (selected >= 0)
             {
-                EditField editField = getEditField();
-                String text = listModel.EntryAt(selected);
-                int pos = listModel.getCursorPosForEntry(selected);
+                EditField editField = GetEditField();
+                String text = _listModel.EntryAt(selected);
+                int pos = _listModel.GetCursorPosForEntry(selected);
 
-                editField.setText(text);
+                editField.SetText(text);
                 if (pos >= 0 && pos < text.Length)
                 {
-                    editField.setCursorPos(pos);
+                    editField.SetCursorPos(pos);
                 }
 
-                stopAutoCompletion();
+                StopAutoCompletion();
                 return true;
             }
             return false;
         }
 
-        private void startCapture()
+        private void StartCapture()
         {
-            captureKeys = true;
-            installAutoCompletion();
+            _captureKeys = true;
+            InstallAutoCompletion();
         }
 
-        private void installAutoCompletion()
+        private void InstallAutoCompletion()
         {
-            if (listModel.Entries > 0)
+            if (_listModel.Entries > 0)
             {
-                openInfo();
+                OpenInfo();
             }
             else
             {
-                captureKeys = false;
-                closeInfo();
+                _captureKeys = false;
+                CloseInfo();
             }
         }
 
         public class ResultListModel : SimpleListModel<String>
         {
-            internal AutoCompletionResult result;
+            internal AutoCompletionResult _result;
 
             public override event EventHandler<ListSubsetChangedEventArgs> EntriesInserted;
             public override event EventHandler<ListSubsetChangedEventArgs> EntriesDeleted;
@@ -449,24 +447,24 @@ namespace XNATWL
             {
                 get
                 {
-                    return (result == null) ? 0 : result.Results;
+                    return (_result == null) ? 0 : _result.Results;
                 }
             }
 
-            public void setResult(AutoCompletionResult result)
+            public void SetResult(AutoCompletionResult result)
             {
-                this.result = result;
+                this._result = result;
                 this.AllChanged.Invoke(this, new ListAllChangedEventArgs());
             }
 
-            public int getCursorPosForEntry(int index)
+            public int GetCursorPosForEntry(int index)
             {
-                return result.getCursorPosForResult(index);
+                return _result.getCursorPosForResult(index);
             }
 
             public override string EntryAt(int index)
             {
-                return result.ResultAt(index);
+                return _result.ResultAt(index);
             }
         }
 

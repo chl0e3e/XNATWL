@@ -35,9 +35,9 @@ namespace XNATWL
 {
     public class ActionCallback : Runnable
     {
-        private Widget widget;
-        private ActionMap actionMap;
-        private String action;
+        private Widget _widget;
+        private ActionMap _actionMap;
+        private String _action;
 
         /**
          * Creates a callback invoking an action on the widget's actionMap.
@@ -58,9 +58,9 @@ namespace XNATWL
             {
                 throw new NullReferenceException("action");
             }
-            this.widget = widget;
-            this.actionMap = null;
-            this.action = action;
+            this._widget = widget;
+            this._actionMap = null;
+            this._action = action;
         }
 
         /**
@@ -80,23 +80,23 @@ namespace XNATWL
             {
                 throw new NullReferenceException("action");
             }
-            this.widget = null;
-            this.actionMap = actionMap;
-            this.action = action;
+            this._widget = null;
+            this._actionMap = actionMap;
+            this._action = action;
         }
 
-        public void run()
+        public override void Run()
         {
-            ActionMap am = actionMap;
+            ActionMap am = _actionMap;
             if (am == null)
             {
-                am = widget.getActionMap();
+                am = _widget.GetActionMap();
                 if (am == null)
                 {
                     return;
                 }
             }
-            am.invokeDirect(action);
+            am.InvokeDirect(_action);
         }
     }
 

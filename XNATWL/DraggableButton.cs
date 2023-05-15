@@ -42,7 +42,7 @@ namespace XNATWL
             /**
              * Called when the user starts dragging the button
              */
-            void dragStarted();
+            void DragStarted();
 
             /**
              * The mouse was moved
@@ -50,19 +50,19 @@ namespace XNATWL
              * @param deltaX the delta mouse X position since the drag was started
              * @param deltaY the delta mouse Y position since the drag was started
              */
-            void dragged(int deltaX, int deltaY);
+            void Dragged(int deltaX, int deltaY);
 
             /**
              * The user has stopped dragging the button
              */
-            void dragStopped();
+            void DragStopped();
         }
 
-        private int dragStartX;
-        private int dragStartY;
-        private bool dragging;
+        private int _dragStartX;
+        private int _dragStartY;
+        private bool _dragging;
 
-        private DragListener listener;
+        private DragListener _listener;
 
         public DraggableButton()
         {
@@ -89,14 +89,14 @@ namespace XNATWL
             
         }
 
-        public bool isDragActive()
+        public bool IsDragActive()
         {
-            return dragging;
+            return _dragging;
         }
 
-        public DragListener getListener()
+        public DragListener GetListener()
         {
-            return listener;
+            return _listener;
         }
 
         /**
@@ -108,61 +108,60 @@ namespace XNATWL
          * 
          * @param listener the new listener or null
          */
-        public void setListener(DragListener listener)
+        public void SetListener(DragListener listener)
         {
-            this.listener = listener;
+            this._listener = listener;
         }
 
-        //@Override
-        public override bool handleEvent(Event evt)
+        public override bool HandleEvent(Event evt)
         {
-            if (evt.isMouseEvent() && dragging)
+            if (evt.IsMouseEvent() && _dragging)
             {
-                if (evt.getEventType() == EventType.MOUSE_DRAGGED)
+                if (evt.GetEventType() == EventType.MOUSE_DRAGGED)
                 {
-                    if (listener != null)
+                    if (_listener != null)
                     {
-                        listener.dragged(evt.getMouseX() - dragStartX, evt.getMouseY() - dragStartY);
+                        _listener.Dragged(evt.GetMouseX() - _dragStartX, evt.GetMouseY() - _dragStartY);
                     }
                 }
-                if (evt.isMouseDragEnd())
+                if (evt.IsMouseDragEnd())
                 {
-                    stopDragging(evt);
+                    StopDragging(evt);
                 }
                 return true;
             }
 
-            if (evt.getEventType() == EventType.MOUSE_BTNDOWN)
+            if (evt.GetEventType() == EventType.MOUSE_BTNDOWN)
             {
-                dragStartX = evt.getMouseX();
-                dragStartY = evt.getMouseY();
+                _dragStartX = evt.GetMouseX();
+                _dragStartY = evt.GetMouseY();
             }
-            else if (evt.getEventType() == EventType.MOUSE_DRAGGED)
+            else if (evt.GetEventType() == EventType.MOUSE_DRAGGED)
             {
-                System.Diagnostics.Debug.Assert(!dragging);
-                dragging = true;
-                getModel().Armed = (false);
-                getModel().Pressed = (true);
-                if (listener != null)
+                System.Diagnostics.Debug.Assert(!_dragging);
+                _dragging = true;
+                GetModel().Armed = (false);
+                GetModel().Pressed = (true);
+                if (_listener != null)
                 {
-                    listener.dragStarted();
+                    _listener.DragStarted();
                 }
                 return true;
             }
 
-            return base.handleEvent(evt);
+            return base.HandleEvent(evt);
         }
 
-        private void stopDragging(Event evt)
+        private void StopDragging(Event evt)
         {
-            if (listener != null)
+            if (_listener != null)
             {
-                listener.dragStopped();
+                _listener.DragStopped();
             }
-            dragging = false;
-            getModel().Armed = (false);
-            getModel().Pressed = (false);
-            getModel().Hover = (isMouseInside(evt));
+            _dragging = false;
+            GetModel().Armed = (false);
+            GetModel().Pressed = (false);
+            GetModel().Hover = (IsMouseInside(evt));
         }
     }
 }

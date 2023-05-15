@@ -2,27 +2,26 @@
 {
     public class ScrollPaneDemoDialog1 : FadeFrame
     {
-        private ScrollPane scrollPane;
+        private ScrollPane _scrollPane;
 
         public ScrollPaneDemoDialog1()
         {
             Widget scrolledWidget = new Widget();
-            scrolledWidget.setTheme("/scrollPaneDemoContent");
+            scrolledWidget.SetTheme("/scrollPaneDemoContent");
 
-            scrollPane = new ScrollPane(scrolledWidget);
-            scrollPane.setTheme("/scrollpane");
+            _scrollPane = new ScrollPane(scrolledWidget);
+            _scrollPane.SetTheme("/scrollpane");
 
-            setTheme("scrollPaneDemoDialog1");
-            setTitle("ScrollPane");
-            add(scrollPane);
+            SetTheme("scrollPaneDemoDialog1");
+            SetTitle("ScrollPane");
+            Add(_scrollPane);
         }
 
         public void centerScrollPane()
         {
-            scrollPane.updateScrollbarSizes();
-            scrollPane.setScrollPositionX(scrollPane.getMaxScrollPosX() / 2);
-            scrollPane.setScrollPositionY(scrollPane.getMaxScrollPosY() / 2);
+            _scrollPane.UpdateScrollbarSizes();
+            _scrollPane.SetScrollPositionX(_scrollPane.GetMaxScrollPosX() / 2);
+            _scrollPane.SetScrollPositionY(_scrollPane.GetMaxScrollPosY() / 2);
         }
-
     }
 }

@@ -48,7 +48,7 @@ namespace XNATWL.Model
 
         public ToggleButtonModel(BooleanModel model, bool invertModelState)
         {
-            this.setModel(model, invertModelState);
+            this.SetModel(model, invertModelState);
         }
 
         public override bool Selected
@@ -66,7 +66,7 @@ namespace XNATWL.Model
                 }
                 else
                 {
-                    this.setSelectedState(value);
+                    this.SetSelectedState(value);
                 }
             }
         }
@@ -82,36 +82,36 @@ namespace XNATWL.Model
             return this._model;
         }
 
-        public void setModel(BooleanModel model)
+        public void SetModel(BooleanModel model)
         {
-            this.setModel(model, false);
+            this.SetModel(model, false);
         }
 
-        public void setModel(BooleanModel model, bool invertModelState)
+        public void SetModel(BooleanModel model, bool invertModelState)
         {
             this._invertModelState = invertModelState;
 
             if (this._model != model)
             {
-                this.removeModelCallback();
+                this.RemoveModelCallback();
                 this._model = model;
-                this.addModelCallback();
+                this.AddModelCallback();
                 //isConnected = true;
             }
             if (model != null)
             {
-                this.syncWithModel();
+                this.SyncWithModel();
             }
         }
 
-        public bool isInvertModelState()
+        public bool IsInvertModelState()
         {
             return this._invertModelState;
         }
 
-        void syncWithModel()
+        void SyncWithModel()
         {
-            this.setSelectedState(this._model.Value ^ this._invertModelState);
+            this.SetSelectedState(this._model.Value ^ this._invertModelState);
         }
 
         /*public override void connect()
@@ -126,21 +126,21 @@ namespace XNATWL.Model
             removeModelCallback();
         }*/
 
-        private void addModelCallback()
+        private void AddModelCallback()
         {
             if (this._model != null && this._isConnected)
             {
                 this._model.Changed += Model_Changed;
-                this.syncWithModel();
+                this.SyncWithModel();
             }
         }
 
         private void Model_Changed(object sender, BooleanChangedEventArgs e)
         {
-            this.syncWithModel();
+            this.SyncWithModel();
         }
 
-        private void removeModelCallback()
+        private void RemoveModelCallback()
         {
             if (this._model != null)
             {
@@ -148,7 +148,7 @@ namespace XNATWL.Model
             }
         }
 
-        private void setSelectedState(bool selected)
+        private void SetSelectedState(bool selected)
         {
             if (selected != this.Selected)
             {

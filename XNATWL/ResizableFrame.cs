@@ -40,49 +40,49 @@ namespace XNATWL
 
         public enum ResizableAxis
         {
-            NONE,
-            HORIZONTAL,
-            VERTICAL,
-            BOTH
+            None,
+            Horizontal,
+            Vertical,
+            Both
         }
 
         private enum DragMode
         {
-            NONE,//("mouseCursor"),
-            EDGE_LEFT,//("mouseCursor.left"),
-            EDGE_TOP,//("mouseCursor.top"),
-            EDGE_RIGHT,//("mouseCursor.right"),
-            EDGE_BOTTOM,//("mouseCursor.bottom"),
-            CORNER_TL,//("mouseCursor.top-left"),
-            CORNER_TR,//("mouseCursor.top-right"),
-            CORNER_BR,//("mouseCursor.bottom-right"),
-            CORNER_BL,//("mouseCursor.bottom-left"),
-            POSITION//("mouseCursor.all");
+            None,//("mouseCursor"),
+            EdgeLeft,//("mouseCursor.left"),
+            EdgeTop,//("mouseCursor.top"),
+            EdgeRight,//("mouseCursor.right"),
+            EdgeBottom,//("mouseCursor.bottom"),
+            CornerTopLeft,//("mouseCursor.top-left"),
+            CornerTopRight,//("mouseCursor.top-right"),
+            CornerBottomRight,//("mouseCursor.bottom-right"),
+            CornerBottomLeft,//("mouseCursor.bottom-left"),
+            Position//("mouseCursor.all");
         }
 
         private static string DragModeName(DragMode dragMode)
         {
             switch(dragMode)
             {
-                case DragMode.NONE:
+                case DragMode.None:
                     return "mouseCursor";
-                case DragMode.EDGE_LEFT:
+                case DragMode.EdgeLeft:
                     return "mouseCursor.left";
-                case DragMode.EDGE_TOP:
+                case DragMode.EdgeTop:
                     return "mouseCursor.top";
-                case DragMode.EDGE_RIGHT:
+                case DragMode.EdgeRight:
                     return "mouseCursor.right";
-                case DragMode.EDGE_BOTTOM:
+                case DragMode.EdgeBottom:
                     return "mouseCursor.bottom";
-                case DragMode.CORNER_TL:
+                case DragMode.CornerTopLeft:
                     return "mouseCursor.top-left";
-                case DragMode.CORNER_TR:
+                case DragMode.CornerTopRight:
                     return "mouseCursor.top-right";
-                case DragMode.CORNER_BR:
+                case DragMode.CornerBottomRight:
                     return "mouseCursor.bottom-right";
-                case DragMode.CORNER_BL:
+                case DragMode.CornerBottomLeft:
                     return "mouseCursor.bottom-left";
-                case DragMode.POSITION:
+                case DragMode.Position:
                     return "mouseCursor.all";
             }
 
@@ -93,13 +93,13 @@ namespace XNATWL
         {
             switch(rsAxis)
             {
-                case ResizableAxis.NONE:
+                case ResizableAxis.None:
                     return false;
-                case ResizableAxis.BOTH:
+                case ResizableAxis.Both:
                     return true;
-                case ResizableAxis.HORIZONTAL:
+                case ResizableAxis.Horizontal:
                     return true;
-                case ResizableAxis.VERTICAL:
+                case ResizableAxis.Vertical:
                     return false;
             }
 
@@ -110,94 +110,94 @@ namespace XNATWL
         {
             switch (rsAxis)
             {
-                case ResizableAxis.NONE:
+                case ResizableAxis.None:
                     return false;
-                case ResizableAxis.BOTH:
+                case ResizableAxis.Both:
                     return true;
-                case ResizableAxis.HORIZONTAL:
+                case ResizableAxis.Horizontal:
                     return false;
-                case ResizableAxis.VERTICAL:
+                case ResizableAxis.Vertical:
                     return true;
             }
 
             return false;
         }
 
-        private String title;
+        private String _title;
 
-        private MouseCursor[] cursors;
-        private ResizableAxis resizableAxis = ResizableAxis.BOTH;
-        private bool draggable = true;
-        private bool backgroundDraggable;
-        private DragMode dragMode = DragMode.NONE;
-        private int dragStartX;
-        private int dragStartY;
-        private int dragInitialLeft;
-        private int dragInitialTop;
-        private int dragInitialRight;
-        private int dragInitialBottom;
+        private MouseCursor[] _cursors;
+        private ResizableAxis _resizableAxis = ResizableAxis.Both;
+        private bool _draggable = true;
+        private bool _backgroundDraggable;
+        private DragMode _dragMode = DragMode.None;
+        private int _dragStartX;
+        private int _dragStartY;
+        private int _dragInitialLeft;
+        private int _dragInitialTop;
+        private int _dragInitialRight;
+        private int _dragInitialBottom;
 
-        private Color fadeColorInactive = Color.WHITE;
-        private int fadeDurationActivate;
-        private int fadeDurationDeactivate;
-        private int fadeDurationShow;
-        private int fadeDurationHide;
+        private Color _fadeColorInactive = Color.WHITE;
+        private int _fadeDurationActivate;
+        private int _fadeDurationDeactivate;
+        private int _fadeDurationShow;
+        private int _fadeDurationHide;
 
-        private TextWidget titleWidget;
-        private int titleAreaTop;
-        private int titleAreaLeft;
-        private int titleAreaRight;
-        private int titleAreaBottom;
+        private TextWidget _titleWidget;
+        private int _titleAreaTop;
+        private int _titleAreaLeft;
+        private int _titleAreaRight;
+        private int _titleAreaBottom;
 
-        private bool hasCloseButton;
-        private Button closeButton;
-        private int closeButtonX;
-        private int closeButtonY;
+        private bool _hasCloseButton;
+        private Button _closeButton;
+        private int _closeButtonX;
+        private int _closeButtonY;
 
-        private bool hasResizeHandle;
-        private Widget resizeHandle;
-        private int resizeHandleX;
-        private int resizeHandleY;
-        private DragMode resizeHandleDragMode;
+        private bool _hasResizeHandle;
+        private Widget _resizeHandle;
+        private int _resizeHandleX;
+        private int _resizeHandleY;
+        private DragMode _resizeHandleDragMode;
 
         public ResizableFrame()
         {
-            title = "";
-            cursors = new MouseCursor[Enum.GetValues(typeof(DragMode)).Length];
-            setCanAcceptKeyboardFocus(true);
+            _title = "";
+            _cursors = new MouseCursor[Enum.GetValues(typeof(DragMode)).Length];
+            SetCanAcceptKeyboardFocus(true);
         }
 
-        public String getTitle()
+        public String GetTitle()
         {
-            return title;
+            return _title;
         }
 
-        public void setTitle(String title)
+        public void SetTitle(String title)
         {
-            this.title = title;
-            if (titleWidget != null)
+            this._title = title;
+            if (_titleWidget != null)
             {
-                titleWidget.setCharSequence(title);
+                _titleWidget.SetCharSequence(title);
             }
         }
 
-        public ResizableAxis getResizableAxis()
+        public ResizableAxis GetResizableAxis()
         {
-            return resizableAxis;
+            return _resizableAxis;
         }
 
-        public void setResizableAxis(ResizableAxis resizableAxis)
+        public void SetResizableAxis(ResizableAxis resizableAxis)
         {
-            this.resizableAxis = resizableAxis;
-            if (resizeHandle != null)
+            this._resizableAxis = resizableAxis;
+            if (_resizeHandle != null)
             {
-                layoutResizeHandle();
+                LayoutResizeHandle();
             }
         }
 
-        public bool isDraggable()
+        public bool IsDraggable()
         {
-            return draggable;
+            return _draggable;
         }
 
         /**
@@ -209,14 +209,14 @@ namespace XNATWL
          * 
          * @param movable if dragging via the title bar is allowed - default is true.
          */
-        public void setDraggable(bool movable)
+        public void SetDraggable(bool movable)
         {
-            this.draggable = movable;
+            this._draggable = movable;
         }
 
-        public bool isBackgroundDraggable()
+        public bool IsBackgroundDraggable()
         {
-            return backgroundDraggable;
+            return _backgroundDraggable;
         }
 
         /**
@@ -228,39 +228,39 @@ namespace XNATWL
          * @param backgroundDraggable if dragging via the background is allowed - default is false.
          * @see #setDraggable(bool) 
          */
-        public void setBackgroundDraggable(bool backgroundDraggable)
+        public void SetBackgroundDraggable(bool backgroundDraggable)
         {
-            this.backgroundDraggable = backgroundDraggable;
+            this._backgroundDraggable = backgroundDraggable;
         }
 
-        public bool hasTitleBar()
+        public bool HasTitleBar()
         {
-            return titleWidget != null && titleWidget.getParent() == this;
+            return _titleWidget != null && _titleWidget.GetParent() == this;
         }
 
         public event EventHandler<FrameClosedEventArgs> Closed;
 
-        public void toggleCloseButton(bool use)
+        public void ToggleCloseButton(bool use)
         {
             if (use)
             {
-                if (closeButton == null)
+                if (_closeButton == null)
                 {
-                    closeButton = new Button();
-                    closeButton.setTheme("closeButton");
-                    closeButton.setCanAcceptKeyboardFocus(false);
-                    add(closeButton);
-                    layoutCloseButton();
+                    _closeButton = new Button();
+                    _closeButton.SetTheme("closeButton");
+                    _closeButton.SetCanAcceptKeyboardFocus(false);
+                    Add(_closeButton);
+                    LayoutCloseButton();
                 }
-                closeButton.setVisible(hasCloseButton);
-                closeButton.Action += CloseButton_Action;
+                _closeButton.SetVisible(_hasCloseButton);
+                _closeButton.Action += CloseButton_Action;
             }
             else
             {
-                if (closeButton != null)
+                if (_closeButton != null)
                 {
-                    closeButton.Action -= CloseButton_Action;
-                    closeButton.setVisible(closeButton.hasCallbacks());
+                    _closeButton.Action -= CloseButton_Action;
+                    _closeButton.SetVisible(_closeButton.HasCallbacks());
                 }
             }
         }
@@ -270,44 +270,43 @@ namespace XNATWL
             this.Closed.Invoke(this, new FrameClosedEventArgs());
         }
 
-        public void removeCloseCallback(Runnable cb)
+        public void RemoveCloseCallback(Runnable cb)
         {
         }
 
-        public int getFadeDurationActivate()
+        public int GetFadeDurationActivate()
         {
-            return fadeDurationActivate;
+            return _fadeDurationActivate;
         }
 
-        public int getFadeDurationDeactivate()
+        public int GetFadeDurationDeactivate()
         {
-            return fadeDurationDeactivate;
+            return _fadeDurationDeactivate;
         }
 
-        public int getFadeDurationHide()
+        public int GetFadeDurationHide()
         {
-            return fadeDurationHide;
+            return _fadeDurationHide;
         }
 
-        public int getFadeDurationShow()
+        public int GetFadeDurationShow()
         {
-            return fadeDurationShow;
+            return _fadeDurationShow;
         }
 
-        //@Override
-        public override void setVisible(bool visible)
+        public override void SetVisible(bool visible)
         {
             if (visible)
             {
-                TintAnimator tintAnimator = getTintAnimator();
-                if ((tintAnimator != null && tintAnimator.HasTint()) || !base.isVisible())
+                TintAnimator tintAnimator = GetTintAnimator();
+                if ((tintAnimator != null && tintAnimator.HasTint()) || !base.IsVisible())
                 {
-                    fadeTo(hasKeyboardFocus() ? Color.WHITE : fadeColorInactive, fadeDurationShow);
+                    FadeTo(HasKeyboardFocus() ? Color.WHITE : _fadeColorInactive, _fadeDurationShow);
                 }
             }
-            else if (base.isVisible())
+            else if (base.IsVisible())
             {
-                fadeToHide(fadeDurationHide);
+                FadeToHide(_fadeDurationHide);
             }
         }
 
@@ -316,91 +315,89 @@ namespace XNATWL
          * @param visible the new visibility flag
          * @see Widget#setVisible(bool)
          */
-        public void setHardVisible(bool visible)
+        public void SetHardVisible(bool visible)
         {
-            base.setVisible(visible);
+            base.SetVisible(visible);
         }
 
-        protected void applyThemeResizableFrame(ThemeInfo themeInfo)
+        protected void ApplyThemeResizableFrame(ThemeInfo themeInfo)
         {
             int i = 0;
             foreach (DragMode m in Enum.GetValues(typeof(DragMode)))
             {
-                cursors[i] = themeInfo.GetMouseCursor(DragModeName(m));
+                _cursors[i] = themeInfo.GetMouseCursor(DragModeName(m));
                 i++;
             }
-            titleAreaTop = themeInfo.GetParameter("titleAreaTop", 0);
-            titleAreaLeft = themeInfo.GetParameter("titleAreaLeft", 0);
-            titleAreaRight = themeInfo.GetParameter("titleAreaRight", 0);
-            titleAreaBottom = themeInfo.GetParameter("titleAreaBottom", 0);
-            closeButtonX = themeInfo.GetParameter("closeButtonX", 0);
-            closeButtonY = themeInfo.GetParameter("closeButtonY", 0);
-            hasCloseButton = themeInfo.GetParameter("hasCloseButton", false);
-            hasResizeHandle = themeInfo.GetParameter("hasResizeHandle", false);
-            resizeHandleX = themeInfo.GetParameter("resizeHandleX", 0);
-            resizeHandleY = themeInfo.GetParameter("resizeHandleY", 0);
-            fadeColorInactive = themeInfo.GetParameter("fadeColorInactive", Color.WHITE);
-            fadeDurationActivate = themeInfo.GetParameter("fadeDurationActivate", 0);
-            fadeDurationDeactivate = themeInfo.GetParameter("fadeDurationDeactivate", 0);
-            fadeDurationShow = themeInfo.GetParameter("fadeDurationShow", 0);
-            fadeDurationHide = themeInfo.GetParameter("fadeDurationHide", 0);
-            invalidateLayout();
+            _titleAreaTop = themeInfo.GetParameter("titleAreaTop", 0);
+            _titleAreaLeft = themeInfo.GetParameter("titleAreaLeft", 0);
+            _titleAreaRight = themeInfo.GetParameter("titleAreaRight", 0);
+            _titleAreaBottom = themeInfo.GetParameter("titleAreaBottom", 0);
+            _closeButtonX = themeInfo.GetParameter("closeButtonX", 0);
+            _closeButtonY = themeInfo.GetParameter("closeButtonY", 0);
+            _hasCloseButton = themeInfo.GetParameter("hasCloseButton", false);
+            _hasResizeHandle = themeInfo.GetParameter("hasResizeHandle", false);
+            _resizeHandleX = themeInfo.GetParameter("resizeHandleX", 0);
+            _resizeHandleY = themeInfo.GetParameter("resizeHandleY", 0);
+            _fadeColorInactive = themeInfo.GetParameter("fadeColorInactive", Color.WHITE);
+            _fadeDurationActivate = themeInfo.GetParameter("fadeDurationActivate", 0);
+            _fadeDurationDeactivate = themeInfo.GetParameter("fadeDurationDeactivate", 0);
+            _fadeDurationShow = themeInfo.GetParameter("fadeDurationShow", 0);
+            _fadeDurationHide = themeInfo.GetParameter("fadeDurationHide", 0);
+            InvalidateLayout();
 
-            if (base.isVisible() && !hasKeyboardFocus() &&
-                    (getTintAnimator() != null || !Color.WHITE.Equals(fadeColorInactive)))
+            if (base.IsVisible() && !HasKeyboardFocus() &&
+                    (GetTintAnimator() != null || !Color.WHITE.Equals(_fadeColorInactive)))
             {
-                fadeTo(fadeColorInactive, 0);
+                FadeTo(_fadeColorInactive, 0);
             }
         }
 
-        //@Override
-        protected override void applyTheme(ThemeInfo themeInfo)
+        protected override void ApplyTheme(ThemeInfo themeInfo)
         {
-            base.applyTheme(themeInfo);
-            applyThemeResizableFrame(themeInfo);
+            base.ApplyTheme(themeInfo);
+            ApplyThemeResizableFrame(themeInfo);
         }
 
-        //@Override
-        protected override void updateTintAnimation()
+        protected override void UpdateTintAnimation()
         {
-            TintAnimator tintAnimator = getTintAnimator();
+            TintAnimator tintAnimator = GetTintAnimator();
             tintAnimator.Update();
             if (!tintAnimator.IsFadeActive() && tintAnimator.IsZeroAlpha())
             {
-                setHardVisible(false);
+                SetHardVisible(false);
             }
         }
 
-        protected void fadeTo(Color color, int duration)
+        protected void FadeTo(Color color, int duration)
         {
             //System.out.println("Start fade to " + color + " over " + duration + " ms");
-            allocateTint().FadeTo(color, duration);
-            if (!base.isVisible() && color.Alpha != 0)
+            AllocateTint().FadeTo(color, duration);
+            if (!base.IsVisible() && color.Alpha != 0)
             {
-                setHardVisible(true);
+                SetHardVisible(true);
             }
         }
 
-        protected void fadeToHide(int duration)
+        protected void FadeToHide(int duration)
         {
             if (duration <= 0)
             {
-                setHardVisible(false);
+                SetHardVisible(false);
             }
             else
             {
-                allocateTint().FadeToHide(duration);
+                AllocateTint().FadeToHide(duration);
             }
         }
 
-        private TintAnimator allocateTint()
+        private TintAnimator AllocateTint()
         {
-            TintAnimator tintAnimator = getTintAnimator();
+            TintAnimator tintAnimator = GetTintAnimator();
             if (tintAnimator == null)
             {
-                tintAnimator = new TintAnimator(new TintAnimator.AnimationStateTimeSource(getAnimationState(), STATE_FADE));
-                setTintAnimator(tintAnimator);
-                if (!base.isVisible())
+                tintAnimator = new TintAnimator(new TintAnimator.AnimationStateTimeSource(GetAnimationState(), STATE_FADE));
+                GetTintAnimator(tintAnimator);
+                if (!base.IsVisible())
                 {
                     // we start with TRANSPARENT when hidden
                     tintAnimator.FadeToHide(0);
@@ -409,193 +406,187 @@ namespace XNATWL
             return tintAnimator;
         }
 
-        protected bool isFrameElement(Widget widget)
+        protected bool IsFrameElement(Widget widget)
         {
-            return widget == titleWidget /*|| widget == closeButton*/ || widget == resizeHandle;
+            return widget == _titleWidget /*|| widget == closeButton*/ || widget == _resizeHandle;
         }
 
-        //@Override
-        protected override void layout()
+        protected override void Layout()
         {
-            int minWidth = getMinWidth();
-            int minHeight = getMinHeight();
-            if (getWidth() < minWidth || getHeight() < minHeight)
+            int minWidth = GetMinWidth();
+            int minHeight = GetMinHeight();
+            if (GetWidth() < minWidth || GetHeight() < minHeight)
             {
-                int width = Math.Max(getWidth(), minWidth);
-                int height = Math.Max(getHeight(), minHeight);
-                if (getParent() != null)
+                int width = Math.Max(GetWidth(), minWidth);
+                int height = Math.Max(GetHeight(), minHeight);
+                if (GetParent() != null)
                 {
-                    int x = Math.Min(getX(), getParent().getInnerRight() - width);
-                    int y = Math.Min(getY(), getParent().getInnerBottom() - height);
-                    setPosition(x, y);
+                    int x = Math.Min(GetX(), GetParent().GetInnerRight() - width);
+                    int y = Math.Min(GetY(), GetParent().GetInnerBottom() - height);
+                    SetPosition(x, y);
                 }
-                setSize(width, height);
+                SetSize(width, height);
             }
 
-            for (int i = 0, n = getNumChildren(); i < n; i++)
+            for (int i = 0, n = GetNumChildren(); i < n; i++)
             {
-                Widget child = getChild(i);
-                if (!isFrameElement(child))
+                Widget child = GetChild(i);
+                if (!IsFrameElement(child))
                 {
-                    layoutChildFullInnerArea(child);
+                    LayoutChildFullInnerArea(child);
                 }
             }
 
-            layoutTitle();
-            layoutCloseButton();
-            layoutResizeHandle();
+            LayoutTitle();
+            LayoutCloseButton();
+            LayoutResizeHandle();
         }
 
-        protected void layoutTitle()
+        protected void LayoutTitle()
         {
-            int titleX = getTitleX(titleAreaLeft);
-            int titleY = getTitleY(titleAreaTop);
-            int titleWidth = Math.Max(0, getTitleX(titleAreaRight) - titleX);
-            int titleHeight = Math.Max(0, getTitleY(titleAreaBottom) - titleY);
+            int titleX = GetTitleX(_titleAreaLeft);
+            int titleY = GetTitleY(_titleAreaTop);
+            int titleWidth = Math.Max(0, GetTitleX(_titleAreaRight) - titleX);
+            int titleHeight = Math.Max(0, GetTitleY(_titleAreaBottom) - titleY);
 
-            if (titleAreaLeft != titleAreaRight && titleAreaTop != titleAreaBottom)
+            if (_titleAreaLeft != _titleAreaRight && _titleAreaTop != _titleAreaBottom)
             {
-                if (titleWidget == null)
+                if (_titleWidget == null)
                 {
-                    titleWidget = new TextWidget(getAnimationState());
-                    titleWidget.setTheme("title");
+                    _titleWidget = new TextWidget(GetAnimationState());
+                    _titleWidget.SetTheme("title");
                     //titleWidget.setMouseCursor(cursors[DragMode.POSITION.ordinal()]); // TODO: cursors
-                    titleWidget.setCharSequence(title);
-                    titleWidget.setClip(true);
+                    _titleWidget.SetCharSequence(_title);
+                    _titleWidget.SetClip(true);
                 }
 
-                if (titleWidget.getParent() == null)
+                if (_titleWidget.GetParent() == null)
                 {
-                    insertChild(titleWidget, 0);
+                    InsertChild(_titleWidget, 0);
                 }
 
-                titleWidget.setPosition(titleX, titleY);
-                titleWidget.setSize(titleWidth, titleHeight);
+                _titleWidget.SetPosition(titleX, titleY);
+                _titleWidget.SetSize(titleWidth, titleHeight);
             }
-            else if (titleWidget != null && titleWidget.getParent() == this)
+            else if (_titleWidget != null && _titleWidget.GetParent() == this)
             {
-                titleWidget.destroy();
-                removeChild(titleWidget);
+                _titleWidget.Destroy();
+                RemoveChild(_titleWidget);
             }
         }
 
-        protected void layoutCloseButton()
+        protected void LayoutCloseButton()
         {
-            if (closeButton != null)
+            if (_closeButton != null)
             {
-                closeButton.adjustSize();
-                closeButton.setPosition(
-                        getTitleX(closeButtonX),
-                        getTitleY(closeButtonY));
-                closeButton.setVisible(closeButton.hasCallbacks() && hasCloseButton);
+                _closeButton.AdjustSize();
+                _closeButton.SetPosition(
+                        GetTitleX(_closeButtonX),
+                        GetTitleY(_closeButtonY));
+                _closeButton.SetVisible(_closeButton.HasCallbacks() && _hasCloseButton);
             }
         }
 
-        protected void layoutResizeHandle()
+        protected void LayoutResizeHandle()
         {
-            if (hasResizeHandle && resizeHandle == null)
+            if (_hasResizeHandle && _resizeHandle == null)
             {
-                resizeHandle = new Widget(getAnimationState(), true);
-                resizeHandle.setTheme("resizeHandle");
-                base.insertChild(resizeHandle, 0);
+                _resizeHandle = new Widget(GetAnimationState(), true);
+                _resizeHandle.SetTheme("resizeHandle");
+                base.InsertChild(_resizeHandle, 0);
             }
-            if (resizeHandle != null)
+            if (_resizeHandle != null)
             {
-                if (resizeHandleX > 0)
+                if (_resizeHandleX > 0)
                 {
-                    if (resizeHandleY > 0)
+                    if (_resizeHandleY > 0)
                     {
-                        resizeHandleDragMode = DragMode.CORNER_TL;
+                        _resizeHandleDragMode = DragMode.CornerTopLeft;
                     }
                     else
                     {
-                        resizeHandleDragMode = DragMode.CORNER_TR;
+                        _resizeHandleDragMode = DragMode.CornerTopRight;
                     }
                 }
-                else if (resizeHandleY > 0)
+                else if (_resizeHandleY > 0)
                 {
-                    resizeHandleDragMode = DragMode.CORNER_BL;
+                    _resizeHandleDragMode = DragMode.CornerBottomLeft;
                 }
                 else
                 {
-                    resizeHandleDragMode = DragMode.CORNER_BR;
+                    _resizeHandleDragMode = DragMode.CornerBottomRight;
                 }
 
-                resizeHandle.adjustSize();
-                resizeHandle.setPosition(
-                        getTitleX(resizeHandleX),
-                        getTitleY(resizeHandleY));
-                resizeHandle.setVisible(hasResizeHandle &&
-                        resizableAxis == ResizableAxis.BOTH);
+                _resizeHandle.AdjustSize();
+                _resizeHandle.SetPosition(
+                        GetTitleX(_resizeHandleX),
+                        GetTitleY(_resizeHandleY));
+                _resizeHandle.SetVisible(_hasResizeHandle &&
+                        _resizableAxis == ResizableAxis.Both);
             }
             else
             {
-                resizeHandleDragMode = DragMode.NONE;
+                _resizeHandleDragMode = DragMode.None;
             }
         }
 
-        //@Override
-        protected override void keyboardFocusGained()
+        protected override void KeyboardFocusGained()
         {
-            fadeTo(Color.WHITE, fadeDurationActivate);
+            FadeTo(Color.WHITE, _fadeDurationActivate);
         }
 
-        //@Override
-        protected override void keyboardFocusLost()
+        protected override void KeyboardFocusLost()
         {
-            if (!hasOpenPopups() && base.isVisible())
+            if (!HasOpenPopups() && base.IsVisible())
             {
-                fadeTo(fadeColorInactive, fadeDurationDeactivate);
+                FadeTo(_fadeColorInactive, _fadeDurationDeactivate);
             }
         }
 
-        //@Override
-        public override int getMinWidth()
+        public override int GetMinWidth()
         {
-            int minWidth = base.getMinWidth();
-            for (int i = 0, n = getNumChildren(); i < n; i++)
+            int minWidth = base.GetMinWidth();
+            for (int i = 0, n = GetNumChildren(); i < n; i++)
             {
-                Widget child = getChild(i);
-                if (!isFrameElement(child))
+                Widget child = GetChild(i);
+                if (!IsFrameElement(child))
                 {
-                    minWidth = Math.Max(minWidth, child.getMinWidth() + getBorderHorizontal());
+                    minWidth = Math.Max(minWidth, child.GetMinWidth() + GetBorderHorizontal());
                 }
             }
-            if (hasTitleBar() && titleAreaRight < 0)
+            if (HasTitleBar() && _titleAreaRight < 0)
             {
-                minWidth = Math.Max(minWidth, titleWidget.getPreferredWidth() + titleAreaLeft - titleAreaRight);
+                minWidth = Math.Max(minWidth, _titleWidget.GetPreferredWidth() + _titleAreaLeft - _titleAreaRight);
             }
             return minWidth;
         }
 
-        //@Override
-        public override int getMinHeight()
+        public override int GetMinHeight()
         {
-            int minHeight = base.getMinHeight();
-            for (int i = 0, n = getNumChildren(); i < n; i++)
+            int minHeight = base.GetMinHeight();
+            for (int i = 0, n = GetNumChildren(); i < n; i++)
             {
-                Widget child = getChild(i);
-                if (!isFrameElement(child))
+                Widget child = GetChild(i);
+                if (!IsFrameElement(child))
                 {
-                    minHeight = Math.Max(minHeight, child.getMinHeight() + getBorderVertical());
+                    minHeight = Math.Max(minHeight, child.GetMinHeight() + GetBorderVertical());
                 }
             }
             return minHeight;
         }
 
-        //@Override
-        public override int getMaxWidth()
+        public override int GetMaxWidth()
         {
-            int maxWidth = base.getMaxWidth();
-            for (int i = 0, n = getNumChildren(); i < n; i++)
+            int maxWidth = base.GetMaxWidth();
+            for (int i = 0, n = GetNumChildren(); i < n; i++)
             {
-                Widget child = getChild(i);
-                if (!isFrameElement(child))
+                Widget child = GetChild(i);
+                if (!IsFrameElement(child))
                 {
-                    int aMaxWidth = child.getMaxWidth();
+                    int aMaxWidth = child.GetMaxWidth();
                     if (aMaxWidth > 0)
                     {
-                        aMaxWidth += getBorderHorizontal();
+                        aMaxWidth += GetBorderHorizontal();
                         if (maxWidth == 0 || aMaxWidth < maxWidth)
                         {
                             maxWidth = aMaxWidth;
@@ -606,19 +597,18 @@ namespace XNATWL
             return maxWidth;
         }
 
-        //@Override
-        public override int getMaxHeight()
+        public override int GetMaxHeight()
         {
-            int maxHeight = base.getMaxHeight();
-            for (int i = 0, n = getNumChildren(); i < n; i++)
+            int maxHeight = base.GetMaxHeight();
+            for (int i = 0, n = GetNumChildren(); i < n; i++)
             {
-                Widget child = getChild(i);
-                if (!isFrameElement(child))
+                Widget child = GetChild(i);
+                if (!IsFrameElement(child))
                 {
-                    int aMaxHeight = child.getMaxHeight();
+                    int aMaxHeight = child.GetMaxHeight();
                     if (aMaxHeight > 0)
                     {
-                        aMaxHeight += getBorderVertical();
+                        aMaxHeight += GetBorderVertical();
                         if (maxHeight == 0 || aMaxHeight < maxHeight)
                         {
                             maxHeight = aMaxHeight;
@@ -629,122 +619,116 @@ namespace XNATWL
             return maxHeight;
         }
 
-        //@Override
-        public override int getPreferredInnerWidth()
+        public override int GetPreferredInnerWidth()
         {
             int prefWidth = 0;
-            for (int i = 0, n = getNumChildren(); i < n; i++)
+            for (int i = 0, n = GetNumChildren(); i < n; i++)
             {
-                Widget child = getChild(i);
-                if (!isFrameElement(child))
+                Widget child = GetChild(i);
+                if (!IsFrameElement(child))
                 {
-                    prefWidth = Math.Max(prefWidth, child.getPreferredWidth());
+                    prefWidth = Math.Max(prefWidth, child.GetPreferredWidth());
                 }
             }
             return prefWidth;
         }
 
-        //@Override
-        public override int getPreferredWidth()
+        public override int GetPreferredWidth()
         {
-            int prefWidth = base.getPreferredWidth();
-            if (hasTitleBar() && titleAreaRight < 0)
+            int prefWidth = base.GetPreferredWidth();
+            if (HasTitleBar() && _titleAreaRight < 0)
             {
-                prefWidth = Math.Max(prefWidth, titleWidget.getPreferredWidth() + titleAreaLeft - titleAreaRight);
+                prefWidth = Math.Max(prefWidth, _titleWidget.GetPreferredWidth() + _titleAreaLeft - _titleAreaRight);
             }
             return prefWidth;
         }
 
-        //@Override
-        public override int getPreferredInnerHeight()
+        public override int GetPreferredInnerHeight()
         {
             int prefHeight = 0;
-            for (int i = 0, n = getNumChildren(); i < n; i++)
+            for (int i = 0, n = GetNumChildren(); i < n; i++)
             {
-                Widget child = getChild(i);
-                if (!isFrameElement(child))
+                Widget child = GetChild(i);
+                if (!IsFrameElement(child))
                 {
-                    prefHeight = Math.Max(prefHeight, child.getPreferredHeight());
+                    prefHeight = Math.Max(prefHeight, child.GetPreferredHeight());
                 }
             }
             return prefHeight;
         }
 
-        //@Override
-        public override void adjustSize()
+        public override void AdjustSize()
         {
-            layoutTitle();
-            base.adjustSize();
+            LayoutTitle();
+            base.AdjustSize();
         }
 
-        private int getTitleX(int offset)
+        private int GetTitleX(int offset)
         {
-            return (offset < 0) ? getRight() + offset : getX() + offset;
+            return (offset < 0) ? GetRight() + offset : GetX() + offset;
         }
 
-        private int getTitleY(int offset)
+        private int GetTitleY(int offset)
         {
-            return (offset < 0) ? getBottom() + offset : getY() + offset;
+            return (offset < 0) ? GetBottom() + offset : GetY() + offset;
         }
 
-        //@Override
-        public override bool handleEvent(Event evt)
+        public override bool HandleEvent(Event evt)
         {
-            bool isMouseExit = evt.getEventType() == EventType.MOUSE_EXITED;
+            bool isMouseExit = evt.GetEventType() == EventType.MOUSE_EXITED;
 
-            if (isMouseExit && resizeHandle != null && resizeHandle.isVisible())
+            if (isMouseExit && _resizeHandle != null && _resizeHandle.IsVisible())
             {
-                resizeHandle.getAnimationState().setAnimationState(
+                _resizeHandle.GetAnimationState().SetAnimationState(
                         TextWidget.STATE_HOVER, false);
             }
 
-            if (dragMode != DragMode.NONE)
+            if (_dragMode != DragMode.None)
             {
-                if (evt.isMouseDragEnd())
+                if (evt.IsMouseDragEnd())
                 {
-                    dragMode = DragMode.NONE;
+                    _dragMode = DragMode.None;
                 }
-                else if (evt.getEventType() == EventType.MOUSE_DRAGGED)
+                else if (evt.GetEventType() == EventType.MOUSE_DRAGGED)
                 {
-                    handleMouseDrag(evt);
+                    HandleMouseDrag(evt);
                 }
                 return true;
             }
 
-            if (!isMouseExit && resizeHandle != null && resizeHandle.isVisible())
+            if (!isMouseExit && _resizeHandle != null && _resizeHandle.IsVisible())
             {
-                resizeHandle.getAnimationState().setAnimationState(
-                        TextWidget.STATE_HOVER, resizeHandle.isMouseInside(evt));
+                _resizeHandle.GetAnimationState().SetAnimationState(
+                        TextWidget.STATE_HOVER, _resizeHandle.IsMouseInside(evt));
             }
 
-            if (!evt.isMouseDragEvent())
+            if (!evt.IsMouseDragEvent())
             {
-                if (evt.getEventType() == EventType.MOUSE_BTNDOWN &&
-                        evt.getMouseButton() == Event.MOUSE_LBUTTON &&
-                        handleMouseDown(evt))
+                if (evt.GetEventType() == EventType.MOUSE_BTNDOWN &&
+                        evt.GetMouseButton() == Event.MOUSE_LBUTTON &&
+                        HandleMouseDown(evt))
                 {
                     return true;
                 }
             }
 
-            if (base.handleEvent(evt))
+            if (base.HandleEvent(evt))
             {
                 return true;
             }
 
-            return evt.isMouseEvent();
+            return evt.IsMouseEvent();
         }
 
-        //@Override
-        public override MouseCursor getMouseCursor(Event evt)
+        public override MouseCursor GetMouseCursor(Event evt)
         {
-            DragMode cursorMode = dragMode;
-            if (cursorMode == DragMode.NONE)
+            DragMode cursorMode = _dragMode;
+            if (cursorMode == DragMode.None)
             {
-                cursorMode = getDragMode(evt.getMouseX(), evt.getMouseY());
-                if (cursorMode == DragMode.NONE)
+                cursorMode = GetDragMode(evt.GetMouseX(), evt.GetMouseY());
+                if (cursorMode == DragMode.None)
                 {
-                    return getMouseCursor();
+                    return GetMouseCursor();
                 }
             }
 
@@ -753,61 +737,61 @@ namespace XNATWL
             {
                 if (dragModes[i] == cursorMode)
                 {
-                    return cursors[i];
+                    return _cursors[i];
                 }
             }
             return DefaultMouseCursor.OS_DEFAULT;
         }
 
-        private DragMode getDragMode(int mx, int my)
+        private DragMode GetDragMode(int mx, int my)
         {
-            bool left = mx < getInnerX();
-            bool right = mx >= getInnerRight();
+            bool left = mx < GetInnerX();
+            bool right = mx >= GetInnerRight();
 
-            bool top = my < getInnerY();
-            bool bot = my >= getInnerBottom();
+            bool top = my < GetInnerY();
+            bool bot = my >= GetInnerBottom();
 
-            if (hasTitleBar())
+            if (HasTitleBar())
             {
-                if (titleWidget.isInside(mx, my))
+                if (_titleWidget.IsInside(mx, my))
                 {
-                    if (draggable)
+                    if (_draggable)
                     {
-                        return DragMode.POSITION;
+                        return DragMode.Position;
                     }
                     else
                     {
-                        return DragMode.NONE;
+                        return DragMode.None;
                     }
                 }
-                top = my < titleWidget.getY();
+                top = my < _titleWidget.GetY();
             }
 
-            if (closeButton != null && closeButton.isVisible() && closeButton.isInside(mx, my))
+            if (_closeButton != null && _closeButton.IsVisible() && _closeButton.IsInside(mx, my))
             {
-                return DragMode.NONE;
+                return DragMode.None;
             }
 
-            if (resizableAxis == ResizableAxis.NONE)
+            if (_resizableAxis == ResizableAxis.None)
             {
-                if (backgroundDraggable)
+                if (_backgroundDraggable)
                 {
-                    return DragMode.POSITION;
+                    return DragMode.Position;
                 }
-                return DragMode.NONE;
+                return DragMode.None;
             }
 
-            if (resizeHandle != null && resizeHandle.isVisible() && resizeHandle.isInside(mx, my))
+            if (_resizeHandle != null && _resizeHandle.IsVisible() && _resizeHandle.IsInside(mx, my))
             {
-                return resizeHandleDragMode;
+                return _resizeHandleDragMode;
             }
 
-            if (!ResizableAxisAllowX(resizableAxis))
+            if (!ResizableAxisAllowX(_resizableAxis))
             {
                 left = false;
                 right = false;
             }
-            if (!ResizableAxisAllowY(resizableAxis))
+            if (!ResizableAxisAllowY(_resizableAxis))
             {
                 top = false;
                 bot = false;  // TODO Resizablity
@@ -817,66 +801,66 @@ namespace XNATWL
             {
                 if (top)
                 {
-                    return DragMode.CORNER_TL;
+                    return DragMode.CornerTopLeft;
                 }
                 if (bot)
                 {
-                    return DragMode.CORNER_BL;
+                    return DragMode.CornerBottomLeft;
                 }
-                return DragMode.EDGE_LEFT;
+                return DragMode.EdgeLeft;
             }
             if (right)
             {
                 if (top)
                 {
-                    return DragMode.CORNER_TR;
+                    return DragMode.CornerTopRight;
                 }
                 if (bot)
                 {
-                    return DragMode.CORNER_BR;
+                    return DragMode.CornerBottomRight;
                 }
-                return DragMode.EDGE_RIGHT;
+                return DragMode.EdgeRight;
             }
             if (top)
             {
-                return DragMode.EDGE_TOP;
+                return DragMode.EdgeTop;
             }
             if (bot)
             {
-                return DragMode.EDGE_BOTTOM;
+                return DragMode.EdgeBottom;
             }
-            if (backgroundDraggable)
+            if (_backgroundDraggable)
             {
-                return DragMode.POSITION;
+                return DragMode.Position;
             }
-            return DragMode.NONE;
+            return DragMode.None;
         }
 
-        private bool handleMouseDown(Event evt)
+        private bool HandleMouseDown(Event evt)
         {
-            int mx = evt.getMouseX();
-            int my = evt.getMouseY();
+            int mx = evt.GetMouseX();
+            int my = evt.GetMouseY();
 
-            dragStartX = mx;
-            dragStartY = my;
-            dragInitialLeft = getX();
-            dragInitialTop = getY();
-            dragInitialRight = getRight();
-            dragInitialBottom = getBottom();
+            _dragStartX = mx;
+            _dragStartY = my;
+            _dragInitialLeft = GetX();
+            _dragInitialTop = GetY();
+            _dragInitialRight = GetRight();
+            _dragInitialBottom = GetBottom();
 
-            dragMode = getDragMode(mx, my);
-            return dragMode != DragMode.NONE;
+            _dragMode = GetDragMode(mx, my);
+            return _dragMode != DragMode.None;
         }
 
-        private void handleMouseDrag(Event evt)
+        private void HandleMouseDrag(Event evt)
         {
-            int dx = evt.getMouseX() - dragStartX;
-            int dy = evt.getMouseY() - dragStartY;
+            int dx = evt.GetMouseX() - _dragStartX;
+            int dy = evt.GetMouseY() - _dragStartY;
 
-            int minWidth = getMinWidth();
-            int minHeight = getMinHeight();
-            int maxWidth = getMaxWidth();
-            int maxHeight = getMaxHeight();
+            int minWidth = GetMinWidth();
+            int minHeight = GetMinHeight();
+            int maxWidth = GetMaxWidth();
+            int maxHeight = GetMaxHeight();
 
             // make sure max size is not smaller then min size
             if (maxWidth > 0 && maxWidth < minWidth)
@@ -888,37 +872,37 @@ namespace XNATWL
                 maxHeight = minHeight;
             }
 
-            int left = dragInitialLeft;
-            int top = dragInitialTop;
-            int right = dragInitialRight;
-            int bottom = dragInitialBottom;
+            int left = _dragInitialLeft;
+            int top = _dragInitialTop;
+            int right = _dragInitialRight;
+            int bottom = _dragInitialBottom;
 
-            switch (dragMode)
+            switch (_dragMode)
             {
-                case DragMode.CORNER_BL:
-                case DragMode.CORNER_TL:
-                case DragMode.EDGE_LEFT:
+                case DragMode.CornerBottomLeft:
+                case DragMode.CornerTopLeft:
+                case DragMode.EdgeLeft:
                     left = Math.Min(left + dx, right - minWidth);
                     if (maxWidth > 0)
                     {
-                        left = Math.Max(left, Math.Min(dragInitialLeft, right - maxWidth));
+                        left = Math.Max(left, Math.Min(_dragInitialLeft, right - maxWidth));
                     }
                     break;
-                case DragMode.CORNER_BR:
-                case DragMode.CORNER_TR:
-                case DragMode.EDGE_RIGHT:
+                case DragMode.CornerBottomRight:
+                case DragMode.CornerTopRight:
+                case DragMode.EdgeRight:
                     right = Math.Max(right + dx, left + minWidth);
                     if (maxWidth > 0)
                     {
-                        right = Math.Min(right, Math.Max(dragInitialRight, left + maxWidth));
+                        right = Math.Min(right, Math.Max(_dragInitialRight, left + maxWidth));
                     }
                     break;
-                case DragMode.POSITION:
-                    if (getParent() != null)
+                case DragMode.Position:
+                    if (GetParent() != null)
                     {
-                        int minX = getParent().getInnerX();
-                        int maxX = getParent().getInnerRight();
-                        int width = dragInitialRight - dragInitialLeft;
+                        int minX = GetParent().GetInnerX();
+                        int maxX = GetParent().GetInnerRight();
+                        int width = _dragInitialRight - _dragInitialLeft;
                         left = Math.Max(minX, Math.Min(maxX - width, left + dx));
                         right = Math.Min(maxX, Math.Max(minX + width, right + dx));
                     }
@@ -930,32 +914,32 @@ namespace XNATWL
                     break;
             }
 
-            switch (dragMode)
+            switch (_dragMode)
             {
-                case DragMode.CORNER_TL:
-                case DragMode.CORNER_TR:
-                case DragMode.EDGE_TOP:
+                case DragMode.CornerTopLeft:
+                case DragMode.CornerTopRight:
+                case DragMode.EdgeTop:
                     top = Math.Min(top + dy, bottom - minHeight);
                     if (maxHeight > 0)
                     {
-                        top = Math.Max(top, Math.Min(dragInitialTop, bottom - maxHeight));
+                        top = Math.Max(top, Math.Min(_dragInitialTop, bottom - maxHeight));
                     }
                     break;
-                case DragMode.CORNER_BL:
-                case DragMode.CORNER_BR:
-                case DragMode.EDGE_BOTTOM:
+                case DragMode.CornerBottomLeft:
+                case DragMode.CornerBottomRight:
+                case DragMode.EdgeBottom:
                     bottom = Math.Max(bottom + dy, top + minHeight);
                     if (maxHeight > 0)
                     {
-                        bottom = Math.Min(bottom, Math.Max(dragInitialBottom, top + maxHeight));
+                        bottom = Math.Min(bottom, Math.Max(_dragInitialBottom, top + maxHeight));
                     }
                     break;
-                case DragMode.POSITION:
-                    if (getParent() != null)
+                case DragMode.Position:
+                    if (GetParent() != null)
                     {
-                        int minY = getParent().getInnerY();
-                        int maxY = getParent().getInnerBottom();
-                        int height = dragInitialBottom - dragInitialTop;
+                        int minY = GetParent().GetInnerY();
+                        int maxY = GetParent().GetInnerBottom();
+                        int height = _dragInitialBottom - _dragInitialTop;
                         top = Math.Max(minY, Math.Min(maxY - height, top + dy));
                         bottom = Math.Min(maxY, Math.Max(minY + height, bottom + dy));
                     }
@@ -967,23 +951,23 @@ namespace XNATWL
                     break;
             }
 
-            setArea(top, left, right, bottom);
+            SetArea(top, left, right, bottom);
         }
 
-        private void setArea(int top, int left, int right, int bottom)
+        private void SetArea(int top, int left, int right, int bottom)
         {
-            Widget p = getParent();
+            Widget p = GetParent();
             if (p != null)
             {
-                top = Math.Max(top, p.getInnerY());
-                left = Math.Max(left, p.getInnerX());
-                right = Math.Min(right, p.getInnerRight());
-                bottom = Math.Min(bottom, p.getInnerBottom());
+                top = Math.Max(top, p.GetInnerY());
+                left = Math.Max(left, p.GetInnerX());
+                right = Math.Min(right, p.GetInnerRight());
+                bottom = Math.Min(bottom, p.GetInnerBottom());
             }
 
-            setPosition(left, top);
-            setSize(Math.Max(getMinWidth(), right - left),
-                    Math.Max(getMinHeight(), bottom - top));
+            SetPosition(left, top);
+            SetSize(Math.Max(GetMinWidth(), right - left),
+                    Math.Max(GetMinHeight(), bottom - top));
         }
     }
 

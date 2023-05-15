@@ -35,7 +35,7 @@ namespace XNATWL
 {
     public interface ParameterList
     {
-        int getSize();
+        int GetSize();
 
         /**
          * Returns the font at the given list index.

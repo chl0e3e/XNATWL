@@ -53,58 +53,58 @@ namespace XNATWL
         private static int LAYOUT_INVALID_LOCAL = 1;
         private static int LAYOUT_INVALID_GLOBAL = 3;
 
-        private Widget parent;
-        private int posX;
-        private int posY;
-        private int width;
-        private int height;
-        private int layoutInvalid;
-        private bool clip;
-        private bool visible = true;
-        private bool hasOpenPopup;
-        private bool enabled = true;
-        private bool locallyEnabled = true;
-        private String theme;
-        private ThemeManager themeManager;
-        private Image background;
-        private Image overlay;
-        private Object tooltipContent;
-        private Object themeTooltipContent;
-        private InputMap inputMap;
-        private ActionMap actionMap;
-        private TintAnimator tintAnimator;
-        private PropertyChangeSupport propertyChangeSupport;
-        internal volatile GUI guiInstance;
-        private OffscreenSurface offscreenSurface;
-        private RenderOffscreen renderOffscreen;
+        private Widget _parent;
+        private int _posX;
+        private int _posY;
+        private int _width;
+        private int _height;
+        private int _layoutInvalid;
+        private bool _clip;
+        private bool _visible = true;
+        private bool _hasOpenPopup;
+        private bool _enabled = true;
+        private bool _locallyEnabled = true;
+        private String _theme;
+        private ThemeManager _themeManager;
+        private Image _background;
+        private Image _overlay;
+        private Object _tooltipContent;
+        private Object _themeTooltipContent;
+        private InputMap _inputMap;
+        private ActionMap _actionMap;
+        private TintAnimator _tintAnimator;
+        private PropertyChangeSupport _propertyChangeSupport;
+        internal volatile GUI _guiInstance;
+        private OffscreenSurface _offscreenSurface;
+        private RenderOffscreen _renderOffscreen;
 
-        private AnimationState animState;
-        private bool sharedAnimState;
+        private AnimationState _animState;
+        private bool _sharedAnimState;
 
-        private short borderLeft;
-        private short borderTop;
-        private short borderRight;
-        private short borderBottom;
+        private short _borderLeft;
+        private short _borderTop;
+        private short _borderRight;
+        private short _borderBottom;
 
-        private short minWidth;
-        private short minHeight;
-        private short maxWidth;
-        private short maxHeight;
+        private short _minWidth;
+        private short _minHeight;
+        private short _maxWidth;
+        private short _maxHeight;
 
-        private short offscreenExtraLeft;
-        private short offscreenExtraTop;
-        private short offscreenExtraRight;
-        private short offscreenExtraBottom;
+        private short _offscreenExtraLeft;
+        private short _offscreenExtraTop;
+        private short _offscreenExtraRight;
+        private short _offscreenExtraBottom;
 
-        private List<Widget> children;
-        private Widget lastChildMouseOver;
-        private Widget focusChild;
-        private MouseCursor mouseCursor;
-        private FocusGainedCause focusGainedCause;
+        private List<Widget> _children;
+        private Widget _lastChildMouseOver;
+        private Widget _focusChild;
+        private MouseCursor _mouseCursor;
+        private FocusGainedCause _focusGainedCause;
 
-        private bool focusKeyEnabled = true;
-        private bool bCanAcceptKeyboardFocus;
-        private bool depthFocusTraversal = true;
+        private bool _focusKeyEnabled = true;
+        private bool _bCanAcceptKeyboardFocus;
+        private bool _depthFocusTraversal = true;
 
         /**
          * Stores the state of the current focus transfer:
@@ -162,24 +162,24 @@ namespace XNATWL
             Type clazz = this.GetType();
             do
             {
-                theme = clazz.Name.ToLower();
-                int genericIDStart = theme.IndexOf('`');
+                _theme = clazz.Name.ToLower();
+                int genericIDStart = _theme.IndexOf('`');
                 if (genericIDStart != -1)
                 {
-                    theme = theme.Substring(0, genericIDStart);
+                    _theme = _theme.Substring(0, genericIDStart);
                 }
                 clazz = clazz.GetType().BaseType;
-            } while (theme.Length == 0 && clazz != null);
+            } while (_theme.Length == 0 && clazz != null);
 
             if (animState == null || inherit)
             {
-                this.animState = new AnimationState(animState);
-                this.sharedAnimState = false;
+                this._animState = new AnimationState(animState);
+                this._sharedAnimState = false;
             }
             else
             {
-                this.animState = animState;
-                this.sharedAnimState = true;
+                this._animState = animState;
+                this._sharedAnimState = true;
             }
         }
 
@@ -189,9 +189,9 @@ namespace XNATWL
          * @param listener The PropertyChangeListener to be added
          * @see PropertyChangeSupport#addPropertyChangeListener(java.beans.PropertyChangeListener)
          */
-        public void addPropertyChangeListener(PropertyChangeListener listener)
+        public void AddPropertyChangeListener(PropertyChangeListener listener)
         {
-            createPropertyChangeSupport().AddPropertyChangeListener(listener);
+            CreatePropertyChangeSupport().AddPropertyChangeListener(listener);
         }
 
         /**
@@ -201,9 +201,9 @@ namespace XNATWL
          * @param listener The PropertyChangeListener to be added
          * @see PropertyChangeSupport#addPropertyChangeListener(java.lang.String, java.beans.PropertyChangeListener) 
          */
-        public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener)
+        public void AddPropertyChangeListener(String propertyName, PropertyChangeListener listener)
         {
-            createPropertyChangeSupport().AddPropertyChangeListener(propertyName, listener);
+            CreatePropertyChangeSupport().AddPropertyChangeListener(propertyName, listener);
         }
 
         /**
@@ -212,11 +212,11 @@ namespace XNATWL
          * @param listener The PropertyChangeListener to be removed
          * @see PropertyChangeSupport#removePropertyChangeListener(java.beans.PropertyChangeListener) 
          */
-        public void removePropertyChangeListener(PropertyChangeListener listener)
+        public void RemovePropertyChangeListener(PropertyChangeListener listener)
         {
-            if (propertyChangeSupport != null)
+            if (_propertyChangeSupport != null)
             {
-                propertyChangeSupport.RemovePropertyChangeListener(listener);
+                _propertyChangeSupport.RemovePropertyChangeListener(listener);
             }
         }
 
@@ -227,11 +227,11 @@ namespace XNATWL
          * @param listener The PropertyChangeListener to be removed
          * @see PropertyChangeSupport#removePropertyChangeListener(java.lang.String, java.beans.PropertyChangeListener) 
          */
-        public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener)
+        public void RemovePropertyChangeListener(String propertyName, PropertyChangeListener listener)
         {
-            if (propertyChangeSupport != null)
+            if (_propertyChangeSupport != null)
             {
-                propertyChangeSupport.RemovePropertyChangeListener(propertyName, listener);
+                _propertyChangeSupport.RemovePropertyChangeListener(propertyName, listener);
             }
         }
 
@@ -240,9 +240,9 @@ namespace XNATWL
          * owns an open popup.
          * @return true if atleast own open popup is owned (indirectly) by this widget.
          */
-        public bool hasOpenPopups()
+        public bool HasOpenPopups()
         {
-            return hasOpenPopup;
+            return _hasOpenPopup;
         }
 
         /**
@@ -250,9 +250,9 @@ namespace XNATWL
          * All coordinates are relative to the root of the widget tree.
          * @return the parent of this widget or null if it is the tree root
          */
-        public Widget getParent()
+        public Widget GetParent()
         {
-            return parent;
+            return _parent;
         }
 
         /**
@@ -260,11 +260,11 @@ namespace XNATWL
          * All coordinates are relative to the root of the widget tree.
          * @return the root of this widget tree
          */
-        public Widget getRootWidget()
+        public Widget GetRootWidget()
         {
             Widget w = this;
             Widget p;
-            while ((p = w.parent) != null)
+            while ((p = w._parent) != null)
             {
                 w = p;
             }
@@ -291,9 +291,9 @@ namespace XNATWL
          * @see #afterAddToGUI(de.matthiasmann.twl.GUI)
          * @see #beforeRemoveFromGUI(de.matthiasmann.twl.GUI)
          */
-        public GUI getGUI()
+        public GUI GetGUI()
         {
-            return guiInstance;
+            return _guiInstance;
         }
 
         /**
@@ -301,9 +301,9 @@ namespace XNATWL
          * This does not check if the widget is clipped or buried behind another widget.
          * @return the current visibility flag of this widget
          */
-        public bool isVisible()
+        public bool IsVisible()
         {
-            return visible;
+            return _visible;
         }
 
         /**
@@ -312,26 +312,26 @@ namespace XNATWL
          * Invisible widgets don't receive paint() or handleEvent() calls
          * @param visible the new visibility flag
          */
-        public virtual void setVisible(bool visible)
+        public virtual void SetVisible(bool visible)
         {
-            if (this.visible != visible)
+            if (this._visible != visible)
             {
-                this.visible = visible;
+                this._visible = visible;
                 if (!visible)
                 {
-                    GUI gui = getGUI();
+                    GUI gui = GetGUI();
                     if (gui != null)
                     {
-                        gui.widgetHidden(this);
+                        gui.WidgetHidden(this);
                     }
-                    if (parent != null)
+                    if (_parent != null)
                     {
-                        parent.childHidden(this);
+                        _parent.ChildHidden(this);
                     }
                 }
-                if (parent != null)
+                if (_parent != null)
                 {
-                    parent.childVisibilityChanged(this);
+                    _parent.ChildVisibilityChanged(this);
                 }
             }
         }
@@ -346,9 +346,9 @@ namespace XNATWL
          * @see #isEnabled()
          * @see #setEnabled(bool)
          */
-        public bool isLocallyEnabled()
+        public bool IsLocallyEnabled()
         {
-            return locallyEnabled;
+            return _locallyEnabled;
         }
 
         /**
@@ -365,9 +365,9 @@ namespace XNATWL
          * @see #isEnabled()
          * @see #setEnabled(bool)
          */
-        public bool isEnabled()
+        public bool IsEnabled()
         {
-            return enabled;
+            return _enabled;
         }
 
         /**
@@ -387,14 +387,14 @@ namespace XNATWL
          * @see #isEnabled()
          * @see #isLocallyEnabled()
          */
-        public virtual void setEnabled(bool enabled)
+        public virtual void SetEnabled(bool enabled)
         {
-            if (this.locallyEnabled != enabled)
+            if (this._locallyEnabled != enabled)
             {
-                this.locallyEnabled = enabled;
-                firePropertyChange("locallyEnabled", !enabled, enabled);
-                recursivelyEnabledChanged(getGUI(),
-                        (parent != null) ? parent.enabled : true);
+                this._locallyEnabled = enabled;
+                FirePropertyChange("locallyEnabled", !enabled, enabled);
+                RecursivelyEnabledChanged(GetGUI(),
+                        (_parent != null) ? _parent._enabled : true);
             }
         }
 
@@ -407,9 +407,9 @@ namespace XNATWL
          * @see #addPropertyChangeListener(java.beans.PropertyChangeListener)
          * @see #addPropertyChangeListener(java.lang.String, java.beans.PropertyChangeListener)
          */
-        public int getX()
+        public int GetX()
         {
-            return posX;
+            return _posX;
         }
 
 
@@ -422,9 +422,9 @@ namespace XNATWL
          * @see #addPropertyChangeListener(java.beans.PropertyChangeListener)
          * @see #addPropertyChangeListener(java.lang.String, java.beans.PropertyChangeListener)
          */
-        public int getY()
+        public int GetY()
         {
-            return posY;
+            return _posY;
         }
 
         /**
@@ -436,9 +436,9 @@ namespace XNATWL
          * @see #addPropertyChangeListener(java.beans.PropertyChangeListener)
          * @see #addPropertyChangeListener(java.lang.String, java.beans.PropertyChangeListener)
          */
-        public int getWidth()
+        public int GetWidth()
         {
-            return width;
+            return _width;
         }
 
         /**
@@ -450,81 +450,81 @@ namespace XNATWL
          * @see #addPropertyChangeListener(java.beans.PropertyChangeListener)
          * @see #addPropertyChangeListener(java.lang.String, java.beans.PropertyChangeListener) 
          */
-        public int getHeight()
+        public int GetHeight()
         {
-            return height;
+            return _height;
         }
 
         /**
          * Returns the right X coordinate of this widget
          * @return getX() + getWidth()
          */
-        public int getRight()
+        public int GetRight()
         {
-            return posX + width;
+            return _posX + _width;
         }
 
         /**
          * Returns the bottom Y coordinate of this widget
          * @return getY() + getHeight()
          */
-        public int getBottom()
+        public int GetBottom()
         {
-            return posY + height;
+            return _posY + _height;
         }
 
         /**
          * The inner X position takes the left border into account
          * @return getX() + getBorderLeft()
          */
-        public int getInnerX()
+        public int GetInnerX()
         {
-            return posX + borderLeft;
+            return _posX + _borderLeft;
         }
 
         /**
          * The inner Y position takes the top border into account
          * @return getY() + getBorderTop()
          */
-        public int getInnerY()
+        public int GetInnerY()
         {
-            return posY + borderTop;
+            return _posY + _borderTop;
         }
 
         /**
          * The inner width takes the left and right border into account.
          * @return the inner width - never negative
          */
-        public int getInnerWidth()
+        public int GetInnerWidth()
         {
-            return Math.Max(0, width - borderLeft - borderRight);
+            return Math.Max(0, _width - _borderLeft - _borderRight);
         }
 
         /**
          * The inner height takes the top and bottom border into account.
          * @return the inner height - never negative
          */
-        public int getInnerHeight()
+        public int GetInnerHeight()
         {
-            return Math.Max(0, height - borderTop - borderBottom);
+            return Math.Max(0, _height - _borderTop - _borderBottom);
         }
 
         /**
          * Returns the right X coordinate while taking the right border into account.
          * @return getInnerX() + getInnerWidth()
          */
-        public int getInnerRight()
+        public int GetInnerRight()
         {
-            return posX + Math.Max(borderLeft, width - borderRight);
+            return _posX + Math.Max(_borderLeft, _width - _borderRight);
         }
 
         /**
          * Returns the bottom Y coordinate while taking the bottom border into account.
          * @return getInnerY() + getInnerHeight()
          */
-        public int getInnerBottom()
+        public int GetInnerBottom()
         {
-            return posY + Math.Max(borderTop, height - borderBottom);
+            return _posY + Math.Max(_borderTop, _height - _borderBottom);
         }
 
         /**
@@ -534,9 +534,9 @@ namespace XNATWL
          * @param y the Y coordinate to test
          * @return true if it was inside
          */
-        public virtual bool isInside(int x, int y)
+        public virtual bool IsInside(int x, int y)
         {
-            return (x >= posX) && (y >= posY) && (x < posX + width) && (y < posY + height);
+            return (x >= _posX) && (y >= _posY) && (x < _posX + _width) && (y < _posY + _height);
         }
 
         /**
@@ -559,9 +559,9 @@ namespace XNATWL
          * @return true if the position was changed, false if new position == old position
          * @see #layout()
          */
-        public virtual bool setPosition(int x, int y)
+        public virtual bool SetPosition(int x, int y)
         {
-            return setPositionImpl(x, y);
+            return SetPositionImpl(x, y);
         }
 
         /** 
@@ -585,25 +585,25 @@ namespace XNATWL
          * @see #sizeChanged()
          * @see #layout()
          */
-        public virtual bool setSize(int width, int height)
+        public virtual bool SetSize(int width, int height)
         {
             if (width < 0 || height < 0)
             {
                 throw new ArgumentOutOfRangeException("negative size");
             }
-            int oldWidth = this.width;
-            int oldHeight = this.height;
+            int oldWidth = this._width;
+            int oldHeight = this._height;
             if (oldWidth != width || oldHeight != height)
             {
-                this.width = width;
-                this.height = height;
+                this._width = width;
+                this._height = height;
 
-                sizeChanged();
+                SizeChanged();
 
-                if (propertyChangeSupport != null)
+                if (_propertyChangeSupport != null)
                 {
-                    firePropertyChange("width", oldWidth, width);
-                    firePropertyChange("height", oldHeight, height);
+                    FirePropertyChange("width", oldWidth, width);
+                    FirePropertyChange("height", oldHeight, height);
                 }
                 return true;
             }
@@ -619,39 +619,39 @@ namespace XNATWL
          * @return true if the size was changed, false if new size == old size
          * @see #setSize(int,int)
          */
-        public bool setInnerSize(int width, int height)
+        public bool SetInnerSize(int width, int height)
         {
-            return setSize(width + borderLeft + borderRight, height + borderTop + borderBottom);
+            return SetSize(width + _borderLeft + _borderRight, height + _borderTop + _borderBottom);
         }
 
-        public short getBorderTop()
+        public short GetBorderTop()
         {
-            return borderTop;
+            return _borderTop;
         }
 
-        public short getBorderLeft()
+        public short GetBorderLeft()
         {
-            return borderLeft;
+            return _borderLeft;
         }
 
-        public short getBorderBottom()
+        public short GetBorderBottom()
         {
-            return borderBottom;
+            return _borderBottom;
         }
 
-        public short getBorderRight()
+        public short GetBorderRight()
         {
-            return borderRight;
+            return _borderRight;
         }
 
-        public int getBorderHorizontal()
+        public int GetBorderHorizontal()
         {
-            return borderLeft + borderRight;
+            return _borderLeft + _borderRight;
         }
 
-        public int getBorderVertical()
+        public int GetBorderVertical()
         {
-            return borderTop + borderBottom;
+            return _borderTop + _borderBottom;
         }
 
         /**
@@ -663,35 +663,35 @@ namespace XNATWL
          * @return true if the border values have changed
          * @throws ArgumentOutOfRangeException if any of the parameters is negative.
          */
-        public bool setBorderSize(int top, int left, int bottom, int right)
+        public bool SetBorderSize(int top, int left, int bottom, int right)
         {
             if (top < 0 || left < 0 || bottom < 0 || right < 0)
             {
                 throw new ArgumentOutOfRangeException("negative border size");
             }
-            if (this.borderTop != top || this.borderBottom != bottom ||
-                    this.borderLeft != left || this.borderRight != right)
+            if (this._borderTop != top || this._borderBottom != bottom ||
+                    this._borderLeft != left || this._borderRight != right)
             {
-                int innerWidth = getInnerWidth();
-                int innerHeight = getInnerHeight();
-                int deltaLeft = left - this.borderLeft;
-                int deltaTop = top - this.borderTop;
-                this.borderLeft = (short)left;
-                this.borderTop = (short)top;
-                this.borderRight = (short)right;
-                this.borderBottom = (short)bottom;
+                int innerWidth = GetInnerWidth();
+                int innerHeight = GetInnerHeight();
+                int deltaLeft = left - this._borderLeft;
+                int deltaTop = top - this._borderTop;
+                this._borderLeft = (short)left;
+                this._borderTop = (short)top;
+                this._borderRight = (short)right;
+                this._borderBottom = (short)bottom;
 
                 // first adjust child position
-                if (children != null && (deltaLeft != 0 || deltaTop != 0))
+                if (_children != null && (deltaLeft != 0 || deltaTop != 0))
                 {
-                    for (int i = 0, n = children.Count; i < n; i++)
+                    for (int i = 0, n = _children.Count; i < n; i++)
                     {
-                        adjustChildPosition(children[i], deltaLeft, deltaTop);
+                        AdjustChildPosition(_children[i], deltaLeft, deltaTop);
                     }
                 }
 
                 // now change size
-                setInnerSize(innerWidth, innerHeight);
+                SetInnerSize(innerWidth, innerHeight);
                 borderChanged();
                 return true;
             }
@@ -705,9 +705,9 @@ namespace XNATWL
          * @return true if the border values have changed
          * @throws ArgumentOutOfRangeException if horizontal or vertical is negative.
          */
-        public bool setBorderSize(int horizontal, int vertical)
+        public bool SetBorderSize(int horizontal, int vertical)
         {
-            return setBorderSize(vertical, horizontal, vertical, horizontal);
+            return SetBorderSize(vertical, horizontal, vertical, horizontal);
         }
 
         /**
@@ -716,9 +716,9 @@ namespace XNATWL
          * @return true if the border values have changed
          * @throws ArgumentOutOfRangeException if border is negative.
          */
-        public bool setBorderSize(int border)
+        public bool SetBorderSize(int border)
         {
-            return setBorderSize(border, border, border, border);
+            return SetBorderSize(border, border, border, border);
         }
 
         /**
@@ -726,37 +726,37 @@ namespace XNATWL
          * @param border the border object or null for no border
          * @return true if the border values have changed
          */
-        public bool setBorderSize(Border border)
+        public bool SetBorderSize(Border border)
         {
             if (border == null)
             {
-                return setBorderSize(0, 0, 0, 0);
+                return SetBorderSize(0, 0, 0, 0);
             }
             else
             {
-                return setBorderSize(border.BorderTop, border.BorderLeft,
+                return SetBorderSize(border.BorderTop, border.BorderLeft,
                                         border.BorderBottom, border.BorderRight);
             }
         }
 
-        public short getOffscreenExtraTop()
+        public short GetOffscreenExtraTop()
         {
-            return offscreenExtraTop;
+            return _offscreenExtraTop;
         }
 
-        public short getOffscreenExtraLeft()
+        public short GetOffscreenExtraLeft()
         {
-            return offscreenExtraLeft;
+            return _offscreenExtraLeft;
         }
 
-        public short getOffscreenExtraBottom()
+        public short GetOffscreenExtraBottom()
         {
-            return offscreenExtraBottom;
+            return _offscreenExtraBottom;
         }
 
-        public short getOffscreenExtraRight()
+        public short GetOffscreenExtraRight()
         {
-            return offscreenExtraRight;
+            return _offscreenExtraRight;
         }
 
         /**
@@ -768,16 +768,16 @@ namespace XNATWL
          * @throws ArgumentOutOfRangeException if any of the parameters is negative.
          * @see #setRenderOffscreen(de.matthiasmann.twl.Widget.RenderOffscreen) 
          */
-        public void setOffscreenExtra(int top, int left, int bottom, int right)
+        public void SetOffscreenExtra(int top, int left, int bottom, int right)
         {
             if (top < 0 || left < 0 || bottom < 0 || right < 0)
             {
                 throw new ArgumentOutOfRangeException("negative offscreen extra size");
             }
-            this.offscreenExtraTop = (short)top;
-            this.offscreenExtraLeft = (short)left;
-            this.offscreenExtraBottom = (short)bottom;
-            this.offscreenExtraRight = (short)right;
+            this._offscreenExtraTop = (short)top;
+            this._offscreenExtraLeft = (short)left;
+            this._offscreenExtraBottom = (short)bottom;
+            this._offscreenExtraRight = (short)right;
         }
 
         /**
@@ -786,15 +786,15 @@ namespace XNATWL
          * @throws ArgumentOutOfRangeException if any of the values is negative.
          * @see #setRenderOffscreen(de.matthiasmann.twl.Widget.RenderOffscreen) 
          */
-        public void setOffscreenExtra(Border offscreenExtra)
+        public void SetOffscreenExtra(Border offscreenExtra)
         {
             if (offscreenExtra == null)
             {
-                setOffscreenExtra(0, 0, 0, 0);
+                SetOffscreenExtra(0, 0, 0, 0);
             }
             else
             {
-                setOffscreenExtra(offscreenExtra.BorderTop, offscreenExtra.BorderLeft,
+                SetOffscreenExtra(offscreenExtra.BorderTop, offscreenExtra.BorderLeft,
                         offscreenExtra.BorderBottom, offscreenExtra.BorderRight);
             }
         }
@@ -809,9 +809,9 @@ namespace XNATWL
          *
          * @return the minimum width of the widget
          */
-        public virtual int getMinWidth()
+        public virtual int GetMinWidth()
         {
-            return Math.Max(minWidth, borderLeft + borderRight);
+            return Math.Max(_minWidth, _borderLeft + _borderRight);
         }
 
         /**
@@ -824,9 +824,9 @@ namespace XNATWL
          *
          * @return the minimum height of the widget
          */
-        public virtual int getMinHeight()
+        public virtual int GetMinHeight()
         {
-            return Math.Max(minHeight, borderTop + borderBottom);
+            return Math.Max(_minHeight, _borderTop + _borderBottom);
         }
 
         /**
@@ -840,14 +840,14 @@ namespace XNATWL
          * @see #getMinHeight()
          * @throws ArgumentOutOfRangeException when width or height is negative
          */
-        public virtual void setMinSize(int width, int height)
+        public virtual void SetMinSize(int width, int height)
         {
             if (width < 0 || height < 0)
             {
                 throw new ArgumentOutOfRangeException("negative size");
             }
-            minWidth = (short)Math.Min(width, short.MaxValue);
-            minHeight = (short)Math.Min(height, short.MaxValue);
+            _minWidth = (short)Math.Min(width, short.MaxValue);
+            _minHeight = (short)Math.Min(height, short.MaxValue);
         }
 
         /**
@@ -863,18 +863,18 @@ namespace XNATWL
          *
          * @return the preferred inner width
          */
-        public virtual int getPreferredInnerWidth()
+        public virtual int GetPreferredInnerWidth()
         {
-            int right = getInnerX();
-            if (children != null)
+            int right = GetInnerX();
+            if (_children != null)
             {
-                for (int i = 0, n = children.Count; i < n; i++)
+                for (int i = 0, n = _children.Count; i < n; i++)
                 {
-                    Widget child = children[i];
-                    right = Math.Max(right, child.getRight());
+                    Widget child = _children[i];
+                    right = Math.Max(right, child.GetRight());
                 }
             }
-            return right - getInnerX();
+            return right - GetInnerX();
         }
 
         /**
@@ -885,15 +885,15 @@ namespace XNATWL
          * @return the preferred width.
          * @see #getPreferredInnerWidth()
          */
-        public virtual int getPreferredWidth()
+        public virtual int GetPreferredWidth()
         {
-            int prefWidth = borderLeft + borderRight + getPreferredInnerWidth();
-            Image bg = getBackground();
+            int prefWidth = _borderLeft + _borderRight + GetPreferredInnerWidth();
+            Image bg = GetBackground();
             if (bg != null)
             {
                 prefWidth = Math.Max(prefWidth, bg.Width);
             }
-            return Math.Max(minWidth, prefWidth);
+            return Math.Max(_minWidth, prefWidth);
         }
 
         /**
@@ -909,18 +909,18 @@ namespace XNATWL
          *
          * @return the preferred inner height
          */
-        public virtual int getPreferredInnerHeight()
+        public virtual int GetPreferredInnerHeight()
         {
-            int bottom = getInnerY();
-            if (children != null)
+            int bottom = GetInnerY();
+            if (_children != null)
             {
-                for (int i = 0, n = children.Count; i < n; i++)
+                for (int i = 0, n = _children.Count; i < n; i++)
                 {
-                    Widget child = children[i];
-                    bottom = Math.Max(bottom, child.getBottom());
+                    Widget child = _children[i];
+                    bottom = Math.Max(bottom, child.GetBottom());
                 }
             }
-            return bottom - getInnerY();
+            return bottom - GetInnerY();
         }
 
         /**
@@ -932,15 +932,15 @@ namespace XNATWL
          * @return the preferred height.
          * @see #getPreferredInnerHeight() 
          */
-        public virtual int getPreferredHeight()
+        public virtual int GetPreferredHeight()
         {
-            int prefHeight = borderTop + borderBottom + getPreferredInnerHeight();
-            Image bg = getBackground();
+            int prefHeight = _borderTop + _borderBottom + GetPreferredInnerHeight();
+            Image bg = GetBackground();
             if (bg != null)
             {
                 prefHeight = Math.Max(prefHeight, bg.Height);
             }
-            return Math.Max(minHeight, prefHeight);
+            return Math.Max(_minHeight, prefHeight);
         }
 
         /**
@@ -953,9 +953,9 @@ namespace XNATWL
          *
          * @return the maximum width
          */
-        public virtual int getMaxWidth()
+        public virtual int GetMaxWidth()
         {
-            return maxWidth;
+            return _maxWidth;
         }
 
         /**
@@ -968,9 +968,9 @@ namespace XNATWL
          *
          * @return the maximum height
          */
-        public virtual int getMaxHeight()
+        public virtual int GetMaxHeight()
         {
-            return maxHeight;
+            return _maxHeight;
         }
 
         /**
@@ -985,14 +985,14 @@ namespace XNATWL
          * @see #getMaxHeight()
          * @throws ArgumentOutOfRangeException when width or height is negative
          */
-        public virtual void setMaxSize(int width, int height)
+        public virtual void SetMaxSize(int width, int height)
         {
             if (width < 0 || height < 0)
             {
                 throw new ArgumentOutOfRangeException("negative size");
             }
-            maxWidth = (short)Math.Min(width, short.MaxValue);
-            maxHeight = (short)Math.Min(height, short.MaxValue);
+            _maxWidth = (short)Math.Min(width, short.MaxValue);
+            _maxHeight = (short)Math.Min(height, short.MaxValue);
         }
 
         /**
@@ -1007,7 +1007,7 @@ namespace XNATWL
          * @param max the maximum size of the widget
          * @return Math.Max(min, (max > 0) ? Math.Min(preferred, max) : preferred)
          */
-        public static int computeSize(int min, int preferred, int max)
+        public static int ComputeSize(int min, int preferred, int max)
         {
             if (max > 0)
             {
@@ -1021,16 +1021,16 @@ namespace XNATWL
          * 
          * Subclasses can provide more functionality
          */
-        public virtual void adjustSize()
+        public virtual void AdjustSize()
         {
             /*
             System.out.println(this+" minSize="+getMinWidth()+","+getMinHeight()+
                     " prefSize="+getPreferredWidth()+","+getPreferredHeight()+
                     " maxSize="+getMaxWidth()+","+getMaxHeight());
              * */
-            setSize(computeSize(getMinWidth(), getPreferredWidth(), getMaxWidth()),
-                    computeSize(getMinHeight(), getPreferredHeight(), getMaxHeight()));
-            validateLayout();
+            SetSize(ComputeSize(GetMinWidth(), GetPreferredWidth(), GetMaxWidth()),
+                    ComputeSize(GetMinHeight(), GetPreferredHeight(), GetMaxHeight()));
+            ValidateLayout();
         }
 
         /**
@@ -1043,15 +1043,15 @@ namespace XNATWL
          * @see #invalidateLayoutLocally()
          * @see #borderChanged()
          */
-        public virtual void invalidateLayout()
+        public virtual void InvalidateLayout()
         {
-            if (layoutInvalid < LAYOUT_INVALID_GLOBAL)
+            if (_layoutInvalid < LAYOUT_INVALID_GLOBAL)
             {
-                invalidateLayoutLocally();
-                if (parent != null)
+                InvalidateLayoutLocally();
+                if (_parent != null)
                 {
-                    layoutInvalid = LAYOUT_INVALID_GLOBAL;
-                    parent.childInvalidateLayout(this);
+                    _layoutInvalid = LAYOUT_INVALID_GLOBAL;
+                    _parent.ChildInvalidateLayout(this);
                 }
             }
         }
@@ -1061,21 +1061,21 @@ namespace XNATWL
          * @see #invalidateLayout()
          * @see #layout()
          */
-        public virtual void validateLayout()
+        public virtual void ValidateLayout()
         {
-            if (layoutInvalid != 0)
+            if (_layoutInvalid != 0)
             {
                 /* Reset the flag first so that widgets like TextArea can invalidate
                  * their layout from inside layout()
                  */
-                layoutInvalid = 0;
-                layout();
+                _layoutInvalid = 0;
+                Layout();
             }
-            if (children != null)
+            if (_children != null)
             {
-                for (int i = 0, n = children.Count; i < n; i++)
+                for (int i = 0, n = _children.Count; i < n; i++)
                 {
-                    children[i].validateLayout();
+                    _children[i].ValidateLayout();
                 }
             }
         }
@@ -1085,9 +1085,9 @@ namespace XNATWL
          * The default theme name is the lower case simple class name of this widget.
          * @return the current theme name of this widget
          */
-        public String getTheme()
+        public String GetTheme()
         {
-            return theme;
+            return _theme;
         }
 
         /**
@@ -1109,7 +1109,7 @@ namespace XNATWL
          * @see #getThemePath()
          * @see #isAbsoluteTheme(java.lang.String)
          */
-        public void setTheme(String theme)
+        public void SetTheme(String theme)
         {
             if (theme == null)
             {
@@ -1142,7 +1142,7 @@ namespace XNATWL
                     }
                 }
             }
-            this.theme = theme;
+            this._theme = theme;
         }
 
         /**
@@ -1156,18 +1156,18 @@ namespace XNATWL
          *
          * @return the effective theme path - can be empty
          */
-        public String getThemePath()
+        public String GetThemePath()
         {
-            return getThemePath(0).ToString();
+            return GetThemePath(0).ToString();
         }
 
         /**
          * Returns true if paint() is clipped to this widget.
          * @return true if paint() is clipped to this widget
          */
-        public bool isClip()
+        public bool IsClip()
         {
-            return clip;
+            return _clip;
         }
 
         /**
@@ -1183,18 +1183,18 @@ namespace XNATWL
          *
          * @param clip true if clipping must be used - default is false
          **/
-        public void setClip(bool clip)
+        public void SetClip(bool clip)
         {
-            this.clip = clip;
+            this._clip = clip;
         }
 
         /**
          * Returns if this widget will handle the FOCUS_KEY.
          * @return if this widget will handle the FOCUS_KEY.
          */
-        public bool isFocusKeyEnabled()
+        public bool IsFocusKeyEnabled()
         {
-            return focusKeyEnabled;
+            return _focusKeyEnabled;
         }
 
         /**
@@ -1205,9 +1205,9 @@ namespace XNATWL
          * by {@link #getKeyboardFocusOrder() }.</p>
          * @param focusKeyEnabled if true this widget will handle the focus key.
          */
-        public void setFocusKeyEnabled(bool focusKeyEnabled)
+        public void SetFocusKeyEnabled(bool focusKeyEnabled)
         {
-            this.focusKeyEnabled = focusKeyEnabled;
+            this._focusKeyEnabled = focusKeyEnabled;
         }
 
         /**
@@ -1215,9 +1215,9 @@ namespace XNATWL
          * @return the current background image or null
          * @see #paintBackground(de.matthiasmann.twl.GUI)
          */
-        public Image getBackground()
+        public Image GetBackground()
         {
-            return background;
+            return _background;
         }
 
         /**
@@ -1225,9 +1225,9 @@ namespace XNATWL
          * @param background the new background image - can be null
          * @see #paintBackground(de.matthiasmann.twl.GUI)
          */
-        public void setBackground(Image background)
+        public void SetBackground(Image background)
         {
-            this.background = background;
+            this._background = background;
         }
 
         /**
@@ -1235,9 +1235,9 @@ namespace XNATWL
          * @return the current overlay image or null.
          * @see #paintOverlay(de.matthiasmann.twl.GUI)
          */
-        public Image getOverlay()
+        public Image GetOverlay()
         {
-            return overlay;
+            return _overlay;
         }
 
         /**
@@ -1245,9 +1245,9 @@ namespace XNATWL
          * @param overlay the new overlay image - can be null
          * @see #paintOverlay(de.matthiasmann.twl.GUI)
          */
-        public void setOverlay(Image overlay)
+        public void SetOverlay(Image overlay)
         {
-            this.overlay = overlay;
+            this._overlay = overlay;
         }
 
         /**
@@ -1259,30 +1259,30 @@ namespace XNATWL
          * @param evt only {@link Event#getMouseX() }, {@link Event#getMouseY() } and {@link Event#getModifiers() } are valid.
          * @return the mouse cursor or null when no mouse cursor is defined for this widget
          */
-        public virtual MouseCursor getMouseCursor(Event evt)
+        public virtual MouseCursor GetMouseCursor(Event evt)
         {
-            return getMouseCursor();
+            return GetMouseCursor();
         }
 
-        public virtual MouseCursor getMouseCursor()
+        public virtual MouseCursor GetMouseCursor()
         {
-            return mouseCursor;
+            return _mouseCursor;
         }
 
-        public void setMouseCursor(MouseCursor mouseCursor)
+        public void SetMouseCursor(MouseCursor mouseCursor)
         {
-            this.mouseCursor = mouseCursor;
+            this._mouseCursor = mouseCursor;
         }
 
         /**
          * Returns the number of children in this widget.
          * @return the number of children in this widget
          */
-        public int getNumChildren()
+        public int GetNumChildren()
         {
-            if (children != null)
+            if (_children != null)
             {
-                return children.Count;
+                return _children.Count;
             }
             return 0;
         }
@@ -1293,11 +1293,11 @@ namespace XNATWL
          * @return the child widget
          * @throws java.lang.IndexOutOfRangeException if the index is invalid
          */
-        public Widget getChild(int index)
+        public Widget GetChild(int index)
         {
-            if (children != null)
+            if (_children != null)
             {
-                return children[index];
+                return _children[index];
             }
             throw new IndexOutOfRangeException();
         }
@@ -1312,9 +1312,9 @@ namespace XNATWL
          * @see #insertChild(de.matthiasmann.twl.Widget, int)
          * @see #getNumChildren()
          */
-        public virtual void add(Widget child)
+        public virtual void Add(Widget child)
         {
-            insertChild(child, getNumChildren());
+            InsertChild(child, GetNumChildren());
         }
 
         /**
@@ -1328,7 +1328,7 @@ namespace XNATWL
          * @throws java.lang.NullPointerException if child is null
          * @throws java.lang.ArgumentOutOfRangeException if the child is already in a tree
          */
-        public virtual void insertChild(Widget child, int index)
+        public virtual void InsertChild(Widget child, int index)
         {
             if (child == null)
             {
@@ -1338,42 +1338,42 @@ namespace XNATWL
             {
                 throw new ArgumentOutOfRangeException("can't add to self");
             }
-            if (child.parent != null)
+            if (child._parent != null)
             {
                 throw new ArgumentOutOfRangeException("child widget already in tree");
             }
-            if (children == null)
+            if (_children == null)
             {
-                children = new List<Widget>();
+                _children = new List<Widget>();
             }
-            if (index < 0 || index > children.Count)
+            if (index < 0 || index > _children.Count)
             {
                 throw new IndexOutOfRangeException();
             }
-            child.setParent(this);  // can throw exception - see PopupWindow
-            children.Insert(index, child);
-            GUI gui = getGUI();
+            child.SetParent(this);  // can throw exception - see PopupWindow
+            _children.Insert(index, child);
+            GUI gui = GetGUI();
             if (gui != null)
             {
-                child.recursivelySetGUI(gui);
+                child.RecursivelySetGUI(gui);
             }
-            adjustChildPosition(child, posX + borderLeft, posY + borderTop);
-            child.recursivelyEnabledChanged(null, enabled);
+            AdjustChildPosition(child, _posX + _borderLeft, _posY + _borderTop);
+            child.RecursivelyEnabledChanged(null, _enabled);
             if (gui != null)
             {
-                child.recursivelyAddToGUI(gui);
+                child.RecursivelyAddToGUI(gui);
             }
-            if (themeManager != null)
+            if (_themeManager != null)
             {
-                child.applyTheme(themeManager);
+                child.ApplyTheme(_themeManager);
             }
             try
             {
-                childAdded(child);
+                ChildAdded(child);
             }
             catch (Exception ex)
             {
-                getLogger().log(Level.SEVERE, "Exception in childAdded()", ex);
+                GetLogger().Log(Level.SEVERE, "Exception in childAdded()", ex);
             }
             // A newly added child can't have open popups
             // because it needs a GUI for this - and it had no parent up to now
@@ -1385,14 +1385,14 @@ namespace XNATWL
          * @param child the child which index should be returned
          * @return the index of the child or -1 if it was not found
          */
-        public int getChildIndex(Widget child)
+        public int GetChildIndex(Widget child)
         {
-            if (children != null)
+            if (_children != null)
             {
                 // can't use children.indexOf(child) as this uses equals()
-                for (int i = 0, n = children.Count; i < n; i++)
+                for (int i = 0, n = _children.Count; i < n; i++)
                 {
-                    if (children[i] == child)
+                    if (_children[i] == child)
                     {
                         return i;
                     }
@@ -1407,12 +1407,12 @@ namespace XNATWL
          * @param child the child that should be removed.
          * @return true if the child was found and removed.
          */
-        public virtual bool removeChild(Widget child)
+        public virtual bool RemoveChild(Widget child)
         {
-            int idx = getChildIndex(child);
+            int idx = GetChildIndex(child);
             if (idx >= 0)
             {
-                removeChild(idx);
+                RemoveChild(idx);
                 return true;
             }
             return false;
@@ -1429,22 +1429,22 @@ namespace XNATWL
          * @throws java.lang.IndexOutOfRangeException if the index is invalid
          * @see #invalidateLayout()
          */
-        public virtual Widget removeChild(int index)
+        public virtual Widget RemoveChild(int index)
         {
-            if (children != null)
+            if (_children != null)
             {
-                Widget child = children[index];
-                children.RemoveAt(index);
-                unparentChild(child);
-                if (lastChildMouseOver == child)
+                Widget child = _children[index];
+                _children.RemoveAt(index);
+                UnparentChild(child);
+                if (_lastChildMouseOver == child)
                 {
-                    lastChildMouseOver = null;
+                    _lastChildMouseOver = null;
                 }
-                if (focusChild == child)
+                if (_focusChild == child)
                 {
-                    focusChild = null;
+                    _focusChild = null;
                 }
-                childRemoved(child);
+                ChildRemoved(child);
                 return child;
             }
             throw new IndexOutOfRangeException();
@@ -1458,65 +1458,65 @@ namespace XNATWL
          * 
          * @see #allChildrenRemoved()
          */
-        public virtual void removeAllChildren()
+        public virtual void RemoveAllChildren()
         {
-            if (children != null)
+            if (_children != null)
             {
-                focusChild = null;
-                lastChildMouseOver = null;
-                for (int i = 0, n = children.Count; i < n; i++)
+                _focusChild = null;
+                _lastChildMouseOver = null;
+                for (int i = 0, n = _children.Count; i < n; i++)
                 {
-                    Widget child = children[i];
-                    unparentChild(child);
+                    Widget child = _children[i];
+                    UnparentChild(child);
                 }
-                children.Clear(); // we expect that new children will be added - so keep list
-                if (hasOpenPopup)
+                _children.Clear(); // we expect that new children will be added - so keep list
+                if (_hasOpenPopup)
                 {
-                    GUI gui = getGUI();
+                    GUI gui = GetGUI();
                     System.Diagnostics.Debug.Assert(gui != null);
-                    recalcOpenPopups(gui);
+                    RecalcOpenPopups(gui);
                 }
-                allChildrenRemoved();
+                AllChildrenRemoved();
             }
         }
 
         /**
          * Clean up GL resources. When overwritten then super method must be called.
          */
-        public virtual void destroy()
+        public virtual void Destroy()
         {
-            if (children != null)
+            if (_children != null)
             {
-                for (int i = 0, n = children.Count; i < n; i++)
+                for (int i = 0, n = _children.Count; i < n; i++)
                 {
-                    children[i].destroy();
+                    _children[i].Destroy();
                 }
             }
-            if (offscreenSurface != null)
+            if (_offscreenSurface != null)
             {
-                offscreenSurface.Dispose();
-                offscreenSurface = null;
+                _offscreenSurface.Dispose();
+                _offscreenSurface = null;
             }
         }
 
-        public bool canAcceptKeyboardFocus()
+        public bool CanAcceptKeyboardFocus()
         {
-            return bCanAcceptKeyboardFocus;
+            return _bCanAcceptKeyboardFocus;
         }
 
-        public void setCanAcceptKeyboardFocus(bool bCanAcceptKeyboardFocus)
+        public void SetCanAcceptKeyboardFocus(bool bCanAcceptKeyboardFocus)
         {
-            this.bCanAcceptKeyboardFocus = bCanAcceptKeyboardFocus;
+            this._bCanAcceptKeyboardFocus = bCanAcceptKeyboardFocus;
         }
 
-        public bool isDepthFocusTraversal()
+        public bool IsDepthFocusTraversal()
         {
-            return depthFocusTraversal;
+            return _depthFocusTraversal;
         }
 
-        public void setDepthFocusTraversal(bool depthFocusTraversal)
+        public void SetDepthFocusTraversal(bool depthFocusTraversal)
         {
-            this.depthFocusTraversal = depthFocusTraversal;
+            this._depthFocusTraversal = depthFocusTraversal;
         }
 
         /**
@@ -1529,23 +1529,23 @@ namespace XNATWL
          * 
          * @return true if keyboard focus was transfered to this widget.
          */
-        public virtual bool requestKeyboardFocus()
+        public virtual bool RequestKeyboardFocus()
         {
-            if (parent != null && visible)
+            if (_parent != null && _visible)
             {
-                if (parent.focusChild == this)
+                if (_parent._focusChild == this)
                 {
                     return true;
                 }
 
-                bool clear = focusTransferStart();
+                bool clear = FocusTransferStart();
                 try
                 {
-                    return parent.requestKeyboardFocus(this);
+                    return _parent.RequestKeyboardFocus(this);
                 }
                 finally
                 {
-                    focusTransferClear(clear);
+                    FocusTransferClear(clear);
                 }
             }
             return false;
@@ -1555,11 +1555,11 @@ namespace XNATWL
          * If this widget currently has the keyboard focus, then the keyboard focus is removed.
          * The focus will be transferred to the parent widget.
          */
-        public void giveupKeyboardFocus()
+        public void GiveupKeyboardFocus()
         {
-            if (parent != null && parent.focusChild == this)
+            if (_parent != null && _parent._focusChild == this)
             {
-                parent.requestKeyboardFocus(null);
+                _parent.RequestKeyboardFocus(null);
             }
         }
 
@@ -1567,42 +1567,42 @@ namespace XNATWL
          * Checks if this widget has the keyboard focus
          * @return true if this widget has the keyboard focus
          */
-        public bool hasKeyboardFocus()
+        public bool HasKeyboardFocus()
         {
-            if (parent != null)
+            if (_parent != null)
             {
-                return parent.focusChild == this;
+                return _parent._focusChild == this;
             }
             return false;
         }
 
-        public bool focusNextChild()
+        public bool FocusNextChild()
         {
-            return moveFocus(true, +1);
+            return MoveFocus(true, +1);
         }
 
-        public bool focusPrevChild()
+        public bool FocusPrevChild()
         {
-            return moveFocus(true, -1);
+            return MoveFocus(true, -1);
         }
 
-        public bool focusFirstChild()
+        public bool FocusFirstChild()
         {
-            return moveFocus(false, +1);
+            return MoveFocus(false, +1);
         }
 
-        public bool focusLastChild()
+        public bool FocusLastChild()
         {
-            return moveFocus(false, -1);
+            return MoveFocus(false, -1);
         }
 
         /**
          * Returns the animation state object.
          * @return the animation state object.
          */
-        public AnimationState getAnimationState()
+        public AnimationState GetAnimationState()
         {
-            return animState;
+            return _animState;
         }
 
         /**
@@ -1616,45 +1616,45 @@ namespace XNATWL
          * @return true if it is shared
          * @see #Widget(de.matthiasmann.twl.AnimationState) 
          */
-        public bool hasSharedAnimationState()
+        public bool HasSharedAnimationState()
         {
-            return sharedAnimState;
+            return _sharedAnimState;
         }
 
         /**
          * Returns the current tine animation object or null if none was set
          * @return the current tine animation object or null if none was set
          */
-        public TintAnimator getTintAnimator()
+        public TintAnimator GetTintAnimator()
         {
-            return tintAnimator;
+            return _tintAnimator;
         }
 
         /**
          * Sets the tint animation object. Can be null to disable tinting.
          * @param tintAnimator the new tint animation object
          */
-        public void setTintAnimator(TintAnimator tintAnimator)
+        public void GetTintAnimator(TintAnimator tintAnimator)
         {
-            this.tintAnimator = tintAnimator;
+            this._tintAnimator = tintAnimator;
         }
 
         /**
          * Returns the currently active offscreen rendering delegate or null if none was set
          * @return the currently active offscreen rendering delegate or null if none was set
          */
-        public RenderOffscreen getRenderOffscreen()
+        public RenderOffscreen GetRenderOffscreen()
         {
-            return renderOffscreen;
+            return _renderOffscreen;
         }
 
         /**
          * Sets set offscreen rendering delegate. Can be null to disable offscreen rendering.
          * @param renderOffscreen the offscreen rendering delegate.
          */
-        public void setRenderOffscreen(RenderOffscreen renderOffscreen)
+        public void SetRenderOffscreen(RenderOffscreen renderOffscreen)
         {
-            this.renderOffscreen = renderOffscreen;
+            this._renderOffscreen = renderOffscreen;
         }
 
 
@@ -1662,9 +1662,9 @@ namespace XNATWL
          * Returns the currently set tooltip content.
          * @return the currently set tooltip content. Can be null.
          */
-        public virtual Object getTooltipContent()
+        public virtual Object GetTooltipContent()
         {
-            return tooltipContent;
+            return _tooltipContent;
         }
 
         /**
@@ -1675,19 +1675,19 @@ namespace XNATWL
          * @see #updateTooltip()
          * @see #getTooltipContent()
          */
-        public virtual void setTooltipContent(Object tooltipContent)
+        public virtual void SetTooltipContent(Object tooltipContent)
         {
-            this.tooltipContent = tooltipContent;
-            updateTooltip();
+            this._tooltipContent = tooltipContent;
+            UpdateTooltip();
         }
 
         /**
          * Returns the current input map.
          * @return the current input map or null.
          */
-        public InputMap getInputMap()
+        public InputMap GetInputMap()
         {
-            return inputMap;
+            return _inputMap;
         }
 
         /**
@@ -1696,9 +1696,9 @@ namespace XNATWL
          * @param inputMap the input map or null.
          * @see #handleKeyStrokeAction(java.lang.String, de.matthiasmann.twl.Event)
          */
-        public void setInputMap(InputMap inputMap)
+        public void SetInputMap(InputMap inputMap)
         {
-            this.inputMap = inputMap;
+            this._inputMap = inputMap;
         }
 
         /**
@@ -1706,9 +1706,9 @@ namespace XNATWL
          * {@code null} is returned.
          * @return the current action map or null.
          */
-        public ActionMap getActionMap()
+        public ActionMap GetActionMap()
         {
-            return actionMap;
+            return _actionMap;
         }
 
         /**
@@ -1716,22 +1716,22 @@ namespace XNATWL
          * a new one is created and set (setActionMap is not called).
          * @return the current action map (or the new action map).
          */
-        public ActionMap getOrCreateActionMap()
+        public ActionMap GetOrCreateActionMap()
         {
-            if (actionMap == null)
+            if (_actionMap == null)
             {
-                actionMap = new ActionMap();
+                _actionMap = new ActionMap();
             }
-            return actionMap;
+            return _actionMap;
         }
 
         /**
          * Installs an action map for this widget.
          * @param actionMap the new action map or null.
          */
-        public void setActionMap(ActionMap actionMap)
+        public void SetActionMap(ActionMap actionMap)
         {
-            this.actionMap = actionMap;
+            this._actionMap = actionMap;
         }
 
         /**
@@ -1744,12 +1744,12 @@ namespace XNATWL
          * @param y the y coordinate
          * @return the widget at that location.
          */
-        public virtual Widget getWidgetAt(int x, int y)
+        public virtual Widget GetWidgetAt(int x, int y)
         {
-            Widget child = getChildAt(x, y);
+            Widget child = GetChildAt(x, y);
             if (child != null)
             {
-                return child.getWidgetAt(x, y);
+                return child.GetWidgetAt(x, y);
             }
             return this;
         }
@@ -1765,76 +1765,76 @@ namespace XNATWL
          * 
          * @param themeInfo The theme info for this widget
          */
-        protected virtual void applyTheme(ThemeInfo themeInfo)
+        protected virtual void ApplyTheme(ThemeInfo themeInfo)
         {
-            applyThemeBackground(themeInfo);
-            applyThemeOverlay(themeInfo);
-            applyThemeBorder(themeInfo);
-            applyThemeOffscreenExtra(themeInfo);
-            applyThemeMinSize(themeInfo);
-            applyThemeMaxSize(themeInfo);
-            applyThemeMouseCursor(themeInfo);
-            applyThemeInputMap(themeInfo);
-            applyThemeTooltip(themeInfo);
-            invalidateLayout();
+            ApplyThemeBackground(themeInfo);
+            ApplyThemeOverlay(themeInfo);
+            ApplyThemeBorder(themeInfo);
+            ApplyThemeOffscreenExtra(themeInfo);
+            ApplyThemeMinSize(themeInfo);
+            ApplyThemeMaxSize(themeInfo);
+            ApplyThemeMouseCursor(themeInfo);
+            ApplyThemeInputMap(themeInfo);
+            ApplyThemeTooltip(themeInfo);
+            InvalidateLayout();
         }
 
-        protected void applyThemeBackground(ThemeInfo themeInfo)
+        protected void ApplyThemeBackground(ThemeInfo themeInfo)
         {
-            setBackground(themeInfo.GetImage("background"));
+            SetBackground(themeInfo.GetImage("background"));
         }
 
-        protected void applyThemeOverlay(ThemeInfo themeInfo)
+        protected void ApplyThemeOverlay(ThemeInfo themeInfo)
         {
-            setOverlay(themeInfo.GetImage("overlay"));
+            SetOverlay(themeInfo.GetImage("overlay"));
         }
 
-        protected void applyThemeBorder(ThemeInfo themeInfo)
+        protected void ApplyThemeBorder(ThemeInfo themeInfo)
         {
-            setBorderSize((Border) themeInfo.GetParameterValue("border", false, typeof(Border)));
+            SetBorderSize((Border) themeInfo.GetParameterValue("border", false, typeof(Border)));
         }
 
-        protected void applyThemeOffscreenExtra(ThemeInfo themeInfo)
+        protected void ApplyThemeOffscreenExtra(ThemeInfo themeInfo)
         {
-            setOffscreenExtra((Border) themeInfo.GetParameterValue("offscreenExtra", false, typeof(Border)));
+            SetOffscreenExtra((Border) themeInfo.GetParameterValue("offscreenExtra", false, typeof(Border)));
         }
 
-        protected void applyThemeMinSize(ThemeInfo themeInfo)
+        protected void ApplyThemeMinSize(ThemeInfo themeInfo)
         {
-            setMinSize(
+            SetMinSize(
                     themeInfo.GetParameter("minWidth", 0),
                     themeInfo.GetParameter("minHeight", 0));
         }
 
-        protected void applyThemeMaxSize(ThemeInfo themeInfo)
+        protected void ApplyThemeMaxSize(ThemeInfo themeInfo)
         {
-            setMaxSize(
+            SetMaxSize(
                     themeInfo.GetParameter("maxWidth", short.MaxValue),
                     themeInfo.GetParameter("maxHeight", short.MaxValue));
         }
 
-        protected virtual void applyThemeMouseCursor(ThemeInfo themeInfo)
+        protected virtual void ApplyThemeMouseCursor(ThemeInfo themeInfo)
         {
-            setMouseCursor(themeInfo.GetMouseCursor("mouseCursor"));
+            SetMouseCursor(themeInfo.GetMouseCursor("mouseCursor"));
         }
 
-        protected void applyThemeInputMap(ThemeInfo themeInfo)
+        protected void ApplyThemeInputMap(ThemeInfo themeInfo)
         {
-            setInputMap((InputMap) themeInfo.GetParameterValue("inputMap", false, typeof(InputMap)));
+            SetInputMap((InputMap) themeInfo.GetParameterValue("inputMap", false, typeof(InputMap)));
         }
 
-        protected void applyThemeTooltip(ThemeInfo themeInfo)
+        protected void ApplyThemeTooltip(ThemeInfo themeInfo)
         {
-            themeTooltipContent = themeInfo.GetParameterValue("tooltip", false);
-            if (tooltipContent == null)
+            _themeTooltipContent = themeInfo.GetParameterValue("tooltip", false);
+            if (_tooltipContent == null)
             {
-                updateTooltip();
+                UpdateTooltip();
             }
         }
 
-        protected Object getThemeTooltipContent()
+        protected Object GetThemeTooltipContent()
         {
-            return themeTooltipContent;
+            return _themeTooltipContent;
         }
 
         /**
@@ -1855,12 +1855,12 @@ namespace XNATWL
          * @return the tooltip message or null if no tooltip is specified.
          * @see #updateTooltip()
          */
-        internal virtual Object getTooltipContentAt(int mouseX, int mouseY)
+        internal virtual Object GetTooltipContentAt(int mouseX, int mouseY)
         {
-            Object content = getTooltipContent();
+            Object content = GetTooltipContent();
             if (content == null)
             {
-                content = getThemeTooltipContent();
+                content = GetThemeTooltipContent();
             }
             return content;
         }
@@ -1872,12 +1872,12 @@ namespace XNATWL
          *
          * @see #getTooltipContent()
          */
-        protected void updateTooltip()
+        protected void UpdateTooltip()
         {
-            GUI gui = getGUI();
+            GUI gui = GetGUI();
             if (gui != null)
             {
-                gui.requestTooltipUpdate(this, false);
+                gui.RequestTooltipUpdate(this, false);
             }
         }
 
@@ -1887,12 +1887,12 @@ namespace XNATWL
          *
          * @see #getTooltipContent()
          */
-        protected void resetTooltip()
+        protected void ResetTooltip()
         {
-            GUI gui = getGUI();
+            GUI gui = GetGUI();
             if (gui != null)
             {
-                gui.requestTooltipUpdate(this, true);
+                gui.RequestTooltipUpdate(this, true);
             }
         }
 
@@ -1912,9 +1912,9 @@ namespace XNATWL
          * @see ActionMap#addMapping(java.lang.String, java.lang.Object, java.lang.reflect.Method, java.lang.Object[], int)
          * @see #getInputMap()
          */
-        protected void addActionMapping(String action, String methodName, params Object[] parameters)
+        protected void AddActionMapping(String action, String methodName, params Object[] parameters)
         {
-            getOrCreateActionMap().addMapping(action, this, methodName, parameters, ActionMap.FLAG_ON_PRESSED);
+            GetOrCreateActionMap().AddMapping(action, this, methodName, parameters, ActionMap.FLAG_ON_PRESSED);
         }
 
         /**
@@ -1922,11 +1922,11 @@ namespace XNATWL
          * require different theme information then this function
          * can be used to reapply the current theme.
          */
-        public void reapplyTheme()
+        public void ReapplyTheme()
         {
-            if (themeManager != null)
+            if (_themeManager != null)
             {
-                applyTheme(themeManager);
+                ApplyTheme(_themeManager);
             }
         }
 
@@ -1937,9 +1937,9 @@ namespace XNATWL
          * @param evt the mouse event
          * @return true if the widgets wants to claim this mouse event
          */
-        internal virtual bool isMouseInside(Event evt)
+        public virtual bool IsMouseInside(Event evt)
         {
-            return isInside(evt.getMouseX(), evt.getMouseY());
+            return IsInside(evt.GetMouseX(), evt.GetMouseY());
         }
 
         /**
@@ -1964,11 +1964,11 @@ namespace XNATWL
          * @see #handleKeyStrokeAction(java.lang.String, de.matthiasmann.twl.Event)
          * @see #setInputMap(de.matthiasmann.twl.InputMap)
          */
-        public virtual bool handleEvent(Event evt)
+        public virtual bool HandleEvent(Event evt)
         {
-            if (evt.isKeyEvent())
+            if (evt.IsKeyEvent())
             {
-                return handleKeyEvent(evt);
+                return HandleKeyEvent(evt);
             }
             return false;
         }
@@ -1981,11 +1981,11 @@ namespace XNATWL
          * @return true if the action was handled
          * @see #setInputMap(de.matthiasmann.twl.InputMap) 
          */
-        protected virtual bool handleKeyStrokeAction(String action, Event evt)
+        protected virtual bool HandleKeyStrokeAction(String action, Event evt)
         {
-            if (actionMap != null)
+            if (_actionMap != null)
             {
-                return actionMap.invoke(action, evt);
+                return _actionMap.Invoke(action, evt);
             }
             return false;
         }
@@ -1998,23 +1998,23 @@ namespace XNATWL
          * @param to the new index for the child at from
          * @throws java.lang.IndexOutOfRangeException if from or to are invalid
          */
-        protected void moveChild(int from, int to)
+        protected void MoveChild(int from, int to)
         {
-            if (children == null)
+            if (_children == null)
             {
                 throw new IndexOutOfRangeException();
             }
-            if (to < 0 || to >= children.Count)
+            if (to < 0 || to >= _children.Count)
             {
                 throw new IndexOutOfRangeException("to");
             }
-            if (from < 0 || from >= children.Count)
+            if (from < 0 || from >= _children.Count)
             {
                 throw new IndexOutOfRangeException("from");
             }
-            Widget child = children[from];
-            children.RemoveAt(from);
-            children.Insert(to, child);
+            Widget child = _children[from];
+            _children.RemoveAt(from);
+            _children.Insert(to, child);
         }
 
         /**
@@ -2025,72 +2025,72 @@ namespace XNATWL
          * @param child The child that wants keyboard focus
          * @return true if the child received the focus.
          */
-        protected virtual bool requestKeyboardFocus(Widget child)
+        protected virtual bool RequestKeyboardFocus(Widget child)
         {
-            if (child != null && child.parent != this)
+            if (child != null && child._parent != this)
             {
                 throw new ArgumentOutOfRangeException("not a direct child");
             }
-            if (focusChild != child)
+            if (_focusChild != child)
             {
                 if (child == null)
                 {
-                    recursivelyChildFocusLost(focusChild);
-                    focusChild = null;
-                    keyboardFocusChildChanged(null);
+                    RecursivelyChildFocusLost(_focusChild);
+                    _focusChild = null;
+                    KeyboardFocusChildChanged(null);
                 }
                 else
                 {
-                    bool clear = focusTransferStart();
+                    bool clear = FocusTransferStart();
                     try
                     {
                         // first request focus for ourself
                         {
-                            FocusGainedCause savedCause = focusGainedCause;
+                            FocusGainedCause savedCause = _focusGainedCause;
                             if (savedCause == null)
                             {
-                                focusGainedCause = FocusGainedCause.CHILD_FOCUSED;
+                                _focusGainedCause = FocusGainedCause.ChildFocused;
                             }
                             try
                             {
-                                if (!requestKeyboardFocus())
+                                if (!RequestKeyboardFocus())
                                 {
                                     return false;
                                 }
                             }
                             finally
                             {
-                                focusGainedCause = savedCause;
+                                _focusGainedCause = savedCause;
                             }
                         }
 
                         // second change focused child
-                        recursivelyChildFocusLost(focusChild);
-                        focusChild = child;
-                        keyboardFocusChildChanged(child);
-                        if (!child.sharedAnimState)
+                        RecursivelyChildFocusLost(_focusChild);
+                        _focusChild = child;
+                        KeyboardFocusChildChanged(child);
+                        if (!child._sharedAnimState)
                         {
-                            child.animState.setAnimationState(STATE_KEYBOARD_FOCUS, true);
+                            child._animState.SetAnimationState(STATE_KEYBOARD_FOCUS, true);
                         }
 
                         // last inform the child widget why it gained keyboard focus
-                        FocusGainedCause cause = child.focusGainedCause;
+                        FocusGainedCause cause = child._focusGainedCause;
                         Widget[] fti = focusTransferInfo.Value;
-                        child.keyboardFocusGained(
-                                (cause != null) ? cause : FocusGainedCause.MANUAL,
+                        child.KeyboardFocusGained(
+                                (cause != null) ? cause : FocusGainedCause.Manual,
                                 (fti != null) ? fti[0] : null);
                     }
                     finally
                     {
-                        focusTransferClear(clear);
+                        FocusTransferClear(clear);
                     }
                 }
             }
-            if (!sharedAnimState)
+            if (!_sharedAnimState)
             {
-                animState.setAnimationState(STATE_HAS_FOCUSED_CHILD, focusChild != null);
+                _animState.SetAnimationState(STATE_HAS_FOCUSED_CHILD, _focusChild != null);
             }
-            return focusChild != null;
+            return _focusChild != null;
         }
 
         /**
@@ -2100,7 +2100,7 @@ namespace XNATWL
          * @param gui the GUI object - same as getGUI()
          * @see #getGUI()
          */
-        protected virtual void beforeRemoveFromGUI(GUI gui)
+        protected virtual void BeforeRemoveFromGUI(GUI gui)
         {
         }
 
@@ -2110,7 +2110,7 @@ namespace XNATWL
          * @param gui the GUI object - same as getGUI()
          * @see #getGUI()
          */
-        protected virtual void afterAddToGUI(GUI gui)
+        protected virtual void AfterAddToGUI(GUI gui)
         {
         }
 
@@ -2119,7 +2119,7 @@ namespace XNATWL
          *
          * The default implementation does nothing.
          */
-        protected virtual void layout()
+        protected virtual void Layout()
         {
         }
 
@@ -2131,7 +2131,7 @@ namespace XNATWL
          * coordinate system. This has the side effect of firing child's
          * positionChanged before the parent's.
          */
-        protected virtual void positionChanged()
+        protected virtual void PositionChanged()
         {
         }
 
@@ -2142,9 +2142,9 @@ namespace XNATWL
          * 
          * @see #invalidateLayoutLocally()
          */
-        protected virtual void sizeChanged()
+        protected virtual void SizeChanged()
         {
-            invalidateLayoutLocally();
+            InvalidateLayoutLocally();
         }
 
         /**
@@ -2155,7 +2155,7 @@ namespace XNATWL
          */
         protected virtual void borderChanged()
         {
-            invalidateLayout();
+            InvalidateLayout();
         }
 
         /**
@@ -2165,9 +2165,9 @@ namespace XNATWL
          * @param child the child which was invalidated
          * @see #invalidateLayout()
          */
-        protected virtual void childInvalidateLayout(Widget child)
+        protected virtual void ChildInvalidateLayout(Widget child)
         {
-            invalidateLayout();
+            InvalidateLayout();
         }
 
         /**
@@ -2177,10 +2177,10 @@ namespace XNATWL
          * @param child the new child
          * @see #invalidateLayout()
          */
-        protected virtual void childAdded(Widget child)
+        protected virtual void ChildAdded(Widget child)
         {
-            System.Diagnostics.Debug.WriteLine("Child added !!! " + child.GetType().FullName + " - " + child.getThemePath());
-            invalidateLayout();
+            System.Diagnostics.Debug.WriteLine("Child added !!! " + child.GetType().FullName + " - " + child.GetThemePath());
+            InvalidateLayout();
         }
 
         /**
@@ -2190,9 +2190,9 @@ namespace XNATWL
          * @param exChild the removed widget - no longer a child
          * @see #invalidateLayout()
          */
-        protected virtual void childRemoved(Widget exChild)
+        protected virtual void ChildRemoved(Widget exChild)
         {
-            invalidateLayout();
+            InvalidateLayout();
         }
 
         /**
@@ -2203,9 +2203,9 @@ namespace XNATWL
          * 
          * @see #invalidateLayout()
          */
-        protected virtual void allChildrenRemoved()
+        protected virtual void AllChildrenRemoved()
         {
-            invalidateLayout();
+            InvalidateLayout();
         }
 
         /**
@@ -2215,7 +2215,7 @@ namespace XNATWL
          * @param child the child which changed it's visibility state
          * @see #setVisible(bool) 
          */
-        protected virtual void childVisibilityChanged(Widget child)
+        protected virtual void ChildVisibilityChanged(Widget child)
         {
         }
 
@@ -2225,7 +2225,7 @@ namespace XNATWL
          * 
          * @param child The child which has now the keyboard focus in this hierachy level or null
          */
-        protected virtual void keyboardFocusChildChanged(Widget child)
+        protected virtual void KeyboardFocusChildChanged(Widget child)
         {
         }
 
@@ -2233,7 +2233,7 @@ namespace XNATWL
          * Called when this widget has lost the keyboard focus.
          * The default implementation does nothing.
          */
-        protected virtual void keyboardFocusLost()
+        protected virtual void KeyboardFocusLost()
         {
         }
 
@@ -2243,7 +2243,7 @@ namespace XNATWL
          *
          * @see #keyboardFocusGained(de.matthiasmann.twl.FocusGainedCause, de.matthiasmann.twl.Widget) 
          */
-        protected virtual void keyboardFocusGained()
+        protected virtual void KeyboardFocusGained()
         {
         }
 
@@ -2254,10 +2254,10 @@ namespace XNATWL
          * @param cause the cause for the this focus transfer
          * @param previousWidget the widget which previously had the keyboard focus - can be null.
          */
-        protected virtual void keyboardFocusGained(FocusGainedCause cause, Widget previousWidget)
+        protected virtual void KeyboardFocusGained(FocusGainedCause cause, Widget previousWidget)
         {
             // System.out.println(this + " " + cause + " " + previousWidget);
-            keyboardFocusGained();
+            KeyboardFocusGained();
         }
 
         /**
@@ -2266,7 +2266,7 @@ namespace XNATWL
          *
          * <p>The default implementation does nothing.</p>
          */
-        internal virtual void widgetDisabled()
+        internal virtual void WidgetDisabled()
         {
         }
 
@@ -2282,12 +2282,12 @@ namespace XNATWL
          *
          * @param gui the GUI object
          */
-        protected virtual void paint(GUI gui)
+        protected virtual void Paint(GUI gui)
         {
-            paintBackground(gui);
-            paintWidget(gui);
-            paintChildren(gui);
-            paintOverlay(gui);
+            PaintBackground(gui);
+            PaintWidget(gui);
+            PaintChildren(gui);
+            PaintOverlay(gui);
         }
 
         /**
@@ -2301,7 +2301,7 @@ namespace XNATWL
          * 
          * @param gui the GUI object - it's the same as getGUI()
          */
-        protected virtual void paintWidget(GUI gui)
+        protected virtual void PaintWidget(GUI gui)
         {
         }
 
@@ -2310,12 +2310,12 @@ namespace XNATWL
          * @param gui the GUI object
          * @see #paint(de.matthiasmann.twl.GUI) 
          */
-        protected void paintBackground(GUI gui)
+        protected void PaintBackground(GUI gui)
         {
-            Image bgImage = getBackground();
+            Image bgImage = GetBackground();
             if (bgImage != null)
             {
-                bgImage.Draw(getAnimationState(), posX, posY, width, height);
+                bgImage.Draw(GetAnimationState(), _posX, _posY, _width, _height);
             }
         }
 
@@ -2324,12 +2324,12 @@ namespace XNATWL
          * @param gui the GUI object
          * @see #paint(de.matthiasmann.twl.GUI) 
          */
-        protected virtual void paintOverlay(GUI gui)
+        protected virtual void PaintOverlay(GUI gui)
         {
-            Image ovImage = getOverlay();
+            Image ovImage = GetOverlay();
             if (ovImage != null)
             {
-                ovImage.Draw(getAnimationState(), posX, posY, width, height);
+                ovImage.Draw(GetAnimationState(), _posX, _posY, _width, _height);
             }
         }
 
@@ -2338,16 +2338,16 @@ namespace XNATWL
          * @param gui the GUI object
          * @see #paint(de.matthiasmann.twl.GUI) 
          */
-        protected void paintChildren(GUI gui)
+        protected void PaintChildren(GUI gui)
         {
-            if (children != null)
+            if (_children != null)
             {
-                for (int i = 0, n = children.Count; i < n; i++)
+                for (int i = 0, n = _children.Count; i < n; i++)
                 {
-                    Widget child = children[i];
-                    if (child.visible)
+                    Widget child = _children[i];
+                    if (child._visible)
                     {
-                        child.drawWidget(gui);
+                        child.DrawWidget(gui);
                     }
                 }
             }
@@ -2359,13 +2359,13 @@ namespace XNATWL
          * @param gui the GUI object
          * @param child the child Widget
          */
-        protected void paintChild(GUI gui, Widget child)
+        protected void PaintChild(GUI gui, Widget child)
         {
-            if (child.parent != this)
+            if (child._parent != this)
             {
                 throw new ArgumentOutOfRangeException("can only render direct children");
             }
-            child.drawWidget(gui);
+            child.DrawWidget(gui);
         }
 
         /**
@@ -2377,7 +2377,7 @@ namespace XNATWL
          * @param mouseY the current mouse Y position
          * @param modifier the current active modifiers - see {@link Event#getModifiers() }
          */
-        internal void paintDragOverlay(GUI gui, int mouseX, int mouseY, int modifier)
+        internal void PaintDragOverlay(GUI gui, int mouseX, int mouseY, int modifier)
         {
         }
 
@@ -2389,15 +2389,15 @@ namespace XNATWL
          * 
          * @see #sizeChanged()
          */
-        protected void invalidateLayoutLocally()
+        protected void InvalidateLayoutLocally()
         {
-            if (layoutInvalid < LAYOUT_INVALID_LOCAL)
+            if (_layoutInvalid < LAYOUT_INVALID_LOCAL)
             {
-                layoutInvalid = LAYOUT_INVALID_LOCAL;
-                GUI gui = getGUI();
+                _layoutInvalid = LAYOUT_INVALID_LOCAL;
+                GUI gui = GetGUI();
                 if (gui != null)
                 {
-                    gui.hasInvalidLayouts = true;
+                    gui._hasInvalidLayouts = true;
                 }
             }
         }
@@ -2408,27 +2408,27 @@ namespace XNATWL
          *
          * @param child A child widget
          */
-        protected internal void layoutChildFullInnerArea(Widget child)
+        protected internal void LayoutChildFullInnerArea(Widget child)
         {
-            if (child.parent != this)
+            if (child._parent != this)
             {
                 throw new ArgumentOutOfRangeException("can only layout direct children");
             }
-            child.setPosition(getInnerX(), getInnerY());
-            child.setSize(getInnerWidth(), getInnerHeight());
+            child.SetPosition(GetInnerX(), GetInnerY());
+            child.SetSize(GetInnerWidth(), GetInnerHeight());
         }
 
         /**
          * Sets size and position of all child widgets so that they all consumes the
          * complete inner area. If there is more then one child then they will overlap.
          */
-        protected void layoutChildrenFullInnerArea()
+        protected void LayoutChildrenFullInnerArea()
         {
-            if (children != null)
+            if (_children != null)
             {
-                for (int i = 0, n = children.Count; i < n; i++)
+                for (int i = 0, n = _children.Count; i < n; i++)
                 {
-                    layoutChildFullInnerArea(children[i]);
+                    LayoutChildFullInnerArea(_children[i]);
                 }
             }
         }
@@ -2440,33 +2440,33 @@ namespace XNATWL
          * the internal children list.</p>
          * @return a read only collection with all children in focus order.
          */
-        protected ICollection<Widget> getKeyboardFocusOrder()
+        protected ICollection<Widget> GetKeyboardFocusOrder()
         {
-            if (children == null)
+            if (_children == null)
             {
                 return new List<Widget>();
             }
-            return new ReadOnlyCollection<Widget>(children);
+            return new ReadOnlyCollection<Widget>(_children);
         }
 
-        private int collectFocusOrderList(List<Widget> list)
+        private int CollectFocusOrderList(List<Widget> list)
         {
             int idx = -1;
-            foreach (Widget child in getKeyboardFocusOrder())
+            foreach (Widget child in GetKeyboardFocusOrder())
             {
-                if (child.visible && child.isEnabled())
+                if (child._visible && child.IsEnabled())
                 {
-                    if (child.bCanAcceptKeyboardFocus)
+                    if (child._bCanAcceptKeyboardFocus)
                     {
-                        if (child == focusChild)
+                        if (child == _focusChild)
                         {
                             idx = list.Count;
                         }
                         list.Add(child);
                     }
-                    if (child.depthFocusTraversal)
+                    if (child._depthFocusTraversal)
                     {
-                        int subIdx = child.collectFocusOrderList(list);
+                        int subIdx = child.CollectFocusOrderList(list);
                         if (subIdx != -1)
                         {
                             idx = subIdx;
@@ -2477,10 +2477,10 @@ namespace XNATWL
             return idx;
         }
 
-        private bool moveFocus(bool relative, int dir)
+        private bool MoveFocus(bool relative, int dir)
         {
             List<Widget> focusList = new List<Widget>();
-            int curIndex = collectFocusOrderList(focusList);
+            int curIndex = CollectFocusOrderList(focusList);
             if (focusList.Count == 0)
             {
                 return false;
@@ -2499,27 +2499,27 @@ namespace XNATWL
             Widget widget = focusList[curIndex];
             try
             {
-                widget.focusGainedCause = FocusGainedCause.FOCUS_KEY;
-                widget.requestKeyboardFocus(null);
-                widget.requestKeyboardFocus();
+                widget._focusGainedCause = FocusGainedCause.FocusKey;
+                widget.RequestKeyboardFocus(null);
+                widget.RequestKeyboardFocus();
             }
             finally
             {
-                widget.focusGainedCause = FocusGainedCause.NONE;
+                widget._focusGainedCause = FocusGainedCause.None;
             }
             return true;
         }
 
-        private bool focusTransferStart()
+        private bool FocusTransferStart()
         {
             Widget[] fti = focusTransferInfo.Value;
             if (fti == null)
             {
-                Widget root = getRootWidget();
+                Widget root = GetRootWidget();
                 Widget w = root;
-                while (w.focusChild != null)
+                while (w._focusChild != null)
                 {
-                    w = w.focusChild;
+                    w = w._focusChild;
                 }
                 if (w == root)
                 {
@@ -2531,7 +2531,7 @@ namespace XNATWL
             return false;
         }
 
-        private void focusTransferClear(bool clear)
+        private void FocusTransferClear(bool clear)
         {
             if (clear)
             {
@@ -2548,14 +2548,14 @@ namespace XNATWL
          * @see #getX()
          * @see #getY()
          */
-        protected Widget getChildAt(int x, int y)
+        protected Widget GetChildAt(int x, int y)
         {
-            if (children != null)
+            if (_children != null)
             {
-                for (int i = children.Count; i-- > 0;)
+                for (int i = _children.Count; i-- > 0;)
                 {
-                    Widget child = children[i];
-                    if (child.visible && child.isInside(x, y))
+                    Widget child = _children[i];
+                    if (child._visible && child.IsInside(x, y))
                     {
                         return child;
                     }
@@ -2570,9 +2570,9 @@ namespace XNATWL
          * Can be overridden to do additional things like hide the widget
          * after the end of the animation.
          */
-        protected virtual void updateTintAnimation()
+        protected virtual void UpdateTintAnimation()
         {
-            tintAnimator.Update();
+            _tintAnimator.Update();
         }
 
         /**
@@ -2581,11 +2581,11 @@ namespace XNATWL
          * @param evt The PropertyChangeEvent object
          * @see PropertyChangeSupport#firePropertyChange(java.beans.PropertyChangeEvent)
          */
-        protected void firePropertyChange(PropertyChangeEvent evt)
+        protected void FirePropertyChange(PropertyChangeEvent evt)
         {
-            if (propertyChangeSupport != null)
+            if (_propertyChangeSupport != null)
             {
-                propertyChangeSupport.FirePropertyChange(evt);
+                _propertyChangeSupport.FirePropertyChange(evt);
             }
         }
 
@@ -2597,11 +2597,11 @@ namespace XNATWL
          * @param newValue The new value of the property
          * @see PropertyChangeSupport#firePropertyChange(java.lang.String, bool, bool)
          */
-        protected void firePropertyChange(String propertyName, bool oldValue, bool newValue)
+        protected void FirePropertyChange(String propertyName, bool oldValue, bool newValue)
         {
-            if (propertyChangeSupport != null)
+            if (_propertyChangeSupport != null)
             {
-                propertyChangeSupport.FirePropertyChange(propertyName, oldValue, newValue);
+                _propertyChangeSupport.FirePropertyChange(propertyName, oldValue, newValue);
             }
         }
 
@@ -2613,11 +2613,11 @@ namespace XNATWL
          * @param newValue The new value of the property
          * @see PropertyChangeSupport#firePropertyChange(java.lang.String, int, int) 
          */
-        protected void firePropertyChange(String propertyName, int oldValue, int newValue)
+        protected void FirePropertyChange(String propertyName, int oldValue, int newValue)
         {
-            if (propertyChangeSupport != null)
+            if (_propertyChangeSupport != null)
             {
-                propertyChangeSupport.FirePropertyChange(propertyName, oldValue, newValue);
+                _propertyChangeSupport.FirePropertyChange(propertyName, oldValue, newValue);
             }
         }
 
@@ -2629,11 +2629,11 @@ namespace XNATWL
          * @param newValue The new value of the property
          * @see PropertyChangeSupport#firePropertyChange(java.lang.String, java.lang.Object, java.lang.Object)
          */
-        protected void firePropertyChange(String propertyName, Object oldValue, Object newValue)
+        protected void FirePropertyChange(String propertyName, Object oldValue, Object newValue)
         {
-            if (propertyChangeSupport != null)
+            if (_propertyChangeSupport != null)
             {
-                propertyChangeSupport.FirePropertyChange(propertyName, oldValue, newValue);
+                _propertyChangeSupport.FirePropertyChange(propertyName, oldValue, newValue);
             }
         }
 
@@ -2641,293 +2641,293 @@ namespace XNATWL
         // start of internal stuff
         //
 
-        internal virtual void setParent(Widget parent)
+        internal virtual void SetParent(Widget parent)
         {
-            this.parent = parent;
+            this._parent = parent;
         }
 
-        private void unparentChild(Widget child)
+        private void UnparentChild(Widget child)
         {
-            GUI gui = getGUI();
-            if (child.hasOpenPopup)
+            GUI gui = GetGUI();
+            if (child._hasOpenPopup)
             {
                 System.Diagnostics.Debug.Assert(gui != null);
-                gui.closePopupFromWidgets(child);
+                gui.ClosePopupFromWidgets(child);
             }
-            recursivelyChildFocusLost(child);
+            RecursivelyChildFocusLost(child);
             if (gui != null)
             {
-                child.recursivelyRemoveFromGUI(gui);
+                child.RecursivelyRemoveFromGUI(gui);
             }
-            child.recursivelyClearGUI(gui);
-            child.parent = null;
+            child.RecursivelyClearGUI(gui);
+            child._parent = null;
             try
             {
-                child.destroy();
+                child.Destroy();
             }
             catch (Exception ex)
             {
-                getLogger().log(Level.SEVERE, "Exception in destroy()", ex);
+                GetLogger().Log(Level.SEVERE, "Exception in destroy()", ex);
             }
-            adjustChildPosition(child, -posX, -posY);
-            child.recursivelyEnabledChanged(null, child.locallyEnabled);
+            AdjustChildPosition(child, -_posX, -_posY);
+            child.RecursivelyEnabledChanged(null, child._locallyEnabled);
         }
 
-        private void recursivelySetGUI(GUI gui)
+        private void RecursivelySetGUI(GUI gui)
         {
-            System.Diagnostics.Debug.Assert(guiInstance == null);
-            guiInstance = gui;
-            if (children != null)
+            System.Diagnostics.Debug.Assert(_guiInstance == null);
+            _guiInstance = gui;
+            if (_children != null)
             {
-                for (int i = children.Count; i-- > 0;)
+                for (int i = _children.Count; i-- > 0;)
                 {
-                    children[i].recursivelySetGUI(gui);
+                    _children[i].RecursivelySetGUI(gui);
                 }
             }
         }
 
-        private void recursivelyAddToGUI(GUI gui)
+        private void RecursivelyAddToGUI(GUI gui)
         {
-            System.Diagnostics.Debug.Assert(guiInstance == gui);
-            if (layoutInvalid != 0)
+            System.Diagnostics.Debug.Assert(_guiInstance == gui);
+            if (_layoutInvalid != 0)
             {
-                gui.hasInvalidLayouts = true;
+                gui._hasInvalidLayouts = true;
             }
-            if (!sharedAnimState)
+            if (!_sharedAnimState)
             {
-                animState.setGUI(gui);
+                _animState.SetGUI(gui);
             }
             try
             {
-                afterAddToGUI(gui);
+                AfterAddToGUI(gui);
             }
             catch (Exception ex)
             {
-                getLogger().log(Level.SEVERE, "Exception in afterAddToGUI()", ex);
+                GetLogger().Log(Level.SEVERE, "Exception in afterAddToGUI()", ex);
             }
-            if (children != null)
+            if (_children != null)
             {
-                for (int i = children.Count; i-- > 0;)
+                for (int i = _children.Count; i-- > 0;)
                 {
-                    children[i].recursivelyAddToGUI(gui);
+                    _children[i].RecursivelyAddToGUI(gui);
                 }
             }
         }
 
-        private void recursivelyClearGUI(GUI gui)
+        private void RecursivelyClearGUI(GUI gui)
         {
-            System.Diagnostics.Debug.Assert( guiInstance == gui);
-            guiInstance = null;
-            themeManager = null;
-            if (children != null)
+            System.Diagnostics.Debug.Assert( _guiInstance == gui);
+            _guiInstance = null;
+            _themeManager = null;
+            if (_children != null)
             {
-                for (int i = children.Count; i-- > 0;)
+                for (int i = _children.Count; i-- > 0;)
                 {
-                    children[i].recursivelyClearGUI(gui);
+                    _children[i].RecursivelyClearGUI(gui);
                 }
             }
         }
 
-        private void recursivelyRemoveFromGUI(GUI gui)
+        private void RecursivelyRemoveFromGUI(GUI gui)
         {
-            System.Diagnostics.Debug.Assert(guiInstance == gui);
-            if (children != null)
+            System.Diagnostics.Debug.Assert(_guiInstance == gui);
+            if (_children != null)
             {
-                for (int i = children.Count; i-- > 0;)
+                for (int i = _children.Count; i-- > 0;)
                 {
-                    children[i].recursivelyRemoveFromGUI(gui);
+                    _children[i].RecursivelyRemoveFromGUI(gui);
                 }
             }
-            focusChild = null;
-            if (!sharedAnimState)
+            _focusChild = null;
+            if (!_sharedAnimState)
             {
-                animState.setGUI(null);
+                _animState.SetGUI(null);
             }
             try
             {
-                beforeRemoveFromGUI(gui);
+                BeforeRemoveFromGUI(gui);
             }
             catch (Exception ex)
             {
-                getLogger().log(Level.SEVERE, "Exception in beforeRemoveFromGUI()", ex);
+                GetLogger().Log(Level.SEVERE, "Exception in beforeRemoveFromGUI()", ex);
             }
         }
 
-        private void recursivelyChildFocusLost(Widget w)
+        private void RecursivelyChildFocusLost(Widget w)
         {
             while (w != null)
             {
-                Widget next = w.focusChild;
-                if (!w.sharedAnimState)
+                Widget next = w._focusChild;
+                if (!w._sharedAnimState)
                 {
-                    w.animState.setAnimationState(STATE_KEYBOARD_FOCUS, false);
+                    w._animState.SetAnimationState(STATE_KEYBOARD_FOCUS, false);
                 }
                 try
                 {
-                    w.keyboardFocusLost();
+                    w.KeyboardFocusLost();
                 }
                 catch (Exception ex)
                 {
-                    getLogger().log(Level.SEVERE, "Exception in keyboardFocusLost()", ex);
+                    GetLogger().Log(Level.SEVERE, "Exception in keyboardFocusLost()", ex);
                 }
-                w.focusChild = null;
+                w._focusChild = null;
                 w = next;
             }
         }
 
-        private void recursivelyEnabledChanged(GUI gui, bool enabled)
+        private void RecursivelyEnabledChanged(GUI gui, bool enabled)
         {
-            enabled &= locallyEnabled;
-            if (this.enabled != enabled)
+            enabled &= _locallyEnabled;
+            if (this._enabled != enabled)
             {
-                this.enabled = enabled;
-                if (!sharedAnimState)
+                this._enabled = enabled;
+                if (!_sharedAnimState)
                 {
-                    getAnimationState().setAnimationState(STATE_DISABLED, !enabled);
+                    GetAnimationState().SetAnimationState(STATE_DISABLED, !enabled);
                 }
                 if (!enabled)
                 {
                     if (gui != null)
                     {
-                        gui.widgetDisabled(this);
+                        gui.WidgetDisabled(this);
                     }
                     try
                     {
-                        widgetDisabled();
+                        WidgetDisabled();
                     }
                     catch (Exception ex)
                     {
-                        getLogger().log(Level.SEVERE, "Exception in widgetDisabled()", ex);
+                        GetLogger().Log(Level.SEVERE, "Exception in widgetDisabled()", ex);
                     }
                     try
                     {
-                        giveupKeyboardFocus();
+                        GiveupKeyboardFocus();
                     }
                     catch (Exception ex)
                     {
-                        getLogger().log(Level.SEVERE, "Exception in giveupKeyboardFocus()", ex);
+                        GetLogger().Log(Level.SEVERE, "Exception in giveupKeyboardFocus()", ex);
                     }
                 }
                 try
                 {
-                    firePropertyChange("enabled", !enabled, enabled);
+                    FirePropertyChange("enabled", !enabled, enabled);
                 }
                 catch (Exception ex)
                 {
-                    getLogger().log(Level.SEVERE, "Exception in firePropertyChange(\"enabled\")", ex);
+                    GetLogger().Log(Level.SEVERE, "Exception in firePropertyChange(\"enabled\")", ex);
                 }
-                if (children != null)
+                if (_children != null)
                 {
-                    for (int i = children.Count; i-- > 0;)
+                    for (int i = _children.Count; i-- > 0;)
                     {
-                        Widget child = children[i];
-                        child.recursivelyEnabledChanged(gui, enabled);
+                        Widget child = _children[i];
+                        child.RecursivelyEnabledChanged(gui, enabled);
                     }
                 }
             }
         }
 
-        private void childHidden(Widget child)
+        private void ChildHidden(Widget child)
         {
-            if (focusChild == child)
+            if (_focusChild == child)
             {
-                recursivelyChildFocusLost(focusChild);
-                focusChild = null;
+                RecursivelyChildFocusLost(_focusChild);
+                _focusChild = null;
             }
-            if (lastChildMouseOver == child)
+            if (_lastChildMouseOver == child)
             {
-                lastChildMouseOver = null;
+                _lastChildMouseOver = null;
             }
         }
 
-        internal void setOpenPopup(GUI gui, bool hasOpenPopup)
+        internal void SetOpenPopup(GUI gui, bool hasOpenPopup)
         {
-            if (this.hasOpenPopup != hasOpenPopup)
+            if (this._hasOpenPopup != hasOpenPopup)
             {
-                this.hasOpenPopup = hasOpenPopup;
-                if (!sharedAnimState)
+                this._hasOpenPopup = hasOpenPopup;
+                if (!_sharedAnimState)
                 {
-                    getAnimationState().setAnimationState(STATE_HAS_OPEN_POPUPS, hasOpenPopup);
+                    GetAnimationState().SetAnimationState(STATE_HAS_OPEN_POPUPS, hasOpenPopup);
                 }
-                if (parent != null)
+                if (_parent != null)
                 {
                     if (hasOpenPopup)
                     {
-                        parent.setOpenPopup(gui, true);
+                        _parent.SetOpenPopup(gui, true);
                     }
                     else
                     {
-                        parent.recalcOpenPopups(gui);
+                        _parent.RecalcOpenPopups(gui);
                     }
                 }
             }
         }
 
-        internal void recalcOpenPopups(GUI gui)
+        internal void RecalcOpenPopups(GUI gui)
         {
             // 1) check self
-            if (gui.hasOpenPopups(this))
+            if (gui.HasOpenPopups(this))
             {
-                setOpenPopup(gui, true);
+                SetOpenPopup(gui, true);
                 return;
             }
             // 2) check children (don't compute, just check the flag)
-            if (children != null)
+            if (_children != null)
             {
-                for (int i = children.Count; i-- > 0;)
+                for (int i = _children.Count; i-- > 0;)
                 {
-                    if (children[i].hasOpenPopup)
+                    if (_children[i]._hasOpenPopup)
                     {
-                        setOpenPopup(gui, true);
+                        SetOpenPopup(gui, true);
                         return;
                     }
                 }
             }
-            setOpenPopup(gui, false);
+            SetOpenPopup(gui, false);
         }
 
-        internal bool isLayoutInvalid()
+        internal bool IsLayoutInvalid()
         {
-            return layoutInvalid != 0;
+            return _layoutInvalid != 0;
         }
 
-        internal void drawWidget(GUI gui)
+        internal void DrawWidget(GUI gui)
         {
-            if (renderOffscreen != null)
+            if (_renderOffscreen != null)
             {
-                drawWidgetOffscreen(gui);
+                DrawWidgetOffscreen(gui);
                 return;
             }
-            if (tintAnimator != null && tintAnimator.HasTint())
+            if (_tintAnimator != null && _tintAnimator.HasTint())
             {
-                drawWidgetTint(gui);
+                DrawWidgetTint(gui);
                 return;
             }
-            if (clip)
+            if (_clip)
             {
-                drawWidgetClip(gui);
+                DrawWidgetClip(gui);
                 return;
             }
-            paint(gui);
+            Paint(gui);
         }
 
-        private void drawWidgetTint(GUI gui)
+        private void DrawWidgetTint(GUI gui)
         {
-            if (tintAnimator.IsFadeActive())
+            if (_tintAnimator.IsFadeActive())
             {
-                updateTintAnimation();
+                UpdateTintAnimation();
             }
-            Renderer.Renderer renderer = gui.getRenderer();
-            tintAnimator.PaintWithTint(renderer);
+            Renderer.Renderer renderer = gui.GetRenderer();
+            _tintAnimator.PaintWithTint(renderer);
             try
             {
-                if (clip)
+                if (_clip)
                 {
-                    drawWidgetClip(gui);
+                    DrawWidgetClip(gui);
                 }
                 else
                 {
-                    paint(gui);
+                    Paint(gui);
                 }
             }
             finally
@@ -2936,13 +2936,13 @@ namespace XNATWL
             }
         }
 
-        private void drawWidgetClip(GUI gui)
+        private void DrawWidgetClip(GUI gui)
         {
-            Renderer.Renderer renderer = gui.getRenderer();
-            renderer.ClipEnter(posX, posY, width, height);
+            Renderer.Renderer renderer = gui.GetRenderer();
+            renderer.ClipEnter(_posX, _posY, _width, _height);
             try
             {
-                paint(gui);
+                Paint(gui);
             }
             finally
             {
@@ -2950,18 +2950,18 @@ namespace XNATWL
             }
         }
 
-        private void drawWidgetOffscreen(GUI gui)
+        private void DrawWidgetOffscreen(GUI gui)
         {
-            RenderOffscreen ro = this.renderOffscreen;
-            Renderer.Renderer renderer = gui.getRenderer();
+            RenderOffscreen ro = this._renderOffscreen;
+            Renderer.Renderer renderer = gui.GetRenderer();
             OffscreenRenderer offscreenRenderer = renderer.OffscreenRenderer;
             if (offscreenRenderer != null)
             {
-                int extraTop = offscreenExtraTop;
-                int extraLeft = offscreenExtraLeft;
-                int extraRight = offscreenExtraRight;
-                int extraBottom = offscreenExtraBottom;
-                int[] effectExtra = ro.getEffectExtraArea(this);
+                int extraTop = _offscreenExtraTop;
+                int extraLeft = _offscreenExtraLeft;
+                int extraRight = _offscreenExtraRight;
+                int extraBottom = _offscreenExtraBottom;
+                int[] effectExtra = ro.GetEffectExtraArea(this);
                 if (effectExtra != null)
                 {
                     extraTop += effectExtra[0];
@@ -2969,131 +2969,131 @@ namespace XNATWL
                     extraRight += effectExtra[2];
                     extraBottom += effectExtra[3];
                 }
-                if (offscreenSurface != null && !ro.needPainting(gui, parent, offscreenSurface))
+                if (_offscreenSurface != null && !ro.NeedPainting(gui, _parent, _offscreenSurface))
                 {
-                    ro.paintOffscreenSurface(gui, this, offscreenSurface);
+                    ro.PaintOffscreenSurface(gui, this, _offscreenSurface);
                     return;
                 }
-                offscreenSurface = offscreenRenderer.StartOffscreenRendering(
-                        this, offscreenSurface, posX - extraLeft, posY - extraTop,
-                        width + extraLeft + extraRight, height + extraTop + extraBottom);
-                if (offscreenSurface != null)
+                _offscreenSurface = offscreenRenderer.StartOffscreenRendering(
+                        this, _offscreenSurface, _posX - extraLeft, _posY - extraTop,
+                        _width + extraLeft + extraRight, _height + extraTop + extraBottom);
+                if (_offscreenSurface != null)
                 {
                     try
                     {
-                        if (tintAnimator != null && tintAnimator.HasTint())
+                        if (_tintAnimator != null && _tintAnimator.HasTint())
                         {
-                            drawWidgetTint(gui);
+                            DrawWidgetTint(gui);
                         }
                         else
                         {
-                            paint(gui);
+                            Paint(gui);
                         }
                     }
                     finally
                     {
                         offscreenRenderer.EndOffscreenRendering();
                     }
-                    ro.paintOffscreenSurface(gui, this, offscreenSurface);
+                    ro.PaintOffscreenSurface(gui, this, _offscreenSurface);
                     return;
                 }
             }
-            renderOffscreen = null;
-            ro.offscreenRenderingFailed(this);
-            drawWidget(gui);
+            _renderOffscreen = null;
+            ro.OffscreenRenderingFailed(this);
+            DrawWidget(gui);
         }
 
-        internal virtual Widget getWidgetUnderMouse()
+        internal virtual Widget GetWidgetUnderMouse()
         {
-            if (!visible)
+            if (!_visible)
             {
                 return null;
             }
             Widget w = this;
-            while (w.lastChildMouseOver != null && w.visible)
+            while (w._lastChildMouseOver != null && w._visible)
             {
-                w = w.lastChildMouseOver;
+                w = w._lastChildMouseOver;
             }
             return w;
         }
 
-        private static void adjustChildPosition(Widget child, int deltaX, int deltaY)
+        private static void AdjustChildPosition(Widget child, int deltaX, int deltaY)
         {
-            child.setPositionImpl(child.posX + deltaX, child.posY + deltaY);
+            child.SetPositionImpl(child._posX + deltaX, child._posY + deltaY);
         }
 
-        bool setPositionImpl(int x, int y)
+        bool SetPositionImpl(int x, int y)
         {
-            int deltaX = x - posX;
-            int deltaY = y - posY;
+            int deltaX = x - _posX;
+            int deltaY = y - _posY;
             if (deltaX != 0 || deltaY != 0)
             {
-                this.posX = x;
-                this.posY = y;
+                this._posX = x;
+                this._posY = y;
 
-                if (children != null)
+                if (_children != null)
                 {
-                    for (int i = 0, n = children.Count; i < n; i++)
+                    for (int i = 0, n = _children.Count; i < n; i++)
                     {
-                        adjustChildPosition(children[i], deltaX, deltaY);
+                        AdjustChildPosition(_children[i], deltaX, deltaY);
                     }
                 }
 
-                positionChanged();
+                PositionChanged();
 
-                if (propertyChangeSupport != null)
+                if (_propertyChangeSupport != null)
                 {
-                    firePropertyChange("x", x - deltaX, x);
-                    firePropertyChange("y", y - deltaY, y);
+                    FirePropertyChange("x", x - deltaX, x);
+                    FirePropertyChange("y", y - deltaY, y);
                 }
                 return true;
             }
             return false;
         }
 
-        public virtual void applyTheme(ThemeManager themeManager)
+        public virtual void ApplyTheme(ThemeManager themeManager)
         {
-            this.themeManager = themeManager;
+            this._themeManager = themeManager;
 
-            String themePath = getThemePath();
+            String themePath = GetThemePath();
             System.Diagnostics.Debug.WriteLine("Widget@applyTheme with ThemeManager : " + this.GetType().FullName + " '" + themePath + "'");
             if (themePath.Length == 0)
             {
-                if (children != null)
+                if (_children != null)
                 {
-                    for (int i = 0, n = children.Count; i < n; i++)
+                    for (int i = 0, n = _children.Count; i < n; i++)
                     {
-                        children[i].applyTheme(themeManager);
+                        _children[i].ApplyTheme(themeManager);
                     }
                 }
                 return;
             }
 
             DebugHook hook = DebugHook.getDebugHook();
-            hook.beforeApplyTheme(this);
+            hook.BeforeApplyTheme(this);
 
             ThemeInfo themeInfo = null;
             try
             {
                 themeInfo = themeManager.FindThemeInfo(themePath);
-                if (themeInfo != null && theme.Length > 0)
+                if (themeInfo != null && _theme.Length > 0)
                 {
                     try
                     {
-                        applyTheme(themeInfo);
+                        ApplyTheme(themeInfo);
                     }
                     catch (Exception ex)
                     {
-                        getLogger().log(Level.SEVERE, "Exception in applyTheme()", ex);
+                        GetLogger().Log(Level.SEVERE, "Exception in applyTheme()", ex);
                     }
                 }
             }
             finally
             {
-                hook.afterApplyTheme(this);
+                hook.AfterApplyTheme(this);
             }
 
-            applyThemeToChildren(themeManager, themeInfo, hook);
+            ApplyThemeToChildren(themeManager, themeInfo, hook);
         }
 
         /**
@@ -3103,70 +3103,70 @@ namespace XNATWL
          * @param theme the theme name or path.
          * @return true if the theme is absolute.
          */
-        public static bool isAbsoluteTheme(String theme)
+        public static bool IsAbsoluteTheme(String theme)
         {
             return theme.Length > 1 && theme[0] == '/';
         }
 
-        private void applyThemeImpl(ThemeManager themeManager, ThemeInfo themeInfo, DebugHook hook)
+        private void ApplyThemeImpl(ThemeManager themeManager, ThemeInfo themeInfo, DebugHook hook)
         {
-            System.Diagnostics.Debug.WriteLine("Widget@applyThemeImpl with ThemeManager : " + this.GetType().FullName + " '" + this.theme + "'");
-            this.themeManager = themeManager;
-            if (theme.Length > 0)
+            System.Diagnostics.Debug.WriteLine("Widget@applyThemeImpl with ThemeManager : " + this.GetType().FullName + " '" + this._theme + "'");
+            this._themeManager = themeManager;
+            if (_theme.Length > 0)
             {
-                hook.beforeApplyTheme(this);
+                hook.BeforeApplyTheme(this);
                 try
                 {
-                    if (isAbsoluteTheme(theme))
+                    if (IsAbsoluteTheme(_theme))
                     {
-                        themeInfo = themeManager.FindThemeInfo(theme.Substring(1));
+                        themeInfo = themeManager.FindThemeInfo(_theme.Substring(1));
                     }
                     else
                     {
-                        themeInfo = themeInfo.GetChildTheme(theme);
+                        themeInfo = themeInfo.GetChildTheme(_theme);
                     }
                     if (themeInfo != null)
                     {
                         try
                         {
-                            applyTheme(themeInfo);
+                            ApplyTheme(themeInfo);
                         }
                         catch (Exception ex)
                         {
-                            getLogger().log(Level.SEVERE, "Exception in applyTheme()", ex);
+                            GetLogger().Log(Level.SEVERE, "Exception in applyTheme()", ex);
                         }
                     }
                 }
                 finally
                 {
-                    hook.afterApplyTheme(this);
+                    hook.AfterApplyTheme(this);
                 }
             }
-            applyThemeToChildren(themeManager, themeInfo, hook);
+            ApplyThemeToChildren(themeManager, themeInfo, hook);
         }
 
-        private void applyThemeToChildren(ThemeManager themeManager, ThemeInfo themeInfo, DebugHook hook)
+        private void ApplyThemeToChildren(ThemeManager themeManager, ThemeInfo themeInfo, DebugHook hook)
         {
-            System.Diagnostics.Debug.WriteLine("Widget@applyThemeToChildren with ThemeManager : " + this.theme);
-            if (children != null && themeInfo != null)
+            System.Diagnostics.Debug.WriteLine("Widget@applyThemeToChildren with ThemeManager : " + this._theme);
+            if (_children != null && themeInfo != null)
             {
-                for (int i = 0, n = children.Count; i < n; i++)
+                for (int i = 0, n = _children.Count; i < n; i++)
                 {
-                    Widget child = children[i];
-                    child.applyThemeImpl(themeManager, themeInfo, hook);
+                    Widget child = _children[i];
+                    child.ApplyThemeImpl(themeManager, themeInfo, hook);
                 }
             }
         }
 
-        private StringBuilder getThemePath(int length)
+        private StringBuilder GetThemePath(int length)
         {
             StringBuilder sb;
-            length += theme.Length;
-            bool abs = isAbsoluteTheme(theme);
-            if (parent != null && !abs)
+            length += _theme.Length;
+            bool abs = IsAbsoluteTheme(_theme);
+            if (_parent != null && !abs)
             {
-                sb = parent.getThemePath(length + 1);
-                if (theme.Length > 0 && sb.Length > 0)
+                sb = _parent.GetThemePath(length + 1);
+                if (_theme.Length > 0 && sb.Length > 0)
                 {
                     sb.Append('.');
                 }
@@ -3177,59 +3177,59 @@ namespace XNATWL
             }
             if (abs)
             {
-                return sb.Append(theme.Substring(1));
+                return sb.Append(_theme.Substring(1));
             }
-            return sb.Append(theme);
+            return sb.Append(_theme);
         }
 
-        internal Event translateMouseEvent(Event evt)
+        internal Event TranslateMouseEvent(Event evt)
         {
-            if (renderOffscreen is OffscreenMouseAdjustments)
+            if (_renderOffscreen is OffscreenMouseAdjustments)
             {
-                int[] newXY = ((OffscreenMouseAdjustments)renderOffscreen).adjustMouseCoordinates(this, evt);
-                evt = evt.createSubEvent(newXY[0], newXY[1]);
+                int[] newXY = ((OffscreenMouseAdjustments)_renderOffscreen).AdjustMouseCoordinates(this, evt);
+                evt = evt.CreateSubEvent(newXY[0], newXY[1]);
             }
             return evt;
         }
 
-        internal virtual Widget routeMouseEvent(Event evt)
+        internal virtual Widget RouteMouseEvent(Event evt)
         {
-            System.Diagnostics.Debug.Assert(!evt.isMouseDragEvent());
-            evt = translateMouseEvent(evt);
-            if (children != null)
+            System.Diagnostics.Debug.Assert(!evt.IsMouseDragEvent());
+            evt = TranslateMouseEvent(evt);
+            if (_children != null)
             {
-                for (int i = children.Count; i-- > 0;)
+                for (int i = _children.Count; i-- > 0;)
                 {
-                    Widget child = children[i];
-                    if (child.visible && child.isMouseInside(evt))
+                    Widget child = _children[i];
+                    if (child._visible && child.IsMouseInside(evt))
                     {
                         // we send the real event only only if we can transfer the mouse "focus" to this child
-                        if (setMouseOverChild(child, evt))
+                        if (SetMouseOverChild(child, evt))
                         {
-                            if (evt.getEventType() == EventType.MOUSE_ENTERED ||
-                                    evt.getEventType() == EventType.MOUSE_EXITED)
+                            if (evt.GetEventType() == EventType.MOUSE_ENTERED ||
+                                    evt.GetEventType() == EventType.MOUSE_EXITED)
                             {
                                 return child;
                             }
-                            Widget result = child.routeMouseEvent(evt);
+                            Widget result = child.RouteMouseEvent(evt);
                             if (result != null)
                             {
                                 // need to check if the focus was transfered to this child or its descendants
                                 // if not we need to transfer focus on mouse click here
                                 // this can happen if we click on a widget which doesn't want the keyboard focus itself
-                                if (evt.getEventType() == EventType.MOUSE_BTNDOWN && focusChild != child)
+                                if (evt.GetEventType() == EventType.MOUSE_BTNDOWN && _focusChild != child)
                                 {
                                     try
                                     {
-                                        child.focusGainedCause = FocusGainedCause.MOUSE_BTNDOWN;
-                                        if (child.isEnabled() && child.canAcceptKeyboardFocus())
+                                        child._focusGainedCause = FocusGainedCause.MouseBtnDown;
+                                        if (child.IsEnabled() && child.CanAcceptKeyboardFocus())
                                         {
-                                            requestKeyboardFocus(child);
+                                            RequestKeyboardFocus(child);
                                         }
                                     }
                                     finally
                                     {
-                                        child.focusGainedCause = FocusGainedCause.NONE;
+                                        child._focusGainedCause = FocusGainedCause.None;
                                     }
                                 }
                                 return result;
@@ -3244,63 +3244,63 @@ namespace XNATWL
 
             // the following code is only executed for the widget which received
             // the click event. That's why we can call {@code requestKeyboardFocus(null)}
-            if (evt.getEventType() == EventType.MOUSE_BTNDOWN && isEnabled() && canAcceptKeyboardFocus())
+            if (evt.GetEventType() == EventType.MOUSE_BTNDOWN && IsEnabled() && CanAcceptKeyboardFocus())
             {
                 try
                 {
-                    focusGainedCause = FocusGainedCause.MOUSE_BTNDOWN;
-                    if (focusChild == null)
+                    _focusGainedCause = FocusGainedCause.MouseBtnDown;
+                    if (_focusChild == null)
                     {
-                        requestKeyboardFocus();
+                        RequestKeyboardFocus();
                     }
                     else
                     {
-                        requestKeyboardFocus(null);
+                        RequestKeyboardFocus(null);
                     }
                 }
                 finally
                 {
-                    focusGainedCause = FocusGainedCause.NONE;
+                    _focusGainedCause = FocusGainedCause.None;
                 }
             }
-            if (evt.getEventType() != EventType.MOUSE_WHEEL)
+            if (evt.GetEventType() != EventType.MOUSE_WHEEL)
             {
                 // no child has mouse over
-                setMouseOverChild(null, evt);
+                SetMouseOverChild(null, evt);
             }
-            if (!isEnabled() && isMouseAction(evt))
+            if (!IsEnabled() && IsMouseAction(evt))
             {
                 return this;
             }
-            if (handleEvent(evt))
+            if (HandleEvent(evt))
             {
                 return this;
             }
             return null;
         }
 
-        internal static bool isMouseAction(Event evt)
+        internal static bool IsMouseAction(Event evt)
         {
-            EventType type = evt.getEventType();
+            EventType type = evt.GetEventType();
             return type == EventType.MOUSE_BTNDOWN ||
                     type == EventType.MOUSE_BTNUP ||
                     type == EventType.MOUSE_CLICKED ||
                     type == EventType.MOUSE_DRAGGED;
         }
 
-        internal void routePopupEvent(Event evt)
+        internal void RoutePopupEvent(Event evt)
         {
-            handleEvent(evt);
-            if (children != null)
+            HandleEvent(evt);
+            if (_children != null)
             {
-                for (int i = 0, n = children.Count; i < n; i++)
+                for (int i = 0, n = _children.Count; i < n; i++)
                 {
-                    children[i].routePopupEvent(evt);
+                    _children[i].RoutePopupEvent(evt);
                 }
             }
         }
 
-        static bool getSafeBooleanProperty(String name)
+        static bool GetSafeBooleanProperty(String name)
         {
             try
             {
@@ -3312,104 +3312,104 @@ namespace XNATWL
             }
         }
 
-        private static bool WARN_ON_UNHANDLED_ACTION = getSafeBooleanProperty("warnOnUnhandledAction");
+        private static bool WARN_ON_UNHANDLED_ACTION = GetSafeBooleanProperty("warnOnUnhandledAction");
 
-        private bool handleKeyEvent(Event evt)
+        private bool HandleKeyEvent(Event evt)
         {
-            if (children != null)
+            if (_children != null)
             {
-                if (focusKeyEnabled && guiInstance != null)
+                if (_focusKeyEnabled && _guiInstance != null)
                 {
-                    guiInstance.setFocusKeyWidget(this);
+                    _guiInstance.SetFocusKeyWidget(this);
                 }
-                if (focusChild != null && focusChild.isVisible())
+                if (_focusChild != null && _focusChild.IsVisible())
                 {
-                    if (focusChild.handleEvent(evt))
+                    if (_focusChild.HandleEvent(evt))
                     {
                         return true;
                     }
                 }
             }
-            if (inputMap != null)
+            if (_inputMap != null)
             {
-                String action = inputMap.mapEvent(evt);
+                String action = _inputMap.MapEvent(evt);
                 if (action != null)
                 {
-                    if (handleKeyStrokeAction(action, evt))
+                    if (HandleKeyStrokeAction(action, evt))
                     {
                         return true;
                     }
                     if (WARN_ON_UNHANDLED_ACTION)
                     {
-                        Logger.GetLogger(this.GetType()).log(Level.WARNING, "Unhandled action '" + action + "' for class '" + this.GetType().FullName + "'");
+                        Logger.GetLogger(this.GetType()).Log(Level.WARNING, "Unhandled action '" + action + "' for class '" + this.GetType().FullName + "'");
                     }
                 }
             }
             return false;
         }
 
-        internal void handleFocusKeyEvent(Event evt)
+        internal void HandleFocusKeyEvent(Event evt)
         {
-            if (evt.isKeyPressedEvent())
+            if (evt.IsKeyPressedEvent())
             {
-                if ((evt.getModifiers() & Event.MODIFIER_SHIFT) != 0)
+                if ((evt.GetModifiers() & Event.MODIFIER_SHIFT) != 0)
                 {
-                    focusPrevChild();
+                    FocusPrevChild();
                 }
                 else
                 {
-                    focusNextChild();
+                    FocusNextChild();
                 }
             }
         }
 
-        internal bool setMouseOverChild(Widget child, Event evt)
+        internal bool SetMouseOverChild(Widget child, Event evt)
         {
-            if (lastChildMouseOver != child)
+            if (_lastChildMouseOver != child)
             {
                 if (child != null)
                 {
-                    Widget result = child.routeMouseEvent(evt.createSubEvent(EventType.MOUSE_ENTERED));
+                    Widget result = child.RouteMouseEvent(evt.CreateSubEvent(EventType.MOUSE_ENTERED));
                     if (result == null)
                     {
                         // this child widget doesn't want mouse events
                         return false;
                     }
                 }
-                if (lastChildMouseOver != null)
+                if (_lastChildMouseOver != null)
                 {
-                    lastChildMouseOver.routeMouseEvent(evt.createSubEvent(EventType.MOUSE_EXITED));
+                    _lastChildMouseOver.RouteMouseEvent(evt.CreateSubEvent(EventType.MOUSE_EXITED));
                 }
-                lastChildMouseOver = child;
+                _lastChildMouseOver = child;
             }
             return true;
         }
 
-        internal void collectLayoutLoop(List<Widget> result)
+        internal void CollectLayoutLoop(List<Widget> result)
         {
-            if (layoutInvalid != 0)
+            if (_layoutInvalid != 0)
             {
                 result.Add(this);
             }
-            if (children != null)
+            if (_children != null)
             {
-                for (int i = 0, n = children.Count; i < n; i++)
+                for (int i = 0, n = _children.Count; i < n; i++)
                 {
-                    children[i].collectLayoutLoop(result);
+                    _children[i].CollectLayoutLoop(result);
                 }
             }
         }
 
-        private PropertyChangeSupport createPropertyChangeSupport()
+        private PropertyChangeSupport CreatePropertyChangeSupport()
         {
-            if (propertyChangeSupport == null)
+            if (_propertyChangeSupport == null)
             {
-                propertyChangeSupport = new PropertyChangeSupport(this);
+                _propertyChangeSupport = new PropertyChangeSupport(this);
             }
-            return propertyChangeSupport;
+            return _propertyChangeSupport;
         }
 
-        private Logger getLogger()
+        private Logger GetLogger()
         {
             return Logger.GetLogger(typeof(Widget));
         }
@@ -3428,7 +3428,7 @@ namespace XNATWL
              * @param widget the widget
              * @param surface the resulting offscreen surface
              */
-            void paintOffscreenSurface(GUI gui, Widget widget, OffscreenSurface surface);
+            void PaintOffscreenSurface(GUI gui, Widget widget, OffscreenSurface surface);
 
             /**
              * Called when {@link OffscreenRenderer#startOffscreenRendering(de.matthiasmann.twl.renderer.OffscreenSurface, int, int, int, int) }
@@ -3437,7 +3437,7 @@ namespace XNATWL
              * already been removed from the widget.
              * @param widget the widget
              */
-            void offscreenRenderingFailed(Widget widget);
+            void OffscreenRenderingFailed(Widget widget);
 
             /**
              * Returns the extra area around the widget needed for the effect.
@@ -3449,7 +3449,7 @@ namespace XNATWL
              * @param widget the widget
              * @return the extra area in {@code top, left, right, bottom} order or null
              */
-            int[] getEffectExtraArea(Widget widget);
+            int[] GetEffectExtraArea(Widget widget);
 
             /**
              * Called before offscreen rendering is started.
@@ -3464,7 +3464,7 @@ namespace XNATWL
              * @param surface the previous offscreen surface - never null
              * @return true if the surface needs to be updated, false if no new rendering should be done
              */
-            bool needPainting(GUI gui, Widget widget, OffscreenSurface surface);
+            bool NeedPainting(GUI gui, Widget widget, OffscreenSurface surface);
         }
 
         public interface OffscreenMouseAdjustments : RenderOffscreen
@@ -3482,7 +3482,7 @@ namespace XNATWL
              * @param evt the mouse event
              * @return the new mouse coordinates in {@code x, y} order
              */
-            int[] adjustMouseCoordinates(Widget widget, Event evt);
+            int[] AdjustMouseCoordinates(Widget widget, Event evt);
         }
     }
 }

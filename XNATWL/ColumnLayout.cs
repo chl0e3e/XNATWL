@@ -33,26 +33,25 @@ using System.Collections.Generic;
 
 namespace XNATWL
 {
-
     public class ColumnLayout : DialogLayout
     {
-        List<Group> columnGroups;
-        private Panel rootPanel;
-        private Dictionary<Columns, Columns> columns;
+        List<Group> _columnGroups;
+        private Panel _rootPanel;
+        private Dictionary<Columns, Columns> _columns;
 
         public ColumnLayout()
         {
-            this.columnGroups = new List<Group>();
-            this.rootPanel = new Panel(this, null);
-            this.columns = new Dictionary<Columns, Columns>();
+            this._columnGroups = new List<Group>();
+            this._rootPanel = new Panel(this, null);
+            this._columns = new Dictionary<Columns, Columns>();
 
-            setHorizontalGroup(createParallelGroup());
-            setVerticalGroup(rootPanel.rows);
+            SetHorizontalGroup(CreateParallelGroup());
+            SetVerticalGroup(_rootPanel._rows);
         }
 
-        public Panel getRootPanel()
+        public Panel GetRootPanel()
         {
-            return rootPanel;
+            return _rootPanel;
         }
 
         /**
@@ -67,19 +66,19 @@ namespace XNATWL
          * @param columnNames list of column names
          * @return the column layout
          */
-        public Columns getColumns(params String[] columnNames)
+        public Columns GetColumns(params String[] columnNames)
         {
             if (columnNames.Length == 0)
             {
                 throw new ArgumentOutOfRangeException("columnNames");
             }
             Columns key = new Columns(columnNames);
-            Columns cl = columns[key];
+            Columns cl = _columns[key];
             if (cl != null)
             {
                 return cl;
             }
-            createColumns(key);
+            CreateColumns(key);
             return key;
         }
 
@@ -89,9 +88,9 @@ namespace XNATWL
          * @param columns the column layout info
          * @return the new row
          */
-        public Row addRow(Columns columns)
+        public Row AddRow(Columns columns)
         {
-            return rootPanel.addRow(columns);
+            return _rootPanel.AddRow(columns);
         }
 
         /**
@@ -101,18 +100,18 @@ namespace XNATWL
          * @param columnNames the column names
          * @return the new row
          */
-        public Row addRow(params String[] columnNames)
+        public Row AddRow(params String[] columnNames)
         {
-            return rootPanel.addRow(getColumns(columnNames));
+            return _rootPanel.AddRow(GetColumns(columnNames));
         }
 
-        private void createColumns(Columns cl)
+        private void CreateColumns(Columns cl)
         {
             int prefixSize = 0;
             Columns prefixColumns = null;
-            foreach (Columns c in columns.Values)
+            foreach (Columns c in _columns.Values)
             {
-                int match = c.match(cl);
+                int match = c.Match(cl);
                 if (match > prefixSize)
                 {
                     prefixSize = match;
@@ -121,81 +120,81 @@ namespace XNATWL
             }
 
             int numColumns = 0;
-            for (int i = 0, n = cl.names.Length; i < n; i++)
+            for (int i = 0, n = cl._names.Length; i < n; i++)
             {
-                if (!cl.isGap(i))
+                if (!cl.IsGap(i))
                 {
                     numColumns++;
                 }
             }
 
-            cl.numColumns = numColumns;
-            cl.firstColumn = columnGroups.Count;
-            cl.childGroups = new Group[cl.names.Length];
-            Group h = createSequentialGroup();
+            cl._numColumns = numColumns;
+            cl._firstColumn = _columnGroups.Count;
+            cl._childGroups = new Group[cl._names.Length];
+            Group h = CreateSequentialGroup();
 
             if (prefixColumns == null)
             {
-                getHorizontalGroup().addGroup(h);
+                GetHorizontalGroup().AddGroup(h);
             }
             else
             {
                 for (int i = 0; i < prefixSize; i++)
                 {
-                    if (!cl.isGap(i))
+                    if (!cl.IsGap(i))
                     {
-                        Group g = columnGroups[prefixColumns.firstColumn + i];
-                        columnGroups.Add(g);
+                        Group g = _columnGroups[prefixColumns._firstColumn + i];
+                        _columnGroups.Add(g);
                     }
                 }
-                Array.Copy(prefixColumns.childGroups, 0, cl.childGroups, 0, prefixSize);
-                cl.childGroups[prefixSize - 1].addGroup(h);
+                Array.Copy(prefixColumns._childGroups, 0, cl._childGroups, 0, prefixSize);
+                cl._childGroups[prefixSize - 1].AddGroup(h);
             }
 
-            for (int i = prefixSize, n = cl.names.Length; i < n; i++)
+            for (int i = prefixSize, n = cl._names.Length; i < n; i++)
             {
-                if (cl.isGap(i))
+                if (cl.IsGap(i))
                 {
-                    h.addGap();
+                    h.AddGap();
                 }
                 else
                 {
-                    Group g = createParallelGroup();
-                    h.addGroup(g);
-                    columnGroups.Add(g);
+                    Group g = CreateParallelGroup();
+                    h.AddGroup(g);
+                    _columnGroups.Add(g);
                 }
-                Group nextSequential = createSequentialGroup();
-                Group childGroup = createParallelGroup().addGroup(nextSequential);
-                h.addGroup(childGroup);
+                Group nextSequential = CreateSequentialGroup();
+                Group childGroup = CreateParallelGroup().AddGroup(nextSequential);
+                h.AddGroup(childGroup);
                 h = nextSequential;
-                cl.childGroups[i] = childGroup;
+                cl._childGroups[i] = childGroup;
             }
-            columns.Add(cl, cl);
+            _columns.Add(cl, cl);
         }
 
         public class Columns
         {
-            protected internal String[] names;
-            protected internal int hashcode;
-            protected internal int firstColumn;
-            protected internal int numColumns;
-            protected internal Group[] childGroups;
+            protected internal String[] _names;
+            protected internal int _hashCode;
+            protected internal int _firstColumn;
+            protected internal int _numColumns;
+            protected internal Group[] _childGroups;
 
             protected internal Columns(String[] names)
             {
-                this.names = (String[]) names.Clone();
+                this._names = (String[]) names.Clone();
 
                 unchecked
                 {
                     int hash = 17;
 
                     // get hash code for all items in array
-                    foreach (var item in this.names)
+                    foreach (var item in this._names)
                     {
                         hash = hash * 23 + ((item != null) ? item.GetHashCode() : 0);
                     }
 
-                    this.hashcode = hash;
+                    this._hashCode = hash;
                 }
             }
 
@@ -206,46 +205,45 @@ namespace XNATWL
                     return false;
                 }
                 Columns other = (Columns)obj;
-                return this.hashcode == other.hashcode &&
-                        this.names == other.names;
+                return this._hashCode == other._hashCode && this._names == other._names;
             }
 
             /**
              * Returns the number of non gap columns.
              * @return the number of non gap columns.
              */
-            public int getNumColumns()
+            public int GetNumColumns()
             {
-                return numColumns;
+                return _numColumns;
             }
 
-            public int getNumColumnNames()
+            public int GetNumColumnNames()
             {
-                return names.Length;
+                return _names.Length;
             }
 
-            public String getColumnName(int idx)
+            public String GetColumnName(int idx)
             {
-                return names[idx];
+                return _names[idx];
             }
 
             public override int GetHashCode()
             {
-                return hashcode;
+                return _hashCode;
             }
 
-            protected internal bool isGap(int column)
+            protected internal bool IsGap(int column)
             {
-                String name = names[column];
+                String name = _names[column];
                 return name.Length == 0 || "-".Equals(name);
             }
 
-            protected internal int match(Columns other)
+            protected internal int Match(Columns other)
             {
-                int cnt = Math.Min(this.names.Length, other.names.Length);
+                int cnt = Math.Min(this._names.Length, other._names.Length);
                 for (int i = 0; i < cnt; i++)
                 {
-                    if (!names[i].Equals(other.names[i]))
+                    if (!_names[i].Equals(other._names[i]))
                     {
                         return i;
                     }
@@ -256,18 +254,18 @@ namespace XNATWL
 
         public class Row
         {
-            private ColumnLayout columnLayout;
-            Columns columns;
-            Panel panel;
-            Group row;
-            int curColumn;
+            private ColumnLayout _columnLayout;
+            Columns _columns;
+            Panel _panel;
+            Group _row;
+            int _curColumn;
 
             protected internal Row(ColumnLayout columnLayout, Columns columns, Panel panel, Group row)
             {
-                this.columnLayout = columnLayout;
-                this.columns = columns;
-                this.panel = panel;
-                this.row = row;
+                this._columnLayout = columnLayout;
+                this._columns = columns;
+                this._panel = panel;
+                this._row = row;
             }
 
             /**
@@ -275,14 +273,14 @@ namespace XNATWL
              * @return the current column.
              * @see Columns#getNumColumns()
              */
-            public int getCurrentColumn()
+            public int GetCurrentColumn()
             {
-                return curColumn;
+                return _curColumn;
             }
 
-            public Columns getColumns()
+            public Columns GetColumns()
             {
-                return columns;
+                return _columns;
             }
 
             /**
@@ -292,15 +290,15 @@ namespace XNATWL
              * @return this
              * @throws IllegalStateException if all widgets for this row have already been added
              */
-            public Row add(Widget w)
+            public Row Add(Widget w)
             {
-                if (curColumn == columns.numColumns)
+                if (_curColumn == _columns._numColumns)
                 {
                     throw new ArgumentOutOfRangeException("Too many widgets for column layout");
                 }
-                panel.getColumn(columns.firstColumn + curColumn).addWidget(w);
-                row.addWidget(w);
-                curColumn++;
+                _panel.GetColumn(_columns._firstColumn + _curColumn).AddWidget(w);
+                _row.AddWidget(w);
+                _curColumn++;
                 return this;
             }
 
@@ -312,10 +310,10 @@ namespace XNATWL
              * @return this
              * @throws IllegalStateException if all widgets for this row have already been added
              */
-            public Row add(Widget w, Alignment alignment)
+            public Row Add(Widget w, Alignment alignment)
             {
-                add(w);
-                this.columnLayout.setWidgetAlignment(w, alignment);
+                Add(w);
+                this._columnLayout.SetWidgetAlignment(w, alignment);
                 return this;
             }
 
@@ -328,13 +326,13 @@ namespace XNATWL
              * @return this
              * @throws IllegalStateException if all widgets for this row have already been added
              */
-            public Row addLabel(String labelText)
+            public Row AddLabel(String labelText)
             {
                 if (labelText == null)
                 {
                     throw new ArgumentNullException("labelText");
                 }
-                return add(new Label(labelText));
+                return Add(new Label(labelText));
             }
 
             /**
@@ -347,15 +345,15 @@ namespace XNATWL
              * @return this
              * @throws IllegalStateException if all widgets for this row have already been added
              */
-            public Row addWithLabel(String labelText, Widget w)
+            public Row AddWithLabel(String labelText, Widget w)
             {
                 if (labelText == null)
                 {
                     throw new ArgumentNullException("labelText");
                 }
                 Label labelWidget = new Label(labelText);
-                labelWidget.setLabelFor(w);
-                add(labelWidget, Alignment.TOPLEFT).add(w);
+                labelWidget.SetLabelFor(w);
+                Add(labelWidget, Alignment.TOPLEFT).Add(w);
                 return this;
             }
 
@@ -369,36 +367,36 @@ namespace XNATWL
              * @return this
              * @throws IllegalStateException if all widgets for this row have already been added
              */
-            public Row addWithLabel(String labelText, Widget w, Alignment alignment)
+            public Row AddWithLabel(String labelText, Widget w, Alignment alignment)
             {
-                addWithLabel(labelText, w);
-                this.columnLayout.setWidgetAlignment(w, alignment);
+                AddWithLabel(labelText, w);
+                this._columnLayout.SetWidgetAlignment(w, alignment);
                 return this;
             }
         }
 
         public class Panel
         {
-            protected internal Panel parent;
-            protected internal List<Group> usedColumnGroups;
-            protected internal List<Panel> children;
-            protected internal Group rows;
-            protected internal bool valid;
-            private ColumnLayout columnLayout;
+            protected internal Panel _parent;
+            protected internal List<Group> _usedColumnGroups;
+            protected internal List<Panel> _children;
+            protected internal Group _rows;
+            protected internal bool _valid;
+            private ColumnLayout _columnLayout;
 
             protected internal Panel(ColumnLayout columnLayout, Panel parent)
             {
-                this.columnLayout = columnLayout;
-                this.parent = parent;
-                this.usedColumnGroups = new List<Group>();
-                this.children = new List<Panel>();
-                this.rows = this.columnLayout.createSequentialGroup();
-                this.valid = true;
+                this._columnLayout = columnLayout;
+                this._parent = parent;
+                this._usedColumnGroups = new List<Group>();
+                this._children = new List<Panel>();
+                this._rows = this._columnLayout.CreateSequentialGroup();
+                this._valid = true;
             }
 
-            public bool isValid()
+            public bool IsValid()
             {
-                return valid;
+                return _valid;
             }
 
             /**
@@ -407,9 +405,9 @@ namespace XNATWL
              * @param columnNames the column names.
              * @return the column layout.
              */
-            public Columns getColumns(params String[] columnNames)
+            public Columns GetColumns(params String[] columnNames)
             {
-                return this.columnLayout.getColumns(columnNames);
+                return this._columnLayout.GetColumns(columnNames);
             }
 
             /**
@@ -420,9 +418,9 @@ namespace XNATWL
              * @param columnNames the column names.
              * @return the new row
              */
-            public Row addRow(params String[] columnNames)
+            public Row AddRow(params String[] columnNames)
             {
-                return addRow(this.columnLayout.getColumns(columnNames));
+                return AddRow(this._columnLayout.GetColumns(columnNames));
             }
 
             /**
@@ -432,16 +430,16 @@ namespace XNATWL
              * @return the new row.
              * @throws IllegalStateException when the panel has been removed from the root.
              */
-            public Row addRow(Columns columns)
+            public Row AddRow(Columns columns)
             {
                 if (columns == null)
                 {
                     throw new ArgumentOutOfRangeException("columns");
                 }
-                checkValid();
-                Group row = this.columnLayout.createParallelGroup();
-                rows.addGroup(row);
-                return new Row(this.columnLayout, columns, this, row);
+                CheckValid();
+                Group row = this._columnLayout.CreateParallelGroup();
+                _rows.AddGroup(row);
+                return new Row(this._columnLayout, columns, this, row);
             }
 
             /**
@@ -450,10 +448,10 @@ namespace XNATWL
              * @param name the gap name.
              * @throws IllegalStateException when the panel has been removed from the root.
              */
-            public void addVerticalGap(String name)
+            public void AddVerticalGap(String name)
             {
-                checkValid();
-                rows.addGap(name);
+                CheckValid();
+                _rows.AddGap(name);
             }
 
             /**
@@ -462,12 +460,12 @@ namespace XNATWL
              * @return the new child panel
              * @throws IllegalStateException when the panel has been removed from the root.
              */
-            public Panel addPanel()
+            public Panel AddPanel()
             {
-                checkValid();
-                Panel panel = new Panel(this.columnLayout, this);
-                rows.addGroup(panel.rows);
-                children.Add(panel);
+                CheckValid();
+                Panel panel = new Panel(this._columnLayout, this);
+                _rows.AddGroup(panel._rows);
+                _children.Add(panel);
                 return panel;
             }
 
@@ -475,25 +473,25 @@ namespace XNATWL
              * Removes the specified child panel. Can also be called on an invalidated panel.
              * @param panel the child panel.
              */
-            public void removePanel(Panel panel)
+            public void RemovePanel(Panel panel)
             {
                 if (panel == null)
                 {
                     throw new ArgumentNullException("panel");
                 }
-                if (valid)
+                if (_valid)
                 {
-                    if (children.Contains(panel))
+                    if (_children.Contains(panel))
                     {
-                        children.Remove(panel);
-                        panel.markInvalid();
-                        rows.removeGroup(panel.rows, true);
-                        for (int i = 0, n = panel.usedColumnGroups.Count; i < n; i++)
+                        _children.Remove(panel);
+                        panel.MarkInvalid();
+                        _rows.RemoveGroup(panel._rows, true);
+                        for (int i = 0, n = panel._usedColumnGroups.Count; i < n; i++)
                         {
-                            Group column = panel.usedColumnGroups[i];
+                            Group column = panel._usedColumnGroups[i];
                             if (column != null)
                             {
-                                usedColumnGroups[i].removeGroup(column, false);
+                                _usedColumnGroups[i].RemoveGroup(column, false);
                             }
                         }
                     }
@@ -503,72 +501,72 @@ namespace XNATWL
             /**
              * Removes all child panels and rows from this panel.
              */
-            public void clearPanel()
+            public void ClearPanel()
             {
-                if (valid)
+                if (_valid)
                 {
-                    children.Clear();
-                    rows.clear(true);
-                    for (int i = 0, n = usedColumnGroups.Count; i < n; i++)
+                    _children.Clear();
+                    _rows.Clear(true);
+                    for (int i = 0, n = _usedColumnGroups.Count; i < n; i++)
                     {
-                        Group column = usedColumnGroups[i];
+                        Group column = _usedColumnGroups[i];
                         if (column != null)
                         {
-                            column.clear(false);
+                            column.Clear(false);
                         }
                     }
                 }
             }
 
-            protected internal void markInvalid()
+            protected internal void MarkInvalid()
             {
-                valid = false;
-                for (int i = 0, n = children.Count; i < n; i++)
+                _valid = false;
+                for (int i = 0, n = _children.Count; i < n; i++)
                 {
-                    children[i].markInvalid();
+                    _children[i].MarkInvalid();
                 }
             }
 
-            protected internal void checkValid()
+            protected internal void CheckValid()
             {
-                if (!valid)
+                if (!_valid)
                 {
                     throw new InvalidOperationException("Panel has been removed");
                 }
             }
 
-            protected internal Group getColumn(int idx)
+            protected internal Group GetColumn(int idx)
             {
-                checkValid();
-                if (usedColumnGroups.Count > idx)
+                CheckValid();
+                if (_usedColumnGroups.Count > idx)
                 {
-                    Group column = usedColumnGroups[idx];
+                    Group column = _usedColumnGroups[idx];
                     if (column != null)
                     {
                         return column;
                     }
                 }
-                return makeColumn(idx);
+                return MakeColumn(idx);
             }
 
-            private Group makeColumn(int idx)
+            private Group MakeColumn(int idx)
             {
                 Group parentColumn;
-                if (parent != null)
+                if (_parent != null)
                 {
-                    parentColumn = parent.getColumn(idx);
+                    parentColumn = _parent.GetColumn(idx);
                 }
                 else
                 {
-                    parentColumn = this.columnLayout.columnGroups[idx];
+                    parentColumn = this._columnLayout._columnGroups[idx];
                 }
-                Group column = this.columnLayout.createParallelGroup();
-                parentColumn.addGroup(column);
-                while (usedColumnGroups.Count <= idx)
+                Group column = this._columnLayout.CreateParallelGroup();
+                parentColumn.AddGroup(column);
+                while (_usedColumnGroups.Count <= idx)
                 {
-                    usedColumnGroups.Add(null);
+                    _usedColumnGroups.Add(null);
                 }
-                usedColumnGroups[idx] = column;
+                _usedColumnGroups[idx] = column;
                 return column;
             }
         }

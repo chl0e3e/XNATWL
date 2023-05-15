@@ -40,6 +40,6 @@ namespace XNATWL
          * Test if the mouse is over this area
          * @return true if the mouse is over this area.
          */
-        public abstract bool isMouseOver();
+        public abstract bool IsMouseOver();
     }
 }

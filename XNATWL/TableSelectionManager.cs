@@ -35,39 +35,39 @@ namespace XNATWL
 {
     public enum TableSelectionGranularity
     {
-        ROWS,
-        CELLS
+        Rows,
+        Cells
     }
 
     public interface TableSelectionManager
     {
-        TableSelectionModel getSelectionModel();
+        TableSelectionModel GetSelectionModel();
 
-        void setAssociatedTable(TableBase tableBase);
+        void SetAssociatedTable(TableBase tableBase);
 
-        TableSelectionGranularity getSelectionGranularity();
+        TableSelectionGranularity GetSelectionGranularity();
 
-        bool handleKeyStrokeAction(String action, Event evt);
+        bool HandleKeyStrokeAction(String action, Event evt);
 
-        bool handleMouseEvent(int row, int column, Event evt);
+        bool HandleMouseEvent(int row, int column, Event evt);
 
-        bool isRowSelected(int row);
+        bool IsRowSelected(int row);
 
-        bool isCellSelected(int row, int column);
+        bool IsCellSelected(int row, int column);
 
-        int getLeadRow();
+        int GetLeadRow();
 
-        int getLeadColumn();
+        int GetLeadColumn();
 
-        void modelChanged();
+        void ModelChanged();
 
-        void rowsInserted(int index, int count);
+        void RowsInserted(int index, int count);
 
-        void rowsDeleted(int index, int count);
+        void RowsDeleted(int index, int count);
 
-        void columnInserted(int index, int count);
+        void ColumnInserted(int index, int count);
 
-        void columnsDeleted(int index, int count);
+        void ColumnsDeleted(int index, int count);
     }
 
 }

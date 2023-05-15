@@ -40,50 +40,50 @@ namespace XNATWL
     {
         public enum SortColumn
         {
-            NAME,
-            TYPE,
-            SIZE,
-            LAST_MODIFIED
+            Name,
+            Type,
+            Size,
+            LastModified
         }
 
         public static IComparer<Entry> SortColumn_Comparer(SortColumn sortColumn)
         {
             switch(sortColumn)
             {
-                case SortColumn.NAME:
+                case SortColumn.Name:
                     return NameComparator.instance;
-                case SortColumn.TYPE:
+                case SortColumn.Type:
                     return ExtensionComparator.instance;
-                case SortColumn.SIZE:
+                case SortColumn.Size:
                     return SizeComparator.instance;
-                case SortColumn.LAST_MODIFIED:
+                case SortColumn.LastModified:
                     return LastModifiedComparator.instance;
                 default:
                     return NameComparator.instance;
             }
         }
 
-        private FileTableModel fileTableModel;
-        private TableSelectionModel fileTableSelectionModel;
-        private TableSearchWindow tableSearchWindow;
-        private SortColumn sortColumn = SortColumn.NAME;
-        private SortOrder sortOrder = SortOrder.ASCENDING;
+        private FileTableModel _fileTableModel;
+        private TableSelectionModel _fileTableSelectionModel;
+        private TableSearchWindow _tableSearchWindow;
+        private SortColumn _sortColumn = SortColumn.Name;
+        private SortOrder _sortOrder = SortOrder.Ascending;
 
-        private bool allowMultiSelection;
-        private FileFilter fileFilter = null;
-        private bool showFolders = true;
-        private bool showHidden = false;
+        private bool _allowMultiSelection;
+        private FileFilter _fileFilter = null;
+        private bool _showFolders = true;
+        private bool _showHidden = false;
 
-        private FileSystemModel fsm;
-        private Object currentFolder;
+        private FileSystemModel _fileSystemModel;
+        private Object _currentFolder;
 
         public event EventHandler<FileTableSelectionChangedEventArgs> SelectionChanged;
         public event EventHandler<FileTableSortingChangedEventArgs> SortingChanged;
 
         public FileTable()
         {
-            fileTableModel = new FileTableModel(this);
-            setModel(fileTableModel);
+            _fileTableModel = new FileTableModel(this);
+            SetModel(_fileTableModel);
 
             /*selectionChangedListener = new Runnable() {
                 public void run() {
@@ -92,172 +92,172 @@ namespace XNATWL
             };*/
         }
 
-        public bool getShowFolders()
+        public bool GetShowFolders()
         {
-            return showFolders;
+            return _showFolders;
         }
 
-        public void setShowFolders(bool showFolders)
+        public void SetShowFolders(bool showFolders)
         {
-            if (this.showFolders != showFolders)
+            if (this._showFolders != showFolders)
             {
-                this.showFolders = showFolders;
-                refreshFileTable();
+                this._showFolders = showFolders;
+                RefreshFileTable();
             }
         }
 
-        public bool getShowHidden()
+        public bool GetShowHidden()
         {
-            return showHidden;
+            return _showHidden;
         }
 
-        public void setShowHidden(bool showHidden)
+        public void SetShowHidden(bool showHidden)
         {
-            if (this.showHidden != showHidden)
+            if (this._showHidden != showHidden)
             {
-                this.showHidden = showHidden;
-                refreshFileTable();
+                this._showHidden = showHidden;
+                RefreshFileTable();
             }
         }
 
-        public void setFileFilter(FileFilter filter)
+        public void SetFileFilter(FileFilter filter)
         {
             // always refresh, filter parameters could have been changed
-            fileFilter = filter;
-            refreshFileTable();
+            _fileFilter = filter;
+            RefreshFileTable();
         }
 
-        public FileFilter getFileFilter()
+        public FileFilter GetFileFilter()
         {
-            return fileFilter;
+            return _fileFilter;
         }
 
-        public Entry[] getSelection()
+        public Entry[] GetSelection()
         {
-            return fileTableModel.getEntries(fileTableSelectionModel.Selection);
+            return _fileTableModel.GetEntries(_fileTableSelectionModel.Selection);
         }
 
-        public void setSelection(params Object[] files)
+        public void SetSelection(params Object[] files)
         {
-            fileTableSelectionModel.ClearSelection();
+            _fileTableSelectionModel.ClearSelection();
             foreach (Object file in files)
             {
-                int idx = fileTableModel.findFile(file);
+                int idx = _fileTableModel.FindFile(file);
                 if (idx >= 0)
                 {
-                    fileTableSelectionModel.AddSelection(idx, idx);
+                    _fileTableSelectionModel.AddSelection(idx, idx);
                 }
             }
         }
 
-        public bool setSelection(Object file)
+        public bool SetSelection(Object file)
         {
-            fileTableSelectionModel.ClearSelection();
-            int idx = fileTableModel.findFile(file);
+            _fileTableSelectionModel.ClearSelection();
+            int idx = _fileTableModel.FindFile(file);
             if (idx >= 0)
             {
-                fileTableSelectionModel.AddSelection(idx, idx);
-                scrollToRow(idx);
+                _fileTableSelectionModel.AddSelection(idx, idx);
+                ScrollToRow(idx);
                 return true;
             }
             return false;
         }
 
-        public void clearSelection()
+        public void ClearSelection()
         {
-            fileTableSelectionModel.ClearSelection();
+            _fileTableSelectionModel.ClearSelection();
         }
 
-        public void setSortColumn(SortColumn column)
+        public void SetSortColumn(SortColumn column)
         {
-            if (sortColumn != column)
+            if (_sortColumn != column)
             {
-                sortColumn = column;
-                sortingChanged();
+                _sortColumn = column;
+                FireSortingChanged();
             }
         }
 
-        public void setSortOrder(SortOrder order)
+        public void SetSortOrder(SortOrder order)
         {
-            if (sortOrder != order)
+            if (_sortOrder != order)
             {
-                sortOrder = order;
-                sortingChanged();
+                _sortOrder = order;
+                FireSortingChanged();
             }
         }
 
-        public bool getAllowMultiSelection()
+        public bool GetAllowMultiSelection()
         {
-            return allowMultiSelection;
+            return _allowMultiSelection;
         }
 
-        public void setAllowMultiSelection(bool allowMultiSelection)
+        public void SetAllowMultiSelection(bool allowMultiSelection)
         {
-            this.allowMultiSelection = allowMultiSelection;
-            if (fileTableSelectionModel != null)
+            this._allowMultiSelection = allowMultiSelection;
+            if (_fileTableSelectionModel != null)
             {
-                fileTableSelectionModel.SelectionChanged -= FileTableSelectionModel_SelectionChanged;
+                _fileTableSelectionModel.SelectionChanged -= FileTableSelectionModel_SelectionChanged;
             }
-            if (tableSearchWindow != null)
+            if (_tableSearchWindow != null)
             {
-                tableSearchWindow.setModel(null, 0);
+                _tableSearchWindow.SetModel(null, 0);
             }
             if (allowMultiSelection)
             {
-                fileTableSelectionModel = new DefaultTableSelectionModel();
+                _fileTableSelectionModel = new DefaultTableSelectionModel();
             }
             else
             {
-                fileTableSelectionModel = new TableSingleSelectionModel();
+                _fileTableSelectionModel = new TableSingleSelectionModel();
             }
-            fileTableSelectionModel.SelectionChanged += FileTableSelectionModel_SelectionChanged;
-            tableSearchWindow = new TableSearchWindow(this, fileTableSelectionModel);
-            tableSearchWindow.setModel(fileTableModel, 0);
-            setSelectionManager(new TableRowSelectionManager(fileTableSelectionModel));
-            setKeyboardSearchHandler(tableSearchWindow);
-            selectionChanged();
+            _fileTableSelectionModel.SelectionChanged += FileTableSelectionModel_SelectionChanged;
+            _tableSearchWindow = new TableSearchWindow(this, _fileTableSelectionModel);
+            _tableSearchWindow.SetModel(_fileTableModel, 0);
+            SetSelectionManager(new TableRowSelectionManager(_fileTableSelectionModel));
+            SetKeyboardSearchHandler(_tableSearchWindow);
+            FireSelectionChanged();
         }
 
         private void FileTableSelectionModel_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            selectionChanged();
+            FireSelectionChanged();
         }
 
-        public FileSystemModel getFileSystemModel()
+        public FileSystemModel GetFileSystemModel()
         {
-            return fsm;
+            return _fileSystemModel;
         }
 
-        public Object getCurrentFolder()
+        public Object GetCurrentFolder()
         {
-            return currentFolder;
+            return _currentFolder;
         }
 
-        public bool isRoot()
+        public bool IsRoot()
         {
-            return currentFolder == null;
+            return _currentFolder == null;
         }
 
-        public void setCurrentFolder(FileSystemModel fsm, Object folder)
+        public void SetCurrentFolder(FileSystemModel fsm, Object folder)
         {
-            this.fsm = fsm;
-            this.currentFolder = folder;
-            refreshFileTable();
+            this._fileSystemModel = fsm;
+            this._currentFolder = folder;
+            RefreshFileTable();
         }
 
-        public void refreshFileTable()
+        public void RefreshFileTable()
         {
-            Object[] objs = collectObjects();
+            Object[] objs = CollectObjects();
             if (objs != null)
             {
                 int lastFileIdx = objs.Length;
                 Entry[] entries = new Entry[lastFileIdx];
                 int numFolders = 0;
-                bool bIsRoot = isRoot();
+                bool bIsRoot = IsRoot();
                 for (int i = 0; i < objs.Length; i++)
                 {
-                    Entry e = new Entry(fsm, objs[i], bIsRoot);
-                    if (e.isFolder)
+                    Entry e = new Entry(_fileSystemModel, objs[i], bIsRoot);
+                    if (e.IsFolder)
                     {
                         entries[numFolders++] = e;
                     }
@@ -267,166 +267,169 @@ namespace XNATWL
                     }
                 }
                 Array.Sort(entries, 0, numFolders, NameComparator.instance);
-                sortFilesAndUpdateModel(entries, numFolders);
+                SortFilesAndUpdateModel(entries, numFolders);
             }
             else
             {
-                sortFilesAndUpdateModel(EMPTY, 0);
+                SortFilesAndUpdateModel(EMPTY, 0);
             }
-            if (tableSearchWindow != null)
+
+            if (_tableSearchWindow != null)
             {
-                tableSearchWindow.cancelSearch();
+                _tableSearchWindow.CancelSearch();
             }
         }
 
-        protected void selectionChanged()
+        protected void FireSelectionChanged()
         {
             this.SelectionChanged.Invoke(this, new FileTableSelectionChangedEventArgs());
         }
 
-        protected void sortingChanged()
+        protected void FireSortingChanged()
         {
-            setSortArrows();
-            sortFilesAndUpdateModel();
+            SetSortArrows();
+            SortFilesAndUpdateModel();
             this.SortingChanged.Invoke(this, new FileTableSortingChangedEventArgs());
         }
 
-        private Object[] collectObjects()
+        private Object[] CollectObjects()
         {
-            if (fsm == null)
+            if (_fileSystemModel == null)
             {
                 return null;
             }
-            if (isRoot())
+            if (IsRoot())
             {
-                return fsm.ListRoots();
+                return _fileSystemModel.ListRoots();
             }
-            FileFilter filter = fileFilter;
-            if (filter != null || !getShowFolders() || !getShowHidden())
+            FileFilter filter = _fileFilter;
+            if (filter != null || !GetShowFolders() || !GetShowHidden())
             {
-                filter = new FileFilterWrapper(filter, getShowFolders(), getShowHidden());
+                filter = new FileFilterWrapper(filter, GetShowFolders(), GetShowHidden());
             }
-            return fsm.ListFolder(currentFolder, filter);
+            return _fileSystemModel.ListFolder(_currentFolder, filter);
         }
 
-        private void sortFilesAndUpdateModel(Entry[] entries, int numFolders)
+        private void SortFilesAndUpdateModel(Entry[] entries, int numFolders)
         {
-            StateSnapshot snapshot = makeSnapshot();
-            Array.Sort(entries, numFolders, entries.Length, SortColumn_Comparer(sortColumn));
-            fileTableModel.setData(entries, numFolders);
-            restoreSnapshot(snapshot);
+            StateSnapshot snapshot = MakeSnapshot();
+            Array.Sort(entries, numFolders, entries.Length, SortColumn_Comparer(_sortColumn));
+            _fileTableModel.SetData(entries, numFolders);
+            RestoreSnapshot(snapshot);
         }
 
-        protected override void columnHeaderClicked(int column)
+        protected override void ColumnHeaderClicked(int column)
         {
-            base.columnHeaderClicked(column);
+            base.ColumnHeaderClicked(column);
 
             SortColumn thisColumn = (SortColumn) Enum.GetValues(typeof(SortColumn)).GetValue(column);
-            if (sortColumn == thisColumn)
+            if (_sortColumn == thisColumn)
             {
-                setSortOrder(SortOrderStatics.SortOrder_Invert(sortOrder));
+                SetSortOrder(SortOrderStatics.SortOrder_Invert(_sortOrder));
             }
             else
             {
-                setSortColumn(thisColumn);
+                SetSortColumn(thisColumn);
             }
         }
 
-        protected override void updateColumnHeaderNumbers()
+        protected override void UpdateColumnHeaderNumbers()
         {
-            base.updateColumnHeaderNumbers();
-            setSortArrows();
+            base.UpdateColumnHeaderNumbers();
+            SetSortArrows();
         }
 
-        protected void setSortArrows()
+        protected void SetSortArrows()
         {
             int i = 0;
+
             foreach (SortColumn column in Enum.GetValues(typeof(SortColumn)))
             {
-                if (column == sortColumn)
+                if (column == _sortColumn)
                 {
                     break;
                 }
                 i++;
             }
-            setColumnSortOrderAnimationState(i, sortOrder);
+
+            SetColumnSortOrderAnimationState(i, _sortOrder);
         }
 
-        private void sortFilesAndUpdateModel()
+        private void SortFilesAndUpdateModel()
         {
-            sortFilesAndUpdateModel(fileTableModel.entries, fileTableModel.numFolders);
+            SortFilesAndUpdateModel(_fileTableModel._entries, _fileTableModel._numFolders);
         }
 
-        private StateSnapshot makeSnapshot()
+        private StateSnapshot MakeSnapshot()
         {
             return new StateSnapshot(
-                    fileTableModel.getEntry(fileTableSelectionModel.LeadIndex),
-                    fileTableModel.getEntry(fileTableSelectionModel.AnchorIndex),
-                    fileTableModel.getEntries(fileTableSelectionModel.Selection));
+                    _fileTableModel.GetEntry(_fileTableSelectionModel.LeadIndex),
+                    _fileTableModel.GetEntry(_fileTableSelectionModel.AnchorIndex),
+                    _fileTableModel.GetEntries(_fileTableSelectionModel.Selection));
         }
 
-        private void restoreSnapshot(StateSnapshot snapshot)
+        private void RestoreSnapshot(StateSnapshot snapshot)
         {
-            foreach (Entry e in snapshot.selected)
+            foreach (Entry e in snapshot._selected)
             {
-                int idx = fileTableModel.findEntry(e);
+                int idx = _fileTableModel.FindEntry(e);
                 if (idx >= 0)
                 {
-                    fileTableSelectionModel.AddSelection(idx, idx);
+                    _fileTableSelectionModel.AddSelection(idx, idx);
                 }
             }
-            int leadIndex = fileTableModel.findEntry(snapshot.leadEntry);
-            int anchorIndex = fileTableModel.findEntry(snapshot.anchorEntry);
-            fileTableSelectionModel.LeadIndex = leadIndex;
-            fileTableSelectionModel.AnchorIndex = anchorIndex;
-            scrollToRow(Math.Max(0, leadIndex));
+            int leadIndex = _fileTableModel.FindEntry(snapshot._leadEntry);
+            int anchorIndex = _fileTableModel.FindEntry(snapshot._anchorEntry);
+            _fileTableSelectionModel.LeadIndex = leadIndex;
+            _fileTableSelectionModel.AnchorIndex = anchorIndex;
+            ScrollToRow(Math.Max(0, leadIndex));
         }
 
         static Entry[] EMPTY = new Entry[0];
 
         public class Entry
         {
-            public FileSystemModel fsm;
-            public Object obj;
-            public String name;
-            public bool isFolder;
-            public long size;
+            public FileSystemModel FSM;
+            public Object Obj;
+            public String Name;
+            public bool IsFolder;
+            public long Size;
             /** last modified date - can be null */
             public DateTime lastModified;
 
             public Entry(FileSystemModel fsm, Object obj, bool isRoot)
             {
-                this.fsm = fsm;
-                this.obj = obj;
-                this.name = fsm.NameOf(obj);
+                this.FSM = fsm;
+                this.Obj = obj;
+                this.Name = fsm.NameOf(obj);
                 if (isRoot)
                 {
                     // don't call getLastModified on roots - causes bad performance
                     // on windows when a DVD/CD/Floppy has no media inside
-                    this.isFolder = true;
+                    this.IsFolder = true;
                     this.lastModified = DateTime.MinValue;
                 }
                 else
                 {
-                    this.isFolder = fsm.IsFolder(obj);
+                    this.IsFolder = fsm.IsFolder(obj);
                     this.lastModified = new DateTime(fsm.LastModifiedOf(obj));
                 }
-                if (isFolder)
+                if (IsFolder)
                 {
-                    this.size = 0;
+                    this.Size = 0;
                 }
                 else
                 {
-                    this.size = fsm.SizeOf(obj);
+                    this.Size = fsm.SizeOf(obj);
                 }
             }
 
-            public String getExtension()
+            public String GetExtension()
             {
-                int idx = name.LastIndexOf('.');
+                int idx = Name.LastIndexOf('.');
                 if (idx >= 0)
                 {
-                    return name.Substring(idx + 1);
+                    return Name.Substring(idx + 1);
                 }
                 else
                 {
@@ -434,9 +437,9 @@ namespace XNATWL
                 }
             }
 
-            public String getPath()
+            public String GetPath()
             {
-                return fsm.PathOf(obj);
+                return FSM.PathOf(Obj);
             }
 
             public override bool Equals(Object o)
@@ -446,35 +449,35 @@ namespace XNATWL
                     return false;
                 }
                 Entry that = (Entry)o;
-                return (this.fsm == that.fsm) && fsm.Equals(this.obj, that.obj);
+                return (this.FSM == that.FSM) && FSM.Equals(this.Obj, that.Obj);
             }
 
             public override int GetHashCode()
             {
-                return (obj != null) ? obj.GetHashCode() : 203;
+                return (Obj != null) ? Obj.GetHashCode() : 203;
             }
         }
 
         class FileTableModel : AbstractTableModel
         {
             //private DateFormat dateFormat = DateFormat.getDateInstance();
-            private string dateFormat = DateTimeFormatInfo.CurrentInfo.FullDateTimePattern;
+            private string _dateFormat = DateTimeFormatInfo.CurrentInfo.FullDateTimePattern;
 
-            protected internal Entry[] entries = EMPTY;
-            protected internal int numFolders;
+            protected internal Entry[] _entries = EMPTY;
+            protected internal int _numFolders;
 
-            private FileTable fileTable;
+            private FileTable _fileTable;
 
             public FileTableModel(FileTable fileTable)
             {
-                this.fileTable = fileTable;
+                this._fileTable = fileTable;
             }
 
-            public void setData(Entry[] entries, int numFolders)
+            public void SetData(Entry[] entries, int numFolders)
             {
                 this.FireRowsDeleted(0, this.Rows);
-                this.entries = entries;
-                this.numFolders = numFolders;
+                this._entries = entries;
+                this._numFolders = numFolders;
                 this.FireRowsInserted(0, this.Rows);
             }
 
@@ -487,15 +490,15 @@ namespace XNATWL
 
             public override Object CellAt(int row, int column)
             {
-                Entry e = entries[row];
-                if (e.isFolder)
+                Entry e = _entries[row];
+                if (e.IsFolder)
                 {
                     switch (column)
                     {
-                        case 0: return "[" + e.name + "]";
+                        case 0: return "[" + e.Name + "]";
                         case 1: return "Folder";
                         case 2: return "";
-                        case 3: return formatDate(e.lastModified);
+                        case 3: return FormatDate(e.lastModified);
                         default: return "??";
                     }
                 }
@@ -503,14 +506,14 @@ namespace XNATWL
                 {
                     switch (column)
                     {
-                        case 0: return e.name;
+                        case 0: return e.Name;
                         case 1:
                             {
-                                String ext = e.getExtension();
+                                String ext = e.GetExtension();
                                 return (ext.Length == 0) ? "File" : ext + "-file";
                             }
-                        case 2: return formatFileSize(e.size);
-                        case 3: return formatDate(e.lastModified);
+                        case 2: return FormatFileSize(e.Size);
+                        case 3: return FormatDate(e.lastModified);
                         default: return "??";
                     }
                 }
@@ -518,24 +521,24 @@ namespace XNATWL
 
             public override Object TooltipAt(int row, int column)
             {
-                Entry e = entries[row];
-                StringBuilder sb = new StringBuilder(e.name);
-                if (!e.isFolder)
+                Entry e = _entries[row];
+                StringBuilder sb = new StringBuilder(e.Name);
+                if (!e.IsFolder)
                 {
-                    sb.Append("\nSize: ").Append(formatFileSize(e.size));
+                    sb.Append("\nSize: ").Append(FormatFileSize(e.Size));
                 }
                 if (e.lastModified != null)
                 {
-                    sb.Append("\nLast modified: ").Append(formatDate(e.lastModified));
+                    sb.Append("\nLast modified: ").Append(FormatDate(e.lastModified));
                 }
                 return sb.ToString();
             }
 
-            protected internal Entry getEntry(int row)
+            protected internal Entry GetEntry(int row)
             {
-                if (row >= 0 && row < entries.Length)
+                if (row >= 0 && row < _entries.Length)
                 {
-                    return entries[row];
+                    return _entries[row];
                 }
                 else
                 {
@@ -543,11 +546,11 @@ namespace XNATWL
                 }
             }
 
-            protected internal int findEntry(Entry entry)
+            protected internal int FindEntry(Entry entry)
             {
-                for (int i = 0; i < entries.Length; i++)
+                for (int i = 0; i < _entries.Length; i++)
                 {
-                    if (entries[i].Equals(entry))
+                    if (_entries[i].Equals(entry))
                     {
                         return i;
                     }
@@ -555,12 +558,12 @@ namespace XNATWL
                 return -1;
             }
 
-            protected internal int findFile(Object file)
+            protected internal int FindFile(Object file)
             {
-                for (int i = 0; i < entries.Length; i++)
+                for (int i = 0; i < _entries.Length; i++)
                 {
-                    Entry e = entries[i];
-                    if (e.fsm.Equals(e.obj, file))
+                    Entry e = _entries[i];
+                    if (e.FSM.Equals(e.Obj, file))
                     {
                         return i;
                     }
@@ -568,7 +571,7 @@ namespace XNATWL
                 return -1;
             }
 
-            protected internal Entry[] getEntries(int[] selection)
+            protected internal Entry[] GetEntries(int[] selection)
             {
                 int count = selection.Length;
                 if (count == 0)
@@ -578,7 +581,7 @@ namespace XNATWL
                 Entry[] result = new Entry[count];
                 for (int i = 0; i < count; i++)
                 {
-                    result[i] = entries[selection[i]];
+                    result[i] = _entries[selection[i]];
                 }
                 return result;
             }
@@ -598,11 +601,11 @@ namespace XNATWL
             {
                 get
                 {
-                    return entries.Length;
+                    return _entries.Length;
                 }
             }
 
-            private String formatFileSize(long size)
+            private String FormatFileSize(long size)
             {
                 if (size <= 0)
                 {
@@ -623,27 +626,27 @@ namespace XNATWL
                 }
             }
 
-            private String formatDate(DateTime date)
+            private String FormatDate(DateTime date)
             {
                 if (date == null)
                 {
                     return "";
                 }
-                return date.ToString(this.dateFormat);
+                return date.ToString(this._dateFormat);
             }
         }
 
         class StateSnapshot
         {
-            protected internal Entry leadEntry;
-            protected internal Entry anchorEntry;
-            protected internal Entry[] selected;
+            protected internal Entry _leadEntry;
+            protected internal Entry _anchorEntry;
+            protected internal Entry[] _selected;
 
             protected internal StateSnapshot(Entry leadEntry, Entry anchorEntry, Entry[] selected)
             {
-                this.leadEntry = leadEntry;
-                this.anchorEntry = anchorEntry;
-                this.selected = selected;
+                this._leadEntry = leadEntry;
+                this._anchorEntry = anchorEntry;
+                this._selected = selected;
             }
         }
 
@@ -652,7 +655,7 @@ namespace XNATWL
             protected internal static NameComparator instance = new NameComparator();
             public int Compare(Entry o1, Entry o2)
             {
-                return Comparer<string>.Default.Compare(o1.name, o2.name);
+                return Comparer<string>.Default.Compare(o1.Name, o2.Name);
             }
         }
 
@@ -661,7 +664,7 @@ namespace XNATWL
             protected internal static ExtensionComparator instance = new ExtensionComparator();
             public int Compare(Entry o1, Entry o2)
             {
-                return Comparer<string>.Default.Compare(o1.getExtension(), o2.getExtension());
+                return Comparer<string>.Default.Compare(o1.GetExtension(), o2.GetExtension());
             }
         }
 
@@ -670,7 +673,7 @@ namespace XNATWL
             protected internal static SizeComparator instance = new SizeComparator();
             public int Compare(Entry o1, Entry o2)
             {
-                return Math.Sign(o1.size - o2.size);
+                return Math.Sign(o1.Size - o2.Size);
             }
         }
 
@@ -699,24 +702,26 @@ namespace XNATWL
 
         private class FileFilterWrapper : FileFilter
         {
-            private FileFilter baseFilter;
-            private bool showFolder;
-            private bool showHidden;
+            private FileFilter _baseFilter;
+            private bool _showFolder;
+            private bool _showHidden;
+
             public FileFilterWrapper(FileFilter baseFilter, bool showFolder, bool showHidden)
             {
-                this.baseFilter = baseFilter;
-                this.showFolder = showFolder;
-                this.showHidden = showHidden;
+                this._baseFilter = baseFilter;
+                this._showFolder = showFolder;
+                this._showHidden = showHidden;
             }
+
             public bool Accept(Object file)
             {
-                if (showHidden || !((IO.FileSystemObject)file).IsHidden)
+                if (_showHidden || !((IO.FileSystemObject)file).IsHidden)
                 {
                     if (((IO.FileSystemObject)file).IsDirectory)
                     {
-                        return showFolder;
+                        return _showFolder;
                     }
-                    return (baseFilter == null) || baseFilter.Accept(file);
+                    return (_baseFilter == null) || _baseFilter.Accept(file);
                 }
                 return false;
             }

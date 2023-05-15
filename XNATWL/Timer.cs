@@ -38,10 +38,11 @@ namespace XNATWL
         private static int TIMER_COUNTER_DO_START = -2;
         private static int TIMER_COUNTER_DO_STOP = -3;
 
-        GUI gui;
-        int counter;
-        int delay = 10;
-        bool continuous;
+        GUI _gui;
+        int _counter;
+        int _delay = 10;
+        bool _continuous;
+
         public event EventHandler<TimerTickEventArgs> Tick;
 
         /**
@@ -56,16 +57,16 @@ namespace XNATWL
             {
                 throw new NullReferenceException("gui");
             }
-            this.gui = gui;
+            this._gui = gui;
         }
 
         /**
          * Returns true if the timer is already running.
          * @return true if the timer is already running.
          */
-        public bool isRunning()
+        public bool IsRunning()
         {
-            return counter > 0 || (continuous && counter == TIMER_COUNTER_IN_CALLBACK);
+            return _counter > 0 || (_continuous && _counter == TIMER_COUNTER_IN_CALLBACK);
         }
 
         /**
@@ -74,44 +75,44 @@ namespace XNATWL
          * @param delay in ms
          * @throws IllegalArgumentException if delay < 1 ms
          */
-        public void setDelay(int delay)
+        public void SetDelay(int delay)
         {
             if (delay < 1)
             {
                 throw new ArgumentOutOfRangeException("delay < 1");
             }
-            this.delay = delay;
+            this._delay = delay;
         }
 
         /**
          * Starts the timer. If it is already running then this method does nothing.
          */
-        public void start()
+        public void Start()
         {
-            if (counter == 0)
+            if (_counter == 0)
             {
-                counter = delay;
-                gui.activeTimers.Add(this);
+                _counter = _delay;
+                _gui._activeTimers.Add(this);
             }
-            else if (counter < 0)
+            else if (_counter < 0)
             {
-                counter = TIMER_COUNTER_DO_START;
+                _counter = TIMER_COUNTER_DO_START;
             }
         }
 
         /**
          * Stops the timer. If the timer is not running then this method does nothing.
          */
-        public void stop()
+        public void Stop()
         {
-            if (counter > 0)
+            if (_counter > 0)
             {
-                counter = 0;
-                gui.activeTimers.Remove(this);
+                _counter = 0;
+                _gui._activeTimers.Remove(this);
             }
-            else if (counter < 0)
+            else if (_counter < 0)
             {
-                counter = TIMER_COUNTER_DO_STOP;
+                _counter = TIMER_COUNTER_DO_STOP;
             }
         }
 
@@ -119,44 +120,44 @@ namespace XNATWL
          * Returns true if the timer is a continous firing timer.
          * @return true if the timer is a continous firing timer.
          */
-        public bool isContinuous()
+        public bool IsContinuous()
         {
-            return continuous;
+            return _continuous;
         }
 
         /**
          * Sets the timer continous mode. A timer in continous mode must be stopped manually.
          * @param continuous true if the timer should auto restart after firing.
          */
-        public void setContinuous(bool continuous)
+        public void SetContinuous(bool continuous)
         {
-            this.continuous = continuous;
+            this._continuous = continuous;
         }
 
-        internal bool tick(int delta)
+        public bool RunOneTick(int delta)
         {
-            int newCounter = counter - delta;
+            int newCounter = _counter - delta;
             if (newCounter <= 0)
             {
-                bool doStop = !continuous;
-                counter = TIMER_COUNTER_IN_CALLBACK;
+                bool doStop = !_continuous;
+                _counter = TIMER_COUNTER_IN_CALLBACK;
                 this.Tick.Invoke(this, new TimerTickEventArgs());
-                if (counter == TIMER_COUNTER_DO_STOP)
+                if (_counter == TIMER_COUNTER_DO_STOP)
                 {
-                    counter = 0;
+                    _counter = 0;
                     return false;
                 }
-                if (doStop && counter != TIMER_COUNTER_DO_START)
+                if (doStop && _counter != TIMER_COUNTER_DO_START)
                 {
-                    counter = 0;
+                    _counter = 0;
                     return false;
                 }
                 // timer is already running
-                counter = Math.Max(1, newCounter + delay);
+                _counter = Math.Max(1, newCounter + _delay);
             }
             else
             {
-                counter = newCounter;
+                _counter = newCounter;
             }
             return true;
         }

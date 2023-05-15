@@ -32,6 +32,6 @@ namespace XNATWL
 {
     public enum HAlignment
     {
-        LEFT, CENTER, RIGHT
+        Left, Center, Right
     }
 }

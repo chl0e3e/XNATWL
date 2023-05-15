@@ -35,102 +35,102 @@ namespace XNATWL
 {
     public class ValueAdjusterInt : ValueAdjuster
     {
-        private int value;
-        private int minValue;
-        private int maxValue = 100;
-        private int dragStartValue;
-        private IntegerModel model;
+        private int _value;
+        private int _minValue;
+        private int _maxValue = 100;
+        private int _dragStartValue;
+        private IntegerModel _model;
 
         public ValueAdjusterInt()
         {
-            setTheme("valueadjuster");
-            setDisplayText();
+            SetTheme("valueadjuster");
+            SetDisplayText();
         }
 
         public ValueAdjusterInt(IntegerModel model)
         {
-            setTheme("valueadjuster");
-            setModel(model);
+            SetTheme("valueadjuster");
+            SetModel(model);
         }
 
-        public int getMaxValue()
+        public int GetMaxValue()
         {
-            if (model != null)
+            if (_model != null)
             {
-                maxValue = model.MaxValue;
+                _maxValue = _model.MaxValue;
             }
-            return maxValue;
+            return _maxValue;
         }
 
-        public int getMinValue()
+        public int GetMinValue()
         {
-            if (model != null)
+            if (_model != null)
             {
-                minValue = model.MinValue;
+                _minValue = _model.MinValue;
             }
-            return minValue;
+            return _minValue;
         }
 
-        public void setMinMaxValue(int minValue, int maxValue)
+        public void SetMinMaxValue(int minValue, int maxValue)
         {
             if (maxValue < minValue)
             {
                 throw new ArgumentOutOfRangeException("maxValue < minValue");
             }
-            this.minValue = minValue;
-            this.maxValue = maxValue;
-            setValue(value);
+            this._minValue = minValue;
+            this._maxValue = maxValue;
+            SetValue(_value);
         }
 
-        public int getValue()
+        public int GetValue()
         {
-            return value;
+            return _value;
         }
 
-        public void setValue(int value)
+        public void SetValue(int value)
         {
-            value = Math.Max(getMinValue(), Math.Min(getMaxValue(), value));
-            if (this.value != value)
+            value = Math.Max(GetMinValue(), Math.Min(GetMaxValue(), value));
+            if (this._value != value)
             {
-                this.value = value;
-                if (model != null)
+                this._value = value;
+                if (_model != null)
                 {
-                    model.Value = value;
+                    _model.Value = value;
                 }
-                setDisplayText();
+                SetDisplayText();
             }
         }
 
-        public IntegerModel getModel()
+        public IntegerModel GetModel()
         {
-            return model;
+            return _model;
         }
 
-        public void setModel(IntegerModel model)
+        public void SetModel(IntegerModel model)
         {
-            if (this.model != model)
+            if (this._model != model)
             {
-                removeModelCallback();
-                this.model = model;
+                RemoveModelCallback();
+                this._model = model;
                 if (model != null)
                 {
-                    this.minValue = model.MinValue;
-                    this.maxValue = model.MaxValue;
-                    addModelCallback();
+                    this._minValue = model.MinValue;
+                    this._maxValue = model.MaxValue;
+                    AddModelCallback();
                 }
             }
         }
 
-        protected override String onEditStart()
+        protected override String OnEditStart()
         {
-            return formatText();
+            return FormatText();
         }
 
-        protected override bool onEditEnd(String text)
+        protected override bool OnEditEnd(String text)
         {
             try
             {
-                setValue(int.Parse(text));
+                SetValue(int.Parse(text));
                 return true;
             }
             catch (FormatException ex)
@@ -139,7 +139,7 @@ namespace XNATWL
             }
         }
 
-        protected override String validateEdit(String text)
+        protected override String ValidateEdit(String text)
         {
             try
             {
@@ -152,87 +152,87 @@ namespace XNATWL
             }
         }
 
-        protected override void onEditCanceled()
+        protected override void OnEditCanceled()
         {
         }
 
-        protected override bool shouldStartEdit(char ch)
+        protected override bool ShouldStartEdit(char ch)
         {
             return (ch >= '0' && ch <= '9') || (ch == '-');
         }
 
-        protected override void onDragStart()
+        protected override void OnDragStart()
         {
-            dragStartValue = value;
+            _dragStartValue = _value;
         }
 
-        protected override void onDragUpdate(int dragDelta)
+        protected override void OnDragUpdate(int dragDelta)
         {
-            int range = Math.Max(1, Math.Abs(getMaxValue() - getMinValue()));
-            setValue(dragStartValue + dragDelta / Math.Max(3, getWidth() / range));
+            int range = Math.Max(1, Math.Abs(GetMaxValue() - GetMinValue()));
+            SetValue(_dragStartValue + dragDelta / Math.Max(3, GetWidth() / range));
         }
 
-        protected override void onDragCancelled()
+        protected override void OnDragCancelled()
         {
-            setValue(dragStartValue);
+            SetValue(_dragStartValue);
         }
 
-        protected override void doDecrement()
+        protected override void DoDecrement()
         {
-            setValue(value - 1);
+            SetValue(_value - 1);
         }
 
-        protected override void doIncrement()
+        protected override void DoIncrement()
         {
-            setValue(value + 1);
+            SetValue(_value + 1);
         }
 
-        protected override String formatText()
+        protected override String FormatText()
         {
-            return value.ToString();
+            return _value.ToString();
         }
 
-        protected override void syncWithModel()
+        protected override void SyncWithModel()
         {
-            cancelEdit();
-            this.minValue = model.MinValue;
-            this.maxValue = model.MaxValue;
-            this.value = model.Value;
-            setDisplayText();
+            CancelEdit();
+            this._minValue = _model.MinValue;
+            this._maxValue = _model.MaxValue;
+            this._value = _model.Value;
+            SetDisplayText();
         }
 
-        protected override void afterAddToGUI(GUI gui)
+        protected override void AfterAddToGUI(GUI gui)
         {
-            base.afterAddToGUI(gui);
-            addModelCallback();
+            base.AfterAddToGUI(gui);
+            AddModelCallback();
         }
 
-        protected override void beforeRemoveFromGUI(GUI gui)
+        protected override void BeforeRemoveFromGUI(GUI gui)
         {
-            removeModelCallback();
-            base.beforeRemoveFromGUI(gui);
+            RemoveModelCallback();
+            base.BeforeRemoveFromGUI(gui);
         }
 
-        protected void removeModelCallback()
+        protected void RemoveModelCallback()
         {
-            if (model != null)
+            if (_model != null)
             {
-                model.Changed -= Model_Changed;
+                _model.Changed -= Model_Changed;
             }
         }
 
-        protected void addModelCallback()
+        protected void AddModelCallback()
         {
-            if (model != null && getGUI() != null)
+            if (_model != null && GetGUI() != null)
             {
-                model.Changed += Model_Changed;
-                syncWithModel();
+                _model.Changed += Model_Changed;
+                SyncWithModel();
             }
         }
 
         private void Model_Changed(object sender, IntegerChangedEventArgs e)
         {
-            syncWithModel();
+            SyncWithModel();
         }
     }
 }

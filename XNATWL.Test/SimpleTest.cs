@@ -17,18 +17,18 @@ namespace XNATWL.Test
 
         public class StyleItem
         {
-            public String theme;
-            public String name;
+            public String Theme;
+            public String Name;
 
             public StyleItem(String theme, String name)
             {
-                this.theme = theme;
-                this.name = name;
+                this.Theme = theme;
+                this.Name = name;
             }
 
             public override String ToString()
             {
-                return name;
+                return Name;
             }
         }
 
@@ -55,10 +55,10 @@ namespace XNATWL.Test
             curThemeIdx = new PersistentIntegerModel(
                     this.preferences,
                     "currentThemeIndex", 0, THEME_FILES.Length, 0);
-            this.setup();
+            this.Setup();
         }
 
-        private void loadTheme()
+        private void LoadTheme()
         {
             //renderer.syncViewportSize();
             Console.WriteLine("width=" + renderer.Width + " height=" + renderer.Height);
@@ -79,12 +79,12 @@ namespace XNATWL.Test
             }
             theme = newTheme;
 
-            gui.setSize();
-            gui.applyTheme(theme);
-            gui.setBackground(theme.GetImageNoWarning("gui.background"));
+            gui.SetSize();
+            gui.ApplyTheme(theme);
+            gui.SetBackground(theme.GetImageNoWarning("gui.background"));
         }
 
-        public void setup()
+        public void Setup()
         {
             RootPane root = new RootPane();
             renderer = new XNARenderer(this.graphicsDevice);
@@ -92,61 +92,61 @@ namespace XNATWL.Test
             renderer.SetUseSWMouseCursors(true);
             gui = new GUI(root, renderer);
 
-            loadTheme();
+            LoadTheme();
 
             WidgetsDemoDialog1 dlg1 = new WidgetsDemoDialog1();
-            root.desk.add(dlg1);
-            dlg1.adjustSize();
-            dlg1.center(0.35f, 0.5f);
+            root._desk.Add(dlg1);
+            dlg1.AdjustSize();
+            dlg1.Center(0.35f, 0.5f);
 
             GraphDemoDialog1 fMS = new GraphDemoDialog1();
-            root.desk.add(fMS);
-            fMS.adjustSize();
-            fMS.center(1f, 0.8f);
+            root._desk.Add(fMS);
+            fMS.AdjustSize();
+            fMS.Center(1f, 0.8f);
 
             TextAreaDemoDialog1 fInfo = new TextAreaDemoDialog1(new FileSystemObject(this.themeRootFso, "license.html"));
-            root.desk.add(fInfo);
-            fInfo.setSize(gui.getWidth() * 2 / 3, gui.getHeight() * 2 / 3);
-            fInfo.center(0.5f, 0.5f);
-            fInfo.addCloseCallback();
+            root._desk.Add(fInfo);
+            fInfo.SetSize(gui.GetWidth() * 2 / 3, gui.GetHeight() * 2 / 3);
+            fInfo.Center(0.5f, 0.5f);
+            fInfo.AddCloseCallback();
 
             TextAreaDemoDialog2 fTextAreaTest = new TextAreaDemoDialog2();
-            fTextAreaTest.setHardVisible(false);
-            root.desk.add(fTextAreaTest);
-            fTextAreaTest.setSize(gui.getWidth() * 2 / 3, gui.getHeight() * 2 / 3);
-            fTextAreaTest.center(0.5f, 0.5f);
-            fTextAreaTest.addCloseCallback();
+            fTextAreaTest.SetHardVisible(false);
+            root._desk.Add(fTextAreaTest);
+            fTextAreaTest.SetSize(gui.GetWidth() * 2 / 3, gui.GetHeight() * 2 / 3);
+            fTextAreaTest.Center(0.5f, 0.5f);
+            fTextAreaTest.AddCloseCallback();
 
             ScrollPaneDemoDialog1 fScroll = new ScrollPaneDemoDialog1();
-            root.desk.add(fScroll);
-            fScroll.adjustSize();
-            fScroll.center(0f, 0f);
-            fScroll.addCloseCallback();
+            root._desk.Add(fScroll);
+            fScroll.AdjustSize();
+            fScroll.Center(0f, 0f);
+            fScroll.AddCloseCallback();
             fScroll.centerScrollPane();
 
             PropertySheetDemoDialog fPropertySheet = new PropertySheetDemoDialog();
-            fPropertySheet.setHardVisible(false);
-            root.desk.add(fPropertySheet);
-            fPropertySheet.setSize(400, 400);
-            fPropertySheet.center(0f, 0.25f);
-            fPropertySheet.addCloseCallback();
+            fPropertySheet.SetHardVisible(false);
+            root._desk.Add(fPropertySheet);
+            fPropertySheet.SetSize(400, 400);
+            fPropertySheet.Center(0f, 0.25f);
+            fPropertySheet.AddCloseCallback();
 
             ColorSelectorDemoDialog1 fCS = new ColorSelectorDemoDialog1();
-            fCS.setHardVisible(false);
-            root.desk.add(fCS);
-            fCS.adjustSize();
-            fCS.center(0.5f, 0.5f);
-            fCS.addCloseCallback();
+            fCS.SetHardVisible(false);
+            root._desk.Add(fCS);
+            fCS.AdjustSize();
+            fCS.Center(0.5f, 0.5f);
+            fCS.AddCloseCallback();
 
             TableDemoDialog1 fTable = new TableDemoDialog1();
-            root.desk.add(fTable);
-            fTable.adjustSize();
-            fTable.center(0f, 0.5f);
+            root._desk.Add(fTable);
+            fTable.AdjustSize();
+            fTable.Center(0f, 0.5f);
             
             TreeTableDemoDialog1 fTreeTable = new TreeTableDemoDialog1(this.preferences);
-            root.desk.add(fTreeTable);
-            fTable.adjustSize();
-            fTable.center(0f, 0.5f);
+            root._desk.Add(fTreeTable);
+            fTable.AdjustSize();
+            fTable.Center(0f, 0.5f);
             //fTable.addCloseCallback();
             /*GraphDemoDialog1 fMS = new GraphDemoDialog1();
             root.desk.add(fMS);
@@ -182,69 +182,69 @@ namespace XNATWL.Test
                 }
             });*/
 
-            root.addButton("Exit", () => {
+            root.AddButton("Exit", () => {
                 closeRequested = true;
             });
-            root.addButton("Info", "Shows TWL license", () => {
-                if (fInfo.isVisible())
+            root.AddButton("Info", "Shows TWL license", () => {
+                if (fInfo.IsVisible())
                 {
-                    fInfo.hide();
+                    fInfo.Hide();
                 }
                 else
                 {
-                    fInfo.show();
+                    fInfo.Show();
                 }
-            }).setTooltipContent(makeComplexTooltip());
-            root.addButton("TA", "Shows a text area test", () => {
-                if (fTextAreaTest.isVisible())
+            }).SetTooltipContent(MakeComplexTooltip());
+            root.AddButton("TA", "Shows a text area test", () => {
+                if (fTextAreaTest.IsVisible())
                 {
-                    fTextAreaTest.hide();
+                    fTextAreaTest.Hide();
                 }
                 else
                 {
-                    fTextAreaTest.show();
+                    fTextAreaTest.Show();
                 }
             });
-            root.addButton("Toggle Theme", () => {
+            root.AddButton("Toggle Theme", () => {
                 curThemeIdx.Value = ((curThemeIdx.Value + 1) % THEME_FILES.Length);
                 try
                 {
                     System.Diagnostics.Debug.WriteLine("Load theme: " + curThemeIdx.Value);
-                    loadTheme();
+                    LoadTheme();
                 }
                 catch (IOException ex)
                 {
                     System.Diagnostics.Debug.Write(ex);
                 }
             });
-            root.addButton("ScrollPane", () => {
-                if (fScroll.isVisible())
+            root.AddButton("ScrollPane", () => {
+                if (fScroll.IsVisible())
                 {
-                    fScroll.hide();
+                    fScroll.Hide();
                 }
                 else
                 {
-                    fScroll.show();
+                    fScroll.Show();
                 }
             });
-            root.addButton("Properties", () => {
-                if (fPropertySheet.isVisible())
+            root.AddButton("Properties", () => {
+                if (fPropertySheet.IsVisible())
                 {
-                    fPropertySheet.hide();
+                    fPropertySheet.Hide();
                 }
                 else
                 {
-                    fPropertySheet.show();
+                    fPropertySheet.Show();
                 }
             });
-            root.addButton("Color", () => {
-                if (fCS.isVisible())
+            root.AddButton("Color", () => {
+                if (fCS.IsVisible())
                 {
-                    fCS.hide();
+                    fCS.Hide();
                 }
                 else
                 {
-                    fCS.show();
+                    fCS.Show();
                 }
             });
             /*if (!isApplet)
@@ -314,44 +314,44 @@ namespace XNATWL.Test
             }*/
         }
 
-        private Object makeComplexTooltip()
+        private Object MakeComplexTooltip()
         {
             HTMLTextAreaModel tam = new HTMLTextAreaModel();
             tam.SetHtml("Hello <img src=\"twl-logo\" alt=\"logo\"/> World");
             TextArea ta = new TextArea(tam);
-            ta.setTheme("/htmlTooltip");
+            ta.SetTheme("/htmlTooltip");
             return ta;
         }
 
-        internal void update(GameTime gameTime)
+        internal void Update(GameTime gameTime)
         {
-            this.gui.update(gameTime);
+            this.gui.Update(gameTime);
         }
 
-        internal void draw()
+        internal void Draw()
         {
-            this.gui.draw();
+            this.gui.Draw();
         }
 
         class RootPane : Widget
         {
-            protected internal DesktopArea desk;
-            BoxLayout btnBox;
-            BoxLayout vsyncBox;
-            bool reduceLag = true;
+            protected internal DesktopArea _desk;
+            BoxLayout _btnBox;
+            BoxLayout _vsyncBox;
+            bool _reduceLag = true;
 
             public RootPane()
             {
-                setTheme("");
+                SetTheme("");
 
-                desk = new DesktopArea();
-                desk.setTheme("");
+                _desk = new DesktopArea();
+                _desk.SetTheme("");
 
-                btnBox = new BoxLayout(BoxLayout.Direction.HORIZONTAL);
-                btnBox.setTheme("buttonBox");
+                _btnBox = new BoxLayout(BoxLayout.Direction.Horizontal);
+                _btnBox.SetTheme("buttonBox");
 
-                vsyncBox = new BoxLayout(BoxLayout.Direction.HORIZONTAL);
-                vsyncBox.setTheme("buttonBox");
+                _vsyncBox = new BoxLayout(BoxLayout.Direction.Horizontal);
+                _vsyncBox.SetTheme("buttonBox");
 
                 SimpleBooleanModel vsyncModel = new SimpleBooleanModel(true);
                 /*vsyncModel.addCallback(new Runnable() {
@@ -361,65 +361,65 @@ namespace XNATWL.Test
                 });*/
 
                 ToggleButton vsyncBtn = new ToggleButton(vsyncModel);
-                vsyncBtn.setTheme("checkbox");
+                vsyncBtn.SetTheme("checkbox");
                 Label l = new Label("VSync");
-                l.setLabelFor(vsyncBtn);
+                l.SetLabelFor(vsyncBtn);
 
-                vsyncBox.add(l);
-                vsyncBox.add(vsyncBtn);
+                _vsyncBox.Add(l);
+                _vsyncBox.Add(vsyncBtn);
 
-                add(desk);
-                add(btnBox);
-                add(vsyncBox);
+                Add(_desk);
+                Add(_btnBox);
+                Add(_vsyncBox);
             }
 
-            public Button addButton(String text, Action cb)
+            public Button AddButton(String text, Action cb)
             {
                 Button btn = new Button(text);
                 btn.Action += (sender, e) => {
                     cb();
                 };
-                btnBox.add(btn);
-                invalidateLayout();
+                _btnBox.Add(btn);
+                InvalidateLayout();
                 return btn;
             }
 
-            public Button addButton(String text, String ttolTip, Action cb)
+            public Button AddButton(String text, String ttolTip, Action cb)
             {
-                Button btn = addButton(text, cb);
-                btn.setTooltipContent(ttolTip);
+                Button btn = AddButton(text, cb);
+                btn.SetTooltipContent(ttolTip);
                 return btn;
             }
 
-            protected override void layout()
+            protected override void Layout()
             {
-                btnBox.adjustSize();
-                btnBox.setPosition(0, getParent().getHeight() - btnBox.getHeight());
-                desk.setSize(getParent().getWidth(), getParent().getHeight());
-                vsyncBox.adjustSize();
-                vsyncBox.setPosition(
-                        getParent().getWidth() - vsyncBox.getWidth(),
-                        getParent().getHeight() - vsyncBox.getHeight());
+                _btnBox.AdjustSize();
+                _btnBox.SetPosition(0, GetParent().GetHeight() - _btnBox.GetHeight());
+                _desk.SetSize(GetParent().GetWidth(), GetParent().GetHeight());
+                _vsyncBox.AdjustSize();
+                _vsyncBox.SetPosition(
+                        GetParent().GetWidth() - _vsyncBox.GetWidth(),
+                        GetParent().GetHeight() - _vsyncBox.GetHeight());
             }
 
-            protected override void afterAddToGUI(GUI gui)
+            protected override void AfterAddToGUI(GUI gui)
             {
-                base.afterAddToGUI(gui);
-                validateLayout();
+                base.AfterAddToGUI(gui);
+                ValidateLayout();
             }
 
-            public override bool handleEvent(Event evt)
+            public override bool HandleEvent(Event evt)
             {
-                if (evt.getEventType() == EventType.KEY_PRESSED &&
-                        evt.getKeyCode() == Event.KEY_L &&
-                        (evt.getModifiers() & Event.MODIFIER_CTRL) != 0 &&
-                        (evt.getModifiers() & Event.MODIFIER_SHIFT) != 0)
+                if (evt.GetEventType() == EventType.KEY_PRESSED &&
+                        evt.GetKeyCode() == Event.KEY_L &&
+                        (evt.GetModifiers() & Event.MODIFIER_CTRL) != 0 &&
+                        (evt.GetModifiers() & Event.MODIFIER_SHIFT) != 0)
                 {
-                    reduceLag ^= true;
-                    Console.WriteLine("reduceLag = " + reduceLag);
+                    _reduceLag ^= true;
+                    Console.WriteLine("reduceLag = " + _reduceLag);
                 }
 
-                return base.handleEvent(evt);
+                return base.HandleEvent(evt);
             }
         }
     }

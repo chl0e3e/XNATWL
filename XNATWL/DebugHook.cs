@@ -64,25 +64,25 @@ namespace XNATWL
             INSTANCE = hook;
         }*/
 
-        public void beforeApplyTheme(Widget widget)
+        public void BeforeApplyTheme(Widget widget)
         {
         }
 
-        public void afterApplyTheme(Widget widget)
+        public void AfterApplyTheme(Widget widget)
         {
         }
 
-        public void missingTheme(String themePath)
+        public void MissingTheme(String themePath)
         {
             System.Diagnostics.Debug.WriteLine("Could not find theme: " + themePath);
         }
 
-        public void missingChildTheme(ThemeInfo parent, String theme)
+        public void MissingChildTheme(ThemeInfo parent, String theme)
         {
             System.Diagnostics.Debug.WriteLine("Missing child theme \"" + theme + "\" for \"" + parent.GetThemePath() + "\"");
         }
 
-        public void missingParameter(ParameterMap map, String paramName, String parentDescription, Type dataType)
+        public void MissingParameter(ParameterMap map, String paramName, String parentDescription, Type dataType)
         {
             StringBuilder sb = new StringBuilder("Parameter \"").Append(paramName).Append("\" ");
             if (dataType != null)
@@ -104,27 +104,27 @@ namespace XNATWL
             System.Diagnostics.Debug.WriteLine(sb.ToString());
         }
 
-        public void wrongParameterType(ParameterMap map, String paramName, Type expectedType, Type foundType, String parentDescription)
+        public void WrongParameterType(ParameterMap map, String paramName, Type expectedType, Type foundType, String parentDescription)
         {
             System.Diagnostics.Debug.WriteLine("Parameter \"" + paramName + "\" is a " +
                     foundType.Name + " expected a " +
                     expectedType.Name + parentDescription);
         }
 
-        public void wrongParameterType(ParameterList map, int idx, Type expectedType, Type foundType, String parentDescription)
+        public void WrongParameterType(ParameterList map, int idx, Type expectedType, Type foundType, String parentDescription)
         {
             System.Diagnostics.Debug.WriteLine("Parameter at index " + idx + " is a " +
                     foundType.Name + " expected a " +
                     expectedType.Name + parentDescription);
         }
 
-        public void replacingWithDifferentType(ParameterMap map, String paramName, Type oldType, Type newType, String parentDescription)
+        public void ReplacingWithDifferentType(ParameterMap map, String paramName, Type oldType, Type newType, String parentDescription)
         {
             System.Diagnostics.Debug.WriteLine("Paramter \"" + paramName + "\" of type " +
                     oldType + " is replaced with type " + newType + parentDescription);
         }
 
-        public void missingImage(String name)
+        public void MissingImage(String name)
         {
             System.Diagnostics.Debug.WriteLine("Could not find image: " + name);
         }
@@ -134,7 +134,7 @@ namespace XNATWL
          * @param iterations the number of iterations required to solve layout
          * @param loop the widgets involved in a layout loop if the layout could not be solved - is null if layout was solved
          */
-        public void guiLayoutValidated(int iterations, ICollection<Widget> loop)
+        public void GuiLayoutValidated(int iterations, ICollection<Widget> loop)
         {
             if (loop != null)
             {
@@ -152,7 +152,7 @@ namespace XNATWL
          * Called when wildcard resolution failed to find a theme and the fallback theme was specified
          * @param themePath the requested theme name
          */
-        public void usingFallbackTheme(String themePath)
+        public void UsingFallbackTheme(String themePath)
         {
             System.Diagnostics.Debug.WriteLine("Selected fallback theme for missing theme \"" + themePath + "\"");
         }

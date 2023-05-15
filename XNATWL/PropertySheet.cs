@@ -29,9 +29,9 @@
  */
 
 using System;
-using static XNATWL.Utils.Logger;
 using XNATWL.Model;
 using XNATWL.Utils;
+using static XNATWL.Utils.Logger;
 
 namespace XNATWL
 {
@@ -39,10 +39,10 @@ namespace XNATWL
     {
         public interface PropertyEditor
         {
-            Widget getWidget();
-            void valueChanged();
-            void preDestroy();
-            void setSelected(bool selected);
+            Widget GetWidget();
+            void ValueChanged();
+            void PreDestroy();
+            void SetSelected(bool selected);
 
             /**
              * Can be used to position the widget in a cell.
@@ -58,18 +58,18 @@ namespace XNATWL
              * 
              * @return true if the position was changed by this method.
              */
-            bool positionWidget(int x, int y, int width, int height);
+            bool PositionWidget(int x, int y, int width, int height);
         }
 
         public interface PropertyEditorFactory
         {
-            PropertyEditor createEditor(XNATWL.Model.Property property);
+            PropertyEditor CreateEditor(XNATWL.Model.Property property);
         }
 
-        private SimplePropertyList rootList;
-        private PropertyListCellRenderer subListRenderer;
-        private CellRenderer editorRenderer;
-        private TypeMapping factories;
+        private SimplePropertyList _rootList;
+        private PropertyListCellRenderer _subListRenderer;
+        private CellRenderer _editorRenderer;
+        private TypeMapping _factories;
 
         public PropertySheet() : this(new Model())
         {
@@ -78,24 +78,24 @@ namespace XNATWL
 
         private PropertySheet(Model model) : base(model)
         {
-            this.rootList = new SimplePropertyList("<root>");
-            this.subListRenderer = new PropertyListCellRenderer(this);
-            this.editorRenderer = new EditorRenderer();
-            this.factories = new TypeMapping();
-            TreeGenerator treeGenerator = new TreeGenerator(this, this.rootList, model);
-            rootList.Changed += (sender, e) =>
+            this._rootList = new SimplePropertyList("<root>");
+            this._subListRenderer = new PropertyListCellRenderer(this);
+            this._editorRenderer = new EditorRenderer();
+            this._factories = new TypeMapping();
+            TreeGenerator treeGenerator = new TreeGenerator(this, this._rootList, model);
+            _rootList.Changed += (sender, e) =>
             {
-                treeGenerator.run();
+                treeGenerator.Run();
             };
-            registerPropertyEditorFactory<string>(typeof(String), new StringEditorFactory());
+            RegisterPropertyEditorFactory<string>(typeof(String), new StringEditorFactory());
         }
 
-        public SimplePropertyList getPropertyList()
+        public SimplePropertyList GetPropertyList()
         {
-            return rootList;
+            return _rootList;
         }
 
-        public void registerPropertyEditorFactory<T>(Type clazz, PropertyEditorFactory factory)
+        public void RegisterPropertyEditorFactory<T>(Type clazz, PropertyEditorFactory factory)
         {
             if (clazz == null)
             {
@@ -105,14 +105,14 @@ namespace XNATWL
             {
                 throw new NullReferenceException("factory");
             }
-            factories.SetByType(clazz, factory);
+            _factories.SetByType(clazz, factory);
         }
 
-        public override void setModel(TreeTableModel model)
+        public override void SetModel(TreeTableModel model)
         {
             if (model is Model)
             {
-                base.setModel(model);
+                base.SetModel(model);
             }
             else
             {
@@ -120,31 +120,31 @@ namespace XNATWL
             }
         }
 
-        protected override void applyTheme(ThemeInfo themeInfo)
+        protected override void ApplyTheme(ThemeInfo themeInfo)
         {
-            base.applyTheme(themeInfo);
-            applyThemePropertiesSheet(themeInfo);
+            base.ApplyTheme(themeInfo);
+            ApplyThemePropertiesSheet(themeInfo);
         }
 
-        protected void applyThemePropertiesSheet(ThemeInfo themeInfo)
+        protected void ApplyThemePropertiesSheet(ThemeInfo themeInfo)
         {
-            applyCellRendererTheme(subListRenderer);
-            applyCellRendererTheme(editorRenderer);
+            ApplyCellRendererTheme(_subListRenderer);
+            ApplyCellRendererTheme(_editorRenderer);
         }
 
-        protected override CellRenderer getCellRenderer(int row, int col, TreeTableNode node)
+        protected override CellRenderer GetCellRenderer(int row, int col, TreeTableNode node)
         {
             if (node == null)
             {
-                node = getNodeFromRow(row);
+                node = GetNodeFromRow(row);
             }
             if (node is ListNode)
             {
                 if (col == 0)
                 {
-                    PropertyListCellRenderer cr = subListRenderer;
-                    NodeState nodeState = getOrCreateNodeState(node);
-                    cr.setCellData(row, col, node.DataAtColumn(col), nodeState);
+                    PropertyListCellRenderer cr = _subListRenderer;
+                    NodeState nodeState = GetOrCreateNodeState(node);
+                    cr.SetCellData(row, col, node.DataAtColumn(col), nodeState);
                     return cr;
                 }
                 else
@@ -154,17 +154,17 @@ namespace XNATWL
             }
             else if (col == 0)
             {
-                return base.getCellRenderer(row, col, node);
+                return base.GetCellRenderer(row, col, node);
             }
             else
             {
-                CellRenderer cr = editorRenderer;
-                cr.setCellData(row, col, node.DataAtColumn(col));
+                CellRenderer cr = _editorRenderer;
+                cr.SetCellData(row, col, node.DataAtColumn(col));
                 return cr;
             }
         }
 
-        TreeTableNode createNode(TreeTableNode parent, XNATWL.Model.Property property)
+        TreeTableNode CreateNode(TreeTableNode parent, XNATWL.Model.Property property)
         {
             if (property is PropertyList)
             {
@@ -173,10 +173,10 @@ namespace XNATWL
             else
             {
                 Type type = property.Type;
-                PropertyEditorFactory factory = (PropertyEditorFactory) factories.GetByType(type);
+                PropertyEditorFactory factory = (PropertyEditorFactory)_factories.GetByType(type);
                 if (factory != null)
                 {
-                    PropertyEditor editor = factory.createEditor(property);
+                    PropertyEditor editor = factory.CreateEditor(property);
                     if (editor != null)
                     {
                         return new LeafNode(this, parent, property, editor);
@@ -184,7 +184,7 @@ namespace XNATWL
                 }
                 else
                 {
-                    Logger.GetLogger(typeof(PropertySheet<T>)).log(Level.WARNING, "No property editor factory for type " + type.FullName);
+                    Logger.GetLogger(typeof(PropertySheet<T>)).Log(Level.WARNING, "No property editor factory for type " + type.FullName);
                 }
                 return null;
             }
@@ -192,38 +192,41 @@ namespace XNATWL
 
         interface PSTreeTableNode : TreeTableNode
         {
-            void addChild(TreeTableNode parent);
+            void AddChild(TreeTableNode parent);
             void RemoveAllChildren();
         }
 
         abstract class PropertyNode : AbstractTreeTableNode, PSTreeTableNode
         {
-            protected XNATWL.Model.Property property;
-            protected PropertySheet<T> propertySheet;
+            protected XNATWL.Model.Property _property;
+            protected PropertySheet<T> _propertySheet;
 
             public PropertyNode(PropertySheet<T> propertySheet, TreeTableNode parent, XNATWL.Model.Property property) : base(parent)
             {
-                this.propertySheet = propertySheet;
-                this.property = property;
+                this._propertySheet = propertySheet;
+                this._property = property;
+
                 property.Changed += Property_Changed;
             }
 
             private void Property_Changed(object sender, PropertyChangedEventArgs e)
             {
-                this.run();
+                this.Run();
             }
 
-            public abstract void run();
+            public abstract void Run();
 
-            protected internal virtual void removeCallback()
+            protected internal virtual void RemoveCallback()
             {
-                property.Changed -= Property_Changed;
+                _property.Changed -= Property_Changed;
             }
+
             public override void RemoveAllChildren()
             {
                 base.RemoveAllChildren();
             }
-            public void addChild(TreeTableNode parent)
+
+            public void AddChild(TreeTableNode parent)
             {
                 InsertChild(parent, base.Children);
             }
@@ -231,36 +234,39 @@ namespace XNATWL
 
         class TreeGenerator
         {
-            private PropertyList list;
-            private PSTreeTableNode parent;
-            private PropertySheet<T> propertySheet;
+            private PropertyList _list;
+            private PSTreeTableNode _parent;
+            private PropertySheet<T> _propertySheet;
 
             public TreeGenerator(PropertySheet<T> propertySheet, PropertyList list, PSTreeTableNode parent)
             {
-                this.propertySheet = propertySheet;
-                this.list = list;
-                this.parent = parent;
+                this._propertySheet = propertySheet;
+                this._list = list;
+                this._parent = parent;
             }
-            public void run()
+
+            public void Run()
             {
-                parent.RemoveAllChildren();
-                addSubProperties();
+                _parent.RemoveAllChildren();
+                AddSubProperties();
             }
-            protected internal void removeChildCallbacks(PSTreeTableNode parent)
+
+            protected internal void RemoveChildCallbacks(PSTreeTableNode parent)
             {
                 for (int i = 0, n = parent.Children; i < n; ++i)
                 {
-                    ((PropertyNode)parent.ChildAt(i)).removeCallback();
+                    ((PropertyNode)parent.ChildAt(i)).RemoveCallback();
                 }
             }
-            protected internal void addSubProperties()
+
+            protected internal void AddSubProperties()
             {
-                for (int i = 0; i < list.Count; ++i)
+                for (int i = 0; i < _list.Count; ++i)
                 {
-                    TreeTableNode node = this.propertySheet.createNode(parent, (XNATWL.Model.Property) list.PropertyAt(i));
+                    TreeTableNode node = this._propertySheet.CreateNode(_parent, (XNATWL.Model.Property)_list.PropertyAt(i));
                     if (node != null)
                     {
-                        parent.addChild(node);
+                        _parent.AddChild(node);
                     }
                 }
             }
@@ -268,130 +274,135 @@ namespace XNATWL
 
         class LeafNode : PropertyNode
         {
-            private PropertyEditor editor;
+            private PropertyEditor _editor;
 
             public LeafNode(PropertySheet<T> propertySheet, TreeTableNode parent, XNATWL.Model.Property property, PropertyEditor editor) : base(propertySheet, parent, property)
             {
-                this.editor = editor;
+                this._editor = editor;
                 this.IsLeaf = true;
             }
+
             public override Object DataAtColumn(int column)
             {
                 switch (column)
                 {
-                    case 0: return property.Name;
-                    case 1: return editor;
+                    case 0: return _property.Name;
+                    case 1: return _editor;
                     default: return "???";
                 }
             }
-            public override void run()
+
+            public override void Run()
             {
-                editor.valueChanged();
+                _editor.ValueChanged();
                 this.FireNodeChanged();
             }
         }
 
         class ListNode : PropertyNode
         {
-            protected TreeGenerator treeGenerator;
+            protected TreeGenerator _treeGenerator;
 
             public ListNode(PropertySheet<T> propertySheet, TreeTableNode parent, XNATWL.Model.Property property) : base(propertySheet, parent, property)
             {
-                this.treeGenerator = new TreeGenerator(propertySheet, (PropertyList)property.Value, this);
-                treeGenerator.run();
+                this._treeGenerator = new TreeGenerator(propertySheet, (PropertyList)property.Value, this);
+                _treeGenerator.Run();
             }
+
             public override Object DataAtColumn(int column)
             {
-                return property.Name;
+                return _property.Name;
             }
-            public override void run()
+
+            public override void Run()
             {
-                treeGenerator.run();
+                _treeGenerator.Run();
             }
-            protected internal override void removeCallback()
+
+            protected internal override void RemoveCallback()
             {
-                base.removeCallback();
-                treeGenerator.removeChildCallbacks(this);
+                base.RemoveCallback();
+                _treeGenerator.RemoveChildCallbacks(this);
             }
         }
 
         class PropertyListCellRenderer : TreeNodeCellRenderer
         {
-            private Widget bgRenderer;
-            private Label textRenderer;
+            private Widget _bgRenderer;
+            private Label _textRenderer;
             private PropertySheet<T> propertySheet;
 
             public PropertyListCellRenderer(PropertySheet<T> propertySheet) : base(propertySheet)
             {
                 this.propertySheet = propertySheet;
-                bgRenderer = new Widget();
-                textRenderer = new Label(bgRenderer.getAnimationState());
-                textRenderer.setAutoSize(false);
-                bgRenderer.add(textRenderer);
-                bgRenderer.setTheme(getTheme());
+                _bgRenderer = new Widget();
+                _textRenderer = new Label(_bgRenderer.GetAnimationState());
+                _textRenderer.SetAutoSize(false);
+                _bgRenderer.Add(_textRenderer);
+                _bgRenderer.SetTheme(GetTheme());
             }
-            public override int getColumnSpan()
+            public override int GetColumnSpan()
             {
                 return 2;
             }
-            public override Widget getCellRenderWidget(int x, int y, int width, int height, bool isSelected)
+            public override Widget GetCellRenderWidget(int x, int y, int width, int height, bool isSelected)
             {
-                bgRenderer.setPosition(x, y);
-                bgRenderer.setSize(width, height);
-                int indent = getIndentation();
-                textRenderer.setPosition(x + indent, y);
-                textRenderer.setSize(Math.Max(0, width - indent), height);
-                bgRenderer.getAnimationState().setAnimationState(STATE_SELECTED, isSelected);
-                return bgRenderer;
+                _bgRenderer.SetPosition(x, y);
+                _bgRenderer.SetSize(width, height);
+                int indent = GetIndentation();
+                _textRenderer.SetPosition(x + indent, y);
+                _textRenderer.SetSize(Math.Max(0, width - indent), height);
+                _bgRenderer.GetAnimationState().SetAnimationState(STATE_SELECTED, isSelected);
+                return _bgRenderer;
             }
-            public override void setCellData(int row, int column, Object data, NodeState nodeState)
+            public override void SetCellData(int row, int column, Object data, NodeState nodeState)
             {
-                base.setCellData(row, column, data, nodeState);
-                textRenderer.setText((String)data);
+                base.SetCellData(row, column, data, nodeState);
+                _textRenderer.SetText((String)data);
             }
-            protected override void setSubRenderer(int row, int column, Object colData)
+            protected override void SetSubRenderer(int row, int column, Object colData)
             {
             }
         }
 
         class EditorRenderer : CellRenderer, TreeTable.CellWidgetCreator
         {
-            private PropertyEditor editor;
+            private PropertyEditor _editor;
 
-            public void applyTheme(ThemeInfo themeInfo)
+            public void ApplyTheme(ThemeInfo themeInfo)
             {
             }
-            public Widget getCellRenderWidget(int x, int y, int width, int height, bool isSelected)
+            public Widget GetCellRenderWidget(int x, int y, int width, int height, bool isSelected)
             {
-                editor.setSelected(isSelected);
+                _editor.SetSelected(isSelected);
                 return null;
             }
-            public int getColumnSpan()
+            public int GetColumnSpan()
             {
                 return 1;
             }
-            public int getPreferredHeight()
+            public int GetPreferredHeight()
             {
-                return editor.getWidget().getPreferredHeight();
+                return _editor.GetWidget().GetPreferredHeight();
             }
-            public String getTheme()
+            public String GetTheme()
             {
                 return "PropertyEditorCellRender";
             }
-            public void setCellData(int row, int column, Object data)
+            public void SetCellData(int row, int column, Object data)
             {
-                editor = (PropertyEditor)data;
+                _editor = (PropertyEditor)data;
             }
-            public Widget updateWidget(Widget existingWidget)
+            public Widget UpdateWidget(Widget existingWidget)
             {
-                return editor.getWidget();
+                return _editor.GetWidget();
             }
-            public void positionWidget(Widget widget, int x, int y, int w, int h)
+            public void PositionWidget(Widget widget, int x, int y, int w, int h)
             {
-                if (!editor.positionWidget(x, y, w, h))
+                if (!_editor.PositionWidget(x, y, w, h))
                 {
-                    widget.setPosition(x, y);
-                    widget.setSize(w, h);
+                    widget.SetPosition(x, y);
+                    widget.SetSize(w, h);
                 }
             }
         }
@@ -415,7 +426,7 @@ namespace XNATWL
                 base.RemoveAllChildren();
             }
 
-            public void addChild(TreeTableNode parent)
+            public void AddChild(TreeTableNode parent)
             {
                 this.InsertChildAt(parent, this.Children);
             }
@@ -433,59 +444,59 @@ namespace XNATWL
 
         class StringEditor : PropertyEditor
         {
-            private EditField editField;
-            private Property<String> property;
+            private EditField _editField;
+            private Property<String> _property;
 
             public StringEditor(Property<String> property)
             {
-                this.property = property;
-                this.editField = new EditField();
-                editField.Callback += EditField_Callback;
-                resetValue();
+                this._property = property;
+                this._editField = new EditField();
+                _editField.Callback += EditField_Callback;
+                ResetValue();
             }
 
             private void EditField_Callback(object sender, EditFieldCallbackEventArgs e)
             {
                 if (e.Key == Event.KEY_ESCAPE)
                 {
-                    resetValue();
+                    ResetValue();
                 }
-                else if (!property.IsReadOnly)
+                else if (!_property.IsReadOnly)
                 {
                     try
                     {
-                        property.Value = editField.getText();
-                        editField.setErrorMessage(null);
+                        _property.Value = _editField.GetText();
+                        _editField.SetErrorMessage(null);
                     }
                     catch (ArgumentException ex)
                     {
-                        editField.setErrorMessage(ex.Message);
+                        _editField.SetErrorMessage(ex.Message);
                     }
                 }
             }
 
-            public Widget getWidget()
+            public Widget GetWidget()
             {
-                return editField;
+                return _editField;
             }
-            public void valueChanged()
+            public void ValueChanged()
             {
-                resetValue();
+                ResetValue();
             }
-            public void preDestroy()
+            public void PreDestroy()
             {
-                editField.Callback -= EditField_Callback;
+                _editField.Callback -= EditField_Callback;
             }
-            public void setSelected(bool selected)
+            public void SetSelected(bool selected)
             {
             }
-            private void resetValue()
+            private void ResetValue()
             {
-                editField.setText((string)property.Value);
-                editField.setErrorMessage(null);
-                editField.setReadOnly(property.IsReadOnly);
+                _editField.SetText((string)_property.Value);
+                _editField.SetErrorMessage(null);
+                _editField.SetReadOnly(_property.IsReadOnly);
             }
-            public bool positionWidget(int x, int y, int width, int height)
+            public bool PositionWidget(int x, int y, int width, int height)
             {
                 return false;
             }
@@ -493,11 +504,11 @@ namespace XNATWL
 
         class StringEditorFactory : PropertyEditorFactory
         {
-            public PropertyEditor createEditor(XNATWL.Model.Property property)
+            public PropertyEditor CreateEditor(XNATWL.Model.Property property)
             {
                 if (property is Property<string>)
                 {
-                    return new StringEditor((Property<string>) property);
+                    return new StringEditor((Property<string>)property);
                 }
 
                 throw new Exception("StringEditorFactory given property that isn't of string generic");
@@ -506,79 +517,79 @@ namespace XNATWL
 
         public class ComboBoxEditor<T> : PropertyEditor
         {
-            protected ComboBox<T> comboBox;
-            protected Property<T> property;
-            protected ListModel<T> model;
+            protected ComboBox<T> _comboBox;
+            protected Property<T> _property;
+            protected ListModel<T> _model;
 
             public ComboBoxEditor(Property<T> property, ListModel<T> model)
             {
-                this.property = property;
-                this.comboBox = new ComboBox<T>(model);
-                this.model = model;
-                comboBox.SelectionChanged += ComboBox_SelectionChanged;
+                this._property = property;
+                this._comboBox = new ComboBox<T>(model);
+                this._model = model;
+                _comboBox.SelectionChanged += ComboBox_SelectionChanged;
             }
 
             private void ComboBox_SelectionChanged(object sender, ComboBoxSelectionChangedEventArgs e)
             {
-                if (property.IsReadOnly)
+                if (_property.IsReadOnly)
                 {
-                    resetValue();
+                    ResetValue();
                 }
                 else
                 {
-                    int idx = comboBox.getSelected();
+                    int idx = _comboBox.GetSelected();
                     if (idx >= 0)
                     {
-                        property.Value = model.EntryAt(idx);
+                        _property.Value = _model.EntryAt(idx);
                     }
                 }
             }
 
-            public Widget getWidget()
+            public Widget GetWidget()
             {
-                return comboBox;
+                return _comboBox;
             }
 
-            public void valueChanged()
+            public void ValueChanged()
             {
-                resetValue();
+                ResetValue();
             }
 
-            public void preDestroy()
+            public void PreDestroy()
             {
-                comboBox.SelectionChanged -= ComboBox_SelectionChanged;
+                _comboBox.SelectionChanged -= ComboBox_SelectionChanged;
             }
 
-            public void setSelected(bool selected)
+            public void SetSelected(bool selected)
             {
             }
 
-            public void run()
+            public void Run()
             {
-                if (property.IsReadOnly)
+                if (_property.IsReadOnly)
                 {
-                    resetValue();
+                    ResetValue();
                 }
                 else
                 {
-                    int idx = comboBox.getSelected();
+                    int idx = _comboBox.GetSelected();
                     if (idx >= 0)
                     {
-                        property.Value = (model.EntryAt(idx));
+                        _property.Value = (_model.EntryAt(idx));
                     }
                 }
             }
 
-            protected void resetValue()
+            protected void ResetValue()
             {
-                comboBox.setSelected(findEntry(property.ValueCast));
+                _comboBox.SetSelected(FindEntry(_property.ValueCast));
             }
 
-            protected int findEntry(T value)
+            protected int FindEntry(T value)
             {
-                for (int i = 0, n = model.Entries; i < n; i++)
+                for (int i = 0, n = _model.Entries; i < n; i++)
                 {
-                    if (model.EntryAt(i).Equals(value))
+                    if (_model.EntryAt(i).Equals(value))
                     {
                         return i;
                     }
@@ -586,7 +597,7 @@ namespace XNATWL
                 return -1;
             }
 
-            public bool positionWidget(int x, int y, int width, int height)
+            public bool PositionWidget(int x, int y, int width, int height)
             {
                 return false;
             }
@@ -594,30 +605,30 @@ namespace XNATWL
 
         public class ComboBoxEditorFactory : PropertyEditorFactory
         {
-            private ModelForwarder modelForwarder;
+            private ModelForwarder _modelForwarder;
             public ComboBoxEditorFactory(ListModel<T> model)
             {
-                this.modelForwarder = new ModelForwarder(model);
+                this._modelForwarder = new ModelForwarder(model);
             }
 
-            public ListModel<T> getModel()
+            public ListModel<T> GetModel()
             {
-                return modelForwarder.getModel();
+                return _modelForwarder.GetModel();
             }
 
-            public void setModel(ListModel<T> model)
+            public void SetModel(ListModel<T> model)
             {
-                modelForwarder.setModel(model);
+                _modelForwarder.SetModel(model);
             }
 
-            public PropertyEditor createEditor(XNATWL.Model.Property property)
+            public PropertyEditor CreateEditor(XNATWL.Model.Property property)
             {
-                return new ComboBoxEditor<T>((Property<T>)property, modelForwarder);
+                return new ComboBoxEditor<T>((Property<T>)property, _modelForwarder);
             }
 
             class ModelForwarder : AbstractListModel<T>
             {
-                private ListModel<T> model;
+                private ListModel<T> _model;
 
                 public override event EventHandler<ListSubsetChangedEventArgs> EntriesInserted;
                 public override event EventHandler<ListSubsetChangedEventArgs> EntriesDeleted;
@@ -628,34 +639,34 @@ namespace XNATWL
                 {
                     get
                     {
-                        return model.Entries;
+                        return _model.Entries;
                     }
                 }
 
                 public ModelForwarder(ListModel<T> model)
                 {
-                    setModel(model);
+                    SetModel(model);
                 }
 
-                public ListModel<T> getModel()
+                public ListModel<T> GetModel()
                 {
-                    return model;
+                    return _model;
                 }
 
-                public void setModel(ListModel<T> model)
+                public void SetModel(ListModel<T> model)
                 {
-                    if (this.model != null)
+                    if (this._model != null)
                     {
-                        this.model.EntriesChanged -= Model_EntriesChanged;
-                        this.model.EntriesDeleted -= Model_EntriesDeleted;
-                        this.model.EntriesInserted -= Model_EntriesInserted;
-                        this.model.AllChanged -= Model_AllChanged;
+                        this._model.EntriesChanged -= Model_EntriesChanged;
+                        this._model.EntriesDeleted -= Model_EntriesDeleted;
+                        this._model.EntriesInserted -= Model_EntriesInserted;
+                        this._model.AllChanged -= Model_AllChanged;
                     }
-                    this.model = model;
-                    this.model.EntriesChanged += Model_EntriesChanged;
-                    this.model.EntriesDeleted += Model_EntriesDeleted;
-                    this.model.EntriesInserted += Model_EntriesInserted;
-                    this.model.AllChanged += Model_AllChanged;
+                    this._model = model;
+                    this._model.EntriesChanged += Model_EntriesChanged;
+                    this._model.EntriesDeleted += Model_EntriesDeleted;
+                    this._model.EntriesInserted += Model_EntriesInserted;
+                    this._model.AllChanged += Model_AllChanged;
                     this.AllChanged.Invoke(this, new ListAllChangedEventArgs());
                 }
 
@@ -681,17 +692,17 @@ namespace XNATWL
 
                 public override T EntryAt(int index)
                 {
-                    return model.EntryAt(index);
+                    return _model.EntryAt(index);
                 }
 
                 public override bool EntryMatchesPrefix(int index, string prefix)
                 {
-                    return model.EntryMatchesPrefix(index, prefix);
+                    return _model.EntryMatchesPrefix(index, prefix);
                 }
 
                 public override object EntryTooltipAt(int index)
                 {
-                    return model.EntryTooltipAt(index);
+                    return _model.EntryTooltipAt(index);
                 }
             }
         }

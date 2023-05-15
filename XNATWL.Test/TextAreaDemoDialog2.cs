@@ -20,15 +20,15 @@ namespace XNATWL.Test
                     "This is a small test message. It's not too\tlong.");
 
             TextArea scrolledWidget2 = new TextArea(tam);
-            scrolledWidget2.setTheme("textarea");
+            scrolledWidget2.SetTheme("textarea");
 
             ScrollPane scrollPane2 = new ScrollPane(scrolledWidget2);
-            scrollPane2.setTheme("scrollpane");
-            scrollPane2.setFixed(ScrollPane.Fixed.HORIZONTAL);
+            scrollPane2.SetTheme("scrollpane");
+            scrollPane2.SetFixed(ScrollPane.Fixed.HORIZONTAL);
 
-            setTheme("textAreaTestFrame");
-            setTitle("TextArea tab test");
-            add(scrollPane2);
+            SetTheme("textAreaTestFrame");
+            SetTitle("TextArea tab test");
+            Add(scrollPane2);
         }
     }
 }

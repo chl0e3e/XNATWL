@@ -34,35 +34,34 @@ using XNATWL.IO;
 
 namespace XNATWL
 {
-
     public class ThemeException : Exception
     {
-        protected Source source;
+        protected ThemeExceptionSource _source;
 
         public ThemeException(string msg, FileSystemObject fso, int lineNumber, int columnNumber, Exception cause) : base(msg, cause)
         {
-            this.source = new Source(fso, lineNumber, columnNumber);
+            this._source = new ThemeExceptionSource(fso, lineNumber, columnNumber);
         }
 
-        internal void addIncludedBy(FileSystemObject fso, int lineNumber, int columnNumber)
+        internal void AddIncludedBy(FileSystemObject fso, int lineNumber, int columnNumber)
         {
-            Source head = source;
-            while (head.includedBy != null)
+            ThemeExceptionSource head = _source;
+            while (head._includedBy != null)
             {
-                head = head.includedBy;
+                head = head._includedBy;
             }
-            head.includedBy = new Source(fso, lineNumber, columnNumber);
+            head._includedBy = new ThemeExceptionSource(fso, lineNumber, columnNumber);
         }
 
-        public String getMessage()
+        public String GetMessage()
         {
             StringBuilder sb = new StringBuilder(base.Message);
             String prefix = "\n           in ";
-            for (Source src = source; src != null; src = src.includedBy)
+            for (ThemeExceptionSource src = _source; src != null; src = src._includedBy)
             {
-                sb.Append(prefix).Append(src.fso)
-                        .Append(" @").Append(src.lineNumber)
-                        .Append(':').Append(src.columnNumber);
+                sb.Append(prefix).Append(src._fileSystemObject)
+                        .Append(" @").Append(src._lineNumber)
+                        .Append(':').Append(src._columnNumber);
                 prefix = "\n  included by ";
             }
             return sb.ToString();
@@ -73,48 +72,47 @@ namespace XNATWL
          * where the exception originated.
          * @return the source
          */
-        public Source getSource()
+        public ThemeExceptionSource GetSource()
         {
-            return source;
+            return _source;
         }
 
         /**
          * Describes a position in an XML file
          */
-        public class Source
+        public class ThemeExceptionSource
         {
-            internal FileSystemObject fso;
-            internal int lineNumber;
-            internal int columnNumber;
-            internal Source includedBy;
+            internal FileSystemObject _fileSystemObject;
+            internal int _lineNumber;
+            internal int _columnNumber;
+            internal ThemeExceptionSource _includedBy;
 
-            internal Source(FileSystemObject fso, int lineNumber, int columnNumber)
+            internal ThemeExceptionSource(FileSystemObject fso, int lineNumber, int columnNumber)
             {
-                this.fso = fso;
-                this.lineNumber = lineNumber;
-                this.columnNumber = columnNumber;
+                this._fileSystemObject = fso;
+                this._lineNumber = lineNumber;
+                this._columnNumber = columnNumber;
             }
 
-            public FileSystemObject getFso()
+            public FileSystemObject GetFso()
             {
-                return fso;
+                return _fileSystemObject;
             }
 
-            public int getLineNumber()
+            public int GetLineNumber()
             {
-                return lineNumber;
+                return _lineNumber;
             }
 
-            public int getColumnNumber()
+            public int GetColumnNumber()
             {
-                return columnNumber;
+                return _columnNumber;
             }
 
-            public Source getIncludedBy()
+            public ThemeExceptionSource GetIncludedBy()
             {
-                return includedBy;
+                return _includedBy;
             }
         }
     }
-
 }

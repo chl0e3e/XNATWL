@@ -35,121 +35,120 @@ namespace XNATWL
 {
     public class AnimatedWindow : Widget
     {
-        private int numAnimSteps = 10;
-        private int currentStep;
-        private int animSpeed;
+        private int _numAnimSteps = 10;
+        private int _currentStep;
+        private int _animSpeed;
 
-        private BooleanModel model;
+        private BooleanModel _model;
         public event EventHandler<AnimatedWindowOpenCloseEventArgs> OpenClose;
 
         public AnimatedWindow()
         {
-            setVisible(false); // we start closed
+            SetVisible(false); // we start closed
         }
 
-        public int getNumAnimSteps()
+        public int GetNumAnimSteps()
         {
-            return numAnimSteps;
+            return _numAnimSteps;
         }
 
-        public void setNumAnimSteps(int numAnimSteps)
+        public void SetNumAnimSteps(int numAnimSteps)
         {
             if (numAnimSteps < 1)
             {
                 throw new ArgumentOutOfRangeException("numAnimSteps");
             }
 
-            this.numAnimSteps = numAnimSteps;
+            this._numAnimSteps = numAnimSteps;
         }
 
-        public void setState(bool open)
+        public void SetState(bool open)
         {
-            if (open && !isOpen())
+            if (open && !IsOpen())
             {
-                animSpeed = 1;
-                setVisible(true);
+                _animSpeed = 1;
+                SetVisible(true);
                 this.OpenClose.Invoke(this, new AnimatedWindowOpenCloseEventArgs());
             }
-            else if (!open && !isClosed())
+            else if (!open && !IsClosed())
             {
-                animSpeed = -1;
+                _animSpeed = -1;
                 this.OpenClose.Invoke(this, new AnimatedWindowOpenCloseEventArgs());
             }
 
-            if (model != null)
+            if (_model != null)
             {
-                model.Value = open;
+                _model.Value = open;
             }
         }
 
-        public BooleanModel getModel()
+        public BooleanModel GetModel()
         {
-            return model;
+            return _model;
         }
 
-        public void setModel(BooleanModel model)
+        public void SetModel(BooleanModel model)
         {
-            if (this.model != model)
+            if (this._model != model)
             {
-                if (this.model != null)
+                if (this._model != null)
                 {
-                    this.model.Changed -= Model_Changed;
+                    this._model.Changed -= Model_Changed;
                 }
-                this.model = model;
+                this._model = model;
                 if (model != null)
                 {
-                    this.model.Changed += Model_Changed;
-                    syncWithModel();
+                    this._model.Changed += Model_Changed;
+                    SyncWithModel();
                 }
             }
         }
 
         private void Model_Changed(object sender, BooleanChangedEventArgs e)
         {
-            syncWithModel();
+            SyncWithModel();
         }
 
-        public bool isOpen()
+        public bool IsOpen()
         {
-            return currentStep == numAnimSteps && animSpeed >= 0;
+            return _currentStep == _numAnimSteps && _animSpeed >= 0;
         }
 
-        public bool isOpening()
+        public bool IsOpening()
         {
-            return animSpeed > 0;
+            return _animSpeed > 0;
         }
 
-        public bool isClosed()
+        public bool IsClosed()
         {
-            return currentStep == 0 && animSpeed <= 0;
+            return _currentStep == 0 && _animSpeed <= 0;
         }
 
-        public bool isClosing()
+        public bool IsClosing()
         {
-            return animSpeed < 0;
+            return _animSpeed < 0;
         }
 
-        public bool isAnimating()
+        public bool IsAnimating()
         {
-            return animSpeed != 0;
+            return _animSpeed != 0;
         }
 
-        //@Override
-        public override bool handleEvent(Event evt)
+        public override bool HandleEvent(Event evt)
         {
-            if (isOpen())
+            if (IsOpen())
             {
-                if (base.handleEvent(evt))
+                if (base.HandleEvent(evt))
                 {
                     return true;
                 }
 
-                if (evt.isKeyPressedEvent())
+                if (evt.IsKeyPressedEvent())
                 {
-                    switch (evt.getKeyCode())
+                    switch (evt.GetKeyCode())
                     {
                         case Event.KEY_ESCAPE:
-                            setState(false);
+                            SetState(false);
                             return true;
                         default:
                             break;
@@ -159,98 +158,97 @@ namespace XNATWL
                 return false;
             }
 
-            if (isClosed())
+            if (IsClosed())
             {
                 return false;
             }
 
             // eat every event when we animate
-            int mouseX = evt.getMouseX() - getX();
-            int mouseY = evt.getMouseY() - getY();
-            return mouseX >= 0 && mouseX < getAnimatedWidth() &&
-                    mouseY >= 0 && mouseY < getAnimatedHeight();
+            int mouseX = evt.GetMouseX() - GetX();
+            int mouseY = evt.GetMouseY() - GetY();
+            return mouseX >= 0 && mouseX < GetAnimatedWidth() &&
+                    mouseY >= 0 && mouseY < GetAnimatedHeight();
         }
 
-        //@Override
-        public override int getMinWidth()
+        public override int GetMinWidth()
         {
             int minWidth = 0;
-            for (int i = 0, n = getNumChildren(); i < n; i++)
+            for (int i = 0, n = GetNumChildren(); i < n; i++)
             {
-                Widget child = getChild(i);
-                minWidth = Math.Max(minWidth, child.getMinWidth());
+                Widget child = GetChild(i);
+                minWidth = Math.Max(minWidth, child.GetMinWidth());
             }
-            return Math.Max(base.getMinWidth(), minWidth + getBorderHorizontal());
+            return Math.Max(base.GetMinWidth(), minWidth + GetBorderHorizontal());
         }
 
-        public override int getMinHeight()
+        public override int GetMinHeight()
         {
             int minHeight = 0;
-            for (int i = 0, n = getNumChildren(); i < n; i++)
+            for (int i = 0, n = GetNumChildren(); i < n; i++)
             {
-                Widget child = getChild(i);
-                minHeight = Math.Max(minHeight, child.getMinHeight());
+                Widget child = GetChild(i);
+                minHeight = Math.Max(minHeight, child.GetMinHeight());
             }
-            return Math.Max(base.getMinHeight(), minHeight + getBorderVertical());
+            return Math.Max(base.GetMinHeight(), minHeight + GetBorderVertical());
         }
 
-        public override int getPreferredInnerWidth()
+        public override int GetPreferredInnerWidth()
         {
-            return BoxLayout.computePreferredWidthVertical(this);
+            return BoxLayout.ComputePreferredWidthVertical(this);
         }
 
-        public override int getPreferredInnerHeight()
+        public override int GetPreferredInnerHeight()
         {
-            return BoxLayout.computePreferredHeightHorizontal(this);
+            return BoxLayout.ComputePreferredHeightHorizontal(this);
         }
 
-        protected override void layout()
+        protected override void Layout()
         {
-            layoutChildrenFullInnerArea();
+            LayoutChildrenFullInnerArea();
         }
 
-        protected override void paint(GUI gui)
+        protected override void Paint(GUI gui)
         {
-            if (animSpeed != 0)
+            if (_animSpeed != 0)
             {
-                animate();
+                Animate();
             }
 
-            if (isOpen())
+            if (IsOpen())
             {
-                base.paint(gui);
+                base.Paint(gui);
             }
-            else if (!isClosed() && getBackground() != null)
+            else if (!IsClosed() && GetBackground() != null)
             {
-                getBackground().Draw(getAnimationState(),
-                        getX(), getY(), getAnimatedWidth(), getAnimatedHeight());
+                GetBackground().Draw(GetAnimationState(),
+                        GetX(), GetY(), GetAnimatedWidth(), GetAnimatedHeight());
             }
         }
 
-        private void animate()
+        private void Animate()
         {
-            currentStep += animSpeed;
-            if (currentStep == 0 || currentStep == numAnimSteps)
+            _currentStep += _animSpeed;
+            if (_currentStep == 0 || _currentStep == _numAnimSteps)
             {
-                setVisible(currentStep > 0);
-                animSpeed = 0;
+                SetVisible(_currentStep > 0);
+                _animSpeed = 0;
                 this.OpenClose.Invoke(this, new AnimatedWindowOpenCloseEventArgs());
             }
         }
 
-        private int getAnimatedWidth()
+        private int GetAnimatedWidth()
         {
-            return getWidth() * currentStep / numAnimSteps;
+            return GetWidth() * _currentStep / _numAnimSteps;
         }
 
-        private int getAnimatedHeight()
+        private int GetAnimatedHeight()
         {
-            return getHeight() * currentStep / numAnimSteps;
+            return GetHeight() * _currentStep / _numAnimSteps;
         }
 
-        void syncWithModel()
+        void SyncWithModel()
         {
-            setState(model.Value);
+            SetState(_model.Value);
         }
     }
 
