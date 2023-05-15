@@ -34,12 +34,12 @@ namespace XNATWL.Utils
 {
     public class ClipStack
     {
-        private Entry[] clipRects;
-        private int numClipRects;
+        private Entry[] _clipRects;
+        private int _numClipRects;
 
         public ClipStack()
         {
-            this.clipRects = new Entry[8];
+            this._clipRects = new Entry[8];
         }
 
         /**
@@ -52,11 +52,11 @@ namespace XNATWL.Utils
          * @param h the height
          * @see #pop() 
          */
-        public void push(int x, int y, int w, int h)
+        public void Push(int x, int y, int w, int h)
         {
-            Entry tos = push();
+            Entry tos = Push();
             tos.SetXYWH(x, y, w, h);
-            intersect(tos);
+            Intersect(tos);
         }
 
         /**
@@ -67,38 +67,38 @@ namespace XNATWL.Utils
          * @throws NullPointerException if rect is null
          * @see #pop() 
          */
-        public void push(Rect rect)
+        public void Push(Rect rect)
         {
             if (rect == null)
             {
                 throw new NullReferenceException("rect");
             }
-            Entry tos = push();
+            Entry tos = Push();
             tos.Set(rect);
-            intersect(tos);
+            Intersect(tos);
         }
 
         /**
          * Pushes an "disable clipping" onto the stack.
          * @see #pop() 
          */
-        public void pushDisable()
+        public void PushDisable()
         {
-            Entry rect = push();
-            rect.disabled = true;
+            Entry rect = Push();
+            rect._disabled = true;
         }
 
         /**
          * Removes the active clip regions from the stack.
          * @throws IllegalStateException when no clip regions are on the stack
          */
-        public void pop()
+        public void Pop()
         {
-            if (numClipRects == 0)
+            if (_numClipRects == 0)
             {
-                underflow();
+                Underflow();
             }
-            numClipRects--;
+            _numClipRects--;
         }
 
         /**
@@ -107,10 +107,10 @@ namespace XNATWL.Utils
          * clip region is empty.
          * @return true if the TOS is an empty region
          */
-        public bool isClipEmpty()
+        public bool IsClipEmpty()
         {
-            Entry tos = clipRects[numClipRects - 1];
-            return tos.IsEmpty && !tos.disabled;
+            Entry tos = _clipRects[_numClipRects - 1];
+            return tos.IsEmpty && !tos._disabled;
         }
 
         /**
@@ -118,79 +118,78 @@ namespace XNATWL.Utils
          * @param rect the rect coordinates - may not be updated when clipping is disabled
          * @return true if clipping is active, false if clipping is disabled
          */
-        public bool getClipRect(Rect rect)
+        public bool GetClipRect(Rect rect)
         {
-            if (numClipRects == 0)
+            if (_numClipRects == 0)
             {
                 return false;
             }
-            Entry tos = clipRects[numClipRects - 1];
+            Entry tos = _clipRects[_numClipRects - 1];
             rect.Set(tos);
-            return !tos.disabled;
+            return !tos._disabled;
         }
 
         /**
          * Returns the current number of entries in the clip stack
          * @return the number of entries
          */
-        public int getStackSize()
+        public int GetStackSize()
         {
-            return numClipRects;
+            return _numClipRects;
         }
 
         /**
          * Clears the clip stack
          */
-        public void clearStack()
+        public void ClearStack()
         {
-            numClipRects = 0;
+            _numClipRects = 0;
         }
 
-        protected Entry push()
+        protected Entry Push()
         {
-            if (numClipRects == clipRects.Length)
+            if (_numClipRects == _clipRects.Length)
             {
-                grow();
+                Grow();
             }
             Entry rect;
-            if ((rect = clipRects[numClipRects]) == null)
+            if ((rect = _clipRects[_numClipRects]) == null)
             {
                 rect = new Entry();
-                clipRects[numClipRects] = rect;
+                _clipRects[_numClipRects] = rect;
             }
-            rect.disabled = false;
-            numClipRects++;
+            rect._disabled = false;
+            _numClipRects++;
             return rect;
         }
 
-        protected void intersect(Rect tos)
+        protected void Intersect(Rect tos)
         {
-            if (numClipRects > 1)
+            if (_numClipRects > 1)
             {
-                Entry prev = clipRects[numClipRects - 2];
-                if (!prev.disabled)
+                Entry prev = _clipRects[_numClipRects - 2];
+                if (!prev._disabled)
                 {
                     tos.Intersect(prev);
                 }
             }
         }
 
-        private void grow()
+        private void Grow()
         {
-            Entry[] newRects = new Entry[numClipRects * 2];
-            Array.Copy(clipRects, 0, newRects, 0, numClipRects);
-            clipRects = newRects;
+            Entry[] newRects = new Entry[_numClipRects * 2];
+            Array.Copy(_clipRects, 0, newRects, 0, _numClipRects);
+            _clipRects = newRects;
         }
 
-        private void underflow()
+        private void Underflow()
         {
             throw new InvalidOperationException("empty");
         }
 
         protected class Entry : Rect
         {
-            internal bool disabled;
+            internal bool _disabled;
         }
     }
-
 }

@@ -138,46 +138,46 @@ namespace XNATWL.Renderer.XNA
 
         public BitmapFont(XNARenderer renderer, XMLParser xmlp, FileSystemObject baseFso)
         {
-            xmlp.require(XmlPullParser.START_TAG, null, "font");
-            xmlp.nextTag();
-            xmlp.require(XmlPullParser.START_TAG, null, "info");
-            xmlp.ignoreOtherAttributes();
-            xmlp.nextTag();
-            xmlp.require(XmlPullParser.END_TAG, null, "info");
-            xmlp.nextTag();
-            xmlp.require(XmlPullParser.START_TAG, null, "common");
-            _lineHeight = xmlp.parseIntFromAttribute("lineHeight");
-            _baseLine = xmlp.parseIntFromAttribute("base");
-            if (xmlp.parseIntFromAttribute("pages", 1) != 1)
+            xmlp.Require(XmlPullParser.START_TAG, null, "font");
+            xmlp.NextTag();
+            xmlp.Require(XmlPullParser.START_TAG, null, "info");
+            xmlp.IgnoreOtherAttributes();
+            xmlp.NextTag();
+            xmlp.Require(XmlPullParser.END_TAG, null, "info");
+            xmlp.NextTag();
+            xmlp.Require(XmlPullParser.START_TAG, null, "common");
+            _lineHeight = xmlp.ParseIntFromAttribute("lineHeight");
+            _baseLine = xmlp.ParseIntFromAttribute("base");
+            if (xmlp.ParseIntFromAttribute("pages", 1) != 1)
             {
                 throw new NotImplementedException("multi page fonts not supported");
             }
-            if (xmlp.parseIntFromAttribute("packed", 0) != 0)
+            if (xmlp.ParseIntFromAttribute("packed", 0) != 0)
             {
                 throw new NotImplementedException("packed fonts not supported");
             }
-            xmlp.ignoreOtherAttributes();
-            xmlp.nextTag();
-            xmlp.require(XmlPullParser.END_TAG, null, "common");
-            xmlp.nextTag();
-            xmlp.require(XmlPullParser.START_TAG, null, "pages");
-            xmlp.nextTag();
-            xmlp.require(XmlPullParser.START_TAG, null, "page");
-            int pageId = int.Parse(xmlp.getAttributeValue(null, "id"));
+            xmlp.IgnoreOtherAttributes();
+            xmlp.NextTag();
+            xmlp.Require(XmlPullParser.END_TAG, null, "common");
+            xmlp.NextTag();
+            xmlp.Require(XmlPullParser.START_TAG, null, "pages");
+            xmlp.NextTag();
+            xmlp.Require(XmlPullParser.START_TAG, null, "page");
+            int pageId = int.Parse(xmlp.GetAttributeValue(null, "id"));
             if (pageId != 0)
             {
                 throw new NotImplementedException("only page id 0 supported");
             }
-            String textureName = xmlp.getAttributeValue(null, "file");
+            String textureName = xmlp.GetAttributeValue(null, "file");
             this._texture = (XNATexture) renderer.LoadTexture(new FileSystemObject(baseFso, textureName), "", "");
-            xmlp.nextTag();
-            xmlp.require(XmlPullParser.END_TAG, null, "page");
-            xmlp.nextTag();
-            xmlp.require(XmlPullParser.END_TAG, null, "pages");
-            xmlp.nextTag();
-            xmlp.require(XmlPullParser.START_TAG, null, "chars");
-            xmlp.ignoreOtherAttributes();
-            xmlp.nextTag();
+            xmlp.NextTag();
+            xmlp.Require(XmlPullParser.END_TAG, null, "page");
+            xmlp.NextTag();
+            xmlp.Require(XmlPullParser.END_TAG, null, "pages");
+            xmlp.NextTag();
+            xmlp.Require(XmlPullParser.START_TAG, null, "chars");
+            xmlp.IgnoreOtherAttributes();
+            xmlp.NextTag();
 
             int firstXAdvance = int.MinValue;
             bool prop = true;
@@ -187,20 +187,20 @@ namespace XNATWL.Renderer.XNA
             //Microsoft.Xna.Framework.Color[] textureColorData = new Microsoft.Xna.Framework.Color[this.texture.Width * this.texture.Height];
             //this.texture.Texture2D.GetData<Microsoft.Xna.Framework.Color>(textureColorData, 0, textureColorData.Length);
             SpriteBatch spriteBatch = this._texture.SpriteBatch;
-            while (!xmlp.isEndTag())
+            while (!xmlp.IsEndTag())
             {
-                xmlp.require(XmlPullParser.START_TAG, null, "char");
-                int idx = xmlp.parseIntFromAttribute("id");
-                int x = xmlp.parseIntFromAttribute("x");
-                int y = xmlp.parseIntFromAttribute("y");
-                int w = xmlp.parseIntFromAttribute("width");
-                int h = xmlp.parseIntFromAttribute("height");
-                if (xmlp.parseIntFromAttribute("page", 0) != 0)
+                xmlp.Require(XmlPullParser.START_TAG, null, "char");
+                int idx = xmlp.ParseIntFromAttribute("id");
+                int x = xmlp.ParseIntFromAttribute("x");
+                int y = xmlp.ParseIntFromAttribute("y");
+                int w = xmlp.ParseIntFromAttribute("width");
+                int h = xmlp.ParseIntFromAttribute("height");
+                if (xmlp.ParseIntFromAttribute("page", 0) != 0)
                 {
-                    throw xmlp.error("Multiple pages not supported");
+                    throw xmlp.Error("Multiple pages not supported");
                 }
-                int chnl = xmlp.parseIntFromAttribute("chnl", 0);
-                short xadvance = short.Parse(xmlp.getAttributeNotNull("xadvance"));
+                int chnl = xmlp.ParseIntFromAttribute("chnl", 0);
+                short xadvance = short.Parse(xmlp.GetAttributeNotNull("xadvance"));
                 if (w > 0 && h > 0)
                 {
                     Microsoft.Xna.Framework.Color[] textureData = new Microsoft.Xna.Framework.Color[w * h];
@@ -217,12 +217,12 @@ namespace XNATWL.Renderer.XNA
                     xnaGlyph.SetData(textureData);
                     Glyph glyph = new Glyph(textureData, w, h);//new XNATexture(this.texture.Renderer, spriteBatch, w, h, xnaGlyph), 0, 0, w, h);
                     GlyphTex glyphTex = new GlyphTex(new XNATexture(this._texture.Renderer, spriteBatch, w, h, xnaGlyph), 0, 0, w, h);
-                    glyphTex._xOffset = short.Parse(xmlp.getAttributeNotNull("xoffset"));
-                    glyphTex._yOffset = short.Parse(xmlp.getAttributeNotNull("yoffset"));
+                    glyphTex._xOffset = short.Parse(xmlp.GetAttributeNotNull("xoffset"));
+                    glyphTex._yOffset = short.Parse(xmlp.GetAttributeNotNull("yoffset"));
                     glyphTex._xAdvance = xadvance;
                     AddGlyphTex(idx, glyphTex);
-                    glyph._xOffset = short.Parse(xmlp.getAttributeNotNull("xoffset"));
-                    glyph._yOffset = short.Parse(xmlp.getAttributeNotNull("yoffset"));
+                    glyph._xOffset = short.Parse(xmlp.GetAttributeNotNull("xoffset"));
+                    glyph._yOffset = short.Parse(xmlp.GetAttributeNotNull("yoffset"));
                     glyph._xAdvance = xadvance;
                     AddGlyph(idx, glyph);
                 }
@@ -230,9 +230,9 @@ namespace XNATWL.Renderer.XNA
                 //{
                 //    System.Diagnostics.Debug.WriteLine("Glyph skipped " + idx + " - " + w + "," + h);
                 //}
-                xmlp.nextTag();
-                xmlp.require(XmlPullParser.END_TAG, null, "char");
-                xmlp.nextTag();
+                xmlp.NextTag();
+                xmlp.Require(XmlPullParser.END_TAG, null, "char");
+                xmlp.NextTag();
 
                 if (xadvance != firstXAdvance && xadvance > 0)
                 {
@@ -247,28 +247,28 @@ namespace XNATWL.Renderer.XNA
                 }
             }
 
-            xmlp.require(XmlPullParser.END_TAG, null, "chars");
-            xmlp.nextTag();
-            if (xmlp.isStartTag())
+            xmlp.Require(XmlPullParser.END_TAG, null, "chars");
+            xmlp.NextTag();
+            if (xmlp.IsStartTag())
             {
-                xmlp.require(XmlPullParser.START_TAG, null, "kernings");
-                xmlp.ignoreOtherAttributes();
-                xmlp.nextTag();
-                while (!xmlp.isEndTag())
+                xmlp.Require(XmlPullParser.START_TAG, null, "kernings");
+                xmlp.IgnoreOtherAttributes();
+                xmlp.NextTag();
+                while (!xmlp.IsEndTag())
                 {
-                    xmlp.require(XmlPullParser.START_TAG, null, "kerning");
-                    int first = xmlp.parseIntFromAttribute("first");
-                    int second = xmlp.parseIntFromAttribute("second");
-                    int amount = xmlp.parseIntFromAttribute("amount");
+                    xmlp.Require(XmlPullParser.START_TAG, null, "kerning");
+                    int first = xmlp.ParseIntFromAttribute("first");
+                    int second = xmlp.ParseIntFromAttribute("second");
+                    int amount = xmlp.ParseIntFromAttribute("amount");
                     AddKerning(first, second, amount);
-                    xmlp.nextTag();
-                    xmlp.require(XmlPullParser.END_TAG, null, "kerning");
-                    xmlp.nextTag();
+                    xmlp.NextTag();
+                    xmlp.Require(XmlPullParser.END_TAG, null, "kerning");
+                    xmlp.NextTag();
                 }
-                xmlp.require(XmlPullParser.END_TAG, null, "kernings");
-                xmlp.nextTag();
+                xmlp.Require(XmlPullParser.END_TAG, null, "kernings");
+                xmlp.NextTag();
             }
-            xmlp.require(XmlPullParser.END_TAG, null, "font");
+            xmlp.Require(XmlPullParser.END_TAG, null, "font");
 
             Glyph g = GetGlyph(' ');
             _spaceWidth = (g != null) ? g._xAdvance + g.getWidth() : 5;
@@ -362,15 +362,15 @@ namespace XNATWL.Renderer.XNA
             XMLParser xmlp = new XMLParser(fso);
             try
             {
-                xmlp.require(XmlPullParser.XML_DECLARATION, null, null);
-                xmlp.next();
-                int tag = xmlp.nextTag();
+                xmlp.Require(XmlPullParser.XML_DECLARATION, null, null);
+                xmlp.Next();
+                int tag = xmlp.NextTag();
                 System.Diagnostics.Debug.WriteLine("LoadFont: " + tag);
                 return new BitmapFont(renderer, xmlp, fso.Parent);
             }
             finally
             {
-                xmlp.close();
+                xmlp.Close();
             }
         }
 
@@ -739,7 +739,7 @@ namespace XNATWL.Renderer.XNA
             int numLines = 0;
             while (start < str.Length)
             {
-                int lineEnd = TextUtil.indexOf(str, '\n', start);
+                int lineEnd = TextUtil.IndexOf(str, '\n', start);
                 int xoff = 0;
                 if (align != HAlignment.LEFT)
                 {
@@ -796,7 +796,7 @@ namespace XNATWL.Renderer.XNA
             int idx = 0;
             while (start < str.Length)
             {
-                int lineEnd = TextUtil.indexOf(str, '\n', start);
+                int lineEnd = TextUtil.IndexOf(str, '\n', start);
                 int lineWidth = this.ComputeTextWidth(str, start, lineEnd);
                 int xoff = width - lineWidth;
 
@@ -820,7 +820,7 @@ namespace XNATWL.Renderer.XNA
             int width = 0;
             while (start < str.Length)
             {
-                int lineEnd = TextUtil.indexOf(str, '\n', start);
+                int lineEnd = TextUtil.IndexOf(str, '\n', start);
                 int lineWidth = ComputeTextWidth(str, start, lineEnd);
                 width = Math.Max(width, lineWidth);
                 start = lineEnd + 1;
@@ -843,9 +843,9 @@ namespace XNATWL.Renderer.XNA
         {
             parameters.Clear();
             ParameterStringParser psp = new ParameterStringParser(line, ' ', '=');
-            while (psp.next())
+            while (psp.Next())
             {
-                parameters.Add(psp.getKey(), psp.getValue());
+                parameters.Add(psp.GetKey(), psp.GetValue());
             }
         }
 

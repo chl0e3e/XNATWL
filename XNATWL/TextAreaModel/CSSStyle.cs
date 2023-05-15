@@ -54,16 +54,16 @@ namespace XNATWL.TextAreaModel
         private void ParseCSS(string style)
         {
             ParameterStringParser psp = new ParameterStringParser(style, ';', ':');
-            psp.setTrim(true);
-            while (psp.next())
+            psp.SetTrim(true);
+            while (psp.Next())
             {
                 try
                 {
-                    this.ParseCSSAttribute(psp.getKey(), psp.getValue());
+                    this.ParseCSSAttribute(psp.GetKey(), psp.GetValue());
                 }
                 catch (ArgumentOutOfRangeException ex)
                 {
-                    System.Diagnostics.Debug.WriteLine(typeof(CSSStyle).Name + " - Unable to parse CSS attribute: " + psp.getKey() + "=" + psp.getValue(), ex);
+                    System.Diagnostics.Debug.WriteLine(typeof(CSSStyle).Name + " - Unable to parse CSS attribute: " + psp.GetKey() + "=" + psp.GetValue(), ex);
                 }
             }
         }
@@ -275,9 +275,9 @@ namespace XNATWL.TextAreaModel
                 value = this.ParseStartsWith(StyleAttribute.FONT_ITALIC, ITALIC, value);
                 if (value.Length > 0 && "1234567890".Contains(value[0]))
                 {
-                    int end = TextUtil.indexOf(value, ' ', 0);
+                    int end = TextUtil.IndexOf(value, ' ', 0);
                     this.ParseValueUnit(StyleAttribute.FONT_SIZE, value.Substring(0, end));
-                    end = TextUtil.skipSpaces(value, end);
+                    end = TextUtil.SkipSpaces(value, end);
                     value = value.Substring(end);
                 }
                 this.ParseList(StyleAttribute.FONT_FAMILIES, value);
@@ -322,7 +322,7 @@ namespace XNATWL.TextAreaModel
                 throw new ArgumentOutOfRangeException("Unknown numeric suffix: " + value);
             }
 
-            string numberPart = TextUtil.trim(value, 0, value.Length - suffixLength);
+            string numberPart = TextUtil.Trim(value, 0, value.Length - suffixLength);
             return new Value(float.Parse(numberPart), unit);
         }
 
@@ -374,11 +374,11 @@ namespace XNATWL.TextAreaModel
 
         private string ParseStartsWith<E>(StyleAttribute<E> attribute, Dictionary<string, E> map, string value)
         {
-            int end = TextUtil.indexOf(value, ' ', 0);
+            int end = TextUtil.IndexOf(value, ' ', 0);
             E obj = map[value.Substring(0, end)];
             if (obj != null)
             {
-                end = TextUtil.skipSpaces(value, end);
+                end = TextUtil.SkipSpaces(value, end);
                 value = value.Substring(end);
             }
             Put(attribute, obj);
@@ -392,7 +392,7 @@ namespace XNATWL.TextAreaModel
 
         static string StripTrim(string value, int start, int end)
         {
-            return TextUtil.trim(value, start, value.Length - end);
+            return TextUtil.Trim(value, start, value.Length - end);
         }
 
         public static string StripURL(string value)
@@ -483,7 +483,7 @@ namespace XNATWL.TextAreaModel
 
         public static List<String> ParseList(string value, int idx)
         {
-            idx = TextUtil.skipSpaces(value, idx);
+            idx = TextUtil.SkipSpaces(value, idx);
             if (idx >= value.Length)
             {
                 return null;
@@ -496,9 +496,9 @@ namespace XNATWL.TextAreaModel
             if (startChar == '"' || startChar == '\'')
             {
                 ++idx;
-                end = TextUtil.indexOf(value, startChar, idx);
+                end = TextUtil.IndexOf(value, startChar, idx);
                 part = value.Substring(idx, end);
-                end = TextUtil.skipSpaces(value, ++end);
+                end = TextUtil.SkipSpaces(value, ++end);
                 if (end < value.Length && value[end] != ',')
                 {
                     throw new ArgumentOutOfRangeException("',' expected at " + idx);
@@ -506,8 +506,8 @@ namespace XNATWL.TextAreaModel
             }
             else
             {
-                end = TextUtil.indexOf(value, ',', idx);
-                part = TextUtil.trim(value, idx, end);
+                end = TextUtil.IndexOf(value, ',', idx);
+                part = TextUtil.Trim(value, idx, end);
             }
 
             List<string> result = ParseList(value, end + 1);

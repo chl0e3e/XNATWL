@@ -1138,7 +1138,7 @@ namespace XNATWL
                     char ch = theme[i];
                     if (Char.IsControl(ch) || ch == '*')
                     {
-                        throw new ArgumentOutOfRangeException("invalid character '" + TextUtil.toPrintableString(ch) + "' in theme name");
+                        throw new ArgumentOutOfRangeException("invalid character '" + TextUtil.ToPrintableString(ch) + "' in theme name");
                     }
                 }
             }
@@ -2572,7 +2572,7 @@ namespace XNATWL
          */
         protected virtual void updateTintAnimation()
         {
-            tintAnimator.update();
+            tintAnimator.Update();
         }
 
         /**
@@ -2898,7 +2898,7 @@ namespace XNATWL
                 drawWidgetOffscreen(gui);
                 return;
             }
-            if (tintAnimator != null && tintAnimator.hasTint())
+            if (tintAnimator != null && tintAnimator.HasTint())
             {
                 drawWidgetTint(gui);
                 return;
@@ -2913,12 +2913,12 @@ namespace XNATWL
 
         private void drawWidgetTint(GUI gui)
         {
-            if (tintAnimator.isFadeActive())
+            if (tintAnimator.IsFadeActive())
             {
                 updateTintAnimation();
             }
             Renderer.Renderer renderer = gui.getRenderer();
-            tintAnimator.paintWithTint(renderer);
+            tintAnimator.PaintWithTint(renderer);
             try
             {
                 if (clip)
@@ -2981,7 +2981,7 @@ namespace XNATWL
                 {
                     try
                     {
-                        if (tintAnimator != null && tintAnimator.hasTint())
+                        if (tintAnimator != null && tintAnimator.HasTint())
                         {
                             drawWidgetTint(gui);
                         }

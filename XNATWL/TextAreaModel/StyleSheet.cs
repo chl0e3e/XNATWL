@@ -114,7 +114,7 @@ namespace XNATWL.TextAreaModel
                         {
                             parser.Unexpected();
                         }
-                        String value = TextUtil.trim(parser._stringBuilder.ToString(), 0);
+                        String value = TextUtil.Trim(parser._stringBuilder.ToString(), 0);
                         try
                         {
                             atrule._entries.Add(key, value);
@@ -215,7 +215,7 @@ namespace XNATWL.TextAreaModel
                         {
                             parser.Unexpected();
                         }
-                        String value = TextUtil.trim(parser._stringBuilder.ToString(), 0);
+                        String value = TextUtil.Trim(parser._stringBuilder.ToString(), 0);
                         try
                         {
                             style.ParseCSSAttribute(key, value);

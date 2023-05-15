@@ -43,13 +43,13 @@ namespace XNATWL.Utils
         private static Type[] XPP_CLASS = { typeof(XmlPullParser) };
         private static bool hasXMP1 = true;
 
-        private XmlTextReader xmlTextReader;
-        internal XmlReader xpp;
-        private bool reachedDocumentEnd;
-        private string source;
-        private Stream stream;
-        private BitSet unusedAttributes = new BitSet();
-        private string loggerName = typeof(XMLParser).Name;
+        private XmlTextReader _xmlTextReader;
+        internal XmlReader _xpp;
+        private bool _reachedDocumentEnd;
+        private string _source;
+        private Stream _stream;
+        private BitSet _unusedAttributes = new BitSet();
+        private string _loggerName = typeof(XMLParser).Name;
 
         /*public XMLParser(XmlPullParser xpp, string source)
         {
@@ -77,82 +77,82 @@ namespace XNATWL.Utils
          */
         public XMLParser(FileSystemObject file)
         {
-            this.source = file.Name;
+            this._source = file.Name;
 
-            this.stream = new MemoryStream(Encoding.UTF8.GetBytes(File.ReadAllText(file.Path)));
-            this.xmlTextReader = new XmlTextReader(stream);
+            this._stream = new MemoryStream(Encoding.UTF8.GetBytes(File.ReadAllText(file.Path)));
+            this._xmlTextReader = new XmlTextReader(_stream);
             XmlReaderSettings xmlReaderSettings = new XmlReaderSettings();
             xmlReaderSettings.DtdProcessing = DtdProcessing.Ignore;
-            this.xpp = XmlReader.Create(xmlTextReader, xmlReaderSettings);
+            this._xpp = XmlReader.Create(_xmlTextReader, xmlReaderSettings);
         }
 
         public XMLParser(Stream stream)
         {
-            this.source = "Stream";
+            this._source = "Stream";
 
-            this.stream = stream;
-            this.xmlTextReader = new XmlTextReader(stream);
+            this._stream = stream;
+            this._xmlTextReader = new XmlTextReader(stream);
             XmlReaderSettings xmlReaderSettings = new XmlReaderSettings();
             xmlReaderSettings.DtdProcessing = DtdProcessing.Ignore;
-            this.xpp = XmlReader.Create(xmlTextReader, xmlReaderSettings);
+            this._xpp = XmlReader.Create(_xmlTextReader, xmlReaderSettings);
         }
 
-        public void close()
+        public void Close()
         {
-            if (stream != null)
+            if (_stream != null)
             {
-                stream.Close();
+                _stream.Close();
             }
         }
 
-        public void setLoggerName(string loggerName)
+        public void SetLoggerName(string loggerName)
         {
-            this.loggerName = loggerName;
+            this._loggerName = loggerName;
         }
 
-        bool isElementParsing = false;
-        bool justSeenEndTag = false;
+        bool _isElementParsing = false;
+        bool _justSeenEndTag = false;
 
         /**
          * @see XmlPullParser#next() 
          */
-        public int next()
+        public int Next()
         {
-            warnUnusedAttributes();
+            WarnUnusedAttributes();
             int type;
 
-            if (isElementParsing)
+            if (_isElementParsing)
             {
-                isElementParsing = false;
-                justSeenEndTag = true;
+                _isElementParsing = false;
+                _justSeenEndTag = true;
                 return XmlPullParser.END_TAG;
             }
 
-            if (justSeenEndTag)
+            if (_justSeenEndTag)
             {
-                justSeenEndTag = false;
+                _justSeenEndTag = false;
             }
 
-            bool read = xpp.Read();
+            bool read = _xpp.Read();
 
-            while ((xpp.NodeType == XmlNodeType.Attribute || xpp.NodeType == XmlNodeType.Comment || xpp.NodeType == XmlNodeType.Whitespace) && xpp.Read())
+            while ((_xpp.NodeType == XmlNodeType.Attribute || _xpp.NodeType == XmlNodeType.Comment || _xpp.NodeType == XmlNodeType.Whitespace) && _xpp.Read())
             {
             }
 
-            if (xpp.NodeType == XmlNodeType.Element && xpp.IsEmptyElement)
+            if (_xpp.NodeType == XmlNodeType.Element && _xpp.IsEmptyElement)
             {
-                isElementParsing = true;
+                _isElementParsing = true;
             }
 
             if (read)
             {
-                type = XmlPullParser.NodeTypeToToken(xpp.NodeType);
+                type = XmlPullParser.NodeTypeToToken(_xpp.NodeType);
             }
             else
             {
-                if (!reachedDocumentEnd)
+                if (!_reachedDocumentEnd)
                 {
-                    reachedDocumentEnd = true;
+                    _reachedDocumentEnd = true;
                     type = XmlPullParser.END_DOCUMENT;
                 }
                 else
@@ -161,47 +161,47 @@ namespace XNATWL.Utils
                 }
             }
 
-            handleType(type);
+            HandleType(type);
             return type;
         }
 
         /**
          * @see XmlPullParser#nextTag() 
          */
-        public int nextTag()
+        public int NextTag()
         {
             //warnUnusedAttributes();
-            int type = this.next();
+            int type = this.Next();
 
             while (type == XmlPullParser.IGNORABLE_WHITESPACE || type == XmlPullParser.COMMENT)
             {
-                type = this.next();
+                type = this.Next();
             }
 
             if (type != XmlPullParser.START_TAG && type != XmlPullParser.END_TAG)
             {
-                throw new XmlPullParserException("expected start or end tag, got " + this.xpp.NodeType, this);
+                throw new XmlPullParserException("expected start or end tag, got " + this._xpp.NodeType, this);
             }
 
-            handleType(type);
+            HandleType(type);
             return type;
         }
 
         /**
          * @see XmlPullParser#nextText()
          */
-        public string nextText()
+        public string NextText()
         {
-            if (xpp.NodeType != XmlNodeType.Element)
+            if (_xpp.NodeType != XmlNodeType.Element)
             {
                 throw new XmlPullParserException("parser must be on START_TAG to read next text");
             }
-            int eventType = next();
+            int eventType = Next();
             //warnUnusedAttributes();
             if (eventType == XmlPullParser.TEXT)
             {
-                string result = xpp.Value;
-                eventType = next();
+                string result = _xpp.Value;
+                eventType = Next();
                 if (eventType != XmlPullParser.END_TAG)
                 {
                     throw new XmlPullParserException("event TEXT it must be immediately followed by END_TAG");
@@ -218,81 +218,81 @@ namespace XNATWL.Utils
             }
         }
 
-        public void skipText()
+        public void SkipText()
         {
-            int token = XmlPullParser.NodeTypeToToken(this.xpp.NodeType);
+            int token = XmlPullParser.NodeTypeToToken(this._xpp.NodeType);
             while (token == XmlPullParser.TEXT || token == XmlPullParser.ENTITY_REF || token == XmlPullParser.COMMENT)
             {
-                xpp.Skip();
+                _xpp.Skip();
             }
         }
 
-        public bool isStartTag()
+        public bool IsStartTag()
         {
-            if (xpp.NodeType == XmlNodeType.Element && justSeenEndTag)
+            if (_xpp.NodeType == XmlNodeType.Element && _justSeenEndTag)
             {
                 return false;
             }
-            return xpp.NodeType == XmlNodeType.Element;
+            return _xpp.NodeType == XmlNodeType.Element;
         }
 
-        public bool isEndTag()
+        public bool IsEndTag()
         {
-            if (xpp.NodeType == XmlNodeType.Element && justSeenEndTag)
+            if (_xpp.NodeType == XmlNodeType.Element && _justSeenEndTag)
             {
                 return true;
             }
-            return xpp.NodeType == XmlNodeType.EndElement;
+            return _xpp.NodeType == XmlNodeType.EndElement;
         }
 
-        public string getPositionDescription()
+        public string GetPositionDescription()
         {
-            string desc = "Line: " + this.xmlTextReader.LineNumber + ", Position: " + this.xmlTextReader.LinePosition;
-            if (source != null)
+            string desc = "Line: " + this._xmlTextReader.LineNumber + ", Position: " + this._xmlTextReader.LinePosition;
+            if (_source != null)
             {
-                return desc + " in " + source;
+                return desc + " in " + _source;
             }
             return desc;
         }
 
-        public int getLineNumber()
+        public int GetLineNumber()
         {
-            return this.xmlTextReader.LineNumber;
+            return this._xmlTextReader.LineNumber;
         }
 
-        public int getColumnNumber()
+        public int GetColumnNumber()
         {
-            return this.xmlTextReader.LinePosition;
+            return this._xmlTextReader.LinePosition;
         }
 
-        public string getFilePosition()
+        public string GetFilePosition()
         {
-            if (source != null)
+            if (_source != null)
             {
-                return source + ":" + getLineNumber();
+                return _source + ":" + GetLineNumber();
             }
 
-            return this.getPositionDescription();
+            return this.GetPositionDescription();
         }
 
-        public string getName()
+        public string GetName()
         {
-            return this.xpp.Name;
+            return this._xpp.Name;
         }
 
-        public bool isEmptyElement()
+        public bool IsEmptyElement()
         {
-            return this.xpp.IsEmptyElement;
+            return this._xpp.IsEmptyElement;
         }
 
         /**
          * @see XmlPullParser#require(int, java.lang.string, java.lang.string) 
          */
-        public void require(int type, string @namespace, string name)
+        public void Require(int type, string @namespace, string name)
         {
-            if (justSeenEndTag && type == XmlPullParser.END_TAG)
+            if (_justSeenEndTag && type == XmlPullParser.END_TAG)
             {
-                if (name != null && name != xpp.Name)
+                if (name != null && name != _xpp.Name)
                 {
                     throw new XmlPullParserException("token name mismatch", this);
                 }
@@ -302,7 +302,7 @@ namespace XNATWL.Utils
             switch(type)
             {
                 case 0:
-                    if(this.xpp.NodeType != XmlNodeType.Document)
+                    if(this._xpp.NodeType != XmlNodeType.Document)
                     {
                         throw new XmlPullParserException("token is not START_DOCUMENT", this);
                     }
@@ -314,63 +314,63 @@ namespace XNATWL.Utils
                     //}
                     //break;
                 case 2:
-                    if (this.xpp.NodeType != XmlNodeType.Element)
+                    if (this._xpp.NodeType != XmlNodeType.Element)
                     {
                         throw new XmlPullParserException("token is not START_TAG", this);
                     }
-                    if (name != null && name != xpp.Name)
+                    if (name != null && name != _xpp.Name)
                     {
                         throw new XmlPullParserException("token name mismatch", this);
                     }
                     break;
                 case 3:
-                    if (this.xpp.NodeType != XmlNodeType.EndElement)
+                    if (this._xpp.NodeType != XmlNodeType.EndElement)
                     {
                         throw new XmlPullParserException("token is not END_TAG", this);
                     }
-                    if (name != null && name != xpp.Name)
+                    if (name != null && name != _xpp.Name)
                     {
                         throw new XmlPullParserException("token name mismatch", this);
                     }
                     break;
                 case 4:
-                    if (this.xpp.NodeType != XmlNodeType.Text)
+                    if (this._xpp.NodeType != XmlNodeType.Text)
                     {
                         throw new XmlPullParserException("token is not TEXT", this);
                     }
                     break;
                 case 5:
-                    if (this.xpp.NodeType != XmlNodeType.CDATA)
+                    if (this._xpp.NodeType != XmlNodeType.CDATA)
                     {
                         throw new XmlPullParserException("token is not CDATA", this);
                     }
                     break;
                 case 6:
-                    if (this.xpp.NodeType != XmlNodeType.EntityReference)
+                    if (this._xpp.NodeType != XmlNodeType.EntityReference)
                     {
                         throw new XmlPullParserException("token is not ENTITY_REF", this);
                     }
                     break;
                 case 7:
-                    if (this.xpp.NodeType != XmlNodeType.Whitespace && this.xpp.NodeType != XmlNodeType.SignificantWhitespace)
+                    if (this._xpp.NodeType != XmlNodeType.Whitespace && this._xpp.NodeType != XmlNodeType.SignificantWhitespace)
                     {
                         throw new XmlPullParserException("token is not IGNORABLE_WHITESPACE", this);
                     }
                     break;
                 case 8:
-                    if (this.xpp.NodeType != XmlNodeType.ProcessingInstruction)
+                    if (this._xpp.NodeType != XmlNodeType.ProcessingInstruction)
                     {
                         throw new XmlPullParserException("token is not PROCESSING_INSTRUCTION", this);
                     }
                     break;
                 case 9:
-                    if (this.xpp.NodeType != XmlNodeType.Comment)
+                    if (this._xpp.NodeType != XmlNodeType.Comment)
                     {
                         throw new XmlPullParserException("token is not COMMENT", this);
                     }
                     break;
                 case 10:
-                    if (this.xpp.NodeType != XmlNodeType.DocumentType)
+                    if (this._xpp.NodeType != XmlNodeType.DocumentType)
                     {
                         throw new XmlPullParserException("token is not DODECL", this);
                     }
@@ -378,187 +378,187 @@ namespace XNATWL.Utils
             }
         }
 
-        public string getAttributeValue(int index)
+        public string GetAttributeValue(int index)
         {
-            unusedAttributes.Clear(index);
-            return xpp.GetAttribute(index);
+            _unusedAttributes.Clear(index);
+            return _xpp.GetAttribute(index);
         }
 
-        public string getAttributeNamespace(int index)
+        public string GetAttributeNamespace(int index)
         {
-            this.xpp.MoveToAttribute(index);
-            string namespaceUri = xpp.NamespaceURI;
-            this.xpp.MoveToElement();
+            this._xpp.MoveToAttribute(index);
+            string namespaceUri = _xpp.NamespaceURI;
+            this._xpp.MoveToElement();
             return namespaceUri;
         }
 
-        public string getAttributeName(int index)
+        public string GetAttributeName(int index)
         {
-            this.xpp.MoveToAttribute(index);
-            string name = this.xpp.Name;
-            this.xpp.MoveToElement();
+            this._xpp.MoveToAttribute(index);
+            string name = this._xpp.Name;
+            this._xpp.MoveToElement();
             return name;
         }
 
-        public int getAttributeCount()
+        public int GetAttributeCount()
         {
-            return this.xpp.AttributeCount;
+            return this._xpp.AttributeCount;
         }
 
-        public string getAttributeValue(string @namespace, string name)
+        public string GetAttributeValue(string @namespace, string name)
         {
-            for (int i = 0, n = xpp.AttributeCount; i < n; i++)
+            for (int i = 0, n = _xpp.AttributeCount; i < n; i++)
             {
-                this.xpp.MoveToAttribute(i);
-                if ((this.xpp.NamespaceURI == "" || @namespace.Equals(xpp.NamespaceURI)) &&
-                        name.Equals(xpp.Name))
+                this._xpp.MoveToAttribute(i);
+                if ((this._xpp.NamespaceURI == "" || @namespace.Equals(_xpp.NamespaceURI)) &&
+                        name.Equals(_xpp.Name))
                 {
-                    var attrValue = getAttributeValue(i);
-                    this.xpp.MoveToElement();
+                    var attrValue = GetAttributeValue(i);
+                    this._xpp.MoveToElement();
                     return attrValue;
                 }
             }
 
-            this.xpp.MoveToElement();
+            this._xpp.MoveToElement();
             return null;
         }
 
 
-        public string getAttributeNotNull(string attribute)
+        public string GetAttributeNotNull(string attribute)
         {
-            string value = getAttributeValue(null, attribute);
-            this.xpp.MoveToElement();
+            string value = GetAttributeValue(null, attribute);
+            this._xpp.MoveToElement();
             if (value == null)
             {
-                missingAttribute(attribute);
+                MissingAttribute(attribute);
             }
             return value;
         }
 
-        public bool parseBoolFromAttribute(string attribName)
+        public bool ParseBoolFromAttribute(string attribName)
         {
-            return parseBool(getAttributeNotNull(attribName));
+            return ParseBool(GetAttributeNotNull(attribName));
         }
 
-        public bool parseBoolFromText()
+        public bool ParseBoolFromText()
         {
-            return parseBool(nextText());
+            return ParseBool(NextText());
         }
 
-        public bool parseBoolFromAttribute(string attribName, bool defaultValue)
+        public bool ParseBoolFromAttribute(string attribName, bool defaultValue)
         {
-            string value = getAttributeValue(null, attribName);
+            string value = GetAttributeValue(null, attribName);
             if (value == null)
             {
                 return defaultValue;
             }
-            return parseBool(value);
+            return ParseBool(value);
         }
 
-        public int parseIntFromAttribute(string attribName)
+        public int ParseIntFromAttribute(string attribName)
         {
-            return parseInt(getAttributeNotNull(attribName));
+            return ParseInt(GetAttributeNotNull(attribName));
         }
 
-        public int parseIntFromAttribute(string attribName, int defaultValue)
+        public int ParseIntFromAttribute(string attribName, int defaultValue)
         {
-            string value = getAttributeValue(null, attribName);
+            string value = GetAttributeValue(null, attribName);
             if (value == null)
             {
                 return defaultValue;
             }
-            return parseInt(value);
+            return ParseInt(value);
         }
 
-        public float parseFloatFromAttribute(string attribName)
+        public float ParseFloatFromAttribute(string attribName)
         {
-            return parseFloat(getAttributeNotNull(attribName));
+            return ParseFloat(GetAttributeNotNull(attribName));
         }
 
-        public float parseFloatFromAttribute(string attribName, float defaultValue)
+        public float ParseFloatFromAttribute(string attribName, float defaultValue)
         {
-            string value = getAttributeValue(null, attribName);
+            string value = GetAttributeValue(null, attribName);
             if (value == null)
             {
                 return defaultValue;
             }
-            return parseFloat(value);
+            return ParseFloat(value);
         }
 
-        public E parseEnumFromAttribute<E>(string attribName, Type enumClazz) where E : struct, IConvertible
+        public E ParseEnumFromAttribute<E>(string attribName, Type enumClazz) where E : struct, IConvertible
         {
-            return parseEnum<E>(enumClazz, getAttributeNotNull(attribName));
+            return ParseEnum<E>(enumClazz, GetAttributeNotNull(attribName));
         }
 
-        public E parseEnumFromAttribute<E>(string attribName, Type enumClazz, E defaultValue) where E : struct, IConvertible
+        public E ParseEnumFromAttribute<E>(string attribName, Type enumClazz, E defaultValue) where E : struct, IConvertible
         {
-            string value = getAttributeValue(null, attribName);
+            string value = GetAttributeValue(null, attribName);
             if (value == null)
             {
                 return defaultValue;
             }
-            return parseEnum<E>(enumClazz, value);
+            return ParseEnum<E>(enumClazz, value);
         }
 
-        public E parseEnumFromText<E>(Type enumClazz) where E : struct, IConvertible
+        public E ParseEnumFromText<E>(Type enumClazz) where E : struct, IConvertible
         {
-            return parseEnum<E>(enumClazz, nextText());
+            return ParseEnum<E>(enumClazz, NextText());
         }
 
-        public object parseEnumFromText(Type enumClazz)
+        public object ParseEnumFromText(Type enumClazz)
         {
-            return parseEnum(enumClazz, nextText());
+            return ParseEnum(enumClazz, NextText());
         }
 
-        public Dictionary<string, string> getUnusedAttributes()
+        public Dictionary<string, string> GetUnusedAttributes()
         {
-            if (unusedAttributes.IsEmpty())
+            if (_unusedAttributes.IsEmpty())
             {
                 return new Dictionary<string, string>();
             }
 
             Dictionary<string, string> result = new Dictionary<string, string>();
 
-            for (int i = -1; (i = unusedAttributes.NextSetBit(i + 1)) >= 0;)
+            for (int i = -1; (i = _unusedAttributes.NextSetBit(i + 1)) >= 0;)
             {
-                result.Add(this.getAttributeName(i), this.getAttributeValue(i));
+                result.Add(this.GetAttributeName(i), this.GetAttributeValue(i));
             }
 
-            unusedAttributes.Clear();
+            _unusedAttributes.Clear();
 
             return result;
         }
 
-        public void ignoreOtherAttributes()
+        public void IgnoreOtherAttributes()
         {
-            unusedAttributes.Clear();
+            _unusedAttributes.Clear();
         }
 
-        public bool isAttributeUnused(int idx)
+        public bool IsAttributeUnused(int idx)
         {
-            return unusedAttributes.Get(idx);
+            return _unusedAttributes.Get(idx);
         }
 
-        public XmlPullParserException error(string msg)
+        public XmlPullParserException Error(string msg)
         {
             return new XmlPullParserException(msg, this, null);
         }
 
-        public XmlPullParserException error(string msg, Exception cause)
+        public XmlPullParserException Error(string msg, Exception cause)
         {
             return (XmlPullParserException)new XmlPullParserException(msg, this, cause);
         }
 
-        public XmlPullParserException unexpected()
+        public XmlPullParserException Unexpected()
         {
-            return new XmlPullParserException("Unexpected '" + xpp.Name + "'", this, null);
+            return new XmlPullParserException("Unexpected '" + _xpp.Name + "'", this, null);
         }
 
-        protected E parseEnum<E>(Type enumClazz, string value) where E : struct, IConvertible
+        protected E ParseEnum<E>(Type enumClazz, string value) where E : struct, IConvertible
         {
             if (!enumClazz.IsEnum)
             {
-                throw error("enum class provided reflects that it is not an enum");
+                throw Error("enum class provided reflects that it is not an enum");
             }
 
             foreach(E e in Enum.GetValues(enumClazz))
@@ -572,11 +572,11 @@ namespace XNATWL.Utils
             throw new XmlPullParserException("Unknown enum value \"" + value + "\" for enum class " + enumClazz, this, null);
         }
 
-        protected Object parseEnum(Type enumClazz, string value)
+        protected Object ParseEnum(Type enumClazz, string value)
         {
             if (!enumClazz.IsEnum)
             {
-                throw error("enum class provided reflects that it is not an enum");
+                throw Error("enum class provided reflects that it is not an enum");
             }
 
             foreach (object e in Enum.GetValues(enumClazz))
@@ -591,7 +591,7 @@ namespace XNATWL.Utils
         }
 
 
-        public bool parseBool(string value)
+        public bool ParseBool(string value)
         {
             if ("true".Equals(value))
             {
@@ -607,7 +607,7 @@ namespace XNATWL.Utils
             }
         }
 
-        protected int parseInt(string value)
+        protected int ParseInt(string value)
         {
             try
             {
@@ -620,7 +620,7 @@ namespace XNATWL.Utils
             }
         }
 
-        protected float parseFloat(string value)
+        protected float ParseFloat(string value)
         {
             try
             {
@@ -633,30 +633,30 @@ namespace XNATWL.Utils
             }
         }
 
-        protected void missingAttribute(string attribute)
+        protected void MissingAttribute(string attribute)
         {
-            throw new XmlPullParserException("missing '" + attribute + "' on '" + xpp.Name + "'", this, null);
+            throw new XmlPullParserException("missing '" + attribute + "' on '" + _xpp.Name + "'", this, null);
         }
 
-        protected void handleType(int type)
+        protected void HandleType(int type)
         {
-            unusedAttributes.Clear();
+            _unusedAttributes.Clear();
             switch (type)
             {
                 case 2:
-                    unusedAttributes.Set(0, xpp.AttributeCount);
+                    _unusedAttributes.Set(0, _xpp.AttributeCount);
                     break;
             }
         }
 
-        protected void warnUnusedAttributes()
+        protected void WarnUnusedAttributes()
         {
-            if (!unusedAttributes.IsEmpty())
+            if (!_unusedAttributes.IsEmpty())
             {
-                string positionDescription = getPositionDescription();
-                for (int i = -1; (i = unusedAttributes.NextSetBit(i + 1)) >= 0;)
+                string positionDescription = GetPositionDescription();
+                for (int i = -1; (i = _unusedAttributes.NextSetBit(i + 1)) >= 0;)
                 {
-                    System.Diagnostics.Debug.WriteLine(String.Format("Unused attribute ''{0}'' on ''{1}'' at {2}", new Object[] { xpp.GetAttribute(i), xpp.Name, positionDescription }));
+                    System.Diagnostics.Debug.WriteLine(String.Format("Unused attribute ''{0}'' on ''{1}'' at {2}", new Object[] { _xpp.GetAttribute(i), _xpp.Name, positionDescription }));
                 }
             }
         }
@@ -673,18 +673,18 @@ namespace XNATWL.Utils
             this.Parser = null;
         }
 
-        public XmlPullParserException(string message, object parser) : base(((XMLParser)parser).getPositionDescription() + "   " + message)
+        public XmlPullParserException(string message, object parser) : base(((XMLParser)parser).GetPositionDescription() + "   " + message)
         {
             this.Parser = parser;
-            this.LineNumber = ((XMLParser)parser).getLineNumber();
-            this.LinePosition = ((XMLParser)parser).getColumnNumber();
+            this.LineNumber = ((XMLParser)parser).GetLineNumber();
+            this.LinePosition = ((XMLParser)parser).GetColumnNumber();
         }
 
-        public XmlPullParserException(string message, object parser, Exception chain) : base(((XMLParser)parser).getPositionDescription() + "   " + message, chain)
+        public XmlPullParserException(string message, object parser, Exception chain) : base(((XMLParser)parser).GetPositionDescription() + "   " + message, chain)
         {
             this.Parser = parser;
-            this.LineNumber = ((XMLParser)parser).getLineNumber();
-            this.LinePosition = ((XMLParser)parser).getColumnNumber();
+            this.LineNumber = ((XMLParser)parser).GetLineNumber();
+            this.LinePosition = ((XMLParser)parser).GetColumnNumber();
         }
     }
 

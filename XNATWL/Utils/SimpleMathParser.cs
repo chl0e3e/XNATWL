@@ -37,64 +37,64 @@ namespace XNATWL.Utils
         public interface Interpreter
         {
             void AccessVariable(string name);
-            void accessField(string field);
-            void accessArray();
-            void loadConst(Number n);
-            void add();
-            void sub();
-            void mul();
-            void div();
-            void callFunction(string name, int args);
-            void negate();
+            void AccessField(string field);
+            void AccessArray();
+            void LoadConst(Number n);
+            void Add();
+            void Sub();
+            void Mul();
+            void Div();
+            void CallFunction(string name, int args);
+            void Negate();
         }
 
-        string str;
-        Interpreter interpreter;
-        int pos;
+        string _str;
+        Interpreter _interpreter;
+        int _pos;
 
         private SimpleMathParser(string str, Interpreter interpreter)
         {
-            this.str = str;
-            this.interpreter = interpreter;
+            this._str = str;
+            this._interpreter = interpreter;
         }
 
-        public static void interpret(string str, Interpreter interpreter)
+        public static void Interpret(string str, Interpreter interpreter)
         {
-            new SimpleMathParser(str, interpreter).parse(false);
+            new SimpleMathParser(str, interpreter).Parse(false);
         }
 
-        public static int interpretArray(string str, Interpreter interpreter)
+        public static int InterpretArray(string str, Interpreter interpreter)
         {
-            return new SimpleMathParser(str, interpreter).parse(true);
+            return new SimpleMathParser(str, interpreter).Parse(true);
         }
 
-        private int parse(bool allowArray)
+        private int Parse(bool allowArray)
         {
             try
             {
-                if (peek() == -1)
+                if (Peek() == -1)
                 {
                     if (allowArray)
                     {
                         return 0;
                     }
-                    unexpected(-1);
+                    Unexpected(-1);
                 }
                 int count = 0;
                 for (; ; )
                 {
                     count++;
-                    parseAddSub();
-                    int ch = peek();
+                    ParseAddSub();
+                    int ch = Peek();
                     if (ch == -1)
                     {
                         return count;
                     }
                     if (ch != ',' || !allowArray)
                     {
-                        unexpected(ch);
+                        Unexpected(ch);
                     }
-                    pos++;
+                    _pos++;
                 }
             }
             catch (ParseException ex)
@@ -103,27 +103,27 @@ namespace XNATWL.Utils
             }
             catch (Exception ex)
             {
-                throw new ParseException("Unable to execute", pos, ex);
+                throw new ParseException("Unable to execute", _pos, ex);
             }
         }
 
-        private void parseAddSub()
+        private void ParseAddSub()
         {
-            parseMulDiv();
+            ParseMulDiv();
             for (; ; )
             {
-                int ch = peek();
+                int ch = Peek();
                 switch (ch)
                 {
                     case '+':
-                        pos++;
-                        parseMulDiv();
-                        interpreter.add();
+                        _pos++;
+                        ParseMulDiv();
+                        _interpreter.Add();
                         break;
                     case '-':
-                        pos++;
-                        parseMulDiv();
-                        interpreter.sub();
+                        _pos++;
+                        ParseMulDiv();
+                        _interpreter.Sub();
                         break;
                     default:
                         return;
@@ -131,23 +131,23 @@ namespace XNATWL.Utils
             }
         }
 
-        private void parseMulDiv()
+        private void ParseMulDiv()
         {
-            parseIdentOrConst();
+            ParseIdentOrConst();
             for (; ; )
             {
-                int ch = peek();
+                int ch = Peek();
                 switch (ch)
                 {
                     case '*':
-                        pos++;
-                        parseIdentOrConst();
-                        interpreter.mul();
+                        _pos++;
+                        ParseIdentOrConst();
+                        _interpreter.Mul();
                         break;
                     case '/':
-                        pos++;
-                        parseIdentOrConst();
-                        interpreter.div();
+                        _pos++;
+                        ParseIdentOrConst();
+                        _interpreter.Div();
                         break;
                     default:
                         return;
@@ -155,211 +155,211 @@ namespace XNATWL.Utils
             }
         }
 
-        private void parseIdentOrConst()
+        private void ParseIdentOrConst()
         {
-            int ch = peek();
+            int ch = Peek();
             if (ch == '\'' || CharUtil.IsCSharpIdentifier((char)ch))
             {
-                string ident = parseIdent();
-                ch = peek();
+                string ident = ParseIdent();
+                ch = Peek();
                 if (ch == '(')
                 {
-                    pos++;
-                    parseCall(ident);
+                    _pos++;
+                    ParseCall(ident);
                     return;
                 }
-                interpreter.AccessVariable(ident);
+                _interpreter.AccessVariable(ident);
                 while (ch == '.' || ch == '[')
                 {
-                    pos++;
+                    _pos++;
                     if (ch == '.')
                     {
-                        string field = parseIdent();
-                        interpreter.accessField(field);
+                        string field = ParseIdent();
+                        _interpreter.AccessField(field);
                     }
                     else
                     {
-                        parseIdentOrConst();
-                        expect(']');
-                        interpreter.accessArray();
+                        ParseIdentOrConst();
+                        Expect(']');
+                        _interpreter.AccessArray();
                     }
-                    ch = peek();
+                    ch = Peek();
                 }
             }
             else if (ch == '-')
             {
-                pos++;
-                parseIdentOrConst();
-                interpreter.negate();
+                _pos++;
+                ParseIdentOrConst();
+                _interpreter.Negate();
             }
             else if (ch == '.' || ch == '+' || CharUtil.IsDigit((char)ch))
             {
-                parseConst();
+                ParseConst();
             }
             else if (ch == '(')
             {
-                pos++;
-                parseAddSub();
-                expect(')');
+                _pos++;
+                ParseAddSub();
+                Expect(')');
             }
         }
 
-        private void parseCall(string name)
+        private void ParseCall(string name)
         {
             int count = 1;
-            parseAddSub();
+            ParseAddSub();
             for (; ; )
             {
-                int ch = peek();
+                int ch = Peek();
                 if (ch == ')')
                 {
-                    pos++;
-                    interpreter.callFunction(name, count);
+                    _pos++;
+                    _interpreter.CallFunction(name, count);
                     return;
                 }
                 if (ch == ',')
                 {
-                    pos++;
+                    _pos++;
                     count++;
-                    parseAddSub();
+                    ParseAddSub();
                 }
                 else
                 {
-                    unexpected(ch);
+                    Unexpected(ch);
                 }
             }
         }
 
-        private void parseConst()
+        private void ParseConst()
         {
-            int len = str.Length;
-            int start = pos;
+            int len = _str.Length;
+            int start = _pos;
             Number n;
-            switch (str[pos])
+            switch (_str[_pos])
             {
                 case '+':
                     // skip
-                    start = ++pos;
+                    start = ++_pos;
                     break;
                 case '0':
-                    if (pos + 1 < len && str[pos + 1] == 'x')
+                    if (_pos + 1 < len && _str[_pos + 1] == 'x')
                     {
-                        pos += 2;
-                        parseHexInt();
+                        _pos += 2;
+                        ParseHexInt();
                         return;
                     }
                     break;
             }
-            while (pos < len && CharUtil.IsDigit(str[pos]))
+            while (_pos < len && CharUtil.IsDigit(_str[_pos]))
             {
-                pos++;
+                _pos++;
             }
-            if (pos < len && str[pos] == '.')
+            if (_pos < len && _str[_pos] == '.')
             {
-                pos++;
-                while (pos < len && CharUtil.IsDigit(str[pos]))
+                _pos++;
+                while (_pos < len && CharUtil.IsDigit(_str[_pos]))
                 {
-                    pos++;
+                    _pos++;
                 }
-                if (pos - start <= 1)
+                if (_pos - start <= 1)
                 {
-                    unexpected(-1);
+                    Unexpected(-1);
                 }
-                n = new Number(float.Parse(str.Substring(start, pos - start)));
+                n = new Number(float.Parse(_str.Substring(start, _pos - start)));
             }
             else
             {
-                n = new Number(int.Parse(str.Substring(start, pos - start)));
+                n = new Number(int.Parse(_str.Substring(start, _pos - start)));
             }
-            interpreter.loadConst(n);
+            _interpreter.LoadConst(n);
         }
 
-        private void parseHexInt()
+        private void ParseHexInt()
         {
-            int len = str.Length;
-            int start = pos;
-            while (pos < len && "0123456789abcdefABCDEF".IndexOf(str[pos]) >= 0)
+            int len = _str.Length;
+            int start = _pos;
+            while (_pos < len && "0123456789abcdefABCDEF".IndexOf(_str[_pos]) >= 0)
             {
-                pos++;
+                _pos++;
             }
-            if (pos - start > 8)
+            if (_pos - start > 8)
             {
-                throw new ParseException("Number to large at " + pos, pos);
+                throw new ParseException("Number to large at " + _pos, _pos);
             }
-            if (pos == start)
+            if (_pos == start)
             {
-                unexpected((pos < len) ? str[pos] : -1);
+                Unexpected((_pos < len) ? _str[_pos] : -1);
             }
-            interpreter.loadConst(new Number(long.Parse(str.Substring(start, pos - start), System.Globalization.NumberStyles.HexNumber)));
+            _interpreter.LoadConst(new Number(long.Parse(_str.Substring(start, _pos - start), System.Globalization.NumberStyles.HexNumber)));
         }
 
-        private bool skipSpaces()
+        private bool SkipSpaces()
         {
             for (; ; )
             {
-                if (pos == str.Length)
+                if (_pos == _str.Length)
                 {
                     return false;
                 }
-                if (!CharUtil.IsWhitespace(str[pos]))
+                if (!CharUtil.IsWhitespace(_str[_pos]))
                 {
                     return true;
                 }
-                pos++;
+                _pos++;
             }
         }
 
-        private int peek()
+        private int Peek()
         {
-            if (skipSpaces())
+            if (SkipSpaces())
             {
-                return str[pos];
+                return _str[_pos];
             }
             return -1;
         }
 
-        private string parseIdent()
+        private string ParseIdent()
         {
-            if (str[pos] == '\'')
+            if (_str[_pos] == '\'')
             {
-                int istart = ++pos;
-                pos = TextUtil.indexOf(str, '\'', pos);
-                string ident = str.Substring(istart, pos - istart);
-                expect('\'');
+                int istart = ++_pos;
+                _pos = TextUtil.IndexOf(_str, '\'', _pos);
+                string ident = _str.Substring(istart, _pos - istart);
+                Expect('\'');
                 return ident;
             }
-            int start = pos;
-            while (pos < str.Length && CharUtil.IsCSharpIdentifier(str[pos]))
+            int start = _pos;
+            while (_pos < _str.Length && CharUtil.IsCSharpIdentifier(_str[_pos]))
             {
-                pos++;
+                _pos++;
             }
-            if (pos > str.Length)
+            if (_pos > _str.Length)
             {
-                pos = str.Length;
+                _pos = _str.Length;
             }
-            return str.Substring(start, pos - start);
+            return _str.Substring(start, _pos - start);
         }
 
-        private void expect(int what)
+        private void Expect(int what)
         {
-            int ch = peek();
+            int ch = Peek();
             if (ch != what)
             {
-                unexpected(ch);
+                Unexpected(ch);
             }
             else
             {
-                pos++;
+                _pos++;
             }
         }
 
-        private void unexpected(int ch)
+        private void Unexpected(int ch)
         {
             if (ch < 0)
             {
-                throw new ParseException("Unexpected end of string", pos);
+                throw new ParseException("Unexpected end of string", _pos);
             }
-            throw new ParseException("Unexpected character '" + (char)ch + "' at " + pos, pos);
+            throw new ParseException("Unexpected character '" + (char)ch + "' at " + _pos, _pos);
         }
     }
 }

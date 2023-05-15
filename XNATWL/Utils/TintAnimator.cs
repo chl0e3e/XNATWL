@@ -43,22 +43,22 @@ namespace XNATWL.Utils
             /**
              * Restarts the time from 0 for a new fade animation
              */
-            void resetTime();
+            void ResetTime();
             /**
              * Returns the current time (since last reset) in milliseconds.
              * @return current time in ms
              */
-            int getTime();
+            int GetTime();
         }
 
         private static float ZERO_EPSILON = 1e-3f;
         private static float ONE_EPSILON = 1f - ZERO_EPSILON;
 
-        private TimeSource timeSource;
-        private float[] currentTint;
-        private int fadeDuration;
-        private bool fadeActive;
-        private bool bHasTint;
+        private TimeSource _timeSource;
+        private float[] _currentTint;
+        private int _fadeDuration;
+        private bool _fadeActive;
+        private bool _bHasTint;
         public event EventHandler<FadeDoneEventArgs> FadeDone;
         //private Runnable[] fadeDoneCallbacks;
 
@@ -78,9 +78,9 @@ namespace XNATWL.Utils
             {
                 throw new NullReferenceException("color");
             }
-            this.timeSource = timeSource;
-            this.currentTint = new float[12];
-            setColor(color);
+            this._timeSource = timeSource;
+            this._currentTint = new float[12];
+            SetColor(color);
         }
 
         /**
@@ -147,14 +147,14 @@ namespace XNATWL.Utils
          * 
          * @param color the new color
          */
-        public void setColor(Color color)
+        public void SetColor(Color color)
         {
-            color.WriteToFloatArray(currentTint, 0);
-            color.WriteToFloatArray(currentTint, 4);
-            bHasTint = !Color.WHITE.Equals(color);
-            fadeActive = false;
-            fadeDuration = 0;
-            timeSource.resetTime();
+            color.WriteToFloatArray(_currentTint, 0);
+            color.WriteToFloatArray(_currentTint, 4);
+            _bHasTint = !Color.WHITE.Equals(color);
+            _fadeActive = false;
+            _fadeDuration = 0;
+            _timeSource.ResetTime();
         }
 
         /**
@@ -170,20 +170,20 @@ namespace XNATWL.Utils
          * @param fadeDuration the fade time in miliseconds
          * @see #addFadeDoneCallback(java.lang.Runnable) 
          */
-        public void fadeTo(Color color, int fadeDuration)
+        public void FadeTo(Color color, int fadeDuration)
         {
             if (fadeDuration <= 0)
             {
-                setColor(color);
+                SetColor(color);
             }
             else
             {
-                color.WriteToFloatArray(currentTint, 8);
-                Array.Copy(currentTint, 0, currentTint, 4, 4);
-                this.fadeActive = true;
-                this.fadeDuration = fadeDuration;
-                this.bHasTint = true;
-                timeSource.resetTime();
+                color.WriteToFloatArray(_currentTint, 8);
+                Array.Copy(_currentTint, 0, _currentTint, 4, 4);
+                this._fadeActive = true;
+                this._fadeDuration = fadeDuration;
+                this._bHasTint = true;
+                _timeSource.ResetTime();
             }
         }
 
@@ -203,50 +203,50 @@ namespace XNATWL.Utils
          * @param fadeDuration the fade time in miliseconds
          * @see #addFadeDoneCallback(java.lang.Runnable) 
          */
-        public void fadeToHide(int fadeDuration)
+        public void FadeToHide(int fadeDuration)
         {
             if (fadeDuration <= 0)
             {
-                currentTint[3] = 0.0f;
-                this.fadeActive = false;
-                this.fadeDuration = 0;
-                this.bHasTint = true;
+                _currentTint[3] = 0.0f;
+                this._fadeActive = false;
+                this._fadeDuration = 0;
+                this._bHasTint = true;
             }
             else
             {
-                Array.Copy(currentTint, 0, currentTint, 4, 8);
-                currentTint[11] = 0.0f;
-                this.fadeActive = !isZeroAlpha();
-                this.fadeDuration = fadeDuration;
-                this.bHasTint = true;
-                timeSource.resetTime();
+                Array.Copy(_currentTint, 0, _currentTint, 4, 8);
+                _currentTint[11] = 0.0f;
+                this._fadeActive = !IsZeroAlpha();
+                this._fadeDuration = fadeDuration;
+                this._bHasTint = true;
+                _timeSource.ResetTime();
             }
         }
 
         /**
          * Updates the fade animation. Does not need to be called when no fade is active.
          */
-        public void update()
+        public void Update()
         {
-            if (fadeActive)
+            if (_fadeActive)
             {
-                int time = timeSource.getTime();
-                float t = Math.Min(time, fadeDuration) / (float)fadeDuration;
+                int time = _timeSource.GetTime();
+                float t = Math.Min(time, _fadeDuration) / (float)_fadeDuration;
                 float tm1 = 1.0f - t;
-                float[] tint = currentTint;
+                float[] tint = _currentTint;
                 for (int i = 0; i < 4; i++)
                 {
                     tint[i] = tm1 * tint[i + 4] + t * tint[i + 8];
                 }
-                if (time >= fadeDuration)
+                if (time >= _fadeDuration)
                 {
-                    fadeActive = false;
+                    _fadeActive = false;
                     // disable tinted rendering if we have full WHITE as tint
-                    bHasTint =
-                            (currentTint[0] < ONE_EPSILON) ||
-                            (currentTint[1] < ONE_EPSILON) ||
-                            (currentTint[2] < ONE_EPSILON) ||
-                            (currentTint[3] < ONE_EPSILON);
+                    _bHasTint =
+                            (_currentTint[0] < ONE_EPSILON) ||
+                            (_currentTint[1] < ONE_EPSILON) ||
+                            (_currentTint[2] < ONE_EPSILON) ||
+                            (_currentTint[3] < ONE_EPSILON);
                     // fire callbacks
                     if (this.FadeDone != null)
                     {
@@ -260,27 +260,27 @@ namespace XNATWL.Utils
          * Returns true when a fade is active
          * @return true when a fade is active
          */
-        public bool isFadeActive()
+        public bool IsFadeActive()
         {
-            return fadeActive;
+            return _fadeActive;
         }
 
         /**
          * Returns true when the current tint color is not Color.WHITE
          * @return true when the current tint color is not Color.WHITE
          */
-        public bool hasTint()
+        public bool HasTint()
         {
-            return bHasTint;
+            return _bHasTint;
         }
 
         /**
          * Returns true is the current alpha value is 0.0f
          * @return true is the current alpha value is 0.0f
          */
-        public bool isZeroAlpha()
+        public bool IsZeroAlpha()
         {
-            return currentTint[3] <= ZERO_EPSILON;
+            return _currentTint[3] <= ZERO_EPSILON;
         }
 
         /**
@@ -293,9 +293,9 @@ namespace XNATWL.Utils
          * @see Renderer#pushGlobalTintColor(float, float, float, float)
          * @see Renderer#popGlobalTintColor()
          */
-        public void paintWithTint(Renderer.Renderer renderer)
+        public void PaintWithTint(Renderer.Renderer renderer)
         {
-            float[] tint = this.currentTint;
+            float[] tint = this._currentTint;
             renderer.PushGlobalTintColor(tint[0], tint[1], tint[2], tint[3]);
         }
 
@@ -309,10 +309,10 @@ namespace XNATWL.Utils
          */
         public class GUITimeSource : TimeSource
         {
-            private Widget owner;
-            private GUI gui;
-            private long startTime;
-            private bool pendingReset;
+            private Widget _owner;
+            private GUI _gui;
+            private long _startTime;
+            private bool _pendingReset;
 
             public GUITimeSource(Widget owner)
             {
@@ -320,9 +320,9 @@ namespace XNATWL.Utils
                 {
                     throw new NullReferenceException("owner");
                 }
-                this.owner = owner;
-                this.gui = null;
-                resetTime();
+                this._owner = owner;
+                this._gui = null;
+                ResetTime();
             }
 
             public GUITimeSource(GUI gui)
@@ -331,43 +331,43 @@ namespace XNATWL.Utils
                 {
                     throw new NullReferenceException("gui");
                 }
-                this.owner = null;
-                this.gui = gui;
+                this._owner = null;
+                this._gui = gui;
             }
 
 
-            public int getTime()
+            public int GetTime()
             {
-                GUI g = getGUI();
+                GUI g = GetGUI();
                 if (g != null)
                 {
-                    if (pendingReset)
+                    if (_pendingReset)
                     {
-                        pendingReset = false;
-                        startTime = g.getCurrentTime();
+                        _pendingReset = false;
+                        _startTime = g.getCurrentTime();
                     }
-                    return (int)(g.getCurrentTime() - startTime) & Int32.MaxValue;
+                    return (int)(g.getCurrentTime() - _startTime) & Int32.MaxValue;
                 }
                 return 0;
             }
 
-            public void resetTime()
+            public void ResetTime()
             {
-                GUI g = getGUI();
+                GUI g = GetGUI();
                 if (g != null)
                 {
-                    startTime = g.getCurrentTime();
-                    pendingReset = false;
+                    _startTime = g.getCurrentTime();
+                    _pendingReset = false;
                 }
                 else
                 {
-                    pendingReset = true;
+                    _pendingReset = true;
                 }
             }
 
-            private GUI getGUI()
+            private GUI GetGUI()
             {
-                return (gui != null) ? gui : owner.getGUI();
+                return (_gui != null) ? _gui : _owner.getGUI();
             }
         }
 
@@ -376,8 +376,8 @@ namespace XNATWL.Utils
          */
         public class AnimationStateTimeSource : TimeSource
         {
-            private AnimationState animState;
-            private StateKey animStateKey;
+            private AnimationState _animState;
+            private StateKey _animStateKey;
 
             public AnimationStateTimeSource(AnimationState animState, String animStateName) : this(animState, StateKey.Get(animStateName))
             {
@@ -394,22 +394,22 @@ namespace XNATWL.Utils
                 {
                     throw new NullReferenceException("animStateKey");
                 }
-                this.animState = animState;
-                this.animStateKey = animStateKey;
+                this._animState = animState;
+                this._animStateKey = animStateKey;
             }
 
-            public int getTime()
+            public int GetTime()
             {
-                return animState.GetAnimationTime(animStateKey);
+                return _animState.GetAnimationTime(_animStateKey);
             }
 
             /**
              * Calls resetAnimationTime on the animation state
              * @see AnimationState#resetAnimationTime(java.lang.String)
              */
-            public void resetTime()
+            public void ResetTime()
             {
-                animState.resetAnimationTime(animStateKey);
+                _animState.resetAnimationTime(_animStateKey);
             }
         }
     }

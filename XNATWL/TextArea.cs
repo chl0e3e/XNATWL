@@ -1288,7 +1288,7 @@ namespace XNATWL
                 int idx = 0;
                 while (idx < text.Length)
                 {
-                    int end = TextUtil.indexOf(text, '\n', idx);
+                    int end = TextUtil.IndexOf(text, '\n', idx);
                     layoutTextPre(box, te, fontData, text, idx, end, inheritHover);
                     if (end < text.Length && text[end] == '\n')
                     {

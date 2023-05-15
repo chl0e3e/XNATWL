@@ -36,12 +36,12 @@ namespace XNATWL.Utils
 {
     public class StateSelectOptimizer
     {
-        private StateKey[] keys;
-        private byte[] matrix;
+        private StateKey[] _keys;
+        private byte[] _matrix;
 
-        internal StateKey[] programKeys;
-        internal short[] programCodes;
-        int programIdx;
+        internal StateKey[] _programKeys;
+        internal short[] _programCodes;
+        int _programIdx;
 
         public static StateSelectOptimizer Optimize(params StateExpression[] expressions)
         {
@@ -91,24 +91,24 @@ namespace XNATWL.Utils
             }
 
             StateSelectOptimizer sso = new StateSelectOptimizer(keys, matrix);
-            sso._compute(0, 0);
+            sso.Compute(0, 0);
             return sso;
         }
 
         private StateSelectOptimizer(StateKey[] keys, byte[] matrix)
         {
-            this.keys = keys;
-            this.matrix = matrix;
+            this._keys = keys;
+            this._matrix = matrix;
 
-            programKeys = new StateKey[matrix.Length - 1];
-            programCodes = new short[matrix.Length * 2 - 2];
+            _programKeys = new StateKey[matrix.Length - 1];
+            _programCodes = new short[matrix.Length * 2 - 2];
         }
 
-        private int _compute(int bits, int mask)
+        private int Compute(int bits, int mask)
         {
-            if (mask == matrix.Length - 1)
+            if (mask == _matrix.Length - 1)
             {
-                return (matrix[bits] & 255) | StateSelect.CODE_RESULT;
+                return (_matrix[bits] & 255) | StateSelect.CODE_RESULT;
             }
 
             int best = -1;
@@ -119,7 +119,7 @@ namespace XNATWL.Utils
 
             int matrixIdxInc = (bits == 0) ? 1 : BitOperations.LowestOneBit(bits);
 
-            for (int keyIdx = 0; keyIdx < keys.Length; keyIdx++)
+            for (int keyIdx = 0; keyIdx < _keys.Length; keyIdx++)
             {
                 int test = 1 << keyIdx;
 
@@ -128,11 +128,11 @@ namespace XNATWL.Utils
                     int set0 = 0;
                     int set1 = 0;
 
-                    for (int matrixIdx = bits; matrixIdx < matrix.Length; matrixIdx += matrixIdxInc)
+                    for (int matrixIdx = bits; matrixIdx < _matrix.Length; matrixIdx += matrixIdxInc)
                     {
                         if ((matrixIdx & mask) == bits)
                         {
-                            int resultMask = 1 << (matrix[matrixIdx] & 255);
+                            int resultMask = 1 << (_matrix[matrixIdx] & 255);
                             if ((matrixIdx & test) == 0)
                             {
                                 set0 |= resultMask;
@@ -169,11 +169,11 @@ namespace XNATWL.Utils
             int bestMask = 1 << best;
             mask |= bestMask;
 
-            int idx = programIdx;
-            programIdx += 2;
-            programKeys[idx >> 1] = keys[best];
-            programCodes[idx + 0] = (short)_compute(bits | bestMask, mask);
-            programCodes[idx + 1] = (short)_compute(bits, mask);
+            int idx = _programIdx;
+            _programIdx += 2;
+            _programKeys[idx >> 1] = _keys[best];
+            _programCodes[idx + 0] = (short)Compute(bits | bestMask, mask);
+            _programCodes[idx + 1] = (short)Compute(bits, mask);
 
             return idx;
         }

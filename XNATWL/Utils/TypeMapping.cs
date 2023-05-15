@@ -35,43 +35,43 @@ namespace XNATWL.Utils
 {
     public class TypeMapping
     {
-        private Dictionary<Type, object> Types;
+        private Dictionary<Type, object> _types;
 
         public TypeMapping()
         {
-            this.Types = new Dictionary<Type, object>();
+            this._types = new Dictionary<Type, object>();
         }
 
         public object GetByType(Type type)
         {
-            foreach (Type storedType in this.Types.Keys)
+            foreach (Type storedType in this._types.Keys)
             {
                 if (storedType == type)
                 {
-                    return this.Types[type];
+                    return this._types[type];
                 }
 
                 foreach (Type interfaceType in storedType.GetInterfaces())
                 {
                     if (interfaceType == type)
                     {
-                        return this.Types[type];
+                        return this._types[type];
                     }
                 }
 
                 if (storedType.BaseType == type)
                 {
-                    return this.Types[type];
+                    return this._types[type];
                 }
             }
 
             return null;
         }
 
-        public HashSet<Object> getUniqueValues()
+        public HashSet<Object> GetUniqueValues()
         {
             HashSet<Object> result = new HashSet<Object>();
-            foreach (object e in this.Types.Values)
+            foreach (object e in this._types.Values)
             {
                 if (!result.Contains(e))
                 {
@@ -83,14 +83,14 @@ namespace XNATWL.Utils
 
         public void SetByType(Type type, object value)
         {
-            this.Types.Add(type, value);
+            this._types.Add(type, value);
         }
 
         public bool RemoveByType(Type type)
         {
             if (GetByType(type) != null)
             {
-                this.Types.Remove(type);
+                this._types.Remove(type);
                 return true;
             }
 

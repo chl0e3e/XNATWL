@@ -35,7 +35,7 @@ namespace XNATWL.Utils
 {
     public class ClassUtils
     {
-        public static bool isParamCompatible(ParameterInfo paramInfo, Object obj)
+        public static bool IsParamCompatible(ParameterInfo paramInfo, Object obj)
         {
             if(obj == null && !paramInfo.ParameterType.IsPrimitive)
             {
@@ -45,7 +45,7 @@ namespace XNATWL.Utils
             return paramInfo.ParameterType.IsInstanceOfType(obj);
         }
 
-        public static bool isParamCompatible(Type type, Object obj)
+        public static bool IsParamCompatible(Type type, Object obj)
         {
             if (obj == null && !type.IsPrimitive)
             {
@@ -55,7 +55,7 @@ namespace XNATWL.Utils
             return type.IsInstanceOfType(obj);
         }
 
-        public static bool isParamsCompatible(ParameterInfo[] paramInfos, Object[] parameters)
+        public static bool IsParamsCompatible(ParameterInfo[] paramInfos, Object[] parameters)
         {
             if (paramInfos.Length != parameters.Length)
             {
@@ -64,7 +64,7 @@ namespace XNATWL.Utils
 
             for (int i = 0; i < paramInfos.Length; i++)
             {
-                if (!isParamCompatible(paramInfos[i], parameters[i]))
+                if (!IsParamCompatible(paramInfos[i], parameters[i]))
                 {
                     return false;
                 }
@@ -73,7 +73,7 @@ namespace XNATWL.Utils
             return true;
         }
 
-        public static bool isParamsCompatible(Type[] types, Object[] parameters)
+        public static bool IsParamsCompatible(Type[] types, Object[] parameters)
         {
             if (types.Length != parameters.Length) {
                 return false;
@@ -81,7 +81,7 @@ namespace XNATWL.Utils
 
             for (int i = 0; i < types.Length; i++)
             {
-                if (!isParamCompatible(types[i], parameters[i])) {
+                if (!IsParamCompatible(types[i], parameters[i])) {
                     return false;
                 }
             }

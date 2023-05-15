@@ -139,7 +139,7 @@ namespace XNATWL
                     style = new LineStyle();
                     lineStyles[i] = style;
                 }
-                String visualStyle = TextUtil.notNull(line.VisualStyleName);
+                String visualStyle = TextUtil.NotNull(line.VisualStyleName);
                 if (!style.name.Equals(visualStyle))
                 {
                     ParameterMap lineStyle = null;

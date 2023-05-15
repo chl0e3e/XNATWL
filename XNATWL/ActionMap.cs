@@ -155,7 +155,7 @@ namespace XNATWL
             {
                 if (m.Name.Equals(methodName) && !m.IsStatic)
                 {
-                    if (ClassUtils.isParamsCompatible(m.GetParameters(), parameters))
+                    if (ClassUtils.IsParamsCompatible(m.GetParameters(), parameters))
                     {
                         addMappingImpl(action, target, m, parameters, flags);
                         return;
@@ -198,7 +198,7 @@ namespace XNATWL
             {
                 if (m.Name.Equals(methodName) && m.IsStatic)
                 {
-                    if (ClassUtils.isParamsCompatible(m.GetParameters(), parameters))
+                    if (ClassUtils.IsParamsCompatible(m.GetParameters(), parameters))
                     {
                         addMappingImpl(action, null, m, parameters, flags);
                         return;
@@ -248,7 +248,7 @@ namespace XNATWL
             {
                 throw new ArgumentOutOfRangeException("method does not belong to target");
             }
-            if (!ClassUtils.isParamsCompatible(method.GetParameters(), parameters))
+            if (!ClassUtils.IsParamsCompatible(method.GetParameters(), parameters))
             {
                 throw new ArgumentOutOfRangeException("Paramters don't match method");
             }

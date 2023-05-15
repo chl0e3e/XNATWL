@@ -285,7 +285,7 @@ namespace XNATWL
         {
             if (text == null)
             {
-                base.setCharSequence(TextUtil.notNull(themeText));
+                base.setCharSequence(TextUtil.NotNull(themeText));
             }
             else
             {

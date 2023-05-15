@@ -342,7 +342,7 @@ namespace XNATWL
             }
             if (previewTintAnimator != null)
             {
-                previewTintAnimator.setColor(getColor());
+                previewTintAnimator.SetColor(getColor());
             }
             updateHexEditField();
         }

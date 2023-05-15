@@ -112,7 +112,7 @@ namespace XNATWL
             }
             this.text = text;
             this.cachedTextWidth = NOT_CACHED;
-            this.numTextLines = TextUtil.countNumLines(text);
+            this.numTextLines = TextUtil.CountNumLines(text);
             this.cacheDirty = true;
             getAnimationState().resetAnimationTime(STATE_TEXT_CHANGED);
         }

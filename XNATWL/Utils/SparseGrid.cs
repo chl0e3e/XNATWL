@@ -32,43 +32,42 @@ using System;
 
 namespace XNATWL.Utils
 {
-
     public class SparseGrid
     {
         public interface GridFunction
         {
-            void apply(int row, int column, Entry e);
+            void Apply(int row, int column, Entry e);
         }
 
-        Node root;
-        int numLevels;
+        Node _root;
+        int _numLevels;
 
         public SparseGrid(int pageSize)
         {
-            root = new Node(pageSize);
-            numLevels = 1;
+            _root = new Node(pageSize);
+            _numLevels = 1;
         }
 
-        public Entry get(int row, int column)
+        public Entry Get(int row, int column)
         {
-            if (root.size > 0)
+            if (_root._size > 0)
             {
-                int levels = numLevels;
-                Entry e = root;
+                int levels = _numLevels;
+                Entry e = _root;
 
                 do
                 {
                     Node node = (Node)e;
-                    int pos = node.findPos(row, column, node.size);
-                    if (pos == node.size)
+                    int pos = node.FindPos(row, column, node._size);
+                    if (pos == node._size)
                     {
                         return null;
                     }
-                    e = node.children[pos];
+                    e = node._children[pos];
                 } while (--levels > 0);
 
                 System.Diagnostics.Debug.Assert(e != null);
-                if (e.compare(row, column) == 0)
+                if (e.Compare(row, column) == 0)
                 {
                     return e;
                 }
@@ -76,275 +75,275 @@ namespace XNATWL.Utils
             return null;
         }
 
-        public void set(int row, int column, Entry entry)
+        public void Set(int row, int column, Entry entry)
         {
-            entry.row = row;
-            entry.column = column;
+            entry._row = row;
+            entry._column = column;
 
-            if (root.size == 0)
+            if (_root._size == 0)
             {
-                root.insertAt(0, entry);
-                root.updateRowColumn();
+                _root.InsertAt(0, entry);
+                _root.UpdateRowColumn();
             }
-            else if (!root.insert(entry, numLevels))
+            else if (!_root.Insert(entry, _numLevels))
             {
-                splitRoot();
-                root.insert(entry, numLevels);
+                SplitRoot();
+                _root.Insert(entry, _numLevels);
             }
         }
 
-        public Entry remove(int row, int column)
+        public Entry Remove(int row, int column)
         {
-            if (root.size == 0)
+            if (_root._size == 0)
             {
                 return null;
             }
-            Entry e = root.remove(row, column, numLevels);
+            Entry e = _root.Remove(row, column, _numLevels);
             if (e != null)
             {
-                maybeRemoveRoot();
+                MaybeRemoveRoot();
             }
             return e;
         }
 
-        public void insertRows(int row, int count)
+        public void InsertRows(int row, int count)
         {
-            if (count > 0 && root.size > 0)
+            if (count > 0 && _root._size > 0)
             {
-                root.insertRows(row, count, numLevels);
+                _root.InsertRows(row, count, _numLevels);
             }
         }
 
-        public void insertColumns(int column, int count)
+        public void InsertColumns(int column, int count)
         {
-            if (count > 0 && root.size > 0)
+            if (count > 0 && _root._size > 0)
             {
-                root.insertColumns(column, count, numLevels);
+                _root.InsertColumns(column, count, _numLevels);
             }
         }
 
-        public void removeRows(int row, int count)
-        {
-            if (count > 0)
-            {
-                root.removeRows(row, count, numLevels);
-                maybeRemoveRoot();
-            }
-        }
-
-        public void removeColumns(int column, int count)
+        public void RemoveRows(int row, int count)
         {
             if (count > 0)
             {
-                root.removeColumns(column, count, numLevels);
-                maybeRemoveRoot();
+                _root.RemoveRows(row, count, _numLevels);
+                MaybeRemoveRoot();
             }
         }
 
-        public void iterate(int startRow, int startColumn,
+        public void RemoveColumns(int column, int count)
+        {
+            if (count > 0)
+            {
+                _root.RemoveColumns(column, count, _numLevels);
+                MaybeRemoveRoot();
+            }
+        }
+
+        public void Iterate(int startRow, int startColumn,
                 int endRow, int endColumn, GridFunction func)
         {
-            if (root.size > 0)
+            if (_root._size > 0)
             {
-                int levels = numLevels;
-                Entry e = root;
+                int levels = _numLevels;
+                Entry e = _root;
                 Node node;
                 int pos;
 
                 do
                 {
                     node = (Node)e;
-                    pos = node.findPos(startRow, startColumn, node.size - 1);
-                    e = node.children[pos];
+                    pos = node.FindPos(startRow, startColumn, node._size - 1);
+                    e = node._children[pos];
                 } while (--levels > 0);
 
                 System.Diagnostics.Debug.Assert(e != null);
-                if (e.compare(startRow, startColumn) < 0)
+                if (e.Compare(startRow, startColumn) < 0)
                 {
                     return;
                 }
 
                 do
                 {
-                    for (int size = node.size; pos < size; pos++)
+                    for (int size = node._size; pos < size; pos++)
                     {
-                        e = node.children[pos];
-                        if (e.row > endRow)
+                        e = node._children[pos];
+                        if (e._row > endRow)
                         {
                             return;
                         }
-                        if (e.column >= startColumn && e.column <= endColumn)
+                        if (e._column >= startColumn && e._column <= endColumn)
                         {
-                            func.apply(e.row, e.column, e);
+                            func.Apply(e._row, e._column, e);
                         }
                     }
                     pos = 0;
-                    node = node.next;
+                    node = node._next;
                 } while (node != null);
             }
         }
 
-        public bool isEmpty()
+        public bool IsEmpty()
         {
-            return root.size == 0;
+            return _root._size == 0;
         }
 
-        public void clear()
+        public void Clear()
         {
-            for (int i = 0; i < root.children.Length; i++)
+            for (int i = 0; i < _root._children.Length; i++)
             {
-                root.children[i] = null;
+                _root._children[i] = null;
             }
-            root.size = 0;
-            numLevels = 1;
+            _root._size = 0;
+            _numLevels = 1;
         }
 
-        private void maybeRemoveRoot()
+        private void MaybeRemoveRoot()
         {
-            while (numLevels > 1 && root.size == 1)
+            while (_numLevels > 1 && _root._size == 1)
             {
-                root = (Node)root.children[0];
-                root.prev = null;
-                root.next = null;
-                numLevels--;
+                _root = (Node)_root._children[0];
+                _root._prev = null;
+                _root._next = null;
+                _numLevels--;
             }
-            if (root.size == 0)
+            if (_root._size == 0)
             {
-                numLevels = 1;
+                _numLevels = 1;
             }
         }
 
-        private void splitRoot()
+        private void SplitRoot()
         {
-            Node newNode = root.split();
-            Node newRoot = new Node(root.children.Length);
-            newRoot.children[0] = root;
-            newRoot.children[1] = newNode;
-            newRoot.size = 2;
-            root = newRoot;
-            numLevels++;
+            Node newNode = _root.Split();
+            Node newRoot = new Node(_root._children.Length);
+            newRoot._children[0] = _root;
+            newRoot._children[1] = newNode;
+            newRoot._size = 2;
+            _root = newRoot;
+            _numLevels++;
         }
 
         public class Node : Entry
         {
-            protected internal Entry[] children;
-            protected internal int size;
-            protected internal Node next;
-            protected internal Node prev;
+            protected internal Entry[] _children;
+            protected internal int _size;
+            protected internal Node _next;
+            protected internal Node _prev;
 
             public Node(int size)
             {
-                this.children = new Entry[size];
+                this._children = new Entry[size];
             }
 
-            protected internal bool insert(Entry e, int levels)
+            protected internal bool Insert(Entry e, int levels)
             {
                 if (--levels == 0)
                 {
-                    return insertLeaf(e);
+                    return InsertLeaf(e);
                 }
 
                 for (; ; )
                 {
-                    int position = findPos(e.row, e.column, size - 1);
-                    System.Diagnostics.Debug.Assert(position < size);
-                    Node node = (Node)children[position];
-                    if (!node.insert(e, levels))
+                    int position = FindPos(e._row, e._column, _size - 1);
+                    System.Diagnostics.Debug.Assert(position < _size);
+                    Node node = (Node)_children[position];
+                    if (!node.Insert(e, levels))
                     {
-                        if (isFull())
+                        if (IsFull())
                         {
                             return false;
                         }
-                        Node node2 = node.split();
-                        insertAt(position + 1, node2);
+                        Node node2 = node.Split();
+                        InsertAt(position + 1, node2);
                         continue;
                     }
-                    updateRowColumn();
+                    UpdateRowColumn();
                     return true;
                 }
             }
 
-            protected internal bool insertLeaf(Entry e)
+            protected internal bool InsertLeaf(Entry e)
             {
-                int pos = findPos(e.row, e.column, size);
-                if (pos < size)
+                int pos = FindPos(e._row, e._column, _size);
+                if (pos < _size)
                 {
-                    Entry c = children[pos];
+                    Entry c = _children[pos];
                     System.Diagnostics.Debug.Assert(c.GetType() != typeof(Node));
-                    int cmp = c.compare(e.row, e.column);
+                    int cmp = c.Compare(e._row, e._column);
                     if (cmp == 0)
                     {
-                        children[pos] = e;
+                        _children[pos] = e;
                         return true;
                     }
                     System.Diagnostics.Debug.Assert(cmp > 0);
                 }
 
-                if (isFull())
+                if (IsFull())
                 {
                     return false;
                 }
-                insertAt(pos, e);
+                InsertAt(pos, e);
                 return true;
             }
 
-            protected internal Entry remove(int row, int column, int levels)
+            protected internal Entry Remove(int row, int column, int levels)
             {
                 if (--levels == 0)
                 {
-                    return removeLeaf(row, column);
+                    return RemoveLeaf(row, column);
                 }
 
-                int pos = findPos(row, column, size - 1);
-                System.Diagnostics.Debug.Assert(pos < size);
-                Node node = (Node)children[pos];
-                Entry e = node.remove(row, column, levels);
+                int pos = FindPos(row, column, _size - 1);
+                System.Diagnostics.Debug.Assert(pos < _size);
+                Node node = (Node)_children[pos];
+                Entry e = node.Remove(row, column, levels);
                 if (e != null)
                 {
-                    if (node.size == 0)
+                    if (node._size == 0)
                     {
-                        removeNodeAt(pos);
+                        RemoveNodeAt(pos);
                     }
-                    else if (node.isBelowHalf())
+                    else if (node.IsBelowHalf())
                     {
-                        tryMerge(pos);
+                        TryMerge(pos);
                     }
-                    updateRowColumn();
+                    UpdateRowColumn();
                 }
                 return e;
             }
 
-            protected internal Entry removeLeaf(int row, int column)
+            protected internal Entry RemoveLeaf(int row, int column)
             {
-                int pos = findPos(row, column, size);
-                if (pos == size)
+                int pos = FindPos(row, column, _size);
+                if (pos == _size)
                 {
                     return null;
                 }
 
-                Entry c = children[pos];
+                Entry c = _children[pos];
                 System.Diagnostics.Debug.Assert(c.GetType() != typeof(Node));
-                int cmp = c.compare(row, column);
+                int cmp = c.Compare(row, column);
                 if (cmp == 0)
                 {
-                    removeAt(pos);
-                    if (pos == size && size > 0)
+                    RemoveAt(pos);
+                    if (pos == _size && _size > 0)
                     {
-                        updateRowColumn();
+                        UpdateRowColumn();
                     }
                     return c;
                 }
                 return null;
             }
 
-            protected internal int findPos(int row, int column, int high)
+            protected internal int FindPos(int row, int column, int high)
             {
                 int low = 0;
                 while (low < high)
                 {
                     int mid = BitOperations.RightMove((low + high), 1);
-                    Entry e = children[mid];
-                    int cmp = e.compare(row, column);
+                    Entry e = _children[mid];
+                    int cmp = e.Compare(row, column);
                     if (cmp > 0)
                     {
                         high = mid;
@@ -361,198 +360,198 @@ namespace XNATWL.Utils
                 return low;
             }
 
-            protected internal void insertRows(int row, int count, int levels)
+            protected internal void InsertRows(int row, int count, int levels)
             {
                 if (--levels > 0)
                 {
-                    for (int i = size; i-- > 0;)
+                    for (int i = _size; i-- > 0;)
                     {
-                        Node n = (Node)children[i];
-                        if (n.row < row)
+                        Node n = (Node)_children[i];
+                        if (n._row < row)
                         {
                             break;
                         }
-                        n.insertRows(row, count, levels);
+                        n.InsertRows(row, count, levels);
                     }
                 }
                 else
                 {
-                    for (int i = size; i-- > 0;)
+                    for (int i = _size; i-- > 0;)
                     {
-                        Entry e = children[i];
-                        if (e.row < row)
+                        Entry e = _children[i];
+                        if (e._row < row)
                         {
                             break;
                         }
-                        e.row += count;
+                        e._row += count;
                     }
                 }
-                updateRowColumn();
+                UpdateRowColumn();
             }
 
-            protected internal void insertColumns(int column, int count, int levels)
+            protected internal void InsertColumns(int column, int count, int levels)
             {
                 if (--levels > 0)
                 {
-                    for (int i = 0; i < size; i++)
+                    for (int i = 0; i < _size; i++)
                     {
-                        Node n = (Node)children[i];
-                        n.insertColumns(column, count, levels);
+                        Node n = (Node)_children[i];
+                        n.InsertColumns(column, count, levels);
                     }
                 }
                 else
                 {
-                    for (int i = 0; i < size; i++)
+                    for (int i = 0; i < _size; i++)
                     {
-                        Entry e = children[i];
-                        if (e.column >= column)
+                        Entry e = _children[i];
+                        if (e._column >= column)
                         {
-                            e.column += count;
+                            e._column += count;
                         }
                     }
                 }
-                updateRowColumn();
+                UpdateRowColumn();
             }
 
-            protected internal bool removeRows(int row, int count, int levels)
+            protected internal bool RemoveRows(int row, int count, int levels)
             {
                 if (--levels > 0)
                 {
                     bool needsMerging = false;
-                    for (int i = size; i-- > 0;)
+                    for (int i = _size; i-- > 0;)
                     {
-                        Node n = (Node)children[i];
-                        if (n.row < row)
+                        Node n = (Node)_children[i];
+                        if (n._row < row)
                         {
                             break;
                         }
-                        if (n.removeRows(row, count, levels))
+                        if (n.RemoveRows(row, count, levels))
                         {
-                            removeNodeAt(i);
+                            RemoveNodeAt(i);
                         }
                         else
                         {
-                            needsMerging |= n.isBelowHalf();
+                            needsMerging |= n.IsBelowHalf();
                         }
                     }
-                    if (needsMerging && size > 1)
+                    if (needsMerging && _size > 1)
                     {
-                        tryMerge();
+                        TryMerge();
                     }
                 }
                 else
                 {
-                    for (int i = size; i-- > 0;)
+                    for (int i = _size; i-- > 0;)
                     {
-                        Entry e = children[i];
-                        if (e.row < row)
+                        Entry e = _children[i];
+                        if (e._row < row)
                         {
                             break;
                         }
-                        e.row -= count;
-                        if (e.row < row)
+                        e._row -= count;
+                        if (e._row < row)
                         {
-                            removeAt(i);
+                            RemoveAt(i);
                         }
                     }
                 }
-                if (size == 0)
+                if (_size == 0)
                 {
                     return true;
                 }
-                updateRowColumn();
+                UpdateRowColumn();
                 return false;
             }
 
-            protected internal bool removeColumns(int column, int count, int levels)
+            protected internal bool RemoveColumns(int column, int count, int levels)
             {
                 if (--levels > 0)
                 {
                     bool needsMerging = false;
-                    for (int i = size; i-- > 0;)
+                    for (int i = _size; i-- > 0;)
                     {
-                        Node n = (Node)children[i];
-                        if (n.removeColumns(column, count, levels))
+                        Node n = (Node)_children[i];
+                        if (n.RemoveColumns(column, count, levels))
                         {
-                            removeNodeAt(i);
+                            RemoveNodeAt(i);
                         }
                         else
                         {
-                            needsMerging |= n.isBelowHalf();
+                            needsMerging |= n.IsBelowHalf();
                         }
                     }
-                    if (needsMerging && size > 1)
+                    if (needsMerging && _size > 1)
                     {
-                        tryMerge();
+                        TryMerge();
                     }
                 }
                 else
                 {
-                    for (int i = size; i-- > 0;)
+                    for (int i = _size; i-- > 0;)
                     {
-                        Entry e = children[i];
-                        if (e.column >= column)
+                        Entry e = _children[i];
+                        if (e._column >= column)
                         {
-                            e.column -= count;
-                            if (e.column < column)
+                            e._column -= count;
+                            if (e._column < column)
                             {
-                                removeAt(i);
+                                RemoveAt(i);
                             }
                         }
                     }
                 }
-                if (size == 0)
+                if (_size == 0)
                 {
                     return true;
                 }
-                updateRowColumn();
+                UpdateRowColumn();
                 return false;
             }
 
-            protected internal void insertAt(int idx, Entry what)
+            protected internal void InsertAt(int idx, Entry what)
             {
-                Array.Copy(children, idx, children, idx + 1, size - idx);
-                children[idx] = what;
-                if (idx == size++)
+                Array.Copy(_children, idx, _children, idx + 1, _size - idx);
+                _children[idx] = what;
+                if (idx == _size++)
                 {
-                    updateRowColumn();
+                    UpdateRowColumn();
                 }
             }
 
-            protected internal void removeAt(int idx)
+            protected internal void RemoveAt(int idx)
             {
-                size--;
-                Array.Copy(children, idx + 1, children, idx, size - idx);
-                children[size] = null;
+                _size--;
+                Array.Copy(_children, idx + 1, _children, idx, _size - idx);
+                _children[_size] = null;
             }
 
-            protected internal void removeNodeAt(int idx)
+            protected internal void RemoveNodeAt(int idx)
             {
-                Node n = (Node)children[idx];
-                if (n.next != null)
+                Node n = (Node)_children[idx];
+                if (n._next != null)
                 {
-                    n.next.prev = n.prev;
+                    n._next._prev = n._prev;
                 }
-                if (n.prev != null)
+                if (n._prev != null)
                 {
-                    n.prev.next = n.next;
+                    n._prev._next = n._next;
                 }
-                n.next = null;
-                n.prev = null;
-                removeAt(idx);
+                n._next = null;
+                n._prev = null;
+                RemoveAt(idx);
             }
 
-            protected internal void tryMerge()
+            protected internal void TryMerge()
             {
-                if (size == 2)
+                if (_size == 2)
                 {
-                    tryMerge2(0);
+                    TryMerge2(0);
                 }
                 else
                 {
-                    for (int i = size - 1; i-- > 1;)
+                    for (int i = _size - 1; i-- > 1;)
                     {
-                        if (tryMerge3(i))
+                        if (TryMerge3(i))
                         {
                             i--;
                         }
@@ -560,192 +559,192 @@ namespace XNATWL.Utils
                 }
             }
 
-            protected internal void tryMerge(int pos)
+            protected internal void TryMerge(int pos)
             {
-                switch (size)
+                switch (_size)
                 {
                     case 0:
                     case 1:
                         // can't merge
                         break;
                     case 2:
-                        tryMerge2(0);
+                        TryMerge2(0);
                         break;
                     default:
-                        if (pos + 1 == size)
+                        if (pos + 1 == _size)
                         {
-                            tryMerge3(pos - 1);
+                            TryMerge3(pos - 1);
                         }
                         else if (pos == 0)
                         {
-                            tryMerge3(1);
+                            TryMerge3(1);
                         }
                         else
                         {
-                            tryMerge3(pos);
+                            TryMerge3(pos);
                         }
                         break;
                 }
             }
 
-            private void tryMerge2(int pos)
+            private void TryMerge2(int pos)
             {
-                Node n1 = (Node)children[pos];
-                Node n2 = (Node)children[pos + 1];
-                if (n1.isBelowHalf() || n2.isBelowHalf())
+                Node n1 = (Node)_children[pos];
+                Node n2 = (Node)_children[pos + 1];
+                if (n1.IsBelowHalf() || n2.IsBelowHalf())
                 {
-                    int sumSize = n1.size + n2.size;
-                    if (sumSize < children.Length)
+                    int sumSize = n1._size + n2._size;
+                    if (sumSize < _children.Length)
                     {
-                        Array.Copy(n2.children, 0, n1.children, n1.size, n2.size);
-                        n1.size = sumSize;
-                        n1.updateRowColumn();
-                        removeNodeAt(pos + 1);
+                        Array.Copy(n2._children, 0, n1._children, n1._size, n2._size);
+                        n1._size = sumSize;
+                        n1.UpdateRowColumn();
+                        RemoveNodeAt(pos + 1);
                     }
                     else
                     {
-                        Object[] temp = collect2(sumSize, n1, n2);
-                        distribute2(temp, n1, n2);
+                        Object[] temp = Collect2(sumSize, n1, n2);
+                        Distribute2(temp, n1, n2);
                     }
                 }
             }
 
-            private bool tryMerge3(int pos)
+            private bool TryMerge3(int pos)
             {
-                Node n0 = (Node)children[pos - 1];
-                Node n1 = (Node)children[pos];
-                Node n2 = (Node)children[pos + 1];
-                if (n0.isBelowHalf() || n1.isBelowHalf() || n2.isBelowHalf())
+                Node n0 = (Node)_children[pos - 1];
+                Node n1 = (Node)_children[pos];
+                Node n2 = (Node)_children[pos + 1];
+                if (n0.IsBelowHalf() || n1.IsBelowHalf() || n2.IsBelowHalf())
                 {
-                    int sumSize = n0.size + n1.size + n2.size;
-                    if (sumSize < children.Length)
+                    int sumSize = n0._size + n1._size + n2._size;
+                    if (sumSize < _children.Length)
                     {
-                        Array.Copy(n1.children, 0, n0.children, n0.size, n1.size);
-                        Array.Copy(n2.children, 0, n0.children, n0.size + n1.size, n2.size);
-                        n0.size = sumSize;
-                        n0.updateRowColumn();
-                        removeNodeAt(pos + 1);
-                        removeNodeAt(pos);
+                        Array.Copy(n1._children, 0, n0._children, n0._size, n1._size);
+                        Array.Copy(n2._children, 0, n0._children, n0._size + n1._size, n2._size);
+                        n0._size = sumSize;
+                        n0.UpdateRowColumn();
+                        RemoveNodeAt(pos + 1);
+                        RemoveNodeAt(pos);
                         return true;
                     }
                     else
                     {
-                        Object[] temp = collect3(sumSize, n0, n1, n2);
-                        if (sumSize < 2 * children.Length)
+                        Object[] temp = Collect3(sumSize, n0, n1, n2);
+                        if (sumSize < 2 * _children.Length)
                         {
-                            distribute2(temp, n0, n1);
-                            removeNodeAt(pos + 1);
+                            Distribute2(temp, n0, n1);
+                            RemoveNodeAt(pos + 1);
                         }
                         else
                         {
-                            distribute3(temp, n0, n1, n2);
+                            Distribute3(temp, n0, n1, n2);
                         }
                     }
                 }
                 return false;
             }
 
-            private Object[] collect2(int sumSize, Node n0, Node n1)
+            private Object[] Collect2(int sumSize, Node n0, Node n1)
             {
                 Object[] temp = new Object[sumSize];
-                Array.Copy(n0.children, 0, temp, 0, n0.size);
-                Array.Copy(n1.children, 0, temp, n0.size, n1.size);
+                Array.Copy(n0._children, 0, temp, 0, n0._size);
+                Array.Copy(n1._children, 0, temp, n0._size, n1._size);
                 return temp;
             }
 
-            private Object[] collect3(int sumSize, Node n0, Node n1, Node n2)
+            private Object[] Collect3(int sumSize, Node n0, Node n1, Node n2)
             {
                 Object[] temp = new Object[sumSize];
-                Array.Copy(n0.children, 0, temp, 0, n0.size);
-                Array.Copy(n1.children, 0, temp, n0.size, n1.size);
-                Array.Copy(n2.children, 0, temp, n0.size + n1.size, n2.size);
+                Array.Copy(n0._children, 0, temp, 0, n0._size);
+                Array.Copy(n1._children, 0, temp, n0._size, n1._size);
+                Array.Copy(n2._children, 0, temp, n0._size + n1._size, n2._size);
                 return temp;
             }
 
-            private void distribute2(Object[] src, Node n0, Node n1)
+            private void Distribute2(Object[] src, Node n0, Node n1)
             {
                 int sumSize = src.Length;
 
-                n0.size = sumSize / 2;
-                n1.size = sumSize - n0.size;
+                n0._size = sumSize / 2;
+                n1._size = sumSize - n0._size;
 
-                Array.Copy(src, 0, n0.children, 0, n0.size);
-                Array.Copy(src, n0.size, n1.children, 0, n1.size);
+                Array.Copy(src, 0, n0._children, 0, n0._size);
+                Array.Copy(src, n0._size, n1._children, 0, n1._size);
 
-                n0.updateRowColumn();
-                n1.updateRowColumn();
+                n0.UpdateRowColumn();
+                n1.UpdateRowColumn();
             }
 
-            private void distribute3(Object[] src, Node n0, Node n1, Node n2)
+            private void Distribute3(Object[] src, Node n0, Node n1, Node n2)
             {
                 int sumSize = src.Length;
 
-                n0.size = sumSize / 3;
-                n1.size = (sumSize - n0.size) / 2;
-                n2.size = sumSize - (n0.size + n1.size);
+                n0._size = sumSize / 3;
+                n1._size = (sumSize - n0._size) / 2;
+                n2._size = sumSize - (n0._size + n1._size);
 
-                Array.Copy(src, 0, n0.children, 0, n0.size);
-                Array.Copy(src, n0.size, n1.children, 0, n1.size);
-                Array.Copy(src, n0.size + n1.size, n2.children, 0, n2.size);
+                Array.Copy(src, 0, n0._children, 0, n0._size);
+                Array.Copy(src, n0._size, n1._children, 0, n1._size);
+                Array.Copy(src, n0._size + n1._size, n2._children, 0, n2._size);
 
-                n0.updateRowColumn();
-                n1.updateRowColumn();
-                n2.updateRowColumn();
+                n0.UpdateRowColumn();
+                n1.UpdateRowColumn();
+                n2.UpdateRowColumn();
             }
 
-            protected internal bool isFull()
+            protected internal bool IsFull()
             {
-                return size == children.Length;
+                return _size == _children.Length;
             }
 
-            protected internal bool isBelowHalf()
+            protected internal bool IsBelowHalf()
             {
-                return size * 2 < children.Length;
+                return _size * 2 < _children.Length;
             }
 
-            protected internal Node split()
+            protected internal Node Split()
             {
-                Node newNode = new Node(children.Length);
-                int size1 = size / 2;
-                int size2 = size - size1;
-                Array.Copy(this.children, size1, newNode.children, 0, size2);
-                for (int i = size1; i < this.size; i++)
+                Node newNode = new Node(_children.Length);
+                int size1 = _size / 2;
+                int size2 = _size - size1;
+                Array.Copy(this._children, size1, newNode._children, 0, size2);
+                for (int i = size1; i < this._size; i++)
                 {
-                    this.children[i] = null;
+                    this._children[i] = null;
                 }
-                newNode.size = size2;
-                newNode.updateRowColumn();
-                newNode.prev = this;
-                newNode.next = this.next;
-                this.size = size1;
-                this.updateRowColumn();
-                this.next = newNode;
-                if (newNode.next != null)
+                newNode._size = size2;
+                newNode.UpdateRowColumn();
+                newNode._prev = this;
+                newNode._next = this._next;
+                this._size = size1;
+                this.UpdateRowColumn();
+                this._next = newNode;
+                if (newNode._next != null)
                 {
-                    newNode.next.prev = newNode;
+                    newNode._next._prev = newNode;
                 }
                 return newNode;
             }
 
-            protected internal void updateRowColumn()
+            protected internal void UpdateRowColumn()
             {
-                Entry e = children[size - 1];
-                this.row = e.row;
-                this.column = e.column;
+                Entry e = _children[_size - 1];
+                this._row = e._row;
+                this._column = e._column;
             }
         }
 
         public class Entry
         {
-            protected internal int row;
-            protected internal int column;
+            protected internal int _row;
+            protected internal int _column;
 
-            protected internal int compare(int row, int column)
+            protected internal int Compare(int row, int column)
             {
-                int diff = this.row - row;
+                int diff = this._row - row;
                 if (diff == 0)
                 {
-                    diff = this.column - column;
+                    diff = this._column - column;
                 }
                 return diff;
             }

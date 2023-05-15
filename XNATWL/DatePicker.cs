@@ -212,7 +212,7 @@ namespace XNATWL
                     if (name.Length > 0 && lowerText.StartsWith(name))
                     {
                         month = i;
-                        lowerText = TextUtil.trim(lowerText, name.Length);
+                        lowerText = TextUtil.Trim(lowerText, name.Length);
                         breakAgain = true;
                         break;
                     }

@@ -274,7 +274,7 @@ namespace XNATWL.TextAreaModel
 
                             if ("img".Equals(xpp.Name))
                             {
-                                String src = TextUtil.notNull(xpp.GetAttribute("src"));
+                                String src = TextUtil.NotNull(xpp.GetAttribute("src"));
                                 String alt = xpp.GetAttribute("alt");
                                 element = new ImageElement(style, src, alt);
                             }
@@ -287,8 +287,8 @@ namespace XNATWL.TextAreaModel
                             }
                             else if ("button".Equals(xpp.Name))
                             {
-                                String btnName = TextUtil.notNull(xpp.GetAttribute("name"));
-                                String btnParam = TextUtil.notNull(xpp.GetAttribute("value"));
+                                String btnName = TextUtil.NotNull(xpp.GetAttribute("name"));
+                                String btnParam = TextUtil.NotNull(xpp.GetAttribute("value"));
                                 element = new WidgetElement(style, btnName, btnParam);
                             }
                             else if ("ul".Equals(xpp.Name))

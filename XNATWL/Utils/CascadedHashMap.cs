@@ -35,7 +35,7 @@ namespace XNATWL.Utils
 {
     public class CascadedHashMap<K, Object> : Dictionary<K, object>
     {
-        public CascadedHashMap<K, Object> fallback = null;
+        public CascadedHashMap<K, Object> Fallback = null;
 
         public CascadedHashMap()
         {
@@ -43,13 +43,13 @@ namespace XNATWL.Utils
 
         public void CollapseAndSetFallback(CascadedHashMap<K, Object> map)
         {
-            if (fallback != null)
+            if (Fallback != null)
             {
                 this.CollapsePutAll(map);
-                fallback = null;
+                Fallback = null;
             }
 
-            fallback = map;
+            Fallback = map;
         }
 
         public void CollapsePutAll(CascadedHashMap<K, Object> map)
@@ -68,7 +68,7 @@ namespace XNATWL.Utils
                         }
                     }
                 }
-                map = map.fallback;
+                map = map.Fallback;
             } while (map != null);
         }
 
@@ -101,7 +101,7 @@ namespace XNATWL.Utils
                 {
                     return map[key];
                 }
-                map = map.fallback;
+                map = map.Fallback;
             } while (map != null);
 
             return null;

@@ -8,32 +8,32 @@ namespace XNATWL.Utils
     // CC BY-SA 3.0
     public class LinkedHashSet<T> : ISet<T>
     {
-        private readonly IDictionary<T, LinkedListNode<T>> dict;
-        private readonly LinkedList<T> list;
+        private readonly IDictionary<T, LinkedListNode<T>> _dict;
+        private readonly LinkedList<T> _list;
 
         public LinkedHashSet(int initialCapacity)
         {
-            this.dict = new Dictionary<T, LinkedListNode<T>>(initialCapacity);
-            this.list = new LinkedList<T>();
+            this._dict = new Dictionary<T, LinkedListNode<T>>(initialCapacity);
+            this._list = new LinkedList<T>();
         }
 
         public LinkedHashSet()
         {
-            this.dict = new Dictionary<T, LinkedListNode<T>>();
-            this.list = new LinkedList<T>();
+            this._dict = new Dictionary<T, LinkedListNode<T>>();
+            this._list = new LinkedList<T>();
         }
 
         public LinkedHashSet(IEnumerable<T> e) : this()
         {
-            addEnumerable(e);
+            AddEnumerable(e);
         }
 
         public LinkedHashSet(int initialCapacity, IEnumerable<T> e) : this(initialCapacity)
         {
-            addEnumerable(e);
+            AddEnumerable(e);
         }
 
-        private void addEnumerable(IEnumerable<T> e)
+        private void AddEnumerable(IEnumerable<T> e)
         {
             foreach (T t in e)
             {
@@ -47,12 +47,12 @@ namespace XNATWL.Utils
 
         public bool Add(T item)
         {
-            if (this.dict.ContainsKey(item))
+            if (this._dict.ContainsKey(item))
             {
                 return false;
             }
-            LinkedListNode<T> node = this.list.AddLast(item);
-            this.dict[item] = node;
+            LinkedListNode<T> node = this._list.AddLast(item);
+            this._dict[item] = node;
             return true;
         }
 
@@ -239,7 +239,7 @@ namespace XNATWL.Utils
         {
             get
             {
-                return this.dict.Count;
+                return this._dict.Count;
             }
         }
 
@@ -247,7 +247,7 @@ namespace XNATWL.Utils
         {
             get
             {
-                return this.dict.IsReadOnly;
+                return this._dict.IsReadOnly;
             }
         }
 
@@ -258,29 +258,29 @@ namespace XNATWL.Utils
 
         public void Clear()
         {
-            this.dict.Clear();
-            this.list.Clear();
+            this._dict.Clear();
+            this._list.Clear();
         }
 
         public bool Contains(T item)
         {
-            return this.dict.ContainsKey(item);
+            return this._dict.ContainsKey(item);
         }
 
         public void CopyTo(T[] array, int arrayIndex)
         {
-            this.list.CopyTo(array, arrayIndex);
+            this._list.CopyTo(array, arrayIndex);
         }
 
         public bool Remove(T item)
         {
             LinkedListNode<T> node;
-            if (!this.dict.TryGetValue(item, out node))
+            if (!this._dict.TryGetValue(item, out node))
             {
                 return false;
             }
-            this.dict.Remove(item);
-            this.list.Remove(node);
+            this._dict.Remove(item);
+            this._list.Remove(node);
             return true;
         }
 
@@ -290,7 +290,7 @@ namespace XNATWL.Utils
 
         public IEnumerator<T> GetEnumerator()
         {
-            return this.list.GetEnumerator();
+            return this._list.GetEnumerator();
         }
 
         //
@@ -299,7 +299,7 @@ namespace XNATWL.Utils
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return this.list.GetEnumerator();
+            return this._list.GetEnumerator();
         }
 
     }

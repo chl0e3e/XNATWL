@@ -116,7 +116,7 @@ namespace XNATWL
 
         public void setText(String text)
         {
-            text = TextUtil.notNull(text);
+            text = TextUtil.NotNull(text);
             if (!text.Equals(getText()))
             {
                 base.setCharSequence(text);

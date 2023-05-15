@@ -38,71 +38,72 @@ namespace XNATWL.Utils
     {
         public interface Function
         {
-            Object execute(params Object[] args);
+            Object Execute(params Object[] args);
         }
 
-        private List<Object> stack;
-        private Dictionary<String, Function> functions;
+        private List<Object> _stack;
+        private Dictionary<String, Function> _functions;
 
         public AbstractMathInterpreter()
         {
-            this.stack = new List<Object>();
-            this.functions = new Dictionary<String, Function>();
+            this._stack = new List<Object>();
+            this._functions = new Dictionary<String, Function>();
 
-            registerFunction("min", new FunctionMin());
-            registerFunction("max", new FunctionMax());
+            RegisterFunction("min", new FunctionMin());
+            RegisterFunction("max", new FunctionMax());
         }
 
         public abstract void AccessVariable(string name);
 
-        public void registerFunction(String name, Function function)
+        public void RegisterFunction(String name, Function function)
         {
             if (function == null)
             {
                 throw new NullReferenceException("function");
             }
-            functions.Add(name, function);
+
+            _functions.Add(name, function);
         }
 
-        public Number execute(String str)
+        public Number Execute(String str)
         {
-            stack.Clear();
-            SimpleMathParser.interpret(str, this);
-            if (stack.Count != 1)
+            _stack.Clear();
+            SimpleMathParser.Interpret(str, this);
+            if (_stack.Count != 1)
             {
                 throw new InvalidOperationException("Expected one return value on the stack");
             }
-            return popNumber();
+            return PopNumber();
         }
 
-        public int[] executeIntArray(String str)
+        public int[] ExecuteIntArray(String str)
         {
-            stack.Clear();
-            int count = SimpleMathParser.interpretArray(str, this);
-            if (stack.Count != count)
+            _stack.Clear();
+            int count = SimpleMathParser.InterpretArray(str, this);
+            if (_stack.Count != count)
             {
                 throw new InvalidOperationException("Expected " + count + " return values on the stack");
             }
             int[] result = new int[count];
             for (int i = count; i-- > 0;)
             {
-                result[i] = popNumber().intValue();
+                result[i] = PopNumber().IntValue();
             }
             return result;
         }
 
-        public T executeCreateObject<T>(String str, Type type)
+        public T ExecuteCreateObject<T>(String str, Type type)
         {
-            stack.Clear();
-            int count = SimpleMathParser.interpretArray(str, this);
-            if (stack.Count != count)
+            _stack.Clear();
+            int count = SimpleMathParser.InterpretArray(str, this);
+            if (_stack.Count != count)
             {
                 throw new InvalidOperationException("Expected " + count + " return values on the stack");
             }
 
-            if (count == 1 && type.IsInstanceOfType(stack[0]))
+            if (count == 1 && type.IsInstanceOfType(_stack[0]))
             {
-                return (T)stack[0];
+                return (T)_stack[0];
             }
 
             foreach (ConstructorInfo c in type.GetConstructors())
@@ -113,7 +114,7 @@ namespace XNATWL.Utils
                     bool match = true;
                     for (int i = 0; i < count; i++)
                     {
-                        if (!ClassUtils.isParamCompatible(parameters[i], stack[i]))
+                        if (!ClassUtils.IsParamCompatible(parameters[i], _stack[i]))
                         {
                             match = false;
                             break;
@@ -124,7 +125,7 @@ namespace XNATWL.Utils
                     {
                         try
                         {
-                            return (T) c.Invoke(stack.ToArray());
+                            return (T) c.Invoke(_stack.ToArray());
                         }
                         catch (Exception ex)
                         {
@@ -137,32 +138,32 @@ namespace XNATWL.Utils
             throw new ArgumentOutOfRangeException("Can't construct a " + type + " from expression: \"" + str + "\"");
         }
 
-        protected void push(Object obj)
+        protected void Push(Object obj)
         {
             if (obj.GetType() == typeof(Single))
             {
                 System.Diagnostics.Debug.WriteLine("objPush: " + obj.GetType().FullName);
             }
 
-            stack.Add(obj);
+            _stack.Add(obj);
         }
 
-        protected Object pop()
+        protected Object Pop()
         {
-            int size = stack.Count;
+            int size = _stack.Count;
             if (size == 0)
             {
                 throw new InvalidOperationException("stack underflow");
             }
 
-            object item = stack[size - 1];
-            stack.RemoveAt(size - 1);
+            object item = _stack[size - 1];
+            _stack.RemoveAt(size - 1);
             return item;
         }
 
-        protected Number popNumber()
+        protected Number PopNumber()
         {
-            Object obj = pop();
+            Object obj = Pop();
 
             if (obj is Number)
             {
@@ -174,53 +175,53 @@ namespace XNATWL.Utils
                     ((obj != null) ? obj.GetType().Name : "null"));
         }
 
-        public void loadConst(Number n)
+        public void LoadConst(Number n)
         {
-            push(n);
+            Push(n);
         }
 
-        public void add()
+        public void Add()
         {
-            Number b = popNumber();
-            Number a = popNumber();
-            bool oIsFloat = isFloat(a) || isFloat(b);
-            push(a + b);
+            Number b = PopNumber();
+            Number a = PopNumber();
+            bool oIsFloat = IsFloat(a) || IsFloat(b);
+            Push(a + b);
         }
 
-        public void sub()
+        public void Sub()
         {
-            Number b = popNumber();
-            Number a = popNumber();
-            bool oIsFloat = isFloat(a) || isFloat(b);
-            push(a - b);
+            Number b = PopNumber();
+            Number a = PopNumber();
+            bool oIsFloat = IsFloat(a) || IsFloat(b);
+            Push(a - b);
         }
 
-        public void mul()
+        public void Mul()
         {
-            Number b = popNumber();
-            Number a = popNumber();
-            bool oIsFloat = isFloat(a) || isFloat(b);
-            push(a * b);
+            Number b = PopNumber();
+            Number a = PopNumber();
+            bool oIsFloat = IsFloat(a) || IsFloat(b);
+            Push(a * b);
         }
 
-        public void div()
+        public void Div()
         {
-            Number b = popNumber();
-            Number a = popNumber();
-            bool oIsFloat = isFloat(a) || isFloat(b);
-            push(a / b);
+            Number b = PopNumber();
+            Number a = PopNumber();
+            bool oIsFloat = IsFloat(a) || IsFloat(b);
+            Push(a / b);
         }
 
-        public void negate()
+        public void Negate()
         {
-            Number a = popNumber();
-            push(-a);
+            Number a = PopNumber();
+            Push(-a);
         }
 
-        public void accessArray()
+        public void AccessArray()
         {
-            Number idx = popNumber();
-            Object obj = pop();
+            Number idx = PopNumber();
+            Object obj = Pop();
 
             if (obj == null)
             {
@@ -234,7 +235,7 @@ namespace XNATWL.Utils
 
             try
             {
-                push(((Array)obj).GetValue(idx.intValue()));
+                Push(((Array)obj).GetValue(idx.IntValue()));
             }
             catch (IndexOutOfRangeException ex)
             {
@@ -242,15 +243,15 @@ namespace XNATWL.Utils
             }
         }
 
-        public virtual void accessField(String field)
+        public virtual void AccessField(String field)
         {
-            Object obj = pop();
+            Object obj = Pop();
             if (obj == null)
             {
                 throw new InvalidOperationException("null pointer");
             }
             Object result = AccessField(obj, field);
-            push(result);
+            Push(result);
         }
 
         protected virtual Object AccessField(Object obj, String field)
@@ -267,12 +268,12 @@ namespace XNATWL.Utils
                 }
                 else
                 {
-                    MethodInfo m = findGetter(clazz, field);
+                    MethodInfo m = FindGetter(clazz, field);
                     if (m == null)
                     {
                         foreach (Type i in clazz.GetInterfaces())
                         {
-                            m = findGetter(i, field);
+                            m = FindGetter(i, field);
                             if (m != null)
                             {
                                 break;
@@ -302,7 +303,7 @@ namespace XNATWL.Utils
             "' of class '" + clazz + "'");
         }
 
-        private static MethodInfo findGetter(Type clazz, String field)
+        private static MethodInfo FindGetter(Type clazz, String field)
         {
             foreach (MethodInfo m in clazz.GetMethods())
             {
@@ -310,7 +311,7 @@ namespace XNATWL.Utils
                         m.ReturnType != typeof(void) &&
                         m.IsPublic &&
                         m.GetParameters().Length == 0 &&
-                        (cmpName(m, field, "get") || cmpName(m, field, "get_") || cmpName(m, field, "is")))
+                        (CmpName(m, field, "get") || CmpName(m, field, "get_") || CmpName(m, field, "is")))
                 {
                     return m;
                 }
@@ -318,37 +319,37 @@ namespace XNATWL.Utils
             return null;
         }
 
-        private static bool cmpName(MethodInfo m, String fieldName, String prefix)
+        private static bool CmpName(MethodInfo m, String fieldName, String prefix)
         {
             return (prefix + fieldName).ToLower() == m.Name.ToLower();
         }
 
-        public void callFunction(String name, int args)
+        public void CallFunction(String name, int args)
         {
             Object[] values = new Object[args];
             for (int i = args; i-- > 0;)
             {
-                values[i] = pop();
+                values[i] = Pop();
             }
-            Function function = functions[name];
+            Function function = _functions[name];
             if (function == null)
             {
                 throw new ArgumentOutOfRangeException("Unknown function");
             }
-            push(function.execute(values));
+            Push(function.Execute(values));
         }
 
-        protected static bool isFloat(Number n)
+        protected static bool IsFloat(Number n)
         {
             return !n.IsRational();
         }
 
         public abstract class NumberFunction : Function
         {
-            protected abstract Object execute(params int[] values);
-            protected abstract Object execute(params float[] values);
+            protected abstract Object Execute(params int[] values);
+            protected abstract Object Execute(params float[] values);
 
-            public Object execute(params Object[] args)
+            public Object Execute(params Object[] args)
             {
                 foreach (Object o in args)
                 {
@@ -356,23 +357,23 @@ namespace XNATWL.Utils
                         float[] fvalues = new float[args.Length];
                         for (int i = 0; i < fvalues.Length; i++)
                         {
-                            fvalues[i] = ((Number)args[i]).floatValue();
+                            fvalues[i] = ((Number)args[i]).FloatValue();
                         }
-                        return execute(fvalues);
+                        return Execute(fvalues);
                     }
                 }
                 int[] values = new int[args.Length];
                 for (int i = 0; i < values.Length; i++)
                 {
-                    values[i] = ((Number)args[i]).intValue();
+                    values[i] = ((Number)args[i]).IntValue();
                 }
-                return execute(values);
+                return Execute(values);
             }
         }
 
         public class FunctionMin : NumberFunction
         {
-            protected override Object execute(params int[] values)
+            protected override Object Execute(params int[] values)
             {
                 int result = values[0];
                 for (int i = 1; i < values.Length; i++)
@@ -382,7 +383,7 @@ namespace XNATWL.Utils
                 return result;
             }
 
-            protected override Object execute(params float[] values)
+            protected override Object Execute(params float[] values)
             {
                 float result = values[0];
                 for (int i = 1; i < values.Length; i++)
@@ -395,7 +396,7 @@ namespace XNATWL.Utils
 
         public class FunctionMax : NumberFunction
         {
-            protected override Object execute(params int[] values)
+            protected override Object Execute(params int[] values)
             {
                 int result = values[0];
                 for (int i = 1; i < values.Length; i++)
@@ -405,7 +406,7 @@ namespace XNATWL.Utils
                 return result;
             }
 
-            protected override Object execute(params float[] values)
+            protected override Object Execute(params float[] values)
             {
                 float result = values[0];
                 for (int i = 1; i < values.Length; i++)

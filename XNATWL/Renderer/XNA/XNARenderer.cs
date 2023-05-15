@@ -191,7 +191,7 @@ namespace XNATWL.Renderer.XNA
         {
             Rect rect = this._clipRectTemp;
 
-            if (_clipStack.getClipRect(rect))
+            if (_clipStack.GetClipRect(rect))
             {
                 if (!hasScissor)
                 {
@@ -212,25 +212,25 @@ namespace XNATWL.Renderer.XNA
 
         public void ClipEnter(int x, int y, int w, int h)
         {
-            this._clipStack.push(x, y, w, h);
+            this._clipStack.Push(x, y, w, h);
             this.SetClipRect();
         }
 
         public void ClipEnter(Rect rect)
         {
-            this._clipStack.push(rect);
+            this._clipStack.Push(rect);
             this.SetClipRect();
         }
 
         public bool ClipIsEmpty()
         {
-            return this._clipStack.isClipEmpty();
+            return this._clipStack.IsClipEmpty();
             //throw new NotImplementedException();
         }
 
         public void ClipLeave()
         {
-            this._clipStack.pop();
+            this._clipStack.Pop();
             SetClipRect();
         }
 
@@ -319,7 +319,7 @@ namespace XNATWL.Renderer.XNA
             };
 
             this._spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, SamplerState.PointClamp, null, rasterizerState);
-            this._clipStack.clearStack();
+            this._clipStack.ClearStack();
             this._rendering = true;
 
             return true;

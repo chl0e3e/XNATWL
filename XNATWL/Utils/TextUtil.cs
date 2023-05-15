@@ -79,7 +79,7 @@ namespace XNATWL.Utils
             return sb.ToString();
         }
 
-        public static String notNull(String str)
+        public static String NotNull(String str)
         {
             if (str == null)
             {
@@ -88,7 +88,7 @@ namespace XNATWL.Utils
             return str;
         }
 
-        public static int countNumLines(string str)
+        public static int CountNumLines(string str)
         {
             int n = str.Length;
             int count = 0;
@@ -113,9 +113,9 @@ namespace XNATWL.Utils
          * @param start the start index. must be &gt;= 0.
          * @return the index of the character or cs.length().
          */
-        public static int indexOf(string cs, char ch, int start)
+        public static int IndexOf(string cs, char ch, int start)
         {
-            return indexOf(cs, ch, start, cs.Length);
+            return IndexOf(cs, ch, start, cs.Length);
         }
 
         /**
@@ -126,7 +126,7 @@ namespace XNATWL.Utils
          * @param end the end index. must be &gt;= start and &lt;= cs.length.
          * @return the index of the character or end.
          */
-        public static int indexOf(string cs, char ch, int start, int end)
+        public static int IndexOf(string cs, char ch, int start, int end)
         {
             for (; start < end; start++)
             {
@@ -138,12 +138,12 @@ namespace XNATWL.Utils
             return end;
         }
 
-        public static int skipSpaces(string s, int start)
+        public static int SkipSpaces(string s, int start)
         {
-            return skipSpaces(s, start, s.Length);
+            return SkipSpaces(s, start, s.Length);
         }
 
-        public static int skipSpaces(string s, int start, int end)
+        public static int SkipSpaces(string s, int start, int end)
         {
             while (start < end && s[start] == ' ')
             {
@@ -163,23 +163,23 @@ namespace XNATWL.Utils
          * @return the sub string without leading or trailing whitespace
          * @see Character#isWhitespace(char) 
          */
-        public static String trim(string s, int start)
+        public static String Trim(string s, int start)
         {
-            return trim(s, start, s.Length);
+            return Trim(s, start, s.Length);
         }
 
-        public static int countElements(String str)
+        public static int CountElements(String str)
         {
             int count = 0;
             for (int pos = 0; pos < str.Length;)
             {
                 count++;
-                pos = indexOf(str, ',', pos) + 1;
+                pos = IndexOf(str, ',', pos) + 1;
             }
             return count;
         }
 
-        public static string toPrintableString(char ch)
+        public static string ToPrintableString(char ch)
         {
             if (Char.IsControl(ch))
             {
@@ -191,9 +191,9 @@ namespace XNATWL.Utils
             }
         }
 
-        public static int[] parseIntArray(String str)
+        public static int[] ParseIntArray(String str)
         {
-            int count = countElements(str);
+            int count = CountElements(str);
             int[] result = new int[count];
             int i = 0;
             foreach(string numStr in str.Split(','))
@@ -211,7 +211,7 @@ namespace XNATWL.Utils
             return result;
         }
 
-        public static String createString(char ch, int len)
+        public static String CreateString(char ch, int len)
         {
             char[] buf = new char[len];
             for (int i = 0; i < len; i++)
@@ -221,7 +221,7 @@ namespace XNATWL.Utils
             return new String(buf);
         }
 
-        public static String stripNewLines(String str)
+        public static String StripNewLines(String str)
         {
             int idx = str.LastIndexOf('\n');
             if (idx < 0)
@@ -240,7 +240,7 @@ namespace XNATWL.Utils
             return sb.ToString();
         }
 
-        public static String limitStringLength(String str, int length)
+        public static String LimitStringLength(String str, int length)
         {
             if (str.Length > length)
             {
@@ -249,7 +249,7 @@ namespace XNATWL.Utils
             return str;
         }
 
-        public static bool isInteger(String str)
+        public static bool IsInteger(String str)
         {
             int idx = 0;
             int len = str.Length;
@@ -284,9 +284,9 @@ namespace XNATWL.Utils
          * @return the sub string without leading or trailing whitespace
          * @see Character#isWhitespace(char) 
          */
-        public static String trim(string s, int start, int end)
+        public static String Trim(string s, int start, int end)
         {
-            start = skipSpaces(s, start, end);
+            start = SkipSpaces(s, start, end);
             while (end > start && s[end - 1] == ' ')
             {
                 end--;

@@ -44,29 +44,29 @@ namespace XNATWL.Theme
         {
             if (name == null)
             {
-                throw xmlp.error("missing 'name' on '" + xmlp.getName() + "'");
+                throw xmlp.Error("missing 'name' on '" + xmlp.GetName() + "'");
             }
             if (name.Length == 0)
             {
-                throw xmlp.error("empty name not allowed");
+                throw xmlp.Error("empty name not allowed");
             }
             if ("none".Equals(name))
             {
-                throw xmlp.error("can't use reserved name \"none\"");
+                throw xmlp.Error("can't use reserved name \"none\"");
             }
             if (name.IndexOf('*') >= 0)
             {
-                throw xmlp.error("'*' is not allowed in names");
+                throw xmlp.Error("'*' is not allowed in names");
             }
             if (name.IndexOf('/') >= 0)
             {
-                throw xmlp.error("'/' is not allowed in names");
+                throw xmlp.Error("'/' is not allowed in names");
             }
         }
 
         public static Border ParseBorderFromAttribute(XMLParser xmlp, String attribute)
         {
-            String value = xmlp.getAttributeValue(null, attribute);
+            String value = xmlp.GetAttributeValue(null, attribute);
             if (value == null)
             {
                 return null;
@@ -78,7 +78,7 @@ namespace XNATWL.Theme
         {
             try
             {
-                int[] values = TextUtil.parseIntArray(value);
+                int[] values = TextUtil.ParseIntArray(value);
                 switch (values.Length)
                 {
                     case 1:
@@ -88,18 +88,18 @@ namespace XNATWL.Theme
                     case 4:
                         return new Border(values[0], values[1], values[2], values[3]);
                     default:
-                        throw xmlp.error("Unsupported border format");
+                        throw xmlp.Error("Unsupported border format");
                 }
             }
             catch (FormatException ex)
             {
-                throw xmlp.error("Unable to parse border size", ex);
+                throw xmlp.Error("Unable to parse border size", ex);
             }
         }
 
         public static Color ParseColorFromAttribute(XMLParser xmlp, String attribute, ParameterMapImpl constants, Color defaultColor)
         {
-            String value = xmlp.getAttributeValue(null, attribute);
+            String value = xmlp.GetAttributeValue(null, attribute);
             if (value == null)
             {
                 return defaultColor;
@@ -118,13 +118,13 @@ namespace XNATWL.Theme
                 }
                 if (color == null)
                 {
-                    throw xmlp.error("Unknown color name: " + value);
+                    throw xmlp.Error("Unknown color name: " + value);
                 }
                 return color;
             }
             catch (FormatException ex)
             {
-                throw xmlp.error("unable to parse color code", ex);
+                throw xmlp.Error("unable to parse color code", ex);
             }
         }
 
@@ -142,12 +142,12 @@ namespace XNATWL.Theme
         {
             try
             {
-                String value = xmlp.getAttributeNotNull(attribute);
-                return TextUtil.parseIntArray(value);
+                String value = xmlp.GetAttributeNotNull(attribute);
+                return TextUtil.ParseIntArray(value);
             }
             catch (FormatException ex)
             {
-                throw xmlp.error("Unable to parse", ex);
+                throw xmlp.Error("Unable to parse", ex);
             }
         }
 
@@ -155,31 +155,31 @@ namespace XNATWL.Theme
         {
             try
             {
-                String value = xmlp.getAttributeValue(null, attribute);
+                String value = xmlp.GetAttributeValue(null, attribute);
                 if (value == null)
                 {
                     return defaultValue;
                 }
-                if (TextUtil.isInteger(value))
+                if (TextUtil.IsInteger(value))
                 {
                     return Int32.Parse(value);
                 }
-                Number n = interpreter.execute(value);
+                Number n = interpreter.Execute(value);
                 if (n.IsRational()) {
-                    if (n.intValue() != n.doubleValue())
+                    if (n.IntValue() != n.DoubleValue())
                     {
-                        throw xmlp.error("Not an integer");
+                        throw xmlp.Error("Not an integer");
                     }
                 }
-                return n.intValue();
+                return n.IntValue();
             }
             catch (FormatException ex)
             {
-                throw xmlp.error("Unable to parse", ex);
+                throw xmlp.Error("Unable to parse", ex);
             }
             catch (ParseException ex)
             {
-                throw xmlp.error("Unable to parse", ex);
+                throw xmlp.Error("Unable to parse", ex);
             }
         }
 
@@ -231,11 +231,11 @@ namespace XNATWL.Theme
 
         public static StateExpression ParseCondition(XMLParser xmlp)
         {
-            String expression = xmlp.getAttributeValue(null, "if");
+            String expression = xmlp.GetAttributeValue(null, "if");
             bool negate = expression == null;
             if (expression == null)
             {
-                expression = xmlp.getAttributeValue(null, "unless");
+                expression = xmlp.GetAttributeValue(null, "unless");
             }
             if (expression != null)
             {
@@ -245,7 +245,7 @@ namespace XNATWL.Theme
                 }
                 catch (ParseException ex)
                 {
-                    throw xmlp.error("Unable to parse condition", ex);
+                    throw xmlp.Error("Unable to parse condition", ex);
                 }
             }
             return null;

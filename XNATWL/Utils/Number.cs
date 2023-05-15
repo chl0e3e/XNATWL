@@ -41,17 +41,17 @@
             return false;
         }
 
-        public int intValue()
+        public int IntValue()
         {
             return ((int)_number);
         }
 
-        public float floatValue()
+        public float FloatValue()
         {
             return ((float)_number);
         }
 
-        public double doubleValue()
+        public double DoubleValue()
         {
             return ((double)_number);
         }

@@ -187,7 +187,7 @@ namespace XNATWL
                         return -1;
                     }
                 }
-                idx = ns.childSizes.getPosition(idx);
+                idx = ns.childSizes.GetPosition(idx);
                 position += idx + 1;
                 node = parent;
                 parent = node.Parent;
@@ -208,7 +208,7 @@ namespace XNATWL
                 {
                     ns.initChildSizes();
                 }
-                return row + 1 + ns.childSizes.getPosition(idx);
+                return row + 1 + ns.childSizes.GetPosition(idx);
             }
             else
             {
@@ -229,8 +229,8 @@ namespace XNATWL
                 }
                 else
                 {
-                    idx = ns.childSizes.getIndex(row);
-                    row -= ns.childSizes.getPosition(idx) + 1;
+                    idx = ns.childSizes.GetIndex(row);
+                    row -= ns.childSizes.GetPosition(idx) + 1;
                 }
                 if (row < 0)
                 {
@@ -329,8 +329,8 @@ namespace XNATWL
                 }
 
                 int idx = nsParent.key.ChildIndexOf(node);
-                nsParent.childSizes.setSize(idx, size + 1);
-                size = nsParent.childSizes.getEndPosition();
+                nsParent.childSizes.SetSize(idx, size + 1);
+                size = nsParent.childSizes.GetEndPosition();
 
                 node = parent;
                 parent = node.Parent;
@@ -379,7 +379,7 @@ namespace XNATWL
 
         protected int computeNumRows()
         {
-            return rootNodeState.childSizes.getEndPosition();
+            return rootNodeState.childSizes.GetEndPosition();
         }
 
         public override Object getCellData(int row, int column, TreeTableNode node)
@@ -428,8 +428,8 @@ namespace XNATWL
             {
                 NodeState parent = ns.parent;
                 int idx = parent.key.ChildIndexOf(ns.key);
-                System.Diagnostics.Debug.Assert(parent.childSizes.size == parent.key.Children);
-                parent.childSizes.setSize(idx, ns.getChildRows() + 1);
+                System.Diagnostics.Debug.Assert(parent.childSizes._size == parent.key.Children);
+                parent.childSizes.SetSize(idx, ns.getChildRows() + 1);
                 ns = parent;
             }
             numRows = computeNumRows();
@@ -449,9 +449,9 @@ namespace XNATWL
             {
                 if (ns.childSizes != null)
                 {
-                    System.Diagnostics.Debug.Assert(idx <= ns.childSizes.size);
-                    ns.childSizes.insert(idx, count);
-                    System.Diagnostics.Debug.Assert(ns.childSizes.size == parent.Children);
+                    System.Diagnostics.Debug.Assert(idx <= ns.childSizes._size);
+                    ns.childSizes.Insert(idx, count);
+                    System.Diagnostics.Debug.Assert(ns.childSizes._size == parent.Children);
                 }
                 if (ns.children != null)
                 {
@@ -500,11 +500,11 @@ namespace XNATWL
                 int rowsEnd = rowsBase + idx + count;
                 if (ns.childSizes != null)
                 {
-                    System.Diagnostics.Debug.Assert(ns.childSizes.size == parent.Children + count);
-                    rowsStart = rowsBase + ns.childSizes.getPosition(idx);
-                    rowsEnd = rowsBase + ns.childSizes.getPosition(idx + count);
-                    ns.childSizes.remove(idx, count);
-                    System.Diagnostics.Debug.Assert(ns.childSizes.size == parent.Children);
+                    System.Diagnostics.Debug.Assert(ns.childSizes._size == parent.Children + count);
+                    rowsStart = rowsBase + ns.childSizes.GetPosition(idx);
+                    rowsEnd = rowsBase + ns.childSizes.GetPosition(idx + count);
+                    ns.childSizes.Remove(idx, count);
+                    System.Diagnostics.Debug.Assert(ns.childSizes._size == parent.Children);
                 }
                 if (ns.children != null)
                 {
@@ -557,8 +557,8 @@ namespace XNATWL
                 int rowsEnd = rowsBase + idx + count;
                 if (ns.childSizes != null)
                 {
-                    rowsStart = rowsBase + ns.childSizes.getPosition(idx);
-                    rowsEnd = rowsBase + ns.childSizes.getPosition(idx + count);
+                    rowsStart = rowsBase + ns.childSizes.GetPosition(idx);
+                    rowsEnd = rowsBase + ns.childSizes.GetPosition(idx + count);
                 }
                 modelRowsChanged(rowsStart, rowsEnd - rowsStart);
             }
@@ -616,15 +616,15 @@ namespace XNATWL
             protected internal void initChildSizes()
             {
                 childSizes = new SizeSequence();
-                childSizes.setDefaultValue(1);
-                childSizes.initializeAll(key.Children);
+                childSizes.SetDefaultValue(1);
+                childSizes.InitializeAll(key.Children);
             }
 
             protected internal int getChildRows()
             {
                 if (childSizes != null)
                 {
-                    return childSizes.getEndPosition();
+                    return childSizes.GetEndPosition();
                 }
                 int childCount = key.Children;
                 bHasNoChildren = childCount == 0;

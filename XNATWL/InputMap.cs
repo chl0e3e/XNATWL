@@ -198,17 +198,17 @@ namespace XNATWL
                 XMLParser xmlp = new XMLParser(url);
                 try
                 {
-                    xmlp.require(XmlPullParser.START_DOCUMENT, null, null);
-                    xmlp.nextTag();
-                    xmlp.require(XmlPullParser.START_TAG, null, "inputMapDef");
-                    xmlp.nextTag();
+                    xmlp.Require(XmlPullParser.START_DOCUMENT, null, null);
+                    xmlp.NextTag();
+                    xmlp.Require(XmlPullParser.START_TAG, null, "inputMapDef");
+                    xmlp.NextTag();
                     LinkedHashSet<KeyStroke> keyStrokes = parseBody(xmlp);
-                    xmlp.require(XmlPullParser.END_TAG, null, "inputMapDef");
+                    xmlp.Require(XmlPullParser.END_TAG, null, "inputMapDef");
                     return new InputMap(keyStrokes.ToArray());
                 }
                 finally
                 {
-                    xmlp.close();
+                    xmlp.Close();
                 }
             }
             catch (XmlPullParserException ex)
@@ -277,11 +277,11 @@ namespace XNATWL
         public static LinkedHashSet<KeyStroke> parseBody(XMLParser xmlp)
         {
             LinkedHashSet<KeyStroke> newStrokes = new LinkedHashSet<KeyStroke>();
-            while (!xmlp.isEndTag())
+            while (!xmlp.IsEndTag())
             {
-                xmlp.require(XmlPullParser.START_TAG, null, "action");
-                String name = xmlp.getAttributeNotNull("name");
-                String key = xmlp.nextText();
+                xmlp.Require(XmlPullParser.START_TAG, null, "action");
+                String name = xmlp.GetAttributeNotNull("name");
+                String key = xmlp.NextText();
                 try
                 {
                     KeyStroke ks = KeyStroke.parse(key, name);
@@ -292,10 +292,10 @@ namespace XNATWL
                 }
                 catch (ArgumentOutOfRangeException ex)
                 {
-                    throw xmlp.error("can't parse Keystroke", ex);
+                    throw xmlp.Error("can't parse Keystroke", ex);
                 }
-                xmlp.require(XmlPullParser.END_TAG, null, "action");
-                xmlp.nextTag();
+                xmlp.Require(XmlPullParser.END_TAG, null, "action");
+                xmlp.NextTag();
             }
             return newStrokes;
         }

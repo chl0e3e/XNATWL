@@ -312,7 +312,7 @@ namespace XNATWL
 
         void setText(String text, bool fromModel)
         {
-            text = TextUtil.limitStringLength(text, maxTextLength);
+            text = TextUtil.LimitStringLength(text, maxTextLength);
             editBuffer.Replace(0, editBuffer.Length, text);
             cursorPos = multiLine ? 0 : editBuffer.Length;
             selectionStart = 0;
@@ -415,7 +415,7 @@ namespace XNATWL
             {
                 if (!multiLine)
                 {
-                    cbText = TextUtil.stripNewLines(cbText);
+                    cbText = TextUtil.StripNewLines(cbText);
                 }
                 insertText(cbText);
             }
@@ -434,7 +434,7 @@ namespace XNATWL
             }
             if (isPasswordMasking())
             {
-                text = TextUtil.createString(passwordChar, text.Length);
+                text = TextUtil.CreateString(passwordChar, text.Length);
             }
             Clipboard.setClipboard(text);
         }
@@ -454,7 +454,7 @@ namespace XNATWL
             }
             if (isPasswordMasking())
             {
-                text = TextUtil.createString(passwordChar, text.Length);
+                text = TextUtil.CreateString(passwordChar, text.Length);
             }
             Clipboard.setClipboard(text);
         }

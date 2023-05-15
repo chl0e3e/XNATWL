@@ -49,10 +49,10 @@ namespace XNATWL
 
         public Border(Utils.Number all)
         {
-            this.top = all.intValue();
-            this.left = all.intValue();
-            this.bottom = all.intValue();
-            this.right = all.intValue();
+            this.top = all.IntValue();
+            this.left = all.IntValue();
+            this.bottom = all.IntValue();
+            this.right = all.IntValue();
         }
 
         public Border(int horz, int vert)
@@ -65,10 +65,10 @@ namespace XNATWL
 
         public Border(Utils.Number horz, Utils.Number vert)
         {
-            this.top = vert.intValue();
-            this.left = horz.intValue();
-            this.bottom = vert.intValue();
-            this.right = horz.intValue();
+            this.top = vert.IntValue();
+            this.left = horz.IntValue();
+            this.bottom = vert.IntValue();
+            this.right = horz.IntValue();
         }
 
         public Border(int top, int left, int bottom, int right)
@@ -81,10 +81,10 @@ namespace XNATWL
 
         public Border(Utils.Number top, Utils.Number left, Utils.Number bottom, Utils.Number right)
         {
-            this.top = top.intValue();
-            this.left = left.intValue();
-            this.bottom = bottom.intValue();
-            this.right = right.intValue();
+            this.top = top.IntValue();
+            this.left = left.IntValue();
+            this.bottom = bottom.IntValue();
+            this.right = right.IntValue();
         }
 
         public int BorderBottom

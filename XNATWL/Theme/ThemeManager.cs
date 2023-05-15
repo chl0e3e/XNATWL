@@ -226,7 +226,7 @@ namespace XNATWL.Theme
 
         private ThemeInfo FindThemeInfo(string themePath, bool warn, bool useFallback)
         {
-            int start = TextUtil.indexOf(themePath, '.', 0);
+            int start = TextUtil.IndexOf(themePath, '.', 0);
             ThemeInfo info = null;
             string themeKey = themePath.Substring(0, start);
             if (_themes.ContainsKey(themeKey))
@@ -256,7 +256,7 @@ namespace XNATWL.Theme
             }
             while (info != null && ++start < themePath.Length)
             {
-                int next = TextUtil.indexOf(themePath, '.', start);
+                int next = TextUtil.IndexOf(themePath, '.', start);
                 info = info.GetChildTheme(themePath.Substring(start, next - start));
                 start = next;
             }
@@ -315,15 +315,15 @@ namespace XNATWL.Theme
                 XMLParser xmlp = new XMLParser(fso);
                 try
                 {
-                    xmlp.setLoggerName(typeof(ThemeManager).Name);
-                    xmlp.next();
-                    xmlp.require(XmlPullParser.XML_DECLARATION, null, null);
-                    xmlp.next();
+                    xmlp.SetLoggerName(typeof(ThemeManager).Name);
+                    xmlp.Next();
+                    xmlp.Require(XmlPullParser.XML_DECLARATION, null, null);
+                    xmlp.Next();
                     ParseThemeFile(xmlp, fso.Parent);
                 }
                 finally
                 {
-                    xmlp.close();
+                    xmlp.Close();
                 }
             }
             catch (XmlPullParserException ex)
@@ -342,39 +342,39 @@ namespace XNATWL.Theme
 
         private void ParseThemeFile(XMLParser xmlp, FileSystemObject baseFso)
         {
-            xmlp.require(XmlPullParser.START_TAG, null, "themes");
-            xmlp.nextTag();
+            xmlp.Require(XmlPullParser.START_TAG, null, "themes");
+            xmlp.NextTag();
 
-            while (!xmlp.isEndTag())
+            while (!xmlp.IsEndTag())
             {
-                xmlp.require(XmlPullParser.START_TAG, null, null);
-                string tagName = xmlp.getName();
+                xmlp.Require(XmlPullParser.START_TAG, null, null);
+                string tagName = xmlp.GetName();
                 if ("images".Equals(tagName) || "textures".Equals(tagName))
                 {
                     _imageManager.ParseImages(xmlp, baseFso);
                 }
                 else if ("include".Equals(tagName))
                 {
-                    string fontFileName = xmlp.getAttributeNotNull("filename");
+                    string fontFileName = xmlp.GetAttributeNotNull("filename");
                     try
                     {
                         ParseThemeFile(new FileSystemObject(baseFso, fontFileName));
                     }
                     catch (ThemeException ex)
                     {
-                        ex.addIncludedBy(baseFso, xmlp.getLineNumber(), xmlp.getColumnNumber());
+                        ex.addIncludedBy(baseFso, xmlp.GetLineNumber(), xmlp.GetColumnNumber());
                         throw ex;
                     }
-                    xmlp.nextTag();
+                    xmlp.NextTag();
                 }
                 else
                 {
-                    string name = xmlp.getAttributeNotNull("name");
+                    string name = xmlp.GetAttributeNotNull("name");
                     if ("theme".Equals(tagName))
                     {
                         if (_themes.ContainsKey(name))
                         {
-                            throw xmlp.error("theme \"" + name + "\" already defined");
+                            throw xmlp.Error("theme \"" + name + "\" already defined");
                         }
                         _themes.Add(name, ParseTheme(xmlp, name, null, baseFso));
                     }
@@ -382,7 +382,7 @@ namespace XNATWL.Theme
                     {
                         if (_inputMaps.ContainsKey(name))
                         {
-                            throw xmlp.error("inputMap \"" + name + "\" already defined");
+                            throw xmlp.Error("inputMap \"" + name + "\" already defined");
                         }
                         _inputMaps.Add(name, ParseInputMap(xmlp, name, null));
                     }
@@ -390,9 +390,9 @@ namespace XNATWL.Theme
                     {
                         if (_fonts.ContainsKey(name))
                         {
-                            throw xmlp.error("font \"" + name + "\" already defined");
+                            throw xmlp.Error("font \"" + name + "\" already defined");
                         }
-                        bool makeDefault = xmlp.parseBoolFromAttribute("default", false);
+                        bool makeDefault = xmlp.ParseBoolFromAttribute("default", false);
                         Font font = ParseFont(xmlp, baseFso);
                         _fonts.Add(name, font);
                         if (_firstFont == null)
@@ -403,7 +403,7 @@ namespace XNATWL.Theme
                         {
                             if (_defaultFont != null)
                             {
-                                throw xmlp.error("default font already set");
+                                throw xmlp.Error("default font already set");
                             }
                             _defaultFont = font;
                         }
@@ -414,20 +414,20 @@ namespace XNATWL.Theme
                     }
                     else
                     {
-                        throw xmlp.unexpected();
+                        throw xmlp.Unexpected();
                     }
                 }
-                xmlp.require(XmlPullParser.END_TAG, null, tagName);
-                xmlp.nextTag();
+                xmlp.Require(XmlPullParser.END_TAG, null, tagName);
+                xmlp.NextTag();
             }
-            xmlp.require(XmlPullParser.END_TAG, null, "themes");
+            xmlp.Require(XmlPullParser.END_TAG, null, "themes");
         }
 
         private InputMap GetInputMap(XMLParser xmlp, string name)
         {
             if (!_inputMaps.ContainsKey(name))
             {
-                throw xmlp.error("Undefined input map: " + name);
+                throw xmlp.Error("Undefined input map: " + name);
             }
 
             return _inputMaps[name];
@@ -436,11 +436,11 @@ namespace XNATWL.Theme
         private InputMap ParseInputMap(XMLParser xmlp, string name, ThemeInfoImpl parent)
         {
             InputMap baseMap = InputMap.empty();
-            if (xmlp.parseBoolFromAttribute("merge", false))
+            if (xmlp.ParseBoolFromAttribute("merge", false))
             {
                 if (parent == null)
                 {
-                    throw xmlp.error("Can't merge on top level");
+                    throw xmlp.Error("Can't merge on top level");
                 }
                 Object o = parent.GetParam(name);
                 if (o is InputMap)
@@ -449,16 +449,16 @@ namespace XNATWL.Theme
                 }
                 else if (o != null)
                 {
-                    throw xmlp.error("Can only merge with inputMap - found a " + o.GetType().FullName);
+                    throw xmlp.Error("Can only merge with inputMap - found a " + o.GetType().FullName);
                 }
             }
-            string baseName = xmlp.getAttributeValue(null, "ref");
+            string baseName = xmlp.GetAttributeValue(null, "ref");
             if (baseName != null)
             {
                 baseMap = baseMap.addKeyStrokes(GetInputMap(xmlp, baseName));
             }
 
-            xmlp.nextTag();
+            xmlp.NextTag();
 
             LinkedHashSet<KeyStroke> keyStrokes = InputMap.parseBody(xmlp);
             InputMap im = baseMap.addKeyStrokes(keyStrokes);
@@ -468,7 +468,7 @@ namespace XNATWL.Theme
         private Font ParseFont(XMLParser xmlp, FileSystemObject baseFso)
         {
             FileSystemObject fso;
-            string fileName = xmlp.getAttributeValue(null, "filename");
+            string fileName = xmlp.GetAttributeValue(null, "filename");
             if (fileName != null)
             {
                 fso = new FileSystemObject(baseFso, fileName);
@@ -483,7 +483,7 @@ namespace XNATWL.Theme
             int fontStyle = 0;
             if (fontFamilies != null)
             {
-                fontSize = ParseMath(xmlp, xmlp.getAttributeNotNull("size")).intValue();
+                fontSize = ParseMath(xmlp, xmlp.GetAttributeNotNull("size")).IntValue();
                 List<string> styles = ParseList(xmlp, "style");
                 foreach(string style in styles)
                 {
@@ -503,15 +503,15 @@ namespace XNATWL.Theme
             List<FontParameter> fontParams = new List<FontParameter>();
             List<StateExpression> stateExpr = new List<StateExpression>();
 
-            xmlp.nextTag();
-            while (!xmlp.isEndTag())
+            xmlp.NextTag();
+            while (!xmlp.IsEndTag())
             {
-                xmlp.require(XmlPullParser.START_TAG, null, "fontParam");
+                xmlp.Require(XmlPullParser.START_TAG, null, "fontParam");
 
                 StateExpression cond = ParserUtil.ParseCondition(xmlp);
                 if (cond == null)
                 {
-                    throw xmlp.error("Condition required");
+                    throw xmlp.Error("Condition required");
                 }
                 stateExpr.Add(cond);
 
@@ -519,9 +519,9 @@ namespace XNATWL.Theme
                 ParseFontParameter(xmlp, parameters);
                 fontParams.Add(parameters);
 
-                xmlp.nextTag();
-                xmlp.require(XmlPullParser.END_TAG, null, "fontParam");
-                xmlp.nextTag();
+                xmlp.NextTag();
+                xmlp.Require(XmlPullParser.END_TAG, null, "fontParam");
+                xmlp.NextTag();
             }
 
             fontParams.Add(baseParams);
@@ -546,15 +546,15 @@ namespace XNATWL.Theme
 
         private void ParseFontParameter(XMLParser xmlp, FontParameter fp)
         {
-            for (int i = 0, n = xmlp.getAttributeCount(); i < n; i++)
+            for (int i = 0, n = xmlp.GetAttributeCount(); i < n; i++)
             {
-                if (xmlp.isAttributeUnused(i))
+                if (xmlp.IsAttributeUnused(i))
                 {
-                    string name = xmlp.getAttributeName(i);
+                    string name = xmlp.GetAttributeName(i);
                     FontParameter.Parameter type = (FontParameter.Parameter) FontParameter.ParameterByName(name);
                     if (type != null)
                     {
-                        string value = xmlp.getAttributeValue(i);
+                        string value = xmlp.GetAttributeValue(i);
                         Type dataClass = type.getDataClass();
 
                         if (dataClass == typeof(Color))
@@ -566,13 +566,13 @@ namespace XNATWL.Theme
                         else if (dataClass == typeof(int))
                         {
                             FontParameter.Parameter<int> intType = (FontParameter.Parameter<int>)type;
-                            fp.Put(intType, ParseMath(xmlp, value).intValue());
+                            fp.Put(intType, ParseMath(xmlp, value).IntValue());
 
                         }
                         else if (dataClass == typeof(bool))
                         {
                             FontParameter.Parameter<bool> boolType = (FontParameter.Parameter<bool>)type;
-                            fp.Put(boolType, xmlp.parseBool(value));
+                            fp.Put(boolType, xmlp.ParseBool(value));
 
                         }
                         else if (dataClass == typeof(string))
@@ -583,7 +583,7 @@ namespace XNATWL.Theme
                         }
                         else
                         {
-                            throw xmlp.error("dataClass not yet implemented: " + dataClass);
+                            throw xmlp.Error("dataClass not yet implemented: " + dataClass);
                         }
                     }
                 }
@@ -592,7 +592,7 @@ namespace XNATWL.Theme
 
         private static List<string> ParseList(XMLParser xmlp, string name)
         {
-            string value = xmlp.getAttributeValue(null, name);
+            string value = xmlp.GetAttributeValue(null, name);
             if (value != null)
             {
                 return ParseList(value, 0);
@@ -602,40 +602,40 @@ namespace XNATWL.Theme
 
         private static List<string> ParseList(string value, int idx)
         {
-            idx = TextUtil.skipSpaces(value, idx);
+            idx = TextUtil.SkipSpaces(value, idx);
             if (idx >= value.Length)
             {
                 return null;
             }
 
-            int end = TextUtil.indexOf(value, ',', idx);
-            string part = TextUtil.trim(value, idx, end);
+            int end = TextUtil.IndexOf(value, ',', idx);
+            string part = TextUtil.Trim(value, idx, end);
 
             return new List<string> { part, ParseList(value, end + 1)[0] };
         }
 
         private void ParseThemeWildcardRef(XMLParser xmlp, ThemeInfoImpl parent)
         {
-            string reference = xmlp.getAttributeValue(null, "ref");
+            string reference = xmlp.GetAttributeValue(null, "ref");
             if (parent == null)
             {
-                throw xmlp.error("Can't declare wildcard themes on top level");
+                throw xmlp.Error("Can't declare wildcard themes on top level");
             }
             if (reference == null)
             {
-                throw xmlp.error("Reference required for wildcard theme");
+                throw xmlp.Error("Reference required for wildcard theme");
             }
             if (!reference.EndsWith("*"))
             {
-                throw xmlp.error("Wildcard reference must end with '*'");
+                throw xmlp.Error("Wildcard reference must end with '*'");
             }
             string refPath = reference.Substring(0, reference.Length - 1);
             if (refPath.Length > 0 && !refPath.EndsWith("."))
             {
-                throw xmlp.error("Wildcard must end with \".*\" or be \"*\"");
+                throw xmlp.Error("Wildcard must end with \".*\" or be \"*\"");
             }
             parent._wildcardImportPath = refPath;
-            xmlp.nextTag();
+            xmlp.NextTag();
         }
 
         private ThemeInfoImpl ParseTheme(XMLParser xmlp, string themeName, ThemeInfoImpl parent, FileSystemObject baseFso)
@@ -646,18 +646,18 @@ namespace XNATWL.Theme
                 ParserUtil.CheckNameNotEmpty(themeName, xmlp);
                 if (themeName.IndexOf('.') >= 0)
                 {
-                    throw xmlp.error("'.' is not allowed in names");
+                    throw xmlp.Error("'.' is not allowed in names");
                 }
             }
             ThemeInfoImpl ti = new ThemeInfoImpl(this, themeName, parent);
             ThemeInfoImpl oldEnv = _mathInterpreter.SetEnv(ti);
             try
             {
-                if (xmlp.parseBoolFromAttribute("merge", false))
+                if (xmlp.ParseBoolFromAttribute("merge", false))
                 {
                     if (parent == null)
                     {
-                        throw xmlp.error("Can't merge on top level");
+                        throw xmlp.Error("Can't merge on top level");
                     }
                     ThemeInfoImpl tiPrev = parent.GetTheme(themeName);
                     if (tiPrev != null)
@@ -665,7 +665,7 @@ namespace XNATWL.Theme
                         ti.ThemeInfoImplCopy(tiPrev);
                     }
                 }
-                string reference = xmlp.getAttributeValue(null, "ref");
+                string reference = xmlp.GetAttributeValue(null, "ref");
                 if (reference != null)
                 {
                     ThemeInfoImpl tiRef = null;
@@ -679,17 +679,17 @@ namespace XNATWL.Theme
                     }
                     if (tiRef == null)
                     {
-                        throw xmlp.error("referenced theme info not found: " + reference);
+                        throw xmlp.Error("referenced theme info not found: " + reference);
                     }
                     ti.ThemeInfoImplCopy(tiRef);
                 }
-                ti._maybeUsedFromWildcard = xmlp.parseBoolFromAttribute("allowWildcard", true);
-                xmlp.nextTag();
-                while (!xmlp.isEndTag())
+                ti._maybeUsedFromWildcard = xmlp.ParseBoolFromAttribute("allowWildcard", true);
+                xmlp.NextTag();
+                while (!xmlp.IsEndTag())
                 {
-                    xmlp.require(XmlPullParser.START_TAG, null, null);
-                    string tagName = xmlp.getName();
-                    string name = xmlp.getAttributeNotNull("name");
+                    xmlp.Require(XmlPullParser.START_TAG, null, null);
+                    string tagName = xmlp.GetName();
+                    string name = xmlp.GetAttributeNotNull("name");
                     if ("param".Equals(tagName))
                     {
                         ParseParam(xmlp, baseFso, "param", ti, ti);
@@ -708,10 +708,10 @@ namespace XNATWL.Theme
                     }
                     else
                     {
-                        throw xmlp.unexpected();
+                        throw xmlp.Unexpected();
                     }
-                    xmlp.require(XmlPullParser.END_TAG, null, tagName);
-                    xmlp.nextTag();
+                    xmlp.Require(XmlPullParser.END_TAG, null, tagName);
+                    xmlp.NextTag();
                 }
             }
             finally
@@ -725,14 +725,14 @@ namespace XNATWL.Theme
         {
             try
             {
-                xmlp.require(XmlPullParser.START_TAG, null, tagName);
-                string name = xmlp.getAttributeNotNull("name");
-                xmlp.nextTag();
-                string valueTagName = xmlp.getName();
+                xmlp.Require(XmlPullParser.START_TAG, null, tagName);
+                string name = xmlp.GetAttributeNotNull("name");
+                xmlp.NextTag();
+                string valueTagName = xmlp.GetName();
                 Object value = ParseValue(xmlp, valueTagName, name, baseFso, parent);
-                xmlp.require(XmlPullParser.END_TAG, null, valueTagName);
-                xmlp.nextTag();
-                xmlp.require(XmlPullParser.END_TAG, null, tagName);
+                xmlp.Require(XmlPullParser.END_TAG, null, valueTagName);
+                xmlp.NextTag();
+                xmlp.Require(XmlPullParser.END_TAG, null, tagName);
                 if (value is IDictionary<string, Renderer.Image>)
                 {
                     IDictionary<string, Renderer.Image> map = (IDictionary<string, Renderer.Image>)value;
@@ -755,7 +755,7 @@ namespace XNATWL.Theme
                     Dictionary<string, object> map = (Dictionary<string, object>)value;
                     if (parent == null && map.Count != 1)
                     {
-                        throw xmlp.error("constant definitions must define exactly 1 value");
+                        throw xmlp.Error("constant definitions must define exactly 1 value");
                     }
                     target.Put(map);
                 }
@@ -767,21 +767,21 @@ namespace XNATWL.Theme
             }
             catch (FormatException ex)
             {
-                throw xmlp.error("unable to parse value", ex);
+                throw xmlp.Error("unable to parse value", ex);
             }
         }
 
         private ParameterListImpl ParseList(XMLParser xmlp, FileSystemObject baseFso, ThemeInfoImpl parent)
         {
             ParameterListImpl result = new ParameterListImpl(this, parent);
-            xmlp.nextTag();
-            while (xmlp.isStartTag())
+            xmlp.NextTag();
+            while (xmlp.IsStartTag())
             {
-                string tagName = xmlp.getName();
+                string tagName = xmlp.GetName();
                 Object obj = ParseValue(xmlp, tagName, null, baseFso, parent);
-                xmlp.require(XmlPullParser.END_TAG, null, tagName);
+                xmlp.Require(XmlPullParser.END_TAG, null, tagName);
                 result._parameters.Add(obj);
-                xmlp.nextTag();
+                xmlp.NextTag();
             }
             return result;
         }
@@ -789,11 +789,11 @@ namespace XNATWL.Theme
         private ParameterMapImpl ParseMap(XMLParser xmlp, FileSystemObject baseFso, string name, ThemeInfoImpl parent)
         {
             ParameterMapImpl result = new ParameterMapImpl(this, parent);
-            if (xmlp.parseBoolFromAttribute("merge", false))
+            if (xmlp.ParseBoolFromAttribute("merge", false))
             {
                 if (parent == null)
                 {
-                    throw xmlp.error("Can't merge on top level");
+                    throw xmlp.Error("Can't merge on top level");
                 }
                 Object obj = parent.GetParam(name);
                 if (obj is ParameterMapImpl)
@@ -803,10 +803,10 @@ namespace XNATWL.Theme
                 }
                 else if (obj != null)
                 {
-                    throw xmlp.error("Can only merge with map - found a " + obj.GetType().Name);
+                    throw xmlp.Error("Can only merge with map - found a " + obj.GetType().Name);
                 }
             }
-            string reference = xmlp.getAttributeValue(null, "ref");
+            string reference = xmlp.GetAttributeValue(null, "ref");
             if (reference != null)
             {
                 Object obj = parent.GetParam(reference);
@@ -828,13 +828,13 @@ namespace XNATWL.Theme
                     throw new IOException("Expected a map got a " + obj.GetType().Name);
                 }
             }
-            xmlp.nextTag();
-            while (xmlp.isStartTag())
+            xmlp.NextTag();
+            while (xmlp.IsStartTag())
             {
-                string tagName = xmlp.getName();
+                string tagName = xmlp.GetName();
                 ParseParam(xmlp, baseFso, "param", parent, result);
-                xmlp.require(XmlPullParser.END_TAG, null, tagName);
-                xmlp.nextTag();
+                xmlp.Require(XmlPullParser.END_TAG, null, tagName);
+                xmlp.NextTag();
             }
             return result;
         }
@@ -861,23 +861,23 @@ namespace XNATWL.Theme
                 }
                 if ("enum".Equals(tagName))
                 {
-                    string enumType = xmlp.getAttributeNotNull("type");
+                    string enumType = xmlp.GetAttributeNotNull("type");
                     if (enumType.ToUpper() == "ALIGNMENT")
                     {
-                        return Alignment.ByName(xmlp.nextText());
+                        return Alignment.ByName(xmlp.NextText());
                     }
                     if (!enums.ContainsKey(enumType))
                     {
-                        throw xmlp.error("enum type \"" + enumType + "\" not registered");
+                        throw xmlp.Error("enum type \"" + enumType + "\" not registered");
                     }
-                    return xmlp.parseEnumFromText(enums[enumType]);
+                    return xmlp.ParseEnumFromText(enums[enumType]);
                 }
                 if ("bool".Equals(tagName))
                 {
-                    return xmlp.parseBoolFromText();
+                    return xmlp.ParseBoolFromText();
                 }
 
-                string value = xmlp.nextText();
+                string value = xmlp.NextText();
 
                 if ("color".Equals(tagName))
                 {
@@ -885,11 +885,11 @@ namespace XNATWL.Theme
                 }
                 if ("float".Equals(tagName))
                 {
-                    return ParseMath(xmlp, value).floatValue();
+                    return ParseMath(xmlp, value).FloatValue();
                 }
                 if ("int".Equals(tagName))
                 {
-                    return ParseMath(xmlp, value).intValue();
+                    return ParseMath(xmlp, value).IntValue();
                 }
                 if ("string".Equals(tagName))
                 {
@@ -900,7 +900,7 @@ namespace XNATWL.Theme
                     Font font = _fonts[value];
                     if (font == null)
                     {
-                        throw xmlp.error("Font \"" + value + "\" not found");
+                        throw xmlp.Error("Font \"" + value + "\" not found");
                     }
                     return font;
                 }
@@ -921,7 +921,7 @@ namespace XNATWL.Theme
                     Object result = _constants.GetParam(value);
                     if (result == null)
                     {
-                        throw xmlp.error("Unknown constant: " + value);
+                        throw xmlp.Error("Unknown constant: " + value);
                     }
                     if (result == NULL)
                     {
@@ -957,11 +957,11 @@ namespace XNATWL.Theme
                 {
                     return GetInputMap(xmlp, value);
                 }
-                throw xmlp.error("Unknown type \"" + tagName + "\" specified");
+                throw xmlp.Error("Unknown type \"" + tagName + "\" specified");
             }
             catch (FormatException ex)
             {
-                throw xmlp.error("unable to parse value", ex);
+                throw xmlp.Error("unable to parse value", ex);
             }
         }
 
@@ -969,11 +969,11 @@ namespace XNATWL.Theme
         {
             try
             {
-                return _mathInterpreter.execute(str);
+                return _mathInterpreter.Execute(str);
             }
             catch (ParseException ex)
             {
-                throw xmlp.error("unable to evaluate", Unwrap(ex));
+                throw xmlp.Error("unable to evaluate", Unwrap(ex));
             }
         }
 
@@ -981,11 +981,11 @@ namespace XNATWL.Theme
         {
             try
             {
-                return _mathInterpreter.executeCreateObject<T>(str, type);
+                return _mathInterpreter.ExecuteCreateObject<T>(str, type);
             }
             catch (ParseException ex)
             {
-                throw xmlp.error("unable to evaluate", Unwrap(ex));
+                throw xmlp.Error("unable to evaluate", Unwrap(ex));
             }
         }
 
@@ -1040,13 +1040,13 @@ namespace XNATWL.Theme
                     Object objx = e.GetParam(name);
                     if (objx != null)
                     {
-                        push(objx);
+                        Push(objx);
                         return;
                     }
                     objx = e.GetChildThemeImpl(name, false);
                     if (objx != null)
                     {
-                        push(objx);
+                        Push(objx);
                         return;
                     }
                 }
@@ -1054,13 +1054,13 @@ namespace XNATWL.Theme
                 Object obj = this._themeManager._constants.GetParam(name);
                 if (obj != null)
                 {
-                    push(obj);
+                    Push(obj);
                     return;
                 }
 
                 if (this._themeManager._fonts.ContainsKey(name))
                 {
-                    push(this._themeManager._fonts[name]);
+                    Push(this._themeManager._fonts[name]);
                     return;
                 }
 

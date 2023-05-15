@@ -403,7 +403,7 @@ namespace XNATWL
             {
                 if (rowModel != null)
                 {
-                    return rowModel.getIndex(y);
+                    return rowModel.GetIndex(y);
                 }
                 return Math.Min(numRows - 1, y / rowHeight);
             }
@@ -415,7 +415,7 @@ namespace XNATWL
             checkRowIndex(row);
             if (rowModel != null)
             {
-                return rowModel.getPosition(row);
+                return rowModel.GetPosition(row);
             }
             else
             {
@@ -428,7 +428,7 @@ namespace XNATWL
             checkRowIndex(row);
             if (rowModel != null)
             {
-                return rowModel.getSize(row);
+                return rowModel.GetSize(row);
             }
             else
             {
@@ -441,7 +441,7 @@ namespace XNATWL
             checkRowIndex(row);
             if (rowModel != null)
             {
-                return rowModel.getPosition(row + 1);
+                return rowModel.GetPosition(row + 1);
             }
             else
             {
@@ -453,7 +453,7 @@ namespace XNATWL
         {
             if (x >= 0)
             {
-                int column = columnModel.getIndex(x);
+                int column = columnModel.GetIndex(x);
                 return column;
             }
             return -1;
@@ -462,19 +462,19 @@ namespace XNATWL
         public int getColumnStartPosition(int column)
         {
             checkColumnIndex(column);
-            return columnModel.getPosition(column);
+            return columnModel.GetPosition(column);
         }
 
         public int getColumnWidth(int column)
         {
             checkColumnIndex(column);
-            return columnModel.getSize(column);
+            return columnModel.GetSize(column);
         }
 
         public int getColumnEndPosition(int column)
         {
             checkColumnIndex(column);
-            return columnModel.getPosition(column + 1);
+            return columnModel.GetPosition(column + 1);
         }
 
         public void setColumnWidth(int column, int width)
@@ -710,7 +710,7 @@ namespace XNATWL
             this.columnDividerDragableDistance = themeInfo.GetParameter("columnDividerDragableDistance", 3);
             this.ensureColumnHeaderMinWidth = themeInfo.GetParameter("ensureColumnHeaderMinWidth", false);
 
-            foreach (CellRenderer cellRenderer in cellRenderers.getUniqueValues())
+            foreach (CellRenderer cellRenderer in cellRenderers.GetUniqueValues())
             {
                 applyCellRendererTheme(cellRenderer);
             }
@@ -838,18 +838,18 @@ namespace XNATWL
                 lastRowPartialVisible = false;
             }
 
-            if (!widgetGrid.isEmpty())
+            if (!widgetGrid.IsEmpty())
             {
                 if (startRow > firstVisibleRow)
                 {
-                    widgetGrid.iterate(firstVisibleRow, 0, startRow - 1, numColumns, removeCellWidgetsFunction);
+                    widgetGrid.Iterate(firstVisibleRow, 0, startRow - 1, numColumns, removeCellWidgetsFunction);
                 }
                 if (endRow < lastVisibleRow)
                 {
-                    widgetGrid.iterate(endRow + 1, 0, lastVisibleRow, numColumns, removeCellWidgetsFunction);
+                    widgetGrid.Iterate(endRow + 1, 0, lastVisibleRow, numColumns, removeCellWidgetsFunction);
                 }
 
-                widgetGrid.iterate(startRow, 0, endRow, numColumns, insertCellWidgetsFunction);
+                widgetGrid.Iterate(startRow, 0, endRow, numColumns, insertCellWidgetsFunction);
             }
 
             firstVisibleRow = startRow;
@@ -989,8 +989,8 @@ namespace XNATWL
 
                 if (dropMarkerRow >= 0 && dropMarkerBeforeRow && imageRowDropMarker != null)
                 {
-                    int y = (rowModel != null) ? rowModel.getPosition(dropMarkerRow) : (dropMarkerRow * rowHeight);
-                    imageRowDropMarker.Draw(animState, getOffsetX(), getOffsetY() + y, columnModel.getEndPosition(), 1);
+                    int y = (rowModel != null) ? rowModel.GetPosition(dropMarkerRow) : (dropMarkerRow * rowHeight);
+                    imageRowDropMarker.Draw(animState, getOffsetX(), getOffsetY() + y, columnModel.GetEndPosition(), 1);
                 }
             }
             finally
@@ -1003,7 +1003,7 @@ namespace XNATWL
         {
             AnimationState animState = getAnimationState();
             int x = getOffsetX();
-            int width = columnModel.getEndPosition();
+            int width = columnModel.GetEndPosition();
             int offsetY = getOffsetY();
 
             int rowStartPos = getRowStartPosition(firstVisibleRow);
@@ -1156,14 +1156,14 @@ namespace XNATWL
         protected bool autoSizeRow(int row)
         {
             int height = computeRowHeight(row);
-            return rowModel.setSize(row, height);
+            return rowModel.SetSize(row, height);
         }
 
         protected void autoSizeAllRows()
         {
             if (rowModel != null)
             {
-                rowModel.initializeAll(numRows);
+                rowModel.InitializeAll(numRows);
             }
             bAutoSizeAllRows = false;
         }
@@ -1200,7 +1200,7 @@ namespace XNATWL
 
         protected void updateCellWidget(int row, int column)
         {
-            WidgetEntry we = (WidgetEntry)widgetGrid.get(row, column);
+            WidgetEntry we = (WidgetEntry)widgetGrid.Get(row, column);
             Widget oldWidget = (we != null) ? we.widget : null;
             Widget newWidget = null;
 
@@ -1222,7 +1222,7 @@ namespace XNATWL
                     if (we == null)
                     {
                         we = new WidgetEntry();
-                        widgetGrid.set(row, column, we);
+                        widgetGrid.Set(row, column, we);
                     }
                     we.widget = newWidget;
                     we.creator = cellWidgetCreator;
@@ -1231,7 +1231,7 @@ namespace XNATWL
 
             if (newWidget == null && we != null)
             {
-                widgetGrid.remove(row, column);
+                widgetGrid.Remove(row, column);
             }
 
             if (oldWidget != null && newWidget != oldWidget)
@@ -1242,7 +1242,7 @@ namespace XNATWL
 
         protected void updateAllCellWidgets()
         {
-            if (!widgetGrid.isEmpty() || hasCellWidgetCreators)
+            if (!widgetGrid.IsEmpty() || hasCellWidgetCreators)
             {
                 for (int row = 0; row < numRows; row++)
                 {
@@ -1334,8 +1334,8 @@ namespace XNATWL
         {
             x -= getOffsetX();
             x += columnDividerDragableDistance;
-            int col = columnModel.getIndex(x);
-            int dist = x - columnModel.getPosition(col);
+            int col = columnModel.GetIndex(x);
+            int dist = x - columnModel.GetPosition(col);
             if (dist < 2 * columnDividerDragableDistance)
             {
                 return col - 1;
@@ -1353,7 +1353,7 @@ namespace XNATWL
         protected int getColumnUnderMouse(int x)
         {
             x -= getOffsetX();
-            int col = columnModel.getIndex(x);
+            int col = columnModel.GetIndex(x);
             return col;
         }
 
@@ -1682,17 +1682,17 @@ namespace XNATWL
         {
             if (getInnerWidth() > 0)
             {
-                columnModel.initializeAll(numColumns);
+                columnModel.InitializeAll(numColumns);
                 bUpdateAllColumnWidth = false;
             }
         }
 
         protected void updateAll()
         {
-            if (!widgetGrid.isEmpty())
+            if (!widgetGrid.IsEmpty())
             {
                 removeAllCellWidgets();
-                widgetGrid.clear();
+                widgetGrid.Clear();
             }
 
             if (rowModel != null)
@@ -1784,16 +1784,16 @@ namespace XNATWL
             checkRowRange(row, count);
             if (rowModel != null)
             {
-                rowModel.insert(row, count);
+                rowModel.Insert(row, count);
             }
             if (dropMarkerRow > row || (dropMarkerRow == row && dropMarkerBeforeRow))
             {
                 dropMarkerRow += count;
             }
-            if (!widgetGrid.isEmpty() || hasCellWidgetCreators)
+            if (!widgetGrid.IsEmpty() || hasCellWidgetCreators)
             {
                 removeAllCellWidgets();
-                widgetGrid.insertRows(row, count);
+                widgetGrid.InsertRows(row, count);
 
                 for (int i = 0; i < count; i++)
                 {
@@ -1836,7 +1836,7 @@ namespace XNATWL
             }
             if (rowModel != null)
             {
-                rowModel.remove(row, count);
+                rowModel.Remove(row, count);
             }
             if (dropMarkerRow >= row)
             {
@@ -1849,10 +1849,10 @@ namespace XNATWL
                     dropMarkerRow -= count;
                 }
             }
-            if (!widgetGrid.isEmpty())
+            if (!widgetGrid.IsEmpty())
             {
-                widgetGrid.iterate(row, 0, row + count - 1, numColumns, removeCellWidgetsFunction);
-                widgetGrid.removeRows(row, count);
+                widgetGrid.Iterate(row, 0, row + count - 1, numColumns, removeCellWidgetsFunction);
+                widgetGrid.RemoveRows(row, count);
             }
             if (selectionManager != null)
             {
@@ -1875,12 +1875,12 @@ namespace XNATWL
             columnHeaders = newColumnHeaders;
             updateColumnHeaderNumbers();
 
-            columnModel.insert(column, count);
+            columnModel.Insert(column, count);
 
-            if (!widgetGrid.isEmpty() || hasCellWidgetCreators)
+            if (!widgetGrid.IsEmpty() || hasCellWidgetCreators)
             {
                 removeAllCellWidgets();
-                widgetGrid.insertColumns(column, count);
+                widgetGrid.InsertColumns(column, count);
 
                 for (int row = 0; row < numRows; row++)
                 {
@@ -1915,11 +1915,11 @@ namespace XNATWL
                     sp.setScrollPositionY(scrollPosX - columnsEnd + columnsStart);
                 }
             }
-            columnModel.remove(column, count);
-            if (!widgetGrid.isEmpty())
+            columnModel.Remove(column, count);
+            if (!widgetGrid.IsEmpty())
             {
-                widgetGrid.iterate(0, column, numRows, column + count - 1, removeCellWidgetsFunction);
-                widgetGrid.removeColumns(column, count);
+                widgetGrid.Iterate(0, column, numRows, column + count - 1, removeCellWidgetsFunction);
+                widgetGrid.RemoveColumns(column, count);
             }
 
             removeColumnHeaders(column, count);
@@ -1947,11 +1947,11 @@ namespace XNATWL
                 this.tableBase = tableBase;
             }
 
-            protected internal override void initializeSizes(int index, int count)
+            protected internal override void InitializeSizes(int index, int count)
             {
                 for (int i = 0; i < count; i++, index++)
                 {
-                    table[index] = this.tableBase.computeRowHeight(index);
+                    _table[index] = this.tableBase.computeRowHeight(index);
                 }
             }
         }
@@ -1963,7 +1963,7 @@ namespace XNATWL
             {
                 this.tableBase = tableBase;
             }
-            protected internal override void initializeSizes(int index, int count)
+            protected internal override void InitializeSizes(int index, int count)
             {
                 bool useSprings = this.tableBase.isFixedWidthMode();
                 if (!useSprings)
@@ -1972,7 +1972,7 @@ namespace XNATWL
                     for (int i = 0; i < count; i++)
                     {
                         int width = this.tableBase.computePreferredColumnWidth(index + i);
-                        table[index + i] = width;
+                        _table[index + i] = width;
                         sum += width;
                     }
                     useSprings = sum < this.tableBase.getInnerWidth();
@@ -1982,7 +1982,7 @@ namespace XNATWL
                     computeColumnHeaderLayout();
                     for (int i = 0; i < count; i++)
                     {
-                        table[index + i] = this.tableBase.clampColumnWidth(this.tableBase.columnHeaders[i].springWidth);
+                        _table[index + i] = this.tableBase.clampColumnWidth(this.tableBase.columnHeaders[i].springWidth);
                     }
                 }
             }
@@ -2002,7 +2002,7 @@ namespace XNATWL
                         width = Math.Max(width, this.tableBase.columnHeaders[index].getMinWidth());
                     }
                 }
-                return setSize(index, width);
+                return SetSize(index, width);
             }
             void computeColumnHeaderLayout()
             {
@@ -2049,7 +2049,7 @@ namespace XNATWL
             {
                 this.tableBase = tableBase;
             }
-            public void apply(int row, int column, SparseGrid.Entry e)
+            public void Apply(int row, int column, SparseGrid.Entry e)
             {
                 WidgetEntry widgetEntry = (WidgetEntry)e;
                 Widget widget = widgetEntry.widget;
@@ -2067,7 +2067,7 @@ namespace XNATWL
             {
                 this.tableBase = tableBase;
             }
-            public void apply(int row, int column, SparseGrid.Entry e)
+            public void Apply(int row, int column, SparseGrid.Entry e)
             {
                 this.tableBase.insertCellWidget(row, column, (WidgetEntry)e);
             }

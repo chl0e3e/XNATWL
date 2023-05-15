@@ -300,7 +300,7 @@ namespace XNATWL
             if (visible)
             {
                 TintAnimator tintAnimator = getTintAnimator();
-                if ((tintAnimator != null && tintAnimator.hasTint()) || !base.isVisible())
+                if ((tintAnimator != null && tintAnimator.HasTint()) || !base.isVisible())
                 {
                     fadeTo(hasKeyboardFocus() ? Color.WHITE : fadeColorInactive, fadeDurationShow);
                 }
@@ -364,8 +364,8 @@ namespace XNATWL
         protected override void updateTintAnimation()
         {
             TintAnimator tintAnimator = getTintAnimator();
-            tintAnimator.update();
-            if (!tintAnimator.isFadeActive() && tintAnimator.isZeroAlpha())
+            tintAnimator.Update();
+            if (!tintAnimator.IsFadeActive() && tintAnimator.IsZeroAlpha())
             {
                 setHardVisible(false);
             }
@@ -374,7 +374,7 @@ namespace XNATWL
         protected void fadeTo(Color color, int duration)
         {
             //System.out.println("Start fade to " + color + " over " + duration + " ms");
-            allocateTint().fadeTo(color, duration);
+            allocateTint().FadeTo(color, duration);
             if (!base.isVisible() && color.Alpha != 0)
             {
                 setHardVisible(true);
@@ -389,7 +389,7 @@ namespace XNATWL
             }
             else
             {
-                allocateTint().fadeToHide(duration);
+                allocateTint().FadeToHide(duration);
             }
         }
 
@@ -403,7 +403,7 @@ namespace XNATWL
                 if (!base.isVisible())
                 {
                     // we start with TRANSPARENT when hidden
-                    tintAnimator.fadeToHide(0);
+                    tintAnimator.FadeToHide(0);
                 }
             }
             return tintAnimator;

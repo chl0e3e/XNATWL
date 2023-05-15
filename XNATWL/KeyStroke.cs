@@ -167,7 +167,7 @@ namespace XNATWL
                 throw new ArgumentNullException("action");
             }
 
-            int idx = TextUtil.skipSpaces(stroke, 0);
+            int idx = TextUtil.SkipSpaces(stroke, 0);
             int modifers = 0;
             char keyChar = Event.CHAR_NONE;
             int keyCode = Event.KEY_NONE;

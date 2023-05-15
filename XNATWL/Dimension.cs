@@ -48,8 +48,8 @@ namespace XNATWL
 
         public Dimension(Number x, Number y)
         {
-            this.x = x.intValue();
-            this.y = y.intValue();
+            this.x = x.IntValue();
+            this.y = y.IntValue();
         }
 
         public int X

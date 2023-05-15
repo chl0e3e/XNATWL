@@ -36,12 +36,11 @@ namespace XNATWL.Utils
 {
     public class StateSelect
     {
+        private static bool USE_OPTIMIZER = false;
 
-        private static bool useOptimizer = false;
-
-        private StateExpression[] expressions;
-        private StateKey[] programKeys;
-        private short[] programCodes;
+        private StateExpression[] _expressions;
+        private StateKey[] _programKeys;
+        private short[] _programCodes;
 
         public static StateSelect EMPTY = new StateSelect();
 
@@ -52,27 +51,27 @@ namespace XNATWL.Utils
 
         public StateSelect(params StateExpression[] expressions)
         {
-            this.expressions = expressions;
+            this._expressions = expressions;
 
-            StateSelectOptimizer sso = useOptimizer
+            StateSelectOptimizer sso = USE_OPTIMIZER
                     ? StateSelectOptimizer.Optimize(expressions)
                     : null;
 
             if (sso != null)
             {
-                programKeys = sso.programKeys;
-                programCodes = sso.programCodes;
+                _programKeys = sso._programKeys;
+                _programCodes = sso._programCodes;
             }
             else
             {
-                programKeys = null;
-                programCodes = null;
+                _programKeys = null;
+                _programCodes = null;
             }
         }
 
         public static bool IsUseOptimizer()
         {
-            return useOptimizer;
+            return USE_OPTIMIZER;
         }
 
         /**
@@ -82,7 +81,7 @@ namespace XNATWL.Utils
          */
         public static void SetUseOptimizer(bool useOptimizer)
         {
-            StateSelect.useOptimizer = useOptimizer;
+            StateSelect.USE_OPTIMIZER = useOptimizer;
         }
 
         /**
@@ -93,7 +92,7 @@ namespace XNATWL.Utils
          */
         public int Expressions()
         {
-            return expressions.Length;
+            return _expressions.Length;
         }
 
         /**
@@ -104,7 +103,7 @@ namespace XNATWL.Utils
          */
         public StateExpression ExpressionAt(int idx)
         {
-            return expressions[idx];
+            return _expressions[idx];
         }
 
         /**
@@ -116,7 +115,7 @@ namespace XNATWL.Utils
          */
         public int Evaluate(Renderer.AnimationState animationState)
         {
-            if (programKeys != null)
+            if (_programKeys != null)
             {
                 return EvaluateProgram(animationState);
             }
@@ -126,9 +125,9 @@ namespace XNATWL.Utils
         private int EvaluateExpr(Renderer.AnimationState animationState)
         {
             int i = 0;
-            for (int n = expressions.Length; i < n; i++)
+            for (int n = _expressions.Length; i < n; i++)
             {
-                if (expressions[i].Evaluate(animationState))
+                if (_expressions[i].Evaluate(animationState))
                 {
                     break;
                 }
@@ -141,10 +140,10 @@ namespace XNATWL.Utils
             int pos = 0;
             do
             {
-                if (animationState == null || !animationState.GetAnimationState(programKeys[pos >> 1])) {
+                if (animationState == null || !animationState.GetAnimationState(_programKeys[pos >> 1])) {
                     pos++;
                 }
-                pos = programCodes[pos];
+                pos = _programCodes[pos];
             } while (pos >= 0);
             return pos & CODE_MASK;
         }

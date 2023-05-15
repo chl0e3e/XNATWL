@@ -93,9 +93,9 @@ namespace XNATWL.Test
 
             cs.ColorChanged += (x, y) =>
             {
-                tintAnimator.setColor(cs.getColor());
+                tintAnimator.SetColor(cs.getColor());
             };
-            tintAnimator.setColor(cs.getColor());
+            tintAnimator.SetColor(cs.getColor());
 
             DialogLayout dl = new DialogLayout();
             dl.setHorizontalGroup(dl.createParallelGroup()

@@ -36,9 +36,9 @@ namespace XNATWL.Utils
     {
         private static int INITIAL_CAPACITY = 64;
 
-        protected int[] table;
-        protected internal int size;
-        protected int defaultValue;
+        protected int[] _table;
+        protected internal int _size;
+        protected int _defaultValue;
 
         public SizeSequence() : this(INITIAL_CAPACITY)
         {
@@ -47,13 +47,13 @@ namespace XNATWL.Utils
 
         public SizeSequence(int initialCapacity)
         {
-            table = new int[initialCapacity];
+            _table = new int[initialCapacity];
         }
 
-        public int getPosition(int index)
+        public int GetPosition(int index)
         {
             int low = 0;
-            int high = size;
+            int high = _size;
             int result = 0;
             while (low < high)
             {
@@ -64,35 +64,35 @@ namespace XNATWL.Utils
                 }
                 else
                 {
-                    result += table[mid];
+                    result += _table[mid];
                     low = mid + 1;
                 }
             }
             return result;
         }
 
-        public int getEndPosition()
+        public int GetEndPosition()
         {
             int low = 0;
-            int high = size;
+            int high = _size;
             int result = 0;
             while (low < high)
             {
                 int mid = BitOperations.RightMove(low + high, 1);
-                result += table[mid];
+                result += _table[mid];
                 low = mid + 1;
             }
             return result;
         }
 
-        public int getIndex(int position)
+        public int GetIndex(int position)
         {
             int low = 0;
-            int high = size;
+            int high = _size;
             while (low < high)
             {
                 int mid = BitOperations.RightMove(low + high, 1);
-                int pos = table[mid];
+                int pos = _table[mid];
                 if (position < pos)
                 {
                     high = mid;
@@ -106,33 +106,33 @@ namespace XNATWL.Utils
             return low;
         }
 
-        public int getSize(int index)
+        public int GetSize(int index)
         {
-            return getPosition(index + 1) - getPosition(index);
+            return GetPosition(index + 1) - GetPosition(index);
         }
 
-        public bool setSize(int index, int size)
+        public bool SetSize(int index, int size)
         {
-            int delta = size - getSize(index);
+            int delta = size - GetSize(index);
             if (delta != 0)
             {
-                adjustSize(index, delta);
+                AdjustSize(index, delta);
                 return true;
             }
             return false;
         }
 
-        protected void adjustSize(int index, int delta)
+        protected void AdjustSize(int index, int delta)
         {
             int low = 0;
-            int high = size;
+            int high = _size;
 
             while (low < high)
             {
                 int mid = BitOperations.RightMove(low + high, 1);
                 if (index <= mid)
                 {
-                    table[mid] += delta;
+                    _table[mid] += delta;
                     high = mid;
                 }
                 else
@@ -142,83 +142,83 @@ namespace XNATWL.Utils
             }
         }
 
-        protected int toSizes(int low, int high, int[] dst)
+        protected int ToSizes(int low, int high, int[] dst)
         {
             int subResult = 0;
             while (low < high)
             {
                 int mid = BitOperations.RightMove(low + high, 1);
-                int pos = table[mid];
-                dst[mid] = pos - toSizes(low, mid, dst);
+                int pos = _table[mid];
+                dst[mid] = pos - ToSizes(low, mid, dst);
                 subResult += pos;
                 low = mid + 1;
             }
             return subResult;
         }
 
-        protected int fromSizes(int low, int high)
+        protected int FromSizes(int low, int high)
         {
             int subResult = 0;
             while (low < high)
             {
                 int mid = BitOperations.RightMove(low + high, 1);
-                int pos = table[mid] + fromSizes(low, mid);
-                table[mid] = pos;
+                int pos = _table[mid] + FromSizes(low, mid);
+                _table[mid] = pos;
                 subResult += pos;
                 low = mid + 1;
             }
             return subResult;
         }
 
-        public void insert(int index, int count)
+        public void Insert(int index, int count)
         {
-            int newSize = size + count;
-            if (newSize >= table.Length)
+            int newSize = _size + count;
+            if (newSize >= _table.Length)
             {
                 int[] sizes = new int[newSize];
-                toSizes(0, size, sizes);
-                table = sizes;
+                ToSizes(0, _size, sizes);
+                _table = sizes;
             }
             else
             {
-                toSizes(0, size, table);
+                ToSizes(0, _size, _table);
             }
-            Array.Copy(table, index, table, index + count, size - index);
-            size = newSize;
-            initializeSizes(index, count);
-            fromSizes(0, newSize);
+            Array.Copy(_table, index, _table, index + count, _size - index);
+            _size = newSize;
+            InitializeSizes(index, count);
+            FromSizes(0, newSize);
         }
 
-        public void remove(int index, int count)
+        public void Remove(int index, int count)
         {
-            toSizes(0, size, table);
-            int newSize = size - count;
-            Array.Copy(table, index + count, table, index, newSize - index);
-            size = newSize;
-            fromSizes(0, newSize);
+            ToSizes(0, _size, _table);
+            int newSize = _size - count;
+            Array.Copy(_table, index + count, _table, index, newSize - index);
+            _size = newSize;
+            FromSizes(0, newSize);
         }
 
-        public void initializeAll(int count)
+        public void InitializeAll(int count)
         {
-            if (table.Length < count)
+            if (_table.Length < count)
             {
-                table = new int[count];
+                _table = new int[count];
             }
-            size = count;
-            initializeSizes(0, count);
-            fromSizes(0, count);
+            _size = count;
+            InitializeSizes(0, count);
+            FromSizes(0, count);
         }
 
-        public void setDefaultValue(int defaultValue)
+        public void SetDefaultValue(int defaultValue)
         {
-            this.defaultValue = defaultValue;
+            this._defaultValue = defaultValue;
         }
 
-        protected internal virtual void initializeSizes(int index, int count)
+        protected internal virtual void InitializeSizes(int index, int count)
         {
             for(int i = index; i < index+count; i++)
             {
-                table[i] = defaultValue;
+                _table[i] = _defaultValue;
             }
         }
     }
