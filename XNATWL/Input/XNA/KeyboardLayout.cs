@@ -24,6 +24,8 @@ namespace XNATWL.Input.XNA
         /// <param name="keyboardLayoutXML">object used for locating keyboard layout XML</param>
         public KeyboardLayout(FileSystemObject keyboardLayoutXML)
         {
+            this.CopyTWLKeycodeMap();
+
             Stream fileStream = keyboardLayoutXML.OpenRead();
             this.Read(fileStream);
             fileStream.Close();
@@ -32,8 +34,6 @@ namespace XNATWL.Input.XNA
             this._emptyKeyInfo.TWL = Event.KEY_NONE;
             this._emptyKeyInfo.Char = '\0';
             this._emptyKeyInfo.ShiftChar = '\0';
-
-            this.CopyTWLKeycodeMap();
         }
 
         /// <summary>
