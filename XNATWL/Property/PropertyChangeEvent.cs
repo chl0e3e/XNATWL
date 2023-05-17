@@ -30,6 +30,9 @@
 
 namespace XNATWL.Property
 {
+    /// <summary>
+    /// Port of java.beans.PropertyChangeEvent
+    /// </summary>
     public class PropertyChangeEvent
     {
         private object _source;
@@ -45,6 +48,9 @@ namespace XNATWL.Property
             this._newPropertyValue = newPropertyValue;
         }
 
+        /// <summary>
+        /// Property identifier
+        /// </summary>
         public string Name
         {
             get
@@ -53,6 +59,9 @@ namespace XNATWL.Property
             }
         }
 
+        /// <summary>
+        /// The source of the property change event
+        /// </summary>
         public object Source
         {
             get
@@ -60,7 +69,10 @@ namespace XNATWL.Property
                 return this._source;
             }
         }
-
+        
+        /// <summary>
+        /// The property's new value
+        /// </summary>
         public object New
         {
             get
@@ -69,6 +81,9 @@ namespace XNATWL.Property
             }
         }
 
+        /// <summary>
+        /// The property's old value
+        /// </summary>
         public object Old
         {
             get

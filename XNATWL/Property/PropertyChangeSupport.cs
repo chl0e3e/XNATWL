@@ -33,6 +33,9 @@ using System.Collections.Generic;
 
 namespace XNATWL.Property
 {
+    /// <summary>
+    /// Port of java.beans.PropertyChangeSupport
+    /// </summary>
     public class PropertyChangeSupport
     {
         private Dictionary<string, HashSet<PropertyChangeListener>> _propertyListeners = new Dictionary<string, HashSet<PropertyChangeListener>>();
@@ -44,13 +47,23 @@ namespace XNATWL.Property
             this._source = null;
         }
 
+        /// <summary>
+        /// Support intialised for given object
+        /// </summary>
+        /// <param name="o">Object to support</param>
         public PropertyChangeSupport(Object o)
         {
             this._source = o;
         }
 
-        internal void AddPropertyChangeListener(string propertyName, PropertyChangeListener listener)
+        /// <summary>
+        /// Adds a property change listener for the given property name
+        /// </summary>
+        /// <param name="propertyName">Name of the property</param>
+        /// <param name="listener">Object implementing <see cref="PropertyChangeListener"/></param>
+        public void AddPropertyChangeListener(string propertyName, PropertyChangeListener listener)
         {
+            // create the listeners a home if we haven't used this key in the _propertyListeners Dictionary yet
             if (!this._propertyListeners.ContainsKey(propertyName))
             {
                 this._propertyListeners[propertyName] = new HashSet<PropertyChangeListener>();
@@ -59,14 +72,22 @@ namespace XNATWL.Property
             this._propertyListeners[propertyName].Add(listener);
         }
 
-        internal void AddPropertyChangeListener(PropertyChangeListener listener)
+        /// <summary>
+        /// Add a property change listener for any property change
+        /// </summary>
+        /// <param name="listener"></param>
+        public void AddPropertyChangeListener(PropertyChangeListener listener)
         {
             this._anyPropertyListeners.Add(listener);
         }
 
-        internal void FirePropertyChange(PropertyChangeEvent evt)
+        /// <summary>
+        /// Fire a property change event on all supported listeners
+        /// </summary>
+        /// <param name="evt">Event detailling the change of the property</param>
+        public void FirePropertyChange(PropertyChangeEvent evt)
         {
-            //throw new NotImplementedException();
+            // fire the name-specific property handlers
             foreach (string key in this._propertyListeners.Keys)
             {
                 if (evt.Name == key)
@@ -78,43 +99,63 @@ namespace XNATWL.Property
                 }
             }
 
+            // fire all _anyPropertyListeners without any checks
             foreach (PropertyChangeListener listener in this._anyPropertyListeners)
             {
                 listener.PropertyChange(evt);
             }
         }
 
-        internal void FirePropertyChange(string propertyName, object oldValue, object newValue)
+        /// <summary>
+        /// Fire a property change event given the event information
+        /// </summary>
+        /// <param name="propertyName">Name of the property</param>
+        /// <param name="oldValue">Old property value</param>
+        /// <param name="newValue">New property value</param>
+        public void FirePropertyChange(string propertyName, object oldValue, object newValue)
         {
             this.FirePropertyChange(new PropertyChangeEvent(this._source, propertyName, oldValue, newValue));
         }
 
-        internal void FirePropertyChange(string propertyName, int oldValue, int newValue)
+        /// <summary>
+        /// Fire a property change event given the event information
+        /// </summary>
+        /// <param name="propertyName">Name of the property</param>
+        /// <param name="oldValue">Old property value</param>
+        /// <param name="newValue">New property value</param>
+        public void FirePropertyChange(string propertyName, int oldValue, int newValue)
         {
             this.FirePropertyChange(propertyName, oldValue, newValue);
         }
 
-        internal void FirePropertyChange(string propertyName, bool oldValue, bool newValue)
+        /// <summary>
+        /// Fire a property change event given the event information
+        /// </summary>
+        /// <param name="propertyName">Name of the property</param>
+        /// <param name="oldValue">Old property value</param>
+        /// <param name="newValue">New property value</param>
+        public void FirePropertyChange(string propertyName, bool oldValue, bool newValue)
         {
             this.FirePropertyChange(propertyName, oldValue, newValue);
         }
 
-        internal void RemovePropertyChangeListener(PropertyChangeListener listener)
+        /// <summary>
+        /// Remove a listener from the catch-all listener list
+        /// </summary>
+        /// <param name="listener">Listener to remove</param>
+        public void RemovePropertyChangeListener(PropertyChangeListener listener)
         {
             this._anyPropertyListeners.Remove(listener);
         }
 
-        internal void RemovePropertyChangeListener(string propertyName, PropertyChangeListener listener)
+        /// <summary>
+        /// Removes a listener for a specific property name
+        /// </summary>
+        /// <param name="propertyName">Property name</param>
+        /// <param name="listener">Listener to remove</param>
+        public void RemovePropertyChangeListener(string propertyName, PropertyChangeListener listener)
         {
-            List<string> keys = new List<string>();
-            
-            if (!this._propertyListeners.ContainsKey(propertyName))
-            {
-                throw new AccessViolationException();
-            }
-
             this._propertyListeners[propertyName].Remove(listener);
-            //throw new NotImplementedException();
         }
     }
 }

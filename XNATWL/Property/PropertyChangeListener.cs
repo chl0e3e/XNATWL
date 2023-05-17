@@ -30,8 +30,15 @@
 
 namespace XNATWL.Property
 {
+    /// <summary>
+    /// Port of java.beans.PropertyChangeListener
+    /// </summary>
     public interface PropertyChangeListener
     {
+        /// <summary>
+        /// Called when a property has changed
+        /// </summary>
+        /// <param name="e">The event detailling the source, name and old/new values of the property</param>
         void PropertyChange(PropertyChangeEvent e);
     }
 }
