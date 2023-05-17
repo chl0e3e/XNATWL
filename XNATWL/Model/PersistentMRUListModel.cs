@@ -40,7 +40,7 @@ namespace XNATWL.Model
     /// <para>Entries are stored compressed (deflate) using serialization and putByteArray except Strings which use<code> put</code></para>
     /// </summary>
     /// <typeparam name="T">the data type stored in this MRU model</typeparam>
-    public class PersistentMRUListModel<T> : SimpleMRUListModel<T> where T : ISerializable
+    public class PersistentMRUListModel<T> : SimpleMRUListModel<T>
     {
         private Preferences _preferences;
         private string _preferenceKey;

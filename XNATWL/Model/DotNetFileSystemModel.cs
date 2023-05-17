@@ -64,7 +64,7 @@ namespace XNATWL.Model
 
         public object FileByPath(string path)
         {
-            if (!Directory.Exists(name) && File.Exists(name))
+            if (!Directory.Exists(path) && !File.Exists(path))
             {
                 return null;
             }
