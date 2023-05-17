@@ -29,11 +29,18 @@
  */
 
 using System;
+using System.Runtime.Serialization;
 using XNATWL.IO;
+using static XNATWL.Utils.SparseGrid;
 
 namespace XNATWL.Model
 {
-    public class PersistentMRUListModel<T> : SimpleMRUListModel<T>
+    /// <summary>
+    /// <para>A persistent MRU list model.</para>
+    /// <para>Entries are stored compressed (deflate) using serialization and putByteArray except Strings which use<code> put</code></para>
+    /// </summary>
+    /// <typeparam name="T">the data type stored in this MRU model</typeparam>
+    public class PersistentMRUListModel<T> : SimpleMRUListModel<T> where T : ISerializable
     {
         private Preferences _preferences;
         private string _preferenceKey;
@@ -45,11 +52,11 @@ namespace XNATWL.Model
             this._preferenceKey = preferenceKey;
             this._type = type;
 
-            int numEntries = Math.Min((int)this._preferences.Get(keyForNumEntries(), 0), maxEntries);
+            int numEntries = Math.Min((int)this._preferences.Get(KeyForNumEntries(), 0), maxEntries);
 
             for (int i = 0; i < numEntries; i++)
             {
-                object entry = this._preferences.Get(keyForIndex(i), null);
+                object entry = this._preferences.Get(KeyForIndex(i), null);
 
                 if (entry != null)
                 {
@@ -60,27 +67,27 @@ namespace XNATWL.Model
 
         protected override void Save()
         {
-            int numEntries = Math.Min((int)this._preferences.Get(keyForNumEntries(), 0), this._maxEntries);
+            int numEntries = Math.Min((int)this._preferences.Get(KeyForNumEntries(), 0), this._maxEntries);
 
             for (int i = 0; i < numEntries; i++)
             {
-                object entry = this._preferences.Get(keyForIndex(i), null);
+                object entry = this._preferences.Get(KeyForIndex(i), null);
 
                 if (entry != null && !entry.Equals(this._entries[i]))
                 {
-                    this._preferences.Set(keyForIndex(i), entry);
+                    this._preferences.Set(KeyForIndex(i), entry);
                 }
             }
 
-            this._preferences.Set(keyForNumEntries(), this.Entries);
+            this._preferences.Set(KeyForNumEntries(), this.Entries);
         }
 
-        protected string keyForIndex(int idx)
+        protected string KeyForIndex(int idx)
         {
             return this._preferenceKey + "_" + idx;
         }
 
-        protected string keyForNumEntries()
+        protected string KeyForNumEntries()
         {
             return this._preferenceKey + "_entries";
         }

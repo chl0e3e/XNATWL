@@ -30,15 +30,34 @@
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// A generic graph data model.
+    /// </summary>
     public interface GraphModel
     {
+        /// <summary>
+        /// The number of lines in this graph
+        /// </summary>
         int Lines
         {
             get;
         }
 
+        /// <summary>
+        /// Returns the specified line model.
+        /// </summary>
+        /// <param name="index">The line index. Must be greater than 0 and less than <see cref="Lines"/></param>
+        /// <returns></returns>
         GraphLineModel LineAt(int index);
 
+        /// <summary>
+        /// <para>The Y axis of the graph is based on min/max values.
+        /// The scaling for an axis can be compute from the combined
+        /// min/max values or using it's own min/max value.</para>
+        /// <para>The combined min values is the smallest min value of all lines.<br/>
+        /// The combined max values is the largest max value of all lines.</para> 
+        /// </summary>
+        /// <returns><b>true</b> if the Y scale is independant or false if it is combined.</returns>
         bool ScaleLinesIndependent();
     }
 }

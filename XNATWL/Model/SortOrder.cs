@@ -30,6 +30,9 @@
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// An enum which represents basic sort order
+    /// </summary>
     public enum SortOrder
     {
         Ascending,

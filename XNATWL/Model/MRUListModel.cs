@@ -28,22 +28,30 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using Microsoft.Xna.Framework.Graphics;
+
 namespace XNATWL.Model
 {
     public interface MRUListModel<T> : ListModel<T>
     {
+        /// <summary>
+        /// The maximum number of entries stored in this MRU list
+        /// </summary>
         int MaxEntries
         {
             get;
         }
 
-        int MRUEntries
-        {
-            get;
-        }
-
+        /// <summary>
+        /// Adds an entry to this MRU model. If the entry is already in the MRU list, then it is moved to the from.
+        /// </summary>
+        /// <param name="entry">the entry</param>
         void Add(T entry);
 
+        /// <summary>
+        /// Removes the entry at the given index
+        /// </summary>
+        /// <param name="entry">index</param>
         void RemoveAt(int entry);
     }
 }

@@ -33,6 +33,9 @@ using XNATWL.Util;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// A table selection model for multi selection
+    /// </summary>
     public class DefaultTableSelectionModel : AbstractTableSelectionModel
     {
         private BitSet _value;

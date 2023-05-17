@@ -28,8 +28,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using static XNATWL.TextAreaModel.StyleSheet;
+
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// A toggle button model based on <see cref="SimpleButtonModel"/>.
+    /// Adds selected state bit. Can be backed by a <see cref="BooleanModel"/>.
+    /// </summary>
     public class ToggleButtonModel : SimpleButtonModel
     {
         protected static int STATE_MASK_SELECTED = 256;

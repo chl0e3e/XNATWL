@@ -33,6 +33,9 @@ using XNATWL.IO;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// A persistent <see cref="ColorModel"/>.
+    /// </summary>
     public class PersistentColorModel : ColorModel
     {
         public Color Value

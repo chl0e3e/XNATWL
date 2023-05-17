@@ -35,6 +35,9 @@ using XNATWL.IO;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// A file system implementation which uses <see cref="FileSystemObject"/> as base.
+    /// </summary>
     public class DotNetFileSystemModel : FileSystemModel
     {
         public static string USERPROFILE_FOLDER = "UserProfile";
@@ -61,6 +64,11 @@ namespace XNATWL.Model
 
         public object FileByPath(string path)
         {
+            if (!Directory.Exists(name) && File.Exists(name))
+            {
+                return null;
+            }
+
             return FileSystemObject.FromPath(path);
         }
 

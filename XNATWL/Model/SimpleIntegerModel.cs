@@ -32,12 +32,21 @@ using System;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// A simple <see cref="IntegerModel"/>. The value is not checked against the min/max values.
+    /// </summary>
     public class SimpleIntegerModel : IntegerModel
     {
         private int _minValue;
         private int _maxValue;
         private int _value;
 
+        /// <summary>
+        /// Creates a new integer model with the specified min/max and initial value
+        /// </summary>
+        /// <param name="minValue">the minimum allowed value</param>
+        /// <param name="maxValue">the maximum allowed value</param>
+        /// <param name="value">the initial value</param>
         public SimpleIntegerModel(int minValue, int maxValue, int value)
         {
             this._minValue = minValue;

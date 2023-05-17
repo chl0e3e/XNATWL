@@ -33,6 +33,9 @@ using XNATWL.IO;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// A persistent <see cref="IntegerModel"/>.
+    /// </summary>
     public class PersistentIntegerModel : AbstractIntegerModel
     {
         public override int Value

@@ -32,6 +32,10 @@ using System;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// Abstract base class to simplify implementing ListModels.
+    /// </summary>
+    /// <typeparam name="T">the type of a list entry</typeparam>
     public abstract class AbstractListModel<T> : ListModel<T>
     {
         public abstract int Entries { get; }

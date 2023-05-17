@@ -32,6 +32,10 @@ using System;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// A generic button model. Allows to separate button behavior from the button Widget.<br/><br/>
+    /// <b>A ButtonModel should not be shared between Button instances.</b>
+    /// </summary>
     public interface ButtonModel
     {
         bool Selected
@@ -67,7 +71,15 @@ namespace XNATWL.Model
         event EventHandler<ButtonActionEventArgs> Action;
         event EventHandler<ButtonStateChangedEventArgs> State;
 
+        /// <summary>
+        /// Called when the Button is placed in the GUI tree.
+        /// Callbacks to other models should only be installed after this call.
+        /// </summary>
         void Connect();
+        /// <summary>
+        /// Called when the Button is no longer part of the GUI tree.
+        /// Callbacks to other models should be removed.
+        /// </summary>
         void Disconnect();
     }
 

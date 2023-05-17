@@ -32,6 +32,9 @@ using System;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// A string data model
+    /// </summary>
     public interface StringModel
     {
         event EventHandler<StringChangedEventArgs> Changed;

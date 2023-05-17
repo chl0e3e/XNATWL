@@ -33,6 +33,10 @@ using XNATWL.IO;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// A persistent <see cref="EnumModel{T}"/>
+    /// </summary>
+    /// <typeparam name="T">The enum type</typeparam>
     public class PersistentEnumModel<T> : AbstractEnumModel<T> where T : struct, IConvertible
     {
         public override T Value

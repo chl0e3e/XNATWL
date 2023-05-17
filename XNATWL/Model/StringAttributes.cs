@@ -36,6 +36,9 @@ using XNATWL.Util;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// Attributed string which keeps track of markers in it's character sequence
+    /// </summary>
     public class StringAttributes : AttributedString
     {
         private static int NOT_FOUND = Int32.MinValue;
@@ -95,6 +98,10 @@ namespace XNATWL.Model
             }
         }
 
+        /// <summary>
+        /// Optimizes the internal representation.
+        /// This need O(n) time.
+        /// </summary>
         public void Optimize()
         {
             if (this._markers.Count > 1)

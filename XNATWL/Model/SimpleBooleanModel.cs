@@ -32,6 +32,9 @@ using System;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// A simple boolean model
+    /// </summary>
     public class SimpleBooleanModel : BooleanModel
     {
         private bool _value;

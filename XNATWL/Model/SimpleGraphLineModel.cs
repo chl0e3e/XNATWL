@@ -32,6 +32,9 @@ using System;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// A simple graph line model which allows to shift points from right to left.
+    /// </summary>
     public class SimpleGraphLineModel : GraphLineModel
     {
         private String _visualStyleName;

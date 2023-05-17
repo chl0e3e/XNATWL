@@ -32,6 +32,10 @@ using System;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// A generic model for enum values based on a generic enum type.
+    /// </summary>
+    /// <typeparam name="T">The enum type</typeparam>
     public interface EnumModel<T> where T : struct, IConvertible
     {
         T Value

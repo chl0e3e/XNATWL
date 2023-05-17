@@ -32,6 +32,9 @@ using System;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// Model for registering changes to a tree table
+    /// </summary>
     public interface TreeTableModel : TableColumnHeaderModel, TreeTableNode
     {
         event EventHandler<TreeNodesChangedEventArgs> NodesAdded;

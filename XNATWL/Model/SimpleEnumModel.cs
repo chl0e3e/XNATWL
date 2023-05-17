@@ -32,6 +32,10 @@ using System;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// A simple <see cref="EnumModel{T}"/>
+    /// </summary>
+    /// <typeparam name="T">The Enum's type</typeparam>
     public class SimpleEnumModel<T> : AbstractEnumModel<T> where T : struct, IConvertible
     {
         private T _value;

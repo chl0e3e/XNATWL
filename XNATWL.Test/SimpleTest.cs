@@ -51,7 +51,7 @@ namespace XNATWL.Test
         {
             this.graphicsDevice = graphicsDevice;
             this.preferences = new Preferences("");
-            this.themeRootFso = new IO.FileSystemObject(IO.FileSystemObject.FileSystemObjectType.DIRECTORY, "D:\\FortressCraft\\XNATWL\\XNATWL\\XNATWL.Test\\Theme\\");
+            this.themeRootFso = new IO.FileSystemObject(IO.FileSystemObject.FileSystemObjectType.Directory, "D:\\FortressCraft\\XNATWL\\XNATWL\\XNATWL.Test\\Theme\\");
             curThemeIdx = new PersistentIntegerModel(
                     this.preferences,
                     "currentThemeIndex", 0, THEME_FILES.Length, 0);

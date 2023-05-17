@@ -32,6 +32,9 @@ using System;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// A single selection model 
+    /// </summary>
     public class TableSingleSelectionModel : AbstractTableSelectionModel
     {
         public static int NO_SELECTION = -1;

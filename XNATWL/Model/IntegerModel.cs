@@ -32,6 +32,9 @@ using System;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// A generic model for integer values.
+    /// </summary>
     public interface IntegerModel
     {
         event EventHandler<IntegerChangedEventArgs> Changed;

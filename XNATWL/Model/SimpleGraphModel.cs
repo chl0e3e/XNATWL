@@ -34,6 +34,9 @@ using System.Linq;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// A simple <see cref="GraphModel"/>
+    /// </summary>
     public class SimpleGraphModel : GraphModel
     {
         private List<GraphLineModel> _lines;
@@ -77,22 +80,21 @@ namespace XNATWL.Model
             this._scaleLinesIndependent = val;
         }
 
-        /**
-         * Adds a new line at the end of the list
-         * @param line the new line
-         */
+        /// <summary>
+        /// Adds a new line at the end of the list
+        /// </summary>
+        /// <param name="line">the new line</param>
         public void AddLine(GraphLineModel line)
         {
             InsertLine(this._lines.Count, line);
         }
 
-        /**
-         * Inserts a new line before the specified index in the list
-         * @param idx the index before which the new line will be inserted
-         * @param line the new line
-         * @throws NullPointerException if line is null
-         * @throws IllegalArgumentException if the line is already part of this model
-         */
+        /// <summary>
+        /// Inserts a new line before the specified index in the list
+        /// </summary>
+        /// <param name="idx">the index before which the new line will be inserted</param>
+        /// <param name="line">the new line</param>
+        /// <exception cref="ArgumentOutOfRangeException">Line already in graph</exception>
         public void InsertLine(int idx, GraphLineModel line)
         {
             if (IndexOfLine(line) >= 0)
@@ -103,21 +105,21 @@ namespace XNATWL.Model
             this._lines.Insert(idx, line);
         }
 
-        /**
-         * Returns the index of the specified line in this list or -1 if not found.
-         * @param line the line to locate
-         * @return the index or -1 if not found
-         */
+        /// <summary>
+        /// Returns the index of the specified line in this list or -1 if not found.
+        /// </summary>
+        /// <param name="line">the line to locate</param>
+        /// <returns>the index or -1 if not found</returns>
         public int IndexOfLine(GraphLineModel line)
         {
             return this._lines.IndexOf(line);
         }
 
-        /**
-         * Removes the line at the specified index
-         * @param idx the index of the line to remove
-         * @return the line that was removed
-         */
+        /// <summary>
+        /// Removes the line at the specified index
+        /// </summary>
+        /// <param name="idx">the index of the line to remove</param>
+        /// <returns>the line that was removed</returns>
         public GraphLineModel RemoveLine(int idx)
         {
             GraphLineModel lineModel = this._lines[idx];

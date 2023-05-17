@@ -28,32 +28,91 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using Microsoft.Xna.Framework.Graphics.PackedVector;
+using System.Runtime.Remoting.Channels;
+using System.Security.Cryptography;
+
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// A color space used by the color selector widget.
+    /// <br/>
+    /// It supports a variable number of color components.
+    /// <br/>
+    /// It does not include an alpha channel.
+    /// </summary>
     public interface ColorSpace
     {
+        /// <summary>
+        /// Identifying name of the ColorSpace
+        /// </summary>
         string Name
         {
             get;
         }
 
+        /// <summary>
+        /// The number of component for this model. Must be >= 3.
+        /// </summary>
         int Components
         {
             get;
         }
 
+        /// <summary>
+        /// Returns the name of the specified color component.
+        /// </summary>
+        /// <param name="component">the color component index</param>
+        /// <returns>the name of the color component</returns>
         string ComponentNameOf(int component);
 
+        /// <summary>
+        /// A short version of the component name for use in UIs. For best results
+        /// all short names should have the same length.
+        /// </summary>
+        /// <param name="component">the color component index</param>
+        /// <returns>the short name of the color component</returns>
         string ComponentShortNameOf(int component);
 
+        /// <summary>
+        /// Returns the minimum allowed value for the specified component.
+        /// </summary>
+        /// <param name="component">the color component index</param>
+        /// <returns>the minimum value</returns>
         float ComponentMinValueOf(int component);
 
+        /// <summary>
+        /// Returns the maximum allowed value for the specified component.
+        /// </summary>
+        /// <param name="component">the color component index</param>
+        /// <returns>the maximum value</returns>
         float ComponentMaxValueOf(int component);
 
+        /// <summary>
+        /// Returns the default component for the initial color
+        /// </summary>
+        /// <param name="component">the color component index</param>
+        /// <returns>the color component index</returns>
         float ComponentDefaultValueOf(int component);
 
+        /// <summary>
+        /// Converts the specified color into a RGB value without alpha part.<br/>
+        /// This convertion is not exact.<br/>
+        /// <br/><br/>
+        /// bits  0- 7 are blue,
+        /// bits  8-15 are green,
+        /// bits 16-23 are red,
+        /// bits 24-31 must be 0
+        /// </summary>
+        /// <param name="color">the color values</param>
+        /// <returns>the RGB value</returns>
         int RGB(float[] color);
 
+        /// <summary>
+        /// Converts the given RGB value into color values for this color space.
+        /// </summary>
+        /// <param name="rgb">the RGB value</param>
+        /// <returns>the color values coresponding to the RGB value</returns>
         float[] FromRGB(int rgb);
     }
 }

@@ -30,6 +30,10 @@
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// A simple <see cref="ListModel{T}"/>
+    /// </summary>
+    /// <typeparam name="T">The type of the list entries</typeparam>
     public abstract class SimpleListModel<T> : AbstractListModel<T>
     {
         public override object EntryTooltipAt(int index)

@@ -32,6 +32,11 @@ using System;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// A HSL (Hue, Saturation and Luminance) color space<br/>
+    /// Hue is represented in degree from 0 to 360<br/>
+    /// Saturation and Luminance in percent from 0 to 100
+    /// </summary>
     public class ColorSpaceHSL : AbstractColorSpace
     {
         public ColorSpaceHSL() :

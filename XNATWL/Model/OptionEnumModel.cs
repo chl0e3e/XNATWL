@@ -28,12 +28,28 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using Microsoft.Xna.Framework.Input;
 using System;
+using XNATWL.TextAreaModel;
+using static XNATWL.ActionMap;
+using static XNATWL.Utils.SparseGrid;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// <para>A <see cref="BooleanModel"/> which is <b>true</b> when the underlying <see cref="EnumModel{T}"/>
+    /// has the specified option code. This can be used for radio/option buttons.</para>
+    /// <para>It is not possible to set this <see cref="BooleanModel"/> to false. It can only be set to
+    /// false by setting the underlying <see cref="EnumModel{T}"/> to another value.Eg by setting
+    /// another <see cref="OptionEnumModel{T}"/> working on the same EnumModel to true.</para>
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class OptionEnumModel<T> : AbstractOptionModel where T : struct, IConvertible
     {
+        /// <summary>
+        /// If the value is <b>true</b>, then the underlying <see cref="EnumModel{T}"/> is set to the option code of this <see cref="OptionEnumModel{T}"/>. <br/>
+        /// If the value is <b>false</b> then nothing happens.
+        /// </summary>
         public override bool Value
         {
             get

@@ -32,14 +32,30 @@ using System;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// A model representing a list of items
+    /// </summary>
+    /// <typeparam name="T">The type of a list entry</typeparam>
     public interface ListModel<T>
     {
+        /// <summary>
+        /// New entries have been inserted.
+        /// </summary>
         event EventHandler<ListSubsetChangedEventArgs> EntriesInserted;
 
+        /// <summary>
+        /// Entries that were at the range first to last (inclusive) have been removed.
+        /// </summary>
         event EventHandler<ListSubsetChangedEventArgs> EntriesDeleted;
 
+        /// <summary>
+        /// Entries in the range first to last (inclusive) have been changed.
+        /// </summary>
         event EventHandler<ListSubsetChangedEventArgs> EntriesChanged;
 
+        /// <summary>
+        /// The complete list was recreated.
+        /// </summary>
         event EventHandler<ListAllChangedEventArgs> AllChanged;
 
         int Entries

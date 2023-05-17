@@ -33,10 +33,14 @@ using System.Linq;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// A read only list model containing all enum values of the specified enum.
+    /// </summary>
+    /// <typeparam name="T">Enum type</typeparam>
     public class EnumListModel<T> : SimpleListModel<T> where T : struct, IConvertible
     {
-        private Type _class;
-        private T[] _values;
+        private readonly Type _class;
+        private readonly T[] _values;
 
         public override event EventHandler<ListSubsetChangedEventArgs> EntriesInserted;
         public override event EventHandler<ListSubsetChangedEventArgs> EntriesDeleted;
@@ -51,7 +55,7 @@ namespace XNATWL.Model
             }
 
             this._class = enumType;
-            this._values = Enum.GetValues(enumType).Cast<T>().ToArray();
+            this._values = Enum.GetValues(this._class).Cast<T>().ToArray();
         }
 
         public override T EntryAt(int index)

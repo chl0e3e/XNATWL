@@ -28,8 +28,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using XNATWL.TextAreaModel;
+
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// This interface is used to create sub properties in a PropertySheet if it is used as value of another Property
+    /// </summary>
     public interface PropertyList
     {
         int Count

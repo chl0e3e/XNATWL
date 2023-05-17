@@ -33,6 +33,10 @@ using System.Collections.Generic;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// A non persistent MRU list implementation
+    /// </summary>
+    /// <typeparam name="T">the data type stored in this MRU model</typeparam>
     public class SimpleMRUListModel<T> : MRUListModel<T>
     {
         public int MaxEntries

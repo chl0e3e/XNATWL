@@ -29,9 +29,14 @@
  */
 
 using System;
+using static XNATWL.AnimationState;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// <para>A simple button model.</para>
+    /// <para>Supported state bit: hover, armed, pressed.</para>
+    /// </summary>
     public class SimpleButtonModel : ButtonModel
     {
         protected static int STATE_MASK_HOVER = 1;

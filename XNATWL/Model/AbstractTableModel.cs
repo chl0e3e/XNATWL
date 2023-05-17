@@ -29,9 +29,14 @@
  */
 
 using System;
+using System.Reflection;
+using static XNATWL.ColumnLayout;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// Abstract class for implementing table models
+    /// </summary>
     public abstract class AbstractTableModel : AbstractTableColumnHeaderModel, TableModel
     {
         public override abstract int Columns
@@ -64,42 +69,66 @@ namespace XNATWL.Model
 
         public void FireRowsInserted(int index, int count)
         {
-            this.RowsInserted.Invoke(this, new TableRowModificationEventArgs(index, count));
+            if (this.RowsInserted != null)
+            {
+                this.RowsInserted.Invoke(this, new TableRowModificationEventArgs(index, count));
+            }
         }
 
         public void FireRowsDeleted(int index, int count)
         {
-            this.RowsDeleted.Invoke(this, new TableRowModificationEventArgs(index, count));
+            if (this.RowsDeleted != null)
+            {
+                this.RowsDeleted.Invoke(this, new TableRowModificationEventArgs(index, count));
+            }
         }
 
         public void FireRowsChanged(int index, int count)
         {
-            this.RowsChanged.Invoke(this, new TableRowModificationEventArgs(index, count));
+            if (this.RowsChanged != null)
+            {
+                this.RowsChanged.Invoke(this, new TableRowModificationEventArgs(index, count));
+            }
         }
 
         public void FireCellChanged(int row, int column)
         {
-            this.CellChanged.Invoke(this, new TableCellModificationEventArgs(row, column));
+            if (this.CellChanged != null)
+            {
+                this.CellChanged.Invoke(this, new TableCellModificationEventArgs(row, column));
+            }
         }
 
         public void FireAllChanged()
         {
-            this.AllChanged.Invoke(this, new TableAllChangedEventArgs());
+            if (this.AllChanged != null)
+            {
+                this.AllChanged.Invoke(this, new TableAllChangedEventArgs());
+            }
         }
 
         public void FireColumnInserted(int index, int count)
         {
-            this.ColumnInserted.Invoke(this, new ColumnsChangedEventArgs(index, count));
+            if (this.ColumnInserted != null)
+            {
+                this.ColumnInserted.Invoke(this, new ColumnsChangedEventArgs(index, count));
+            }
         }
 
         public void FireColumnDeleted(int index, int count)
         {
-            this.ColumnDeleted.Invoke(this, new ColumnsChangedEventArgs(index, count));
+            if (this.ColumnDeleted != null)
+            {
+                this.ColumnDeleted.Invoke(this, new ColumnsChangedEventArgs(index, count));
+            }
         }
 
         public void FireColumnHeaderChanged(int column)
         {
-            this.ColumnHeaderChanged.Invoke(this, new ColumnHeaderChangedEventArgs(column));
+            if (this.ColumnHeaderChanged != null)
+            {
+                this.ColumnHeaderChanged.Invoke(this, new ColumnHeaderChangedEventArgs(column));
+            }
         }
     }
 }

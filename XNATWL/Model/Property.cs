@@ -32,34 +32,55 @@ using System;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// A generic property interface for use with the PropertySheet widget
+    /// </summary>
     public interface Property
     {
+        /// <summary>
+        /// The property name as displayed in the UI
+        /// </summary>
         string Name
         {
             get;
         }
 
+        /// <summary>
+        /// <value>True</value> if this property is read only.
+        /// </summary>
         bool IsReadOnly
         {
             get;
         }
 
+        /// <summary>
+        /// <value>True</value> if this property can be set to null. This is similar to a SQL null.
+        /// </summary>
         bool Nullable
         {
             get;
         }
 
+        /// <summary>
+        /// Set/get the current property value
+        /// </summary>
         object Value
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// Returns the type of the property. This is used to select an editor widget in the PropertySheet.
+        /// </summary>
         Type Type
         {
             get;
         }
 
+        /// <summary>
+        /// Property value changed event. It should be invoked when the value was changed from something other then setValue
+        /// </summary>
         event EventHandler<PropertyChangedEventArgs> Changed;
     }
 

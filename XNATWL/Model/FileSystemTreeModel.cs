@@ -35,6 +35,9 @@ using XNATWL.IO;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// A tree model which displays the folders of a FileSystemModel
+    /// </summary>
     public class FileSystemTreeModel : AbstractTreeTableModel
     {
         private FileSystemModel _fileSystemModel;
@@ -66,11 +69,19 @@ namespace XNATWL.Model
         {
         }
 
+        /// <summary>
+        /// Sets the sorter used for sorting folders (the root nodes are not sorted).<br/><br/>
+        /// Will call insertRoots() when the sorter is changed.
+        /// </summary>
+        /// <param name="sorter">The new sorter - can be null</param>
         public void SetSorter(IComparer<object> sorter)
         {
             this._sorter = sorter;
         }
 
+        /// <summary>
+        /// Removes all nodes from the tree and creates the root nodes
+        /// </summary>
         public void InsertRoots()
         {
             RemoveAllChildren();

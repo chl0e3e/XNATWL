@@ -32,6 +32,9 @@ using System;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// A boolean model mapped to a single bit on an IntegerModel
+    /// </summary>
     public class BitFieldBooleanModel : BooleanModel
     {
         private IntegerModel _bitfield;

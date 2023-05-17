@@ -34,6 +34,10 @@ using System.Collections.ObjectModel;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// A <see cref="SimpleListModel{T}"/> which manages it's content and provides method to modify that content.
+    /// </summary>
+    /// <typeparam name="T">The type of the list entries</typeparam>
     public class SimpleChangeableListModel<T> : SimpleListModel<T>
     {
         private List<T> _content;

@@ -28,11 +28,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// A composite list model which concatinates several other list models.
+    /// Changes on the contained list models are forwarded to this model.
+    /// </summary>
+    /// <typeparam name="T">The type of the list entries</typeparam>
     public class CombinedListModel<T> : SimpleListModel<T>
     {
         public override event EventHandler<ListSubsetChangedEventArgs> EntriesInserted;

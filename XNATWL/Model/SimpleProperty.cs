@@ -32,6 +32,10 @@ using System;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// A simple implementation of a property
+    /// </summary>
+    /// <typeparam name="T">the type of the property value</typeparam>
     public class SimpleProperty<T> : AbstractProperty<T>
     {
         private Type _type;

@@ -33,6 +33,9 @@ using System.Collections.Generic;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// Provides auto completion on a FileSystemModel
+    /// </summary>
     public class FileSystemAutoCompletionDataSource : AutoCompletionDataSource
     {
         internal FileSystemModel _fileSystemModel;

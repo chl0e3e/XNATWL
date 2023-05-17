@@ -32,6 +32,9 @@ using System;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// A simple string model. Doesn't support null values.
+    /// </summary>
     public class SimpleStringModel : StringModel
     {
         private string _value;

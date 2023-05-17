@@ -32,6 +32,9 @@ using System;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// Abstract base class to simplify implementing other option models.
+    /// </summary>
     public abstract class AbstractOptionModel : BooleanModel
     {
         public abstract event EventHandler<BooleanChangedEventArgs> Changed;

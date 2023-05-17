@@ -30,9 +30,13 @@
 
 using System;
 using XNATWL.IO;
+using XNATWL.TextAreaModel;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// A model that stores a boolean value and supports an event firing on value change. The value can also be persisted using <see cref="Preferences"/>
+    /// </summary>
     public class PersistentBooleanModel : BooleanModel
     {
         public bool Value

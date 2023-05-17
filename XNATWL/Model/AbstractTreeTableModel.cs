@@ -33,6 +33,9 @@ using System.Collections.Generic;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// Abstract class for implementing tree table models
+    /// </summary>
     public abstract class AbstractTreeTableModel : AbstractTableColumnHeaderModel, TreeTableModel
     {
         private List<TreeTableNode> _children;

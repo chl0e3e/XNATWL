@@ -30,8 +30,18 @@
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// An auto completion data source
+    /// </summary>
     public interface AutoCompletionDataSource
     {
+        /// <summary>
+        /// Collects auto completion results
+        /// </summary>
+        /// <param name="text">The new text for which to compute auto completion</param>
+        /// <param name="cursorPos">The cursor position for which to compute the auto completion</param>
+        /// <param name="prev">The previous AutoCompletionResult - can be used to speed up the computation</param>
+        /// <returns>The AutoCompletionResult object or null if no results could be found</returns>
         AutoCompletionResult CollectSuggestions(string text, int cursorPos, AutoCompletionResult prev);
     }
 }

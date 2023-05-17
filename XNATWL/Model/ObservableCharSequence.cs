@@ -32,14 +32,12 @@ using System;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// <see cref="XNATWL.Utils.CharSequence"/> with change callback support.
+    /// </summary>
     public interface ObservableCharSequence : XNATWL.Utils.CharSequence
     {
         event EventHandler<CharSequenceChangedEventArgs> CharSequenceChanged;
-
-        string Value
-        {
-            get;
-        }
     }
 
     public class CharSequenceChangedEventArgs : EventArgs

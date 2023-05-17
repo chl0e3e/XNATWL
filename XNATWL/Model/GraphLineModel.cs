@@ -28,27 +28,51 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System.Linq;
+
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// A generic line model for a graph.
+    /// </summary>
     public interface GraphLineModel
     {
+        /// <summary>
+        /// The name of the visual style.
+        /// The style will be looked up in the theme data of the graph widget.
+        /// </summary>
         string VisualStyleName
         {
             get;
         }
 
+        /// <summary>
+        /// <para>The number of points on the lines.</para>
+        /// <b>A line is only drawn if atleast one point is available</b>
+        /// </summary>
         int Points
         {
             get;
         }
 
+        /// <summary>
+        /// Returns the value of the desired point.
+        /// </summary>
+        /// <param name="index">The index of the point. Will be greater than 0 and less than <see cref="Points"/></param>
+        /// <returns>the value of the desired point.</returns>
         float Point(int index);
 
+        /// <summary>
+        /// The smallest value which should be used to scale the graph.
+        /// </summary>
         float MinValue
         {
             get;
         }
 
+        /// <summary>
+        /// The largest value which should be used to scale the graph.
+        /// </summary>
         float MaxValue
         {
             get;

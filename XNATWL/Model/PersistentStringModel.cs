@@ -33,6 +33,9 @@ using XNATWL.IO;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// A peristent <see cref="StringModel"/>
+    /// </summary>
     public class PersistentStringModel : StringModel
     {
         public string Value

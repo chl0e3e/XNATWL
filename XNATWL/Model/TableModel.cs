@@ -34,10 +34,25 @@ namespace XNATWL.Model
 {
     public interface TableModel : TableColumnHeaderModel
     {
+        /// <summary>
+        /// New rows have been inserted.
+        /// </summary>
         event EventHandler<TableRowModificationEventArgs> RowsInserted;
+        /// <summary>
+        /// Rows that were at the range idx to idx+count-1 (inclusive) have been removed.
+        /// </summary>
         event EventHandler<TableRowModificationEventArgs> RowsDeleted;
+        /// <summary>
+        /// Rows in the range idx to idx+count-1 (inclusive) have been changed.
+        /// </summary>
         event EventHandler<TableRowModificationEventArgs> RowsChanged;
+        /// <summary>
+        /// A specified cell has changed
+        /// </summary>
         event EventHandler<TableCellModificationEventArgs> CellChanged;
+        /// <summary>
+        /// The complete table was recreated.
+        /// </summary>
         event EventHandler<TableAllChangedEventArgs> AllChanged;
 
         int Rows

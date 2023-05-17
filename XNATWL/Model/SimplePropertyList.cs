@@ -33,6 +33,9 @@ using System.Collections.Generic;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// A simple <see cref="PropertyList{T}"/> property. Used to create sub properties in the <see cref="PropertySheet{T}"/>.
+    /// </summary>
     public class SimplePropertyList : AbstractProperty<PropertyList>, PropertyList
     {
         public int Count

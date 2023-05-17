@@ -230,7 +230,7 @@ namespace XNATWL
                     GUI gui = ef.GetGUI();
                     if (_listModel._result != null)
                     {
-                        result = _listModel._result.refine(text, cursorPos);
+                        result = _listModel._result.Refine(text, cursorPos);
                     }
                     if (result == null)
                     {
@@ -459,7 +459,7 @@ namespace XNATWL
 
             public int GetCursorPosForEntry(int index)
             {
-                return _result.getCursorPosForResult(index);
+                return _result.GetCursorPosForResult(index);
             }
 
             public override string EntryAt(int index)

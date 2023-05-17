@@ -33,6 +33,9 @@ using System.Linq;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// A simple auto completion result container which stores the results as strings
+    /// </summary>
     public class SimpleAutoCompletionResult : AutoCompletionResult
     {
         public override int Results

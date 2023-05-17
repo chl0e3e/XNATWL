@@ -40,12 +40,36 @@ namespace XNATWL.Model
 
         void ClearSelection();
 
+        /// <summary>
+        /// Sets the selection to the given interval (both indices inclusive).
+        /// Single selection should use index1.
+        /// </summary>
+        /// <param name="index0">the start index of the interval.</param>
+        /// <param name="index1">the end index of the interval.</param>
         void SetSelection(int index0, int index1);
 
+        /// <summary>
+        /// Adds the given interval (both indices inclusive) to the selection.
+        /// Single selection should use index1.
+        /// </summary>
+        /// <param name="index0">the start index of the interval</param>
+        /// <param name="index1">the end index of the interval</param>
         void AddSelection(int index0, int index1);
 
+        /// <summary>
+        /// Inverts the given interval (both indices inclusive) in the selection.
+        /// Single selection should use index1
+        /// </summary>
+        /// <param name="index0">the start index of the interval.</param>
+        /// <param name="index1">the end index of the interval.</param>
         void InvertSelection(int index0, int index1);
 
+        /// <summary>
+        /// Removes the given interval (both indices inclusive) from the selection.
+        /// Single selection should clear the selection.
+        /// </summary>
+        /// <param name="index0">the start index of the interval.</param>
+        /// <param name="index1">the end index of the interval.</param>
         void RemoveSelection(int index0, int index1);
 
         int LeadIndex

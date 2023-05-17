@@ -32,6 +32,9 @@ using System;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// A generic boolean model.
+    /// </summary>
     public interface BooleanModel
     {
         event EventHandler<BooleanChangedEventArgs> Changed;

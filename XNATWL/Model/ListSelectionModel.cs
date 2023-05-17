@@ -30,6 +30,10 @@
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// Represents the selection of a list box or combo box. Implementation should not register callbacks on the list model.
+    /// </summary>
+    /// <typeparam name="T">the data type of the list model</typeparam>
     public interface ListSelectionModel<T> : IntegerModel
     {
         ListModel<T> Model
@@ -37,12 +41,21 @@ namespace XNATWL.Model
             get;
         }
 
+        /// <summary>
+        /// Returns the selected entry in the list or null if nothing is selected.
+        /// </summary>
         T SelectedEntry
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// Selects the specified entry or the default index if the entry was not found
+        /// </summary>
+        /// <param name="entry">the entry to select - can be null.</param>
+        /// <param name="defaultIndex">the index to select when the entry was not found</param>
+        /// <returns><b<true/b> if the entry already exists</returns>
         bool SetSelectedEntryWithDefault(T entry, int defaultIndex);
     }
 }

@@ -32,6 +32,9 @@ using System;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// A generic model for float values.
+    /// </summary>
     public interface FloatModel
     {
         event EventHandler<FloatChangedEventArgs> Changed;

@@ -33,6 +33,9 @@ using System.Text;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// An <see cref="EditFieldModel"/> based on a <see cref="StringBuilder"/>
+    /// </summary>
     public class DefaultEditFieldModel : EditFieldModel
     {
         private StringBuilder _stringBuilder;

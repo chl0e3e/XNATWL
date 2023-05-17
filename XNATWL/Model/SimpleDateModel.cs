@@ -32,10 +32,16 @@ using System;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// A simple <see cref="DateModel"/>
+    /// </summary>
     public class SimpleDateModel : DateModel
     {
         private long _date;
 
+        /// <summary>
+        /// Initializes a <see cref="DateModel"/> which date is the current system date
+        /// </summary>
         public SimpleDateModel()
         {
             this._date = DateTime.Now.Ticks;

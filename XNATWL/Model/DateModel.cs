@@ -32,6 +32,9 @@ using System;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// A date model which stores the current date in milliseconds
+    /// </summary>
     public interface DateModel
     {
         event EventHandler<DateChangedEventArgs> Changed;

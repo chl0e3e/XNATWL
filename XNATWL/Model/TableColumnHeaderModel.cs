@@ -33,10 +33,22 @@ using XNATWL.Renderer;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// Model for a table column header
+    /// </summary>
     public interface TableColumnHeaderModel
     {
+        /// <summary>
+        ///  New columns have been inserted.
+        /// </summary>
         event EventHandler<ColumnsChangedEventArgs> ColumnInserted;
+        /// <summary>
+        /// Columns that were at the range index to index+count-1 (inclusive) have been removed.
+        /// </summary>
         event EventHandler<ColumnsChangedEventArgs> ColumnDeleted;
+        /// <summary>
+        /// A column header has changed it's text or state
+        /// </summary>
         event EventHandler<ColumnHeaderChangedEventArgs> ColumnHeaderChanged;
 
         int Columns
@@ -44,13 +56,27 @@ namespace XNATWL.Model
             get;
         }
 
+        /// <summary>
+        /// A array of state keys for column headers. This array should not change.
+        /// </summary>
         StateKey[] ColumnHeaderStates
         {
             get;
         }
 
+        /// <summary>
+        /// The text of the specified column header.
+        /// </summary>
+        /// <param name="column">the column index</param>
+        /// <returns>the column header text</returns>
         string ColumnHeaderTextFor(int column);
 
+        /// <summary>
+        /// Returns the value of the specified column header and state.
+        /// </summary>
+        /// <param name="column">the column index</param>
+        /// <param name="stateIdx">the state index into the getColumnHeaderStates() array.</param>
+        /// <returns>the value of the state</returns>
         bool ColumnHeaderStateFor(int column, int stateIdx);
     }
 

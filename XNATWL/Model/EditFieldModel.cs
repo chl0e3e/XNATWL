@@ -28,14 +28,40 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System.Security.Policy;
+using static XNATWL.Utils.SparseGrid;
+
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// A model for controlling edit fields
+    /// </summary>
     public interface EditFieldModel : ObservableCharSequence
     {
+        /// <summary>
+        /// Replace <paramref name="count"/> characters starting at <paramref name="start"/> with the specified <paramref name="replacement"/> text.
+        /// </summary>
+        /// <param name="start">the start index</param>
+        /// <param name="count">the number of characters to replace, can be 0</param>
+        /// <param name="replacement">the replacement text, can be empty</param>
+        /// <returns>the number of characters which have been inserted, or -1 if no replacement has been performed.</returns>
         int Replace(int start, int count, string replacement);
 
+        /// <summary>
+        /// Replace <paramref name="count"/> characters starting at <paramref name="start"/> with the specified <paramref name="replacement"/> character.
+        /// </summary>
+        /// <param name="start">the start index</param>
+        /// <param name="count">the number of characters to replace, can be 0</param>
+        /// <param name="replacement">the replacement character</param>
+        /// <returns><b>true</b> if the sequence was changed, <b>false</b> otherwise</returns>
         bool Replace(int start, int count, char replacement);
 
+        /// <summary>
+        /// Returns a String containing the specified range from this sequence.
+        /// </summary>
+        /// <param name="start">the start index</param>
+        /// <param name="end">the end index</param>
+        /// <returns>string in given range</returns>
         string Substring(int start, int end);
     }
 }

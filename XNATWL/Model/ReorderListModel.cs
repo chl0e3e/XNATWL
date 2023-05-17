@@ -33,6 +33,10 @@ using System.Collections.Generic;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// A reordering list model - forwards changes of the base model.
+    /// </summary>
+    /// <typeparam name="T">The type of the list entries</typeparam>
     public class ReorderListModel<T> : AbstractListModel<T>
     {
         public override int Entries

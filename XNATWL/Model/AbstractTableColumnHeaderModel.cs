@@ -33,6 +33,9 @@ using XNATWL.Renderer;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// Abstract base class to simplify implementing table column headers.
+    /// </summary>
     public abstract class AbstractTableColumnHeaderModel : TableColumnHeaderModel
     {
         private static StateKey[] EMPTY_STATE_ARRAY = {};

@@ -32,6 +32,10 @@ using System;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// A simple <see cref="ListSelectionModel{T}"/>
+    /// </summary>
+    /// <typeparam name="T">The data type of the corresponding <see cref="ListModel{T}"/></typeparam>
     public class SimpleListSelectionModel<T> : ListSelectionModel<T>
     {
         private ListModel<T> _listModel;

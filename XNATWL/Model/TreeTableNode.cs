@@ -30,6 +30,9 @@
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// Model representing a node in the tree table.
+    /// </summary>
     public interface TreeTableNode
     {
         object DataAtColumn(int column);

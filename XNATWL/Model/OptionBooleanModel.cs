@@ -28,12 +28,27 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using Microsoft.Xna.Framework.Input;
 using System;
+using XNATWL.TextAreaModel;
+using static XNATWL.ActionMap;
+using static XNATWL.Utils.SparseGrid;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// <para>A <see cref="BooleanModel"/> which is true when the underlying <see cref="IntegerModel"/> has the specified 
+    /// option code.This can be used for radio/option buttons.</para>
+    /// <para>It is not possible to set this <see cref="BooleanModel"/> to false. It can only be set to
+    /// false by setting the underlying <see cref="IntegerModel"/> to another value. e.g. by setting
+    /// another <see cref="OptionBooleanModel"/> working on the same <see cref="IntegerModel"/> to true.</para>
+    /// </summary>
     public class OptionBooleanModel : AbstractOptionModel
     {
+        /// <summary>
+        /// If the value is <b>true</b>, then the underlying <see cref="IntegerModel"/> is set to the option code of this <see cref="OptionBooleanModel"/>. <br/>
+        /// If the value is <b>false</b> then nothing happens.
+        /// </summary>
         public override bool Value
         {
             get
@@ -51,6 +66,11 @@ namespace XNATWL.Model
 
         public override event EventHandler<BooleanChangedEventArgs> Changed;
 
+        /// <summary>
+        /// Creates a new <see cref="OptionBooleanModel"/> with the specified <see cref="IntegerModel"/> and option code.
+        /// </summary>
+        /// <param name="optionState">the <see cref="IntegerModel"/> which stores the current active option</param>
+        /// <param name="optionCode">the option code of this option in the <see cref="IntegerModel"/></param>
         public OptionBooleanModel(IntegerModel optionState, int optionCode) : base(optionState, optionCode)
         {
 

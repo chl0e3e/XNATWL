@@ -32,6 +32,9 @@ using System;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// Abstract class for implementing table selection models
+    /// </summary>
     public abstract class AbstractTableSelectionModel : TableSelectionModel
     {
         private int _leadIndex;

@@ -32,6 +32,9 @@ using System;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// A model which stores a color value.
+    /// </summary>
     public interface ColorModel
     {
         event EventHandler<ColorChangedEventArgs> Changed;

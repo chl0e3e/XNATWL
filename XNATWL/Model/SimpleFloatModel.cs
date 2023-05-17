@@ -29,9 +29,16 @@
  */
 
 using System;
+using XNATWL.TextAreaModel;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// A simple float data model.
+    /// 
+    /// <para>Out of range values are limited to MinValue/MaxValue.
+    /// If the value is set to NaN then it is converted to minValue.</para>
+    /// </summary>
     public class SimpleFloatModel : AbstractFloatModel
     {
         private float _minValue;

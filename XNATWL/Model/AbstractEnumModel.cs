@@ -32,6 +32,10 @@ using System;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// Abstract base class to simplify implementing EnumModels.
+    /// </summary>
+    /// <typeparam name="T">The enum type</typeparam>
     public abstract class AbstractEnumModel<T> : EnumModel<T> where T : struct, IConvertible
     {
         public abstract T Value { get; set; }

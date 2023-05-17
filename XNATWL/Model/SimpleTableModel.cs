@@ -33,6 +33,9 @@ using System.Collections.Generic;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// A simple table model which stores each row as an array of <see cref="object"/>
+    /// </summary>
     public class SimpleTableModel : AbstractTableModel
     {
         private string[] _columnHeaders;

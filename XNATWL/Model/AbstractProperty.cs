@@ -32,6 +32,9 @@ using System;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// Abstract base class to simplify implementing Property models.
+    /// </summary>
     public abstract class AbstractProperty<T> : Property<T>
     {
         public abstract string Name { get; }

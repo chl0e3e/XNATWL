@@ -32,6 +32,9 @@ using System;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// Abstract base class to simplify float models.
+    /// </summary>
     public abstract class AbstractFloatModel : FloatModel
     {
         public AbstractFloatModel()

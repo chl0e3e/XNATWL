@@ -30,6 +30,9 @@
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// An abstract class to make implementing color spaces a bit easier
+    /// </summary>
     public abstract class AbstractColorSpace : ColorSpace
     {
         private string _name;

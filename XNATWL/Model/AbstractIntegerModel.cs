@@ -32,6 +32,9 @@ using System;
 
 namespace XNATWL.Model
 {
+    /// <summary>
+    /// Abstract base class to simplify integer models.
+    /// </summary>
     public abstract class AbstractIntegerModel : IntegerModel
     {
         public abstract int Value { get; set; }

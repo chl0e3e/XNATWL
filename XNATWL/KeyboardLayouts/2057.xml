@@ -113,6 +113,11 @@
         <Char>&#9;</Char>
         <ShiftChar>&#9;</ShiftChar>
     </Tab>
+	<Q>
+		<TWL>KEY_Q</TWL>
+		<Char>q</Char>
+		<ShiftChar>Q</ShiftChar>
+	</Q>
     <W>
         <TWL>KEY_W</TWL>
         <Char>w</Char>
@@ -412,6 +417,6 @@
     </Subtract>
     <Add>
         <TWL>KEY_ADD</TWL>
-        <Char>-</Char>
+        <Char>+</Char>
     </Add>
 </KeyboardLayout>
