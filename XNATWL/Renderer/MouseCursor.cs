@@ -30,15 +30,24 @@
 
 namespace XNATWL.Renderer
 {
+    /// <summary>
+    /// Interface for specifying that this object can be used as a mouse cursor
+    /// </summary>
     public interface MouseCursor
     {
     }
 
+    /// <summary>
+    /// Class for holding an object that is an inherited <see cref="MouseCursor"/> constant
+    /// </summary>
     public class InheritedMouseCursor : MouseCursor
     {
         public static InheritedMouseCursor INHERITED_DEFAULT = new InheritedMouseCursor();
     }
 
+    /// <summary>
+    /// Class for holding an object that is the default <see cref="MouseCursor"/> constant
+    /// </summary>
     public class DefaultMouseCursor : MouseCursor
     {
         public static DefaultMouseCursor OS_DEFAULT = new DefaultMouseCursor();

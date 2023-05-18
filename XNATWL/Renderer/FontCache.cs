@@ -30,18 +30,33 @@
 
 namespace XNATWL.Renderer
 {
+    /// <summary>
+    /// A cached text block interface
+    /// </summary>
     public interface FontCache : Resource
     {
+        /// <summary>
+        /// The width in pixels of the cached text block
+        /// </summary>
         int Width
         {
             get;
         }
 
+        /// <summary>
+        /// The height in pixels of the cached text block
+        /// </summary>
         int Height
         {
             get;
         }
 
+        /// <summary>
+        /// Draw the cached text block at the given coordinates with the given color
+        /// </summary>
+        /// <param name="animationState">A time source for animation - may be null</param>
+        /// <param name="x">the left coordinate</param>
+        /// <param name="y">the top coordinate</param>
         void Draw(AnimationState animationState, int x, int y);
     }
 }

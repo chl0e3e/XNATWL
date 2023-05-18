@@ -32,14 +32,24 @@ using XNATWL.Utils;
 
 namespace XNATWL.Renderer
 {
+    /// <summary>
+    /// An attribute string which also works as an iterator.
+    /// </summary>
     public interface AttributedString : AnimationState, CharSequence
     {
+        /// <summary>
+        /// The current position of the attribute iterator
+        /// </summary>
         int Position
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// Moves the current position forward to the next segment.
+        /// </summary>
+        /// <returns>the new position</returns>
         int Advance();
     }
 }

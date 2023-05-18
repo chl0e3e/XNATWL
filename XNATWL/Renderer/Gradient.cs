@@ -47,6 +47,9 @@ namespace XNATWL.Renderer
         Mirror
     }
 
+    /// <summary>
+    /// Info class used to construct a gradient image
+    /// </summary>
     public class Gradient
     {
         private GradientType _gradientType;

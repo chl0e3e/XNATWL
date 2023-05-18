@@ -30,29 +30,28 @@
 
 namespace XNATWL.Renderer
 {
+    /// <summary>
+    /// An interface to allow offscreen rendering for special effects
+    /// </summary>
     public interface OffscreenRenderer
     {
-        /**
-         * Starts offscreen rendering. All following rendering operations will render
-         * into the returned offscreen surface. Rendering outside the specified area
-         * will be ignored.
-         * 
-         * @param widget the widget which will render to the returned surface - can be null.
-         * @param oldSurface the previous offscreen surface to reuse / overwrite
-         * @param x the X coordinate of the region, can be negative.
-         * @param y the Y coordinate of the region, can be negative.
-         * @param width the width, can be larger then the screen size
-         * @param height the height, can be larger then the screen size
-         * @return the OffscreenSurface or null if offscreen rendering could not be started.
-         */
+        /// <summary>
+        /// <pre>Starts offscreen rendering. All following rendering operations will render into the returned offscreen surface. Rendering outside the specified area will be ignored.</pre>
+        /// </summary>
+        /// <param name="widget">the widget which will render to the returned surface - can be null.</param>
+        /// <param name="oldSurface">the previous offscreen surface to reuse / overwrite</param>
+        /// <param name="x">the X coordinate of the region, can be negative.</param>
+        /// <param name="y">the Y coordinate of the region, can be negative.</param>
+        /// <param name="width">the width, can be larger then the screen size</param>
+        /// <param name="height">the height, can be larger then the screen size</param>
+        /// <returns>the OffscreenSurface or null if offscreen rendering could not be started.</returns>
         OffscreenSurface StartOffscreenRendering(Widget widget,
                 OffscreenSurface oldSurface, int x, int y, int width, int height);
 
-        /**
-         * Ends the current offscreen rendering.
-         * Only call this method after a sucessful call of
-         * {@link #startOffscreenRendering(de.matthiasmann.twl.renderer.OffscreenSurface, int, int, int, int) }
-         */
+        /// <summary>
+        /// Ends the current offscreen rendering.
+        /// <para>Only call this method after a sucessful call of <see cref="StartOffscreenRendering(Widget, OffscreenSurface, int, int, int, int)"/></para>
+        /// </summary>
         void EndOffscreenRendering();
     }
 }

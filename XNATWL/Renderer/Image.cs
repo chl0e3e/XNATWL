@@ -28,24 +28,55 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using Microsoft.Xna.Framework;
+
 namespace XNATWL.Renderer
 {
+    /// <summary>
+    /// An image object can be used for rendering.
+    /// </summary>
     public interface Image
     {
+        /// <summary>
+        /// The width in pixels of the image
+        /// </summary>
         int Width
         {
             get;
         }
 
+        /// <summary>
+        /// The height in pixels of the image
+        /// </summary>
         int Height
         {
             get;
         }
 
+        /// <summary>
+        /// Draws the image in it's original size at the given location
+        /// </summary>
+        /// <param name="state">A time source for animation - may be null</param>
+        /// <param name="x">left coordinate</param>
+        /// <param name="y">top coordinate</param>
         void Draw(AnimationState state, int x, int y);
 
+        /// <summary>
+        /// Draws the image scaled to the given size at the given location
+        /// </summary>
+        /// <param name="state">A time source for animation - may be null</param>
+        /// <param name="x">left coordinate</param>
+        /// <param name="y">top coordinate</param>
+        /// <param name="width">the width in pixels</param>
+        /// <param name="height">the height in pixels</param>
         void Draw(AnimationState state, int x, int y, int width, int height);
 
+        /// <summary>
+        /// Creates a new image with is tinted with the specified color.
+        /// <para>Tinting works by multiplying the color of the image's pixels with the specified color.</para>
+        /// </summary>
+        /// <param name="color">The color used for tinting.</param>
+        /// <returns>a new Image object.</returns>
         Image CreateTintedVersion(Color color);
     }
 }

@@ -35,41 +35,37 @@ using XNATWL.Utils;
 
 namespace XNATWL.Renderer
 {
+    /// <summary>
+    /// A font mapper which tries to retrieve the closest font for the specified parameters
+    /// </summary>
     public interface FontMapper
     {
-        /**
-         * Retrive the cloest font for the given parameters
-         * 
-         * @param fontFamilies a list of family names with decreasing piority
-         * @param fontSize the desired font size in pixels
-         * @param style a combination of the STYLE_* flags
-         * @param select the StateSelect object
-         * @param fontParams the font parameters - must be exactly 1 more then
-         *                   the number of expressions in the select object
-         * @return the Font object or {@code null} if the font could not be found
-         * @throws NullPointerException when one of the parameters is null
-         * @throws IllegalArgumentException when the number of font parameters doesn't match the number of state expressions
-         */
+        /// <summary>
+        /// Retrieve the cloest font for the given parameters
+        /// </summary>
+        /// <param name="fontFamilies">a list of family names with decreasing priority</param>
+        /// <param name="fontSize">the desired font size in pixels</param>
+        /// <param name="style">a combination of the STYLE_* flags</param>
+        /// <param name="select">the StateSelect object</param>
+        /// <param name="fontParams">the font parameters - must be exactly 1 more than the number of expressions in the select object</param>
+        /// <returns>the Font object or <em>null</em> if the font could not be found</returns>
         Font GetFont(List<string> fontFamilies, int fontSize, int style, StateSelect select, params FontParameter[] fontParams);
 
-        /**
-         * Registers a font file
-         * 
-         * @param fontFamily the font family for which to register the font
-         * @param style a combination of the STYLE_* and REGISTER_* flags
-         * @param url the URL for the font file
-         * @return true if the specified font could be registered
-         */
+        /// <summary>
+        /// Registers a font file
+        /// </summary>
+        /// <param name="fontFamily">the font family for which to register the font</param>
+        /// <param name="style">a combination of the STYLE_* and REGISTER_* flags</param>
+        /// <param name="file">the FSO for the font file</param>
+        /// <returns><b>true</b> if the specified font could be registered</returns>
         bool RegisterFont(String fontFamily, int style, FileSystemObject file);
 
-        /**
-         * Registers a font file and determines the style from the font itself.
-         * 
-         * @param fontFamily the font family for which to register the font
-         * @param url the URL for the font file
-         * @return true if the specified font could be registered
-         * @throws IOException when the font could not be parsed 
-         */
+        /// <summary>
+        /// Registers a font file and determines the style from the font itself.
+        /// </summary>
+        /// <param name="fontFamily">the font family for which to register the font</param>
+        /// <param name="file">the FSO for the font file</param>
+        /// <returns><b>true</b> if the specified font could be registered</returns>
         bool RegisterFont(String fontFamily, FileSystemObject file);
     }
 

@@ -30,23 +30,38 @@
 
 namespace XNATWL.Renderer
 {
+    /// <summary>
+    /// A font rendering interface
+    /// </summary>
     public interface Font : Resource
     {
+        /// <summary>
+        /// <strong>true</strong> if the font is proportional or <strong>false</strong> if it's fixed width.
+        /// </summary>
         bool Proportional
         {
             get;
         }
 
+        /// <summary>
+        /// The base line of the font measured in pixels from the top of the text bounding box
+        /// </summary>
         int BaseLine
         {
             get;
         }
 
+        /// <summary>
+        /// The line height in pixels for this font
+        /// </summary>
         int LineHeight
         {
             get;
         }
 
+        /// <summary>
+        /// Returns the width of a ' '
+        /// </summary>
         int SpaceWidth
         {
             get;
@@ -68,24 +83,99 @@ namespace XNATWL.Renderer
             get;
         }
 
+        /// <summary>
+        /// Computes the width in pixels of the longest text line. Lines are splitted at '\n'
+        /// </summary>
+        /// <param name="str">the text to evaluate</param>
+        /// <returns>the width in pixels of the longest line</returns>
         int ComputeMultiLineTextWidth(string str);
 
+        /// <summary>
+        /// Computes the width in pixels of a text
+        /// </summary>
+        /// <param name="str">the text to evaluate</param>
+        /// <returns>the width in pixels</returns>
         int ComputeTextWidth(string str);
 
+        /// <summary>
+        /// Computes the width in pixels of a text
+        /// </summary>
+        /// <param name="str">the text to evaluate</param>
+        /// <param name="start">index of first character in str</param>
+        /// <param name="end">index after last character in str</param>
+        /// <returns>the width in pixels</returns>
         int ComputeTextWidth(string str, int start, int end);
 
+        /// <summary>
+        /// Computes how many glyphs of the supplied CharSequence can be display completely in the given amount of pixels.
+        /// </summary>
+        /// <param name="str">the CharSequence</param>
+        /// <param name="start">the start index in the CharSequence</param>
+        /// <param name="end">the end index (exclusive) in the CharSequence</param>
+        /// <param name="width">the number of available pixels.</param>
+        /// <returns>the number (relative to start) of fitting glyphs</returns>
         int ComputeVisibleGlyphs(string str, int start, int end, int width);
 
+        /// <summary>
+        /// Draws multi line text - lines are splitted at '\n'
+        /// </summary>
+        /// <param name="animState">A time source for animation - may be null</param>
+        /// <param name="x">left coordinate of the text block </param>
+        /// <param name="y">top coordinate of the text block</param>
+        /// <param name="str">the text to draw</param>
+        /// <param name="width">the width of the text block</param>
+        /// <param name="alignment">horizontal alignment for shorter lines</param>
+        /// <returns>the height in pixels of the multi line text</returns>
         int DrawMultiLineText(AnimationState animState, int x, int y, string str, int width, HAlignment alignment);
 
+        /// <summary>
+        /// Draws a single line text
+        /// </summary>
+        /// <param name="animState">A time source for animation - may be null</param>
+        /// <param name="x">left coordinate of the text block</param>
+        /// <param name="y">top coordinate of the text block</param>
+        /// <param name="str">the text to draw</param>
+        /// <returns>the width in pixels of the text</returns>
         int DrawText(AnimationState animState, int x, int y, string str);
 
+        /// <summary>
+        /// Draws a single line text
+        /// </summary>
+        /// <param name="animState">A time source for animation - may be null</param>
+        /// <param name="x">left coordinate of the text block</param>
+        /// <param name="y">top coordinate of the text block</param>
+        /// <param name="str">the text to draw</param>
+        /// <param name="start">index of first character to draw in str</param>
+        /// <param name="end">index after last character to draw in str</param>
+        /// <returns>the width in pixels of the text</returns>
         int DrawText(AnimationState animState, int x, int y, string str, int start, int end);
 
+        /// <summary>
+        /// Caches a text for faster drawing
+        /// </summary>
+        /// <param name="prevCache">the previous cached text or null</param>
+        /// <param name="str">the text to cache</param>
+        /// <param name="width">the width of the text block</param>
+        /// <param name="alignment">horizontal alignment for shorter lines</param>
+        /// <returns>A cache object or null if caching was not possible</returns>
         FontCache CacheMultiLineText(FontCache prevCache, string str, int width, HAlignment alignment);
 
+        /// <summary>
+        /// Caches a text for faster drawing
+        /// </summary>
+        /// <param name="prevCache">the previous cached text or null</param>
+        /// <param name="str">the text to cache</param>
+        /// <returns>A cache object or null if caching was not possible</returns>
         FontCache CacheText(FontCache prevCache, string str);
 
+        /// <summary>
+        /// Caches a text for faster drawing
+        /// </summary>
+        /// <param name="prevCache">the previous cached text or null</param>
+        /// <param name="str">the text to cache</param>
+        /// <param name="start">index of first character to draw in str</param>
+        /// <param name="end">index after last character to draw in str</param>
+        /// <returns>A cache object or null if caching was not possible</returns>
         FontCache CacheText(FontCache prevCache, string str, int start, int end);
     }
 }

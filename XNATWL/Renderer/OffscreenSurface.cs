@@ -30,6 +30,10 @@
 
 namespace XNATWL.Renderer
 {
+    /// <summary>
+    /// An offscreen surface.
+    /// <para>It exposes all Image methods, in order to do special effects you need to cast this to the implementation</para>
+    /// </summary>
     public interface OffscreenSurface : Resource, Image
     {
     }

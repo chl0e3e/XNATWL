@@ -30,8 +30,20 @@
 
 namespace XNATWL.Renderer
 {
+    /// <summary>
+    /// Interface for handling 2D lines under the given rendering engine
+    /// </summary>
     public interface LineRenderer
     {
+        /// <summary>
+        /// Draws a line with the specified width and color.
+        /// Support for line width other then 1.0 is optional.
+        /// </summary>
+        /// <param name="pts">An array of xy coordinate pairs</param>
+        /// <param name="numPts">Number of points to draw</param>
+        /// <param name="width">the line width</param>
+        /// <param name="color">the Color of the line</param>
+        /// <param name="drawAsLoop"><strong>true</strong> if a line should be rendered from last to first vertex</param>
         void DrawLine(float[] pts, int numPts, float width, Color color, bool drawAsLoop);
     }
 }

@@ -38,30 +38,76 @@ using XNATWL.Utils;
 
 namespace XNATWL.Renderer.XNA
 {
-    public class BitmapFont
+    public class BitmapFont : IDisposable
     {
-        internal class GlyphTex : TextureAreaBase
+        /// <summary>
+        /// A font glyph drawn using normal texture rendering routines
+        /// </summary>
+        protected class Glyph : TextureAreaBase
         {
-            internal short _xOffset;
-            internal short _yOffset;
-            internal short _xAdvance;
-            internal byte[][] _kerning;
+            private short _xOffset;
+            private short _yOffset;
+            private short _xAdvance;
+            private byte[][] _kerning;
+            private Microsoft.Xna.Framework.Color[] _colorData;
 
-            public GlyphTex(XNATexture texture, int x, int y, int width, int height) : base(texture, x, y, (height <= 0) ? 0 : width, height)
+            public Glyph(Microsoft.Xna.Framework.Color[] colorData, XNATexture texture, int x, int y, int width, int height, short xOffset, short yOffset, short xAdvance) : base(texture, x, y, (height <= 0) ? 0 : width, height)
             {
-
+                this._xOffset = xOffset;
+                this._xAdvance = xAdvance;
+                this._yOffset = yOffset;
+                this._colorData = colorData;
             }
 
-            internal void Draw(Color color, bool newDraw, int x, int y)
+            /// <summary>
+            /// Draw the glyph at the given location
+            /// </summary>
+            /// <param name="color">Font color</param>
+            /// <param name="x">X coordinate</param>
+            /// <param name="y">Y coordinate</param>
+            public void Draw(Color color, int x, int y)
             {
                 DrawQuad(color, x + _xOffset, y + _yOffset, _textureWidth, _textureHeight);
             }
 
-            internal int GetKerning(char ch)
+            public short XOffset
             {
-                if (this._kerning != null)
+                get
+                {
+                    return _xOffset;
+                }
+            }
+
+            public short YOffset
+            {
+                get
+                {
+                    return _yOffset;
+                }
+            }
+
+            public short XAdvance
+            {
+                get
+                {
+                    return _xAdvance;
+                }
+            }
+
+            public Microsoft.Xna.Framework.Color[] ColorData
+            {
+                get
+                {
+                    return this._colorData;
+                }
+            }
+
+            public int GetKerning(char ch)
+            {
+                if (_kerning != null)
                 {
                     byte[] page = this._kerning[BitOperations.RightMove(ch, LOG2_PAGE_SIZE)];
+
                     if (page != null)
                     {
                         return page[ch & (PAGE_SIZE - 1)];
@@ -70,56 +116,19 @@ namespace XNATWL.Renderer.XNA
                 return 0;
             }
 
-            internal void SetKerning(int ch, int value)
+            public void SetKerning(int ch, int value)
             {
-                if (this._kerning == null)
+                if (_kerning == null)
                 {
-                    this._kerning = new byte[PAGES][];
+                    _kerning = new byte[PAGES][];
                 }
-                byte[] page = _kerning[BitOperations.RightMove(ch, LOG2_PAGE_SIZE)];
+                int kerningIndex = BitOperations.RightMove(ch, LOG2_PAGE_SIZE);
+                byte[] page = _kerning[kerningIndex];
                 if (page == null)
                 {
-                    this._kerning[BitOperations.RightMove(ch, LOG2_PAGE_SIZE)] = page = new byte[PAGE_SIZE];
+                    _kerning[kerningIndex] = page = new byte[PAGE_SIZE];
                 }
                 page[ch & (PAGE_SIZE - 1)] = (byte)value;
-            }
-        }
-
-        internal class Glyph// : TextureAreaBase
-        {
-            internal short _xOffset;
-            internal short _yOffset;
-            internal short _xAdvance;
-            private int _width;
-            private int _height;
-
-            public Microsoft.Xna.Framework.Color[] ColorData;
-
-            public Glyph(Microsoft.Xna.Framework.Color[] colorData, int width, int height)//XNATexture texture, int x, int y, int width, int height) : base(texture, x, y, (height <= 0) ? 0 : width, height)
-            {
-                this.ColorData = colorData;
-                this._width = width;
-                this._height = height;
-            }
-
-            public int getWidth()
-            {
-                return this._width;
-            }
-
-            public int getHeight()
-            {
-                return this._height;
-            }
-
-            public short getXOffset()
-            {
-                return this._xOffset;
-            }
-
-            public short getYOffset()
-            {
-                return this._yOffset;
             }
         }
 
@@ -129,13 +138,19 @@ namespace XNATWL.Renderer.XNA
 
         protected internal XNATexture _texture;
         private Glyph[][] _glyphs;
-        private GlyphTex[][] _glyphsTex;
         private int _lineHeight;
         private int _baseLine;
         private int _spaceWidth;
         private int _ex;
         private bool _proportional;
 
+        /// <summary>
+        /// Parse the BitmapFont from a given XMLParser
+        /// </summary>
+        /// <param name="renderer">XNA renderer the font belongs to</param>
+        /// <param name="xmlp">XML parser streaming the font's XML</param>
+        /// <param name="baseFso">Relative directory to find included assets</param>
+        /// <exception cref="NotImplementedException">XML references unsupported features</exception>
         public BitmapFont(XNARenderer renderer, XMLParser xmlp, FileSystemObject baseFso)
         {
             xmlp.Require(XmlPullParser.START_TAG, null, "font");
@@ -183,7 +198,6 @@ namespace XNATWL.Renderer.XNA
             bool prop = true;
 
             _glyphs = new Glyph[PAGES][];
-            _glyphsTex = new GlyphTex[PAGES][];
             //Microsoft.Xna.Framework.Color[] textureColorData = new Microsoft.Xna.Framework.Color[this.texture.Width * this.texture.Height];
             //this.texture.Texture2D.GetData<Microsoft.Xna.Framework.Color>(textureColorData, 0, textureColorData.Length);
             SpriteBatch spriteBatch = this._texture.SpriteBatch;
@@ -215,18 +229,15 @@ namespace XNATWL.Renderer.XNA
                     }
                     Texture2D xnaGlyph = new Texture2D(this._texture.Renderer.GraphicsDevice, w, h);
                     xnaGlyph.SetData(textureData);
-                    Glyph glyph = new Glyph(textureData, w, h);//new XNATexture(this.texture.Renderer, spriteBatch, w, h, xnaGlyph), 0, 0, w, h);
-                    GlyphTex glyphTex = new GlyphTex(new XNATexture(this._texture.Renderer, spriteBatch, w, h, xnaGlyph), 0, 0, w, h);
-                    glyphTex._xOffset = short.Parse(xmlp.GetAttributeNotNull("xoffset"));
-                    glyphTex._yOffset = short.Parse(xmlp.GetAttributeNotNull("yoffset"));
-                    glyphTex._xAdvance = xadvance;
-                    AddGlyphTex(idx, glyphTex);
-                    glyph._xOffset = short.Parse(xmlp.GetAttributeNotNull("xoffset"));
-                    glyph._yOffset = short.Parse(xmlp.GetAttributeNotNull("yoffset"));
-                    glyph._xAdvance = xadvance;
-                    AddGlyph(idx, glyph);
+
+                    short xOffset = short.Parse(xmlp.GetAttributeNotNull("xoffset"));
+                    short yOffset = short.Parse(xmlp.GetAttributeNotNull("yoffset"));
+                    short xAdvance = xadvance;
+
+                    Glyph glyphTex = new Glyph(textureData, new XNATexture(this._texture.Renderer, spriteBatch, w, h, xnaGlyph), 0, 0, w, h, xOffset, yOffset, xAdvance);
+                    AddGlyph_XNATexture(idx, glyphTex);
                 }
-                //else
+                //else 
                 //{
                 //    System.Diagnostics.Debug.WriteLine("Glyph skipped " + idx + " - " + w + "," + h);
                 //}
@@ -271,92 +282,19 @@ namespace XNATWL.Renderer.XNA
             xmlp.Require(XmlPullParser.END_TAG, null, "font");
 
             Glyph g = GetGlyph(' ');
-            _spaceWidth = (g != null) ? g._xAdvance + g.getWidth() : 5;
+            _spaceWidth = (g != null) ? g.XAdvance + g.Width : 5;
 
             Glyph gx = GetGlyph('x');
-            _ex = (gx != null) ? gx.getHeight() : 1;
+            _ex = (gx != null) ? gx.Height : 1;
             _proportional = prop;
         }
 
-        /*
-        public BitmapFont(XNARenderer renderer, Reader reader, URL baseUrl)
-        {
-            BufferedReader br = new BufferedReader(reader);
-            Dictionary<String, String> parameters = new HashMap<String, String>();
-            parseFntLine(br, "info");
-            parseFntLine(parseFntLine(br, "common"), parameters);
-            lineHeight = parseInt(parameters, "lineHeight");
-            baseLine = parseInt(parameters, "base");
-            if (parseInt(parameters, "pages", 1) != 1)
-            {
-                throw new UnsupportedOperationException("multi page fonts not supported");
-            }
-            if (parseInt(parameters, "packed", 0) != 0)
-            {
-                throw new UnsupportedOperationException("packed fonts not supported");
-            }
-            parseFntLine(parseFntLine(br, "page"), parameters);
-            if (parseInt(parameters, "id", 0) != 0)
-            {
-                throw new UnsupportedOperationException("only page id 0 supported");
-            }
-            this.texture = renderer.load(new URL(baseUrl, getParam(parameters, "file")),
-                    LWJGLTexture.Format.ALPHA, LWJGLTexture.Filter.NEAREST);
-            this.glyphs = new Glyph[PAGES][];
-            parseFntLine(parseFntLine(br, "chars"), parameters);
-            int charCount = parseInt(parameters, "count");
-            int firstXAdvance = Int32.MinValue;
-            boolean prop = true;
-            for (int charIdx = 0; charIdx < charCount; charIdx++)
-            {
-                parseFntLine(parseFntLine(br, "char"), parameters);
-                int idx = parseInt(parameters, "id");
-                int x = parseInt(parameters, "x");
-                int y = parseInt(parameters, "y");
-                int w = parseInt(parameters, "width");
-                int h = parseInt(parameters, "height");
-                if (parseInt(parameters, "page", 0) != 0)
-                {
-                    throw new IOException("Multiple pages not supported");
-                }
-                Glyph g = new Glyph(x, y, w, h, texture.Width, texture.Height);
-                g.xoffset = parseShort(parameters, "xoffset");
-                g.yoffset = parseShort(parameters, "yoffset");
-                g.xadvance = parseShort(parameters, "xadvance");
-                addGlyph(idx, g);
-
-                if (g.xadvance != firstXAdvance && g.xadvance > 0)
-                {
-                    if (firstXAdvance == Int32.MinValue)
-                    {
-                        firstXAdvance = g.xadvance;
-                    }
-                    else
-                    {
-                        prop = false;
-                    }
-                }
-            }
-            parseFntLine(parseFntLine(br, "kernings"), parameters);
-            int kerningCount = parseInt(parameters, "count");
-            for (int kerningIdx = 0; kerningIdx < kerningCount; kerningIdx++)
-            {
-                parseFntLine(parseFntLine(br, "kerning"), parameters);
-                int first = parseInt(parameters, "first");
-                int second = parseInt(parameters, "second");
-                int amount = parseInt(parameters, "amount");
-                addKerning(first, second, amount);
-            }
-
-            Glyph g = getGlyph(' ');
-            spaceWidth = (g != null) ? g.xadvance + g.width : 1;
-
-            Glyph gx = getGlyph('x');
-            ex = (gx != null) ? gx.height : 1;
-
-            this.proportional = prop;
-        }*/
-
+        /// <summary>
+        /// Load a BitmapFont as XML from a file system object
+        /// </summary>
+        /// <param name="renderer">The responsible XNA renderer</param>
+        /// <param name="fso">a FileSystemObject pointing to the XML file</param>
+        /// <returns>A new BitmapFont if successful</returns>
         public static BitmapFont LoadFont(XNARenderer renderer, FileSystemObject fso)
         {
             XMLParser xmlp = new XMLParser(fso);
@@ -374,55 +312,86 @@ namespace XNATWL.Renderer.XNA
             }
         }
 
-        public bool IsProportional()
+        /// <summary>
+        /// <strong>true</strong> if the font is proportional or <strong>false</strong> if it's fixed width.
+        /// </summary>
+        public bool Proportional
         {
-            return _proportional;
+            get
+            {
+                return _proportional;
+            }
         }
 
-        public int GetBaseLine()
+        /// <summary>
+        /// The base line of the font measured in pixels from the top of the text bounding box
+        /// </summary>
+        public int BaseLine
         {
-            return _baseLine;
+            get
+            {
+                return _baseLine;
+            }
         }
 
-        public int GetLineHeight()
+        /// <summary>
+        /// The line height in pixels for this font
+        /// </summary>
+        public int LineHeight
         {
-            return _lineHeight;
+            get
+            {
+                return _lineHeight;
+            }
         }
 
-        public int GetSpaceWidth()
+        /// <summary>
+        /// The width of a ' '
+        /// </summary>
+        public int SpaceWidth
         {
-            return _spaceWidth;
+            get
+            {
+                return _spaceWidth;
+            }
         }
 
-        public int GetEM()
+        /// <summary>
+        /// The width of a ' '
+        /// </summary>
+        public int EM
         {
-            return _lineHeight;
+            get
+            {
+                return _lineHeight;
+            }
         }
 
-        public int GetEX()
+        /// <summary>
+        /// The width of a 'x'
+        /// </summary>
+        public int EX
         {
-            return _ex;
+            get
+            {
+                return _ex;
+            }
         }
 
-        public void Destroy()
+        /// <summary>
+        /// Dispose the <see cref="BitmapFont"/> object and other related objects
+        /// </summary>
+        public void Dispose()
         {
             _texture.Dispose();
         }
 
-        private void AddGlyphTex(int idx, GlyphTex g)
-        {
-            if (idx <= Char.MaxValue)
-            {
-                GlyphTex[] page = this._glyphsTex[idx >> LOG2_PAGE_SIZE];
-                if (page == null)
-                {
-                    this._glyphsTex[idx >> LOG2_PAGE_SIZE] = page = new GlyphTex[PAGE_SIZE];
-                }
-                page[idx & (PAGE_SIZE - 1)] = g;
-            }
-        }
-
-        private void AddGlyph(int idx, Glyph g)
+        /// <summary>
+        /// Add a glyph using an <see cref="XNATexture"/> sprite to the _spriteGlyphs array
+        /// </summary>
+        /// <param name="idx">index of glyph</param>
+        /// <param name="g"><see cref="Glyph"/> instance</param>
+        private void AddGlyph_XNATexture(int idx, Glyph g)
         {
             if (idx <= Char.MaxValue)
             {
@@ -435,6 +404,12 @@ namespace XNATWL.Renderer.XNA
             }
         }
 
+        /// <summary>
+        /// Set a kerning for a given glyph
+        /// </summary>
+        /// <param name="first">First character in line</param>
+        /// <param name="second">Second character in line</param>
+        /// <param name="amount">Kerning in pixels</param>
         private void AddKerning(int first, int second, int amount)
         {
             if (first >= 0 && first <= Char.MaxValue &&
@@ -443,23 +418,17 @@ namespace XNATWL.Renderer.XNA
                 Glyph g = this.GetGlyph((char)first);
                 if (g != null)
                 {
-                    //g.setKerning(second, amount);
+                    g.SetKerning(second, amount);
                 }
             }
         }
 
-        internal GlyphTex GetGlyphTex(char ch)
-        {
-            GlyphTex[] page = this._glyphsTex[ch >> LOG2_PAGE_SIZE];
-            if (page != null)
-            {
-                int idx = ch & (PAGE_SIZE - 1);
-                return page[idx];
-            }
-            return null;
-        }
-
-        internal Glyph GetGlyph(char ch)
+        /// <summary>
+        /// Get a Glyph object representing texture data for a given character
+        /// </summary>
+        /// <param name="ch">the given character</param>
+        /// <returns>Glyph object representing texture data</returns>
+        protected Glyph GetGlyph(char ch)
         {
             Glyph[] page = this._glyphs[ch >> LOG2_PAGE_SIZE];
             if (page != null)
@@ -470,10 +439,16 @@ namespace XNATWL.Renderer.XNA
             return null;
         }
 
+        /// <summary>
+        /// Calculate the width in pixels of a given string/substring
+        /// </summary>
+        /// <param name="str">The string to measure</param>
+        /// <param name="start">Substring start</param>
+        /// <param name="end">Substring end</param>
+        /// <returns>text width of given string/substring</returns>
         public int ComputeTextWidth(string str, int start, int end)
         {
             int width = 0;
-            Glyph lastGlyph = null;
 
             while (start < end)
             {
@@ -481,7 +456,7 @@ namespace XNATWL.Renderer.XNA
                 Glyph g = this.GetGlyph(ch);
                 if (g != null)
                 {
-                    width += g._xAdvance;
+                    width += g.XAdvance;
                 }
                 else if (ch == ' ')
                 {
@@ -491,7 +466,15 @@ namespace XNATWL.Renderer.XNA
             return width;
         }
 
-        public int ComputeVisibleGlpyhs(string str, int start, int end, int availWidth)
+        /// <summary>
+        /// Calculate the number of visible glyphs in pixels of a given string/substring. This width has a maximum specified by <paramref name="availWidth"/>.
+        /// </summary>
+        /// <param name="str">The string to measure</param>
+        /// <param name="start">Substring start</param>
+        /// <param name="end">Substring end</param>
+        /// <param name="availWidth">Maximum width to return</param>
+        /// <returns>number of visible glyphs</returns>
+        public int ComputeVisibleGlyphs(string str, int start, int end, int availWidth)
         {
             int index = start;
             int width = 0;
@@ -504,7 +487,7 @@ namespace XNATWL.Renderer.XNA
                 {
                     if (_proportional)
                     {
-                        width += g._xAdvance;
+                        width += g.XAdvance;
                         if (width > availWidth)
                         {
                             break;
@@ -512,11 +495,11 @@ namespace XNATWL.Renderer.XNA
                     }
                     else
                     {
-                        if (width + g.getWidth() + g._xOffset > availWidth)
+                        if (width + g.Width + g.XOffset > availWidth)
                         {
                             break;
                         }
-                        width += g._xAdvance;
+                        width += g.XAdvance;
                     }
                 }
                 else if (ch == ' ')
@@ -528,17 +511,36 @@ namespace XNATWL.Renderer.XNA
             return index - start;
         }
 
-        public struct TexOutput
+        /// <summary>
+        /// A texel cache for drawing a single line of text
+        /// </summary>
+        public struct SingleLineTexelCache
         {
+            /// <summary>
+            /// Width of the line of text
+            /// </summary>
             public int Width;
+            /// <summary>
+            /// Texel array of XNA Colors
+            /// </summary>
             public Microsoft.Xna.Framework.Color[] LineColors;
-            public TexOutput(int width, Microsoft.Xna.Framework.Color[] lineColors)
+            public SingleLineTexelCache(int width, Microsoft.Xna.Framework.Color[] lineColors)
             {
                 this.Width = width;
                 this.LineColors = lineColors;
             }
         }
 
+        /// <summary>
+        /// Traditional text rendering used for drawing a single line of text
+        /// </summary>
+        /// <param name="color">Font colour</param>
+        /// <param name="x">X coordinate</param>
+        /// <param name="y">Y coordinate</param>
+        /// <param name="str">Text to draw</param>
+        /// <param name="start">Beginning of text substring</param>
+        /// <param name="end">End of text substring</param>
+        /// <returns>Width of line drawn</returns>
         public int DrawText(Color color, int x, int y, string str, int start, int end)
         {
             int startX = x;
@@ -546,15 +548,15 @@ namespace XNATWL.Renderer.XNA
             while (start < end)
             {
                 char ch = str[start++];
-                GlyphTex g = this.GetGlyphTex(ch);
+                Glyph g = this.GetGlyph(ch);
                 if (g != null)
                 {
-                    if (g.getWidth() > 0)
+                    if (g.Width > 0)
                     {
-                        g.Draw(color, false, x, y);
+                        g.Draw(color, x, y);
                     }
 
-                    x += g._xAdvance; // + g.getKerning(ch);
+                    x += g.XAdvance; // + g.getKerning(ch);
                 }
                 else if (ch == ' ')
                 {
@@ -565,9 +567,19 @@ namespace XNATWL.Renderer.XNA
             return x - startX;
         }
 
-        public TexOutput CacheBDrawText(Color color, int x, int y, string str, int start, int end)
+        /// <summary>
+        /// Compositive text rendering used for caching a texture representing a single line of text
+        /// </summary>
+        /// <param name="color">Font colour</param>
+        /// <param name="x">X coordinate</param>
+        /// <param name="y">Y coordinate</param>
+        /// <param name="str">Text to draw</param>
+        /// <param name="start">Beginning of text substring</param>
+        /// <param name="end">End of text substring</param>
+        /// <returns>cache struct of type <see cref="SingleLineTexelCache"/></returns>
+        public SingleLineTexelCache CacheBDrawText(Color color, int x, int y, string str, int start, int end)
         {
-            int height = this.GetLineHeight();
+            int height = this.LineHeight;
 
             Point[] positions = new Point[(end - start)];
             int tx = x;
@@ -576,10 +588,25 @@ namespace XNATWL.Renderer.XNA
             {
                 char ch = str[c];
                 Glyph g = this.GetGlyph(ch);
-                positions[c] = new Point(g == null ? tx : (tx + g.getXOffset()), g == null ? y : (y + g.getYOffset()));
-                tx += g == null ? ((ch == ' ' || ch == '\n') ? this.GetSpaceWidth() : 0) : g._xAdvance;
+                positions[c] = new Point(g == null ? tx : (tx + g.XOffset), g == null ? y : (y + g.YOffset));
+                //tx += g == null ? ((ch == ' ' || ch == '\n') ? this.SpaceWidth : 0) : g.XAdvance;
+                if (g == null)
+                {
+                    if (ch == ' ')
+                    {
+                        tx += this.SpaceWidth;
+                    }
+                    else if (ch == '\n')
+                    {
+                        tx += 1;
+                    }
+                }
+                else
+                {
+                    tx += g.XAdvance;
+                }
                 if (g != null)
-                    theight = Math.Max(theight, g.getHeight() + g.getYOffset());
+                    theight = Math.Max(theight, g.Height + g.YOffset);
             }
             theight += 1;
             int width = (tx - x);
@@ -592,28 +619,42 @@ namespace XNATWL.Renderer.XNA
                 {
                     continue;
                 }
-                for (int j = 0; j < g.getHeight(); j++)
+                for (int j = 0; j < g.Height; j++)
                 {
-                    for (int i = 0; i < g.getWidth(); i++)
+                    for (int i = 0; i < g.Width; i++)
                     {
-                        var srcOfs = i + j * g.getWidth();
+                        var srcOfs = i + j * g.Width;
                         var destOfs = (positions[c].X + i) + (positions[c].Y + j) * width;
                         lineColors[destOfs] = g.ColorData[srcOfs];
                     }
                 }
             }
 
-            TexOutput output = new TexOutput();
+            SingleLineTexelCache output = new SingleLineTexelCache();
             output.Width = width;
             output.LineColors = lineColors;
             return output;
         }
 
+        /// <summary>
+        /// A glyph alongside a point to draw it in two-dimensional space
+        /// </summary>
         struct GlyphPoint
         {
+            /// <summary>
+            /// Location on the screen
+            /// </summary>
             public Point Point;
+            /// <summary>
+            /// Character to draw at given location
+            /// </summary>
             public Glyph Glyph;
 
+            /// <summary>
+            /// Create a structure attributing a 2D point to a character on screen
+            /// </summary>
+            /// <param name="point">Location on the screen</param>
+            /// <param name="glyph">Character to draw at given location</param>
             public GlyphPoint(Point point, Glyph glyph)
             {
                 this.Point = point;
@@ -621,15 +662,41 @@ namespace XNATWL.Renderer.XNA
             }
         }
 
-        public struct TexMultiLineOutput
+        /// <summary>
+        /// A cache storing the output of an attempt at rendering multiple lines of text
+        /// </summary>
+        public struct MultiLineTexelCache
         {
+            /// <summary>
+            /// Number of lines describing the cache
+            /// </summary>
             public int NumLines;
+            /// <summary>
+            /// Pixel width of the cache
+            /// </summary>
             public int Width;
+            /// <summary>
+            /// Pixel height of the cache
+            /// </summary>
             public int Height;
+            /// <summary>
+            /// Colors representing the amalgamated texture
+            /// </summary>
             public Microsoft.Xna.Framework.Color[] LineColors;
         }
 
-        public TexMultiLineOutput CacheBDrawMultiLineText(Color color, int x, int y, string str, int start, int end, int lineWidth)
+        /// <summary>
+        /// Compositive text rendering used for caching a texture representing a multiple lines of text fixed at a given <paramref name="lineWidth"/>
+        /// </summary>
+        /// <param name="color">Font colour</param>
+        /// <param name="x">X coordinate</param>
+        /// <param name="y">Y coordinate</param>
+        /// <param name="str">Text to draw</param>
+        /// <param name="start">Beginning of text substring</param>
+        /// <param name="end">End of text substring</param>
+        /// <param name="lineWidth">Maximum line width</param>
+        /// <returns>cache struct of type <see cref="MultiLineTexelCache"/></returns>
+        public MultiLineTexelCache CacheBDrawMultiLineText(Color color, int x, int y, string str, int start, int end, int lineWidth)
         {
             List<string> linesToRender = new List<string>();
             string strWithinBounds = str.Substring(start, end - start);
@@ -684,19 +751,19 @@ namespace XNATWL.Renderer.XNA
             {
                 int width = this.ComputeTextWidth(lineToPlot, 0, lineToPlot.Length);
                 longestLine = Math.Max(width, longestLine);
-                int height = this.GetLineHeight();
+                int height = this.LineHeight;
 
                 int tx = 0;
                 int theight = this._lineHeight;
                 for (int c = 0; c < lineToPlot.Length; c++)
                 {
                     Glyph g = this.GetGlyph(lineToPlot[c]);
-                    Point point = new Point(g == null ? tx : (tx + g.getXOffset()), g == null ? currentY : (currentY + g.getYOffset()));
+                    Point point = new Point(g == null ? tx : (tx + g.XOffset), g == null ? currentY : (currentY + g.YOffset));
                     glyphPoints[currentPoint] = new GlyphPoint(point, g);
-                    tx += g == null ? this.GetSpaceWidth() : g._xAdvance;
+                    tx += g == null ? this.SpaceWidth : g.XAdvance;
                     if (g != null)
                     {
-                        theight = Math.Max(theight, g.getHeight() + g.getYOffset());
+                        theight = Math.Max(theight, g.Height + g.YOffset);
                     }
                     currentPoint++;
                 }
@@ -714,18 +781,18 @@ namespace XNATWL.Renderer.XNA
                     continue;
                 }
 
-                for (int j = 0; j < g.Glyph.getHeight(); j++)
+                for (int j = 0; j < g.Glyph.Height; j++)
                 {
-                    for (int i = 0; i < g.Glyph.getWidth(); i++)
+                    for (int i = 0; i < g.Glyph.Width; i++)
                     {
-                        var srcOfs = i + j * g.Glyph.getWidth();
+                        var srcOfs = i + j * g.Glyph.Width;
                         var destOfs = (g.Point.X + i) + (g.Point.Y + j) * longestLine;
                         lineColors[destOfs] = g.Glyph.ColorData[srcOfs];
                     }
                 }
             }
 
-            TexMultiLineOutput output = new TexMultiLineOutput();
+            MultiLineTexelCache output = new MultiLineTexelCache();
             output.NumLines = linesToRender.Count;
             output.LineColors = lineColors;
             output.Width = longestLine;
@@ -733,6 +800,16 @@ namespace XNATWL.Renderer.XNA
             return output;
         }
 
+        /// <summary>
+        /// Traditional text rendering method used for drawing a multiple lines of text
+        /// </summary>
+        /// <param name="color">Font colour</param>
+        /// <param name="x">X coordinate</param>
+        /// <param name="y">Y coordinate</param>
+        /// <param name="str">Text to draw</param>
+        /// <param name="width">Beginning of text substring</param>
+        /// <param name="align">Horizontal alignment</param>
+        /// <returns>Number of lines drawn</returns>
         public int DrawMultiLineText(Color color, int x, int y, string str, int width, HAlignment align)
         {
             int start = 0;
@@ -759,19 +836,19 @@ namespace XNATWL.Renderer.XNA
                     while (start < lineEnd)
                     {
                         char ch = str[start++];
-                        GlyphTex g = this.GetGlyphTex(ch);
+                        Glyph g = GetGlyph(ch);
                         if (g != null)
                         {
                             //System.Diagnostics.Debug.WriteLine("x0:" + x);
                             //x += lastGlyph.getKerning(ch);
                             //System.Diagnostics.Debug.WriteLine("x1:" + x);
                             //lastGlyph = g;
-                            if (g.getWidth() > 0)
+                            if (g.Width > 0)
                             {
-                                g.Draw(color, false, x, y);
+                                g.Draw(color, x, y);
                             }
                             //System.Diagnostics.Debug.WriteLine("x2:" + x);
-                            x += g._xAdvance; // + g.getKerning(ch);
+                            x += g.XAdvance; // + g.getKerning(ch);
                                              //System.Diagnostics.Debug.WriteLine("x3:" + x);
                         }
                         else if (ch == ' ')
@@ -790,6 +867,13 @@ namespace XNATWL.Renderer.XNA
             return numLines;
         }
 
+        /// <summary>
+        /// Compute multi-line dimensions for given string
+        /// </summary>
+        /// <param name="str">Rendered string</param>
+        /// <param name="width">Maximum width of string</param>
+        /// <param name="align">Horizontal alignment</param>
+        /// <param name="multiLineInfo">Output sizes array (height per line)</param>
         public void ComputeMultiLineInfo(string str, int width, HAlignment align, int[] multiLineInfo)
         {
             int start = 0;
@@ -814,6 +898,11 @@ namespace XNATWL.Renderer.XNA
             }
         }
 
+        /// <summary>
+        /// Compute the text width for a multi-line text render 
+        /// </summary>
+        /// <param name="str">String to measure</param>
+        /// <returns>Longest line width</returns>
         public int ComputeMultiLineTextWidth(string str)
         {
             int start = 0;
@@ -826,82 +915,6 @@ namespace XNATWL.Renderer.XNA
                 start = lineEnd + 1;
             }
             return width;
-        }
-
-        private static String ParseFontLine(TextReader br, String tag)
-        {
-            String line = br.ReadLine();
-            if (line == null || line.Length <= tag.Length ||
-                    line[tag.Length] != ' ' || !line.StartsWith(tag))
-            {
-                throw new IOException("'" + tag + "' line expected");
-            }
-            return line;
-        }
-
-        private static void ParseFontLine(String line, Dictionary<String, String> parameters)
-        {
-            parameters.Clear();
-            ParameterStringParser psp = new ParameterStringParser(line, ' ', '=');
-            while (psp.Next())
-            {
-                parameters.Add(psp.GetKey(), psp.GetValue());
-            }
-        }
-
-        private static String GetParam(Dictionary<String, String> parameters, String key)
-        {
-            String value = parameters[key];
-            if (value == null)
-            {
-                throw new IOException("Required parameter '" + key + "' not found");
-            }
-
-            return value;
-        }
-
-        private static int ParseInt(Dictionary<String, String> parameters, String key)
-        {
-            String value = BitmapFont.GetParam(parameters, key);
-            try
-            {
-                return int.Parse(value);
-            }
-            catch (FormatException ex)
-            {
-                throw new IOException("Can't parse parameter: " + key + '=' + value, ex);
-            }
-        }
-
-        private static int ParseInt(Dictionary<String, String> parameters, String key, int defaultValue)
-        {
-            String value = parameters[key];
-            if (value == null)
-            {
-                return defaultValue;
-            }
-
-            try
-            {
-                return Int32.Parse(value);
-            }
-            catch (FormatException ex)
-            {
-                throw new IOException("Can't parse parameter: " + key + '=' + value, ex);
-            }
-        }
-
-        private static short ParseShort(Dictionary<String, String> parameters, String key)
-        {
-            String value = GetParam(parameters, key);
-            try
-            {
-                return short.Parse(value);
-            }
-            catch (FormatException ex)
-            {
-                throw new IOException("Can't parse parameter: " + key + '=' + value, ex);
-            }
         }
     }
 }

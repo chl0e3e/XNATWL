@@ -30,6 +30,9 @@
 
 namespace XNATWL.Renderer
 {
+    /// <summary>
+    /// Extended font rendering API
+    /// </summary>
     public interface Font2 : Font
     {
         int DrawText(int x, int y, AttributedString attributedString);

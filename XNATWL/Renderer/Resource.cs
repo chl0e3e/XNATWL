@@ -32,6 +32,10 @@ using System;
 
 namespace XNATWL.Renderer
 {
+    /// <summary>
+    /// A resource is an object that needs to be destroyed when no longer in used.
+    /// This is implemented using IDisposable patterns.
+    /// </summary>
     public interface Resource : IDisposable
     {
 

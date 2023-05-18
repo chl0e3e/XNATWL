@@ -15,7 +15,7 @@ namespace XNATWL.Renderer.XNA
         {
             get
             {
-                return this._bitmapFont.IsProportional();
+                return this._bitmapFont.Proportional;
             }
         }
 
@@ -23,7 +23,7 @@ namespace XNATWL.Renderer.XNA
         {
             get
             {
-                return this._bitmapFont.GetBaseLine();
+                return this._bitmapFont.BaseLine;
             }
         }
 
@@ -31,7 +31,7 @@ namespace XNATWL.Renderer.XNA
         {
             get
             {
-                return this._bitmapFont.GetLineHeight();
+                return this._bitmapFont.LineHeight;
             }
         }
 
@@ -39,7 +39,7 @@ namespace XNATWL.Renderer.XNA
         {
             get
             {
-                return this._bitmapFont.GetSpaceWidth();
+                return this._bitmapFont.SpaceWidth;
             }
         }
 
@@ -47,7 +47,7 @@ namespace XNATWL.Renderer.XNA
         {
             get
             {
-                return this._bitmapFont.GetEM();
+                return this._bitmapFont.EM;
             }
         }
 
@@ -55,7 +55,7 @@ namespace XNATWL.Renderer.XNA
         {
             get
             {
-                return this._bitmapFont.GetEX();
+                return this._bitmapFont.EX;
             }
         }
 
@@ -64,6 +64,13 @@ namespace XNATWL.Renderer.XNA
         private FontState[] _fontStates;
         private XNARenderer _renderer;
 
+        /// <summary>
+        /// A new <see cref="XNAFont"/> describing a font or font fmaily
+        /// </summary>
+        /// <param name="renderer">Parent renderer</param>
+        /// <param name="baseFile">File to load font from</param>
+        /// <param name="select">states to select</param>
+        /// <param name="parameterList">array of font parameters</param>
         public XNAFont(XNARenderer renderer, FileSystemObject baseFile, StateSelect select, params FontParameter[] parameterList)
         {
             this._bitmapFont = BitmapFont.LoadFont(renderer, baseFile);
@@ -83,16 +90,36 @@ namespace XNATWL.Renderer.XNA
             return new XNAFontCache(this, str, 0, str.Length, width);
         }
 
+        /// <summary>
+        /// Caches multiple lines of an <see cref="AttributedString"/> for faster drawing
+        /// </summary>
+        /// <param name="prevCache">previous cache returned</param>
+        /// <param name="attributedString">attributed string to draw</param>
+        /// <returns>new cache to draw</returns>
         public AttributedStringFontCache CacheMultiLineText(AttributedStringFontCache prevCache, AttributedString attributedString)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Caches a substring of multiple lines of an <see cref="AttributedString"/> for faster drawing
+        /// </summary>
+        /// <param name="prevCache">previous cache returned</param>
+        /// <param name="attributedString">attributed string to draw</param>
+        /// <param name="start">start of the substring to draw</param>
+        /// <param name="end">end of the substring to draw</param>
+        /// <returns>new cache to use when drawing</returns>
         public AttributedStringFontCache CacheMultiLineText(AttributedStringFontCache prevCache, AttributedString attributedString, int start, int end)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Cache a single line of text for faster drawing
+        /// </summary>
+        /// <param name="prevCache">previous cache returned</param>
+        /// <param name="str">string to draw</param>
+        /// <returns>new cache to use when drawing</returns>
         public FontCache CacheText(FontCache prevCache, string str)
         {
             //System.Diagnostics.Debug.WriteLine("CacheText@1 " + str);
@@ -104,6 +131,14 @@ namespace XNATWL.Renderer.XNA
             return new XNAFontCache(this, str);
         }
 
+        /// <summary>
+        /// Cache a substring of a single line of text for faster drawing
+        /// </summary>
+        /// <param name="prevCache">previous cache returned</param>
+        /// <param name="str">string to draw</param>
+        /// <param name="start">start of the substring to draw</param>
+        /// <param name="end">end of the substring to draw</param>
+        /// <returns>new cache to use when drawing</returns>
         public FontCache CacheText(FontCache prevCache, string str, int start, int end)
         {
             if (prevCache != null && !(((XNAFontCache)prevCache).ShouldRedraw(str, start, end)))
@@ -114,12 +149,26 @@ namespace XNATWL.Renderer.XNA
             return new XNAFontCache(this, str.Substring(start, end - start));
         }
 
+        /// <summary>
+        /// Cache a single line of an <see cref="AttributedString"/> for faster drawing
+        /// </summary>
+        /// <param name="prevCache">previous cache returned</param>
+        /// <param name="attributedString">attributed string to draw</param>
+        /// <returns>new cache to use when drawing</returns>
         public AttributedStringFontCache CacheText(AttributedStringFontCache prevCache, AttributedString attributedString)
         {
             //System.Diagnostics.Debug.WriteLine("CacheText@3");
             return new XNAASFontCache(this, attributedString);
         }
 
+        /// <summary>
+        /// Cache a substring of a single line of an <see cref="AttributedString"/> for faster drawing
+        /// </summary>
+        /// <param name="prevCache">previous cache returned</param>
+        /// <param name="attributedString">attributed string to draw</param>
+        /// <param name="start">start of the substring to draw</param>
+        /// <param name="end">end of the substring to draw</param>
+        /// <returns>new cache to use when drawing</returns>
         public AttributedStringFontCache CacheText(AttributedStringFontCache prevCache, AttributedString attributedString, int start, int end)
         {
             //System.Diagnostics.Debug.WriteLine("CacheText@4");
@@ -143,7 +192,7 @@ namespace XNATWL.Renderer.XNA
 
         public int ComputeVisibleGlyphs(string str, int start, int end, int width)
         {
-            return this._bitmapFont.ComputeVisibleGlpyhs(str, start, end, width);
+            return this._bitmapFont.ComputeVisibleGlyphs(str, start, end, width);
         }
 
         public void Dispose()
@@ -158,16 +207,35 @@ namespace XNATWL.Renderer.XNA
             return this._bitmapFont.DrawMultiLineText(fontState._color, x, y, str, 100, HAlignment.Center);
         }
 
+        /// <summary>
+        /// Draws multi line text - lines are splitted at '\n'
+        /// </summary>
+        /// <param name="x">X coordinate to draw at</param>
+        /// <param name="y">Y coordinate to draw at</param>
+        /// <param name="attributedString">attributed string to draw</param>
         public void DrawMultiLineText(int x, int y, AttributedString attributedString)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Draws substring of multi line text - lines are splitted at '\n'
+        /// </summary>
+        /// <param name="x">X coordinate to draw at</param>
+        /// <param name="y">Y coordinate to draw at</param>
+        /// <param name="attributedString">attributed string to draw</param>
+        /// <param name="start">start of the substring to draw</param>
+        /// <param name="end">end of the substring to draw</param>
         public void DrawMultiLineText(int x, int y, AttributedString attributedString, int start, int end)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Evaluate and return a <see cref="FontState"/> from a given <see cref="AnimationState"/>
+        /// </summary>
+        /// <param name="animationState">Animation source</param>
+        /// <returns><see cref="FontState"/> based on the <see cref="AnimationState"/></returns>
         FontState EvalFontState(AnimationState animationState)
         {
             return this._fontStates[this._stateSelect.Evaluate(animationState)];
@@ -191,6 +259,13 @@ namespace XNATWL.Renderer.XNA
             return this._bitmapFont.DrawText(fontState._color, x, y, str, start, end);
         }
 
+        /// <summary>
+        /// Draws a single line text
+        /// </summary>
+        /// <param name="x">left coordinate of the text block</param>
+        /// <param name="y">top coordinate of the text block</param>
+        /// <param name="attributedString">the attributed string to draw</param>
+        /// <returns>the width in pixels of the text</returns>
         public int DrawText(int x, int y, AttributedString attributedString)
         {
             //System.Diagnostics.Debug.WriteLine("DrawText@AttributedString");
@@ -202,6 +277,15 @@ namespace XNATWL.Renderer.XNA
             return this._bitmapFont.DrawText(fontState._color, x, y, str, 0, str.Length);
         }
 
+        /// <summary>
+        /// Draws a substring of a single line of text
+        /// </summary>
+        /// <param name="x">left coordinate of the text block</param>
+        /// <param name="y">top coordinate of the text block</param>
+        /// <param name="attributedString">the attributed string to draw</param>
+        /// <param name="start">start of the substring to draw</param>
+        /// <param name="end">end of the substring to draw</param>
+        /// <returns>the width in pixels of the text</returns>
         public int DrawText(int x, int y, AttributedString attributedString, int start, int end)
         {
             //System.Diagnostics.Debug.WriteLine("DrawText@AttributedString<start,end>");
@@ -212,6 +296,9 @@ namespace XNATWL.Renderer.XNA
             return this._bitmapFont.DrawText(fontState._color, x, y, str, start, end);
         }
 
+        /// <summary>
+        /// Font state which describes how to draw the font from a <see cref="FontParameter"/>
+        /// </summary>
         public class FontState
         {
             internal Color _color;
@@ -220,6 +307,10 @@ namespace XNATWL.Renderer.XNA
             internal int _style;
             internal int _underlineOffset;
 
+            /// <summary>
+            /// Create a new font state
+            /// </summary>
+            /// <param name="fontParam">font parameter</param>
             public FontState(FontParameter fontParam)
             {
                 int lineStyle = 0;
@@ -240,6 +331,9 @@ namespace XNATWL.Renderer.XNA
             }
         }
 
+        /// <summary>
+        /// Font cache implementation for an AttributedString
+        /// </summary>
         class XNAASFontCache : AttributedStringFontCache
         {
             private XNAFont _font;
@@ -274,6 +368,11 @@ namespace XNATWL.Renderer.XNA
             {
             }
 
+            /// <summary>
+            /// Should we redraw this cache given it's new str
+            /// </summary>
+            /// <param name="str">New string to test cache equals</param>
+            /// <returns><b>true</b> if redraw</returns>
             public bool ShouldRedraw(string str)
             {
                 return this._str.Value == str;
@@ -295,6 +394,9 @@ namespace XNATWL.Renderer.XNA
                 }
             }
 
+            /// <summary>
+            /// Render the font to a cache
+            /// </summary>
             public void CacheDraw()
             {
                 this._font._renderer.GraphicsDevice.SetRenderTarget(this._cachedRenderTarget);
@@ -320,6 +422,9 @@ namespace XNATWL.Renderer.XNA
             }
         }
 
+        /// <summary>
+        /// Font cache for strings that aren't described by objects
+        /// </summary>
         class XNAFontCache : FontCache
         {
             private XNAFont _font;
@@ -336,6 +441,14 @@ namespace XNATWL.Renderer.XNA
             private int _start;
             private int _end;
 
+            /// <summary>
+            /// New FontCache instance for a string
+            /// </summary>
+            /// <param name="font">Font to draw using</param>
+            /// <param name="str">String to draw</param>
+            /// <param name="start">Position in string to draw from</param>
+            /// <param name="end">Position in string to draw to</param>
+            /// <param name="multiLineWidth">Maximum length of a line</param>
             public XNAFontCache(XNAFont font, string str, int start, int end, int multiLineWidth)
             {
                 this._str = str;
@@ -348,16 +461,31 @@ namespace XNATWL.Renderer.XNA
                 this.CacheDraw();
             }
 
+            /// <summary>
+            /// New FontCache instance for a string
+            /// </summary>
+            /// <param name="font">Font to draw using</param>
+            /// <param name="str">String to draw</param>
+            /// <param name="start">Position in string to draw from</param>
+            /// <param name="end">Position in string to draw to</param>
             public XNAFontCache(XNAFont font, string str, int start, int end) : this(font, str, start, end, -1)
             {
 
             }
 
+            /// <summary>
+            /// New FontCache instance for a string
+            /// </summary>
+            /// <param name="font">Font to draw using</param>
+            /// <param name="str">String to draw</param>
             public XNAFontCache(XNAFont font, string str) : this(font, str, 0, str.Length, -1)
             {
                 
             }
 
+            /// <summary>
+            /// Render the font to a cache
+            /// </summary>
             public void CacheDraw()
             {
                 if (this._str == "\n")
@@ -373,48 +501,10 @@ namespace XNATWL.Renderer.XNA
                     }
                     return;
                 }
-                /*if (this._str.Trim() == "")
-                {
-                    this._cachedImage = null;
-                    return;
-                }*/
 
-                /*System.Diagnostics.StackTrace t = new System.Diagnostics.StackTrace();
-                bool has = false;
-                foreach (StackFrame sf in t.GetFrames())
-                {
-                    if (sf.GetMethod().Name.Contains("Update") || sf.GetMethod().Name.Contains("setup"))
-                    {
-                        has = true;
-                        break;
-                    }
-                }
-                if (!has)
-                {
-                    System.Diagnostics.Debug.WriteLine("test");
-                }
-                */
-                //BasicEffect effect = new BasicEffect(this._font.renderer.GraphicsDevice);
-                //effect.Begin
-
-                //this._font.renderer.SpriteBatch.End();
-               /* this._width = this._font.ComputeTextWidth(this._str);
-                this._height = this._font.LineHeight;
-                this._cachedRenderTarget = new RenderTarget2D(this._font.renderer.GraphicsDevice, this._width, this._height, true, SurfaceFormat.Color, DepthFormat.None);
-                this._font.renderer.GraphicsDevice.SetRenderTarget(this._cachedRenderTarget);
-                this._font.renderer.GraphicsDevice.Clear(Microsoft.Xna.Framework.Color.Transparent);
-                //this._font.renderer.SpriteBatch.Begin();
-                this._font._bitmapFont.drawText(Color.BLACK, 0, 0, this._str, this._start, this._end);
-                //this._font.renderer.SpriteBatch.End();
-                this._font.renderer.GraphicsDevice.SetRenderTarget(null);
-                this._cachedXNATexture = new XNATexture(this._font.renderer, this._width, this._height, this._cachedRenderTarget);
-
-                this._cachedImage = (TextureAreaBase) this._cachedXNATexture.GetImage(0, 0, this._width, this._height, Color.BLACK, false, TextureRotation.NONE);
-                //this._font.renderer.SpriteBatch.Begin();
-                return;*/
                 if (this._multiLineWidth > 0)
                 {
-                    BitmapFont.TexMultiLineOutput _texOutput = this._font._bitmapFont.CacheBDrawMultiLineText(Color.BLACK, 0, 0, this._str, this._start, this._end, this._multiLineWidth);
+                    BitmapFont.MultiLineTexelCache _texOutput = this._font._bitmapFont.CacheBDrawMultiLineText(Color.BLACK, 0, 0, this._str, this._start, this._end, this._multiLineWidth);
                     this._width = _texOutput.Width;
                     this._height = _texOutput.Height;
                     Texture2D cachedTexture = new Texture2D(this._font._renderer.GraphicsDevice, this._width, this._height);
@@ -424,7 +514,7 @@ namespace XNATWL.Renderer.XNA
                 }
                 else
                 {
-                    BitmapFont.TexOutput _texOutput = this._font._bitmapFont.CacheBDrawText(Color.BLACK, 0, 0, this._str, this._start, this._end);
+                    BitmapFont.SingleLineTexelCache _texOutput = this._font._bitmapFont.CacheBDrawText(Color.BLACK, 0, 0, this._str, this._start, this._end);
                     this._width = _texOutput.Width;
                     this._height = this._font.LineHeight;
                     Texture2D cachedTexture = new Texture2D(this._font._renderer.GraphicsDevice, this._width, this._height);
@@ -434,11 +524,23 @@ namespace XNATWL.Renderer.XNA
                 }
             }
 
+            /// <summary>
+            /// Should we redraw this cache given it's new str
+            /// </summary>
+            /// <param name="str">New string to test cache equals</param>
+            /// <returns><b>true</b> if redraw</returns>
             public bool ShouldRedraw(string str)
             {
                 return this._str != str;
             }
 
+            /// <summary>
+            /// Should we redraw this cache given it's new substring/string range
+            /// </summary>
+            /// <param name="str">New string to test cache equals</param>
+            /// <param name="start">Start of substring of 'str'</param>
+            /// <param name="end">End of substring of 'str'</param>
+            /// <returns><b>true</b> if redraw</returns>
             public bool ShouldRedraw(string str, int start, int end)
             {
                 return this._str != str && this._start != start && this._end != end;  

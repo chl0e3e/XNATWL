@@ -28,10 +28,25 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using static System.Net.Mime.MediaTypeNames;
+
 namespace XNATWL.Renderer
 {
+    /// <summary>
+    /// Additional drawing routine for Image objects. Will be used by RepeatImage class if the base image supports this.
+    /// </summary>
     public interface SupportsDrawRepeat
     {
+        /// <summary>
+        /// Draw image repeatedly
+        /// </summary>
+        /// <param name="animationState">A time source for animation - may be null</param>
+        /// <param name="x">Left coordinate</param>
+        /// <param name="y">Top coordinate</param>
+        /// <param name="width">Width in pixels</param>
+        /// <param name="height">Height in pixels</param>
+        /// <param name="repeatCountX">Number of times to repeat the image on the X axis</param>
+        /// <param name="repeatCountY">Number of times to repeat the image on the Y axis</param>
         void Draw(AnimationState animationState, int x, int y, int width, int height,
                 int repeatCountX, int repeatCountY);
     }

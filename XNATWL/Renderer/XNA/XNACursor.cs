@@ -32,18 +32,42 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace XNATWL.Renderer.XNA
 {
+    /// <summary>
+    /// An <see cref="TextureAreaBase"/> which specifically deals with mouse cursors
+    /// </summary>
     public class XNACursor : TextureAreaBase, MouseCursor
     {
         private int _hotSpotX = 0;
         private int _hotSpotY = 0;
         private Image _imageRef = null;
 
+        /// <summary>
+        /// A cursor image referenced in another <see cref="XNATexture"/>
+        /// </summary>
+        /// <param name="texture">Master texture</param>
+        /// <param name="x">X coordinate in texture</param>
+        /// <param name="y">Y coordinate in texture</param>
+        /// <param name="width">Width in texture</param>
+        /// <param name="height">Height in texture</param>
+        /// <param name="hotSpotX">X hotspot offset in texture</param>
+        /// <param name="hotSpotY">Y hotspot offset in texture</param>
         public XNACursor(XNATexture texture, int x, int y, int width, int height, int hotSpotX, int hotSpotY) : base(texture, x, y, width, height)
         {
             this._hotSpotX = hotSpotX;
             this._hotSpotY = hotSpotY;
         }
 
+        /// <summary>
+        /// A cursor image referenced in another <see cref="XNATexture"/>
+        /// </summary>
+        /// <param name="texture">Master texture</param>
+        /// <param name="x">X coordinate in texture</param>
+        /// <param name="y">Y coordinate in texture</param>
+        /// <param name="width">Width in texture</param>
+        /// <param name="height">Height in texture</param>
+        /// <param name="hotSpotX">X hotspot offset in texture</param>
+        /// <param name="hotSpotY">Y hotspot offset in texture</param>
+        /// <param name="imageRef">An overriding image to draw instead</param>
         public XNACursor(XNATexture texture, int x, int y, int width, int height, int hotSpotX, int hotSpotY, Image imageRef) : this(texture, x, y, width, height, hotSpotX, hotSpotY)
         {
             this._hotSpotX = hotSpotX;
@@ -51,7 +75,7 @@ namespace XNATWL.Renderer.XNA
             this._imageRef = imageRef;
         }
 
-        internal override void DrawQuad(Color color, int x, int y, int w, int h)
+        protected internal override void DrawQuad(Color color, int x, int y, int w, int h)
         {
             if (_imageRef != null)
             {
@@ -59,7 +83,7 @@ namespace XNATWL.Renderer.XNA
             }
             else
             {
-                this._texture.SpriteBatch.Draw(this._texture.Texture2D, new Microsoft.Xna.Framework.Rectangle(x - _hotSpotX, y - _hotSpotY, w, h), new Microsoft.Xna.Framework.Rectangle(this._tx0, this._ty0, this._textureWidth, this._textureHeight), this._texture.Renderer.TintStack.TintColorForXNA(color));
+                this._texture.SpriteBatch.Draw(this._texture.Texture2D, new Microsoft.Xna.Framework.Rectangle(x - _hotSpotX, y - _hotSpotY, w, h), new Microsoft.Xna.Framework.Rectangle(this._tx0, this._ty0, this._textureWidth, this._textureHeight), this._texture.Renderer.TintStack.XNATint(color));
             }
         }
     }

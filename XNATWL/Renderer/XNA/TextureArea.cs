@@ -32,6 +32,9 @@ using System;
 
 namespace XNATWL.Renderer.XNA
 {
+    /// <summary>
+    /// An area inside an XNATexture, used for spriting. It extends <see cref="TextureAreaBase"/> with repeated drawing methods and animation state handles
+    /// </summary>
     public class TextureArea : TextureAreaBase, Image, SupportsDrawRepeat, QueriablePixels
     {
         protected static int REPEAT_CACHE_SIZE = 10;
@@ -39,46 +42,39 @@ namespace XNATWL.Renderer.XNA
         protected Color _tintColor;
         protected int _repeatCacheID = -1;
 
+        /// <summary>
+        /// Construct a sub-texture by using an <see cref="XNATexture"/> as a sprite sheet
+        /// </summary>
+        /// <param name="texture">Master texture</param>
+        /// <param name="x">Sprite X</param>
+        /// <param name="y">Sprite Y</param>
+        /// <param name="width">Sprite width</param>
+        /// <param name="height">Sprite height</param>
+        /// <param name="tintColor">Tint to recolour</param>
         public TextureArea(XNATexture texture, int x, int y, int width, int height, Color tintColor) : base(texture, x, y, width, height)
         {
             this._tintColor = (tintColor == null) ? Color.WHITE : tintColor;
         }
 
+        /// <summary>
+        /// Duplicate a texture area constructed using the same <see cref="TextureArea"/> class
+        /// </summary>
+        /// <param name="src">Duplicated texture</param>
+        /// <param name="tintColor">Tint to recolour</param>
         public TextureArea(TextureArea src, Color tintColor) : base(src)
         {
             this._tintColor = tintColor;
         }
 
-        public int Width
-        {
-            get
-            {
-                return this.getWidth();
-            }
-        }
-
-        public int Height
-        {
-            get
-            {
-                return this.getHeight();
-            }
-        }
-
         public int PixelValueAt(int x, int y)
         {
-            /*if (x < 0 || y < 0 || x >= width || y >= height)
-            {
-                throw new ArgumentOutOfRangeException();
-            }
+            int texWidth = _texture.Width;
+            int texHeight = _texture.Height;
 
-            int texWidth = texture.Width;
-            int texHeight = texture.Height;
+            int baseX = (int)(_tx0 * texWidth);
+            int baseY = (int)(_ty0 * texHeight);
 
-            int baseX = (int)(tx0 * texWidth);
-            int baseY = (int)(ty0 * texHeight);
-
-            if (tx0 > tx1)
+            if (_tx0 > _width)
             {
                 x = baseX - x;
             }
@@ -87,7 +83,7 @@ namespace XNATWL.Renderer.XNA
                 x = baseX + x;
             }
 
-            if (ty0 > ty1)
+            if (_ty0 > _height)
             {
                 y = baseY - y;
             }
@@ -112,10 +108,9 @@ namespace XNATWL.Renderer.XNA
             else if (y >= texHeight)
             {
                 y = texHeight - 1;
-            }*/
+            }
 
-            return 0;
-            //return texture.getPixelValue(x, y);
+            return this._texture.PixelValueAt(x, y);
         }
 
         public void Draw(AnimationState animationState, int x, int y)
@@ -145,9 +140,17 @@ namespace XNATWL.Renderer.XNA
             DrawRepeatCached(x, y, repeatCountX, repeatCountY);
         }
 
+        /// <summary>
+        /// Draw image repeatedly using a slow method and without an AnimationState
+        /// </summary>
+        /// <param name="x">Left coordinate</param>
+        /// <param name="y">Top coordinate</param>
+        /// <param name="width">Width in pixels</param>
+        /// <param name="height">Height in pixels</param>
+        /// <param name="repeatCountX">Number of times to repeat the image on the X axis</param>
+        /// <param name="repeatCountY">Number of times to repeat the image on the Y axis</param>
         private void DrawRepeatSlow(int x, int y, int width, int height, int repeatCountX, int repeatCountY)
         {
-            //GL11.glBegin(GL11.GL_QUADS);
             while (repeatCountY > 0)
             {
                 int rowHeight = height / repeatCountY;
@@ -164,9 +167,15 @@ namespace XNATWL.Renderer.XNA
                 height -= rowHeight;
                 repeatCountY--;
             }
-            //GL11.glEnd();
         }
 
+        /// <summary>
+        /// Draw image repeatedly without an AnimationState
+        /// </summary>
+        /// <param name="x">Left coordinate</param>
+        /// <param name="y">Top coordinate</param>
+        /// <param name="repeatCountX">Number of times to repeat the image on the X axis</param>
+        /// <param name="repeatCountY">Number of times to repeat the image on the Y axis</param>
         protected void DrawRepeat(int x, int y, int repeatCountX, int repeatCountY)
         {
             int w = _width;
@@ -186,6 +195,13 @@ namespace XNATWL.Renderer.XNA
             //GL11.glEnd();
         }
 
+        /// <summary>
+        /// Cache-draw image repeatedly without an AnimationState
+        /// </summary>
+        /// <param name="x">Left coordinate</param>
+        /// <param name="y">Top coordinate</param>
+        /// <param name="repeatCountX">Number of times to repeat the image on the X axis</param>
+        /// <param name="repeatCountY">Number of times to repeat the image on the Y axis</param>
         protected void DrawRepeatCached(int x, int y, int repeatCountX, int repeatCountY)
         {
             if (_repeatCacheID < 0)
@@ -226,6 +242,10 @@ namespace XNATWL.Renderer.XNA
             }
         }
 
+        /// <summary>
+        /// <b>NOT IMPLEMENTED:</b> Provide a cached texture for a repeated draw
+        /// </summary>
+        /// <exception cref="NotImplementedException">This function is not implemented</exception>
         protected void CreateRepeatCache()
         {
             throw new NotImplementedException();
@@ -237,6 +257,10 @@ namespace XNATWL.Renderer.XNA
             //GL11.glEndList();
         }
 
+        /// <summary>
+        /// <b>NOT IMPLEMENTED:</b> Destroy a cached texture provided by <see cref="CreateRepeatCache"/>
+        /// </summary>
+        /// <exception cref="NotImplementedException">This function is not implemented</exception>
         void DestroyRepeatCache()
         {
             throw new NotImplementedException();
@@ -244,6 +268,12 @@ namespace XNATWL.Renderer.XNA
             //repeatCacheID = -1;
         }
 
+        /// <summary>
+        /// Multiply current texture tint by a new one
+        /// </summary>
+        /// <param name="color">Newly tinted colour</param>
+        /// <returns>Tinted image</returns>
+        /// <exception cref="NullReferenceException"></exception>
         public Image CreateTintedVersion(Color color)
         {
             if (color == null)

@@ -32,6 +32,9 @@ using System;
 
 namespace XNATWL.Renderer.XNA
 {
+    /// <summary>
+    /// An area inside an <see cref="XNATexture"/>, used for spriting
+    /// </summary>
     public class TextureAreaBase
     {
         protected int _tx0;
@@ -42,6 +45,14 @@ namespace XNATWL.Renderer.XNA
         protected int _height;
         protected XNATexture _texture;
 
+        /// <summary>
+        /// Describes an area of an <see cref="XNATexture"/> object
+        /// </summary>
+        /// <param name="texture">Master texture</param>
+        /// <param name="x">X coordinate in master texture</param>
+        /// <param name="y">Y coordinate in master texture</param>
+        /// <param name="width">Width of area</param>
+        /// <param name="height">Height of area</param>
         public TextureAreaBase(XNATexture texture, int x, int y, int width, int height)
         {
             this._tx0 = x;
@@ -53,6 +64,10 @@ namespace XNATWL.Renderer.XNA
             this._texture = texture;
         }
 
+        /// <summary>
+        /// Duplicate values from another <see cref="TextureAreaBase"/>
+        /// </summary>
+        /// <param name="src">Object to copy</param>
         public TextureAreaBase(TextureAreaBase src)
         {
             this._tx0 = src._tx0;
@@ -64,19 +79,39 @@ namespace XNATWL.Renderer.XNA
             this._texture = src._texture;
         }
 
-        public int getWidth()
+        /// <summary>
+        /// Texture width in pixels
+        /// </summary>
+        public int Width
         {
-            return this._textureWidth;
+            get
+            {
+                return _textureWidth;
+            }
         }
 
-        public int getHeight()
+        /// <summary>
+        /// Texture height in pixels
+        /// </summary>
+        public int Height
         {
-            return this._textureHeight;
+            get
+            {
+                return _textureHeight;
+            }
         }
 
-        internal virtual void DrawQuad(Color color, int x, int y, int w, int h)
+        /// <summary>
+        /// Render the texture using the XNA <see cref="Microsoft.Xna.Framework.Graphics.SpriteBatch">SpriteBatch</see> created in the <see cref="XNARenderer"/>
+        /// </summary>
+        /// <param name="color">Colour to tint texture</param>
+        /// <param name="x">X coordinate to draw at</param>
+        /// <param name="y">Y coordinate to draw at</param>
+        /// <param name="w">Width to draw to</param>
+        /// <param name="h">Height to draw to</param>
+        protected internal virtual void DrawQuad(Color color, int x, int y, int w, int h)
         {
-            this._texture.SpriteBatch.Draw(this._texture.Texture2D, new Microsoft.Xna.Framework.Rectangle(x, y, w, h), new Microsoft.Xna.Framework.Rectangle(this._tx0, this._ty0, this._textureWidth, this._textureHeight), this._texture.Renderer.TintStack.TintColorForXNA(color));
+            this._texture.SpriteBatch.Draw(this._texture.Texture2D, new Microsoft.Xna.Framework.Rectangle(x, y, w, h), new Microsoft.Xna.Framework.Rectangle(this._tx0, this._ty0, this._textureWidth, this._textureHeight), this._texture.Renderer.TintStack.XNATint(color));
         }
     }
 }

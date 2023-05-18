@@ -30,18 +30,32 @@
 
 namespace XNATWL.Renderer
 {
+    /// <summary>
+    /// Font cache for <see cref="AttributedString"/> objects
+    /// </summary>
     public interface AttributedStringFontCache : Resource
     {
+        /// <summary>
+        /// The width in pixels of the cached text block
+        /// </summary>
         int Width
         {
             get;
         }
 
+        /// <summary>
+        /// The height in pixels of the cached text block
+        /// </summary>
         int Height
         {
             get;
         }
 
+        /// <summary>
+        /// Draw the cached text block at the given coordinates
+        /// </summary>
+        /// <param name="x">the left coordinate</param>
+        /// <param name="y">the top coordinate</param>
         void Draw(int x, int y);
     }
 }

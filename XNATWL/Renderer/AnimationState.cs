@@ -33,37 +33,40 @@ using System.Collections.Generic;
 
 namespace XNATWL.Renderer
 {
+    /// <summary>
+    /// Time source for animations.
+    /// </summary>
     public interface AnimationState
     {
-
-        /**
-         * Returns the time since the specified state has changed in ms.
-         * If the specified state was never changed then a free running time is returned.
-         * 
-         * @param state the state key.
-         * @return time since last state change is ms.
-         */
+        /// <summary>
+        /// <para>Returns the time since the specified state has changed in ms.</para>
+        /// <para>If the specified state was never changed then a free running time is returned.</para>
+        /// </summary>
+        /// <param name="state">the state key</param>
+        /// <returns>time since last state change is ms</returns>
         int GetAnimationTime(StateKey state);
 
-        /**
-         * Checks if the given state is active.
-         * 
-         * @param state the state key.
-         * @return true if the state is set
-         */
+        /// <summary>
+        /// Checks if the given state is active.
+        /// </summary>
+        /// <param name="state">the state key</param>
+        /// <returns><strong>true</strong> if the state is set</returns>
         bool GetAnimationState(StateKey state);
 
-        /**
-         * Checks if this state was changed based on user interaction or not.
-         * If this method returns false then the animation time should not be used
-         * for single shot animations.
-         *
-         * @param state the state key.
-         * @return true if single shot animations should run or not.
-         */
+        /// <summary>
+        /// <para>Checks if this state was changed based on user interaction or not.</para>
+        /// <para>If this method returns false then the animation time should not be used for single shot animations.</para>
+        /// </summary>
+        /// <param name="state">the state key.</param>
+        /// <returns><strong>true</strong> if single shot animations should run or not</returns>
         bool ShouldAnimateState(StateKey state);
     }
 
+    /// <summary>
+    /// An animation state key which maps each animation state name to
+    /// an unique ID. This allows to implement faster lookups based on
+    /// the unique ID instead of performing a string lookup.
+    /// </summary>
     public class StateKey
     {
         private String _name;
@@ -78,6 +81,9 @@ namespace XNATWL.Renderer
             this._id = id;
         }
 
+        /// <summary>
+        /// The name of this animation state key
+        /// </summary>
         public string Name
         {
             get
@@ -86,7 +92,10 @@ namespace XNATWL.Renderer
             }
         }
 
-
+        /// <summary>
+        /// The unique ID of this StateKey.
+        /// The first StateKey has ID 0.
+        /// </summary>
         public int ID
         {
             get
@@ -110,6 +119,13 @@ namespace XNATWL.Renderer
             return _id;
         }
 
+        /// <summary>
+        /// Returns the StateKey for the specified name.
+        /// The StateKey is created if it didn't exist.
+        /// </summary>
+        /// <param name="name">the name to look up</param>
+        /// <returns>the StateKey - never null.</returns>
+        /// <exception cref="ArgumentOutOfRangeException">The name is an empty string</exception>
         public static StateKey Get(String name)
         {
             if (name.Length == 0)
@@ -126,6 +142,11 @@ namespace XNATWL.Renderer
             return KEYS[name];
         }
 
+        /// <summary>
+        /// Returns the StateKey for the specified id.
+        /// </summary>
+        /// <param name="id">the ID to lookup</param>
+        /// <returns>the StateKey</returns>
         public static StateKey Get(int id)
         {
             return KEYS_BY_ID[id];

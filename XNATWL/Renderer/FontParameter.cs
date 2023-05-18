@@ -34,6 +34,9 @@ using System.Linq;
 
 namespace XNATWL.Renderer
 {
+    /// <summary>
+    /// An extensible typed map for font parameters.
+    /// </summary>
     public class FontParameter
     {
         static Dictionary<String, object> _PARAMETER_MAP = new Dictionary<String, object>();
@@ -51,15 +54,16 @@ namespace XNATWL.Renderer
 
         public FontParameter(FontParameter baseParameter)
         {
-            this._values = (object[]) baseParameter._values.Clone();
+            this._values = (object[])baseParameter._values.Clone();
         }
 
-        /**
-         * Sets a parameter value
-         * @param <T> the type of the parameter
-         * @param param the parameter
-         * @param value the value or null to revert to it's default value
-         */
+        /// <summary>
+        /// Sets a parameter value
+        /// </summary>
+        /// <typeparam name="T">the type of the parameter</typeparam>
+        /// <param name="param">the parameter</param>
+        /// <param name="value">the value or null to revert to it's default value</param>
+        /// <exception cref="Exception">unable to cast to generic</exception>
         public void Put<T>(Parameter<T> param, T value)
         {
             if (value != null && !param._dataClass.IsInstanceOfType(value))
@@ -77,12 +81,12 @@ namespace XNATWL.Renderer
             _values[ordinal] = value;
         }
 
-        /**
-         * Returns the value of the specified parameter
-         * @param <T> the type of the parameter
-         * @param param the parameter
-         * @return the parameter value or it's default value when the parameter was not set
-         */
+        /// <summary>
+        /// Returns the value of the specified parameter
+        /// </summary>
+        /// <typeparam name="T">the type of the parameter</typeparam>
+        /// <param name="param">the parameter</param>
+        /// <returns>the parameter value or it's default value when the parameter was not set</returns>
         public T Get<T>(Parameter<T> param)
         {
             if (param._ordinal < _values.Length)
@@ -90,31 +94,33 @@ namespace XNATWL.Renderer
                 Object raw = _values[param._ordinal];
                 if (raw != null)
                 {
-                    return (T) raw;
+                    return (T)raw;
                 }
             }
             return param.GetDefaultValue();
         }
 
-        /**
-         * Returns an array of all registered parameter
-         * @return an array of all registered parameter
-         */
+        /// <summary>
+        /// An array of all registered parameter
+        /// </summary>
+        /// <returns>an array of all registered parameter</returns>
         public static object[] RegisteredParameter()
         {
-            lock (_PARAMETER_MAP) {
+            lock (_PARAMETER_MAP)
+            {
                 return _PARAMETER_MAP.Values.ToArray();
             }
         }
 
-        /**
-         * Returns the parameter instance for the given name
-         * @param name the name to look up
-         * @return the parameter instance or null when the name is not registered
-         */
+        /// <summary>
+        /// Returns the parameter instance for the given name
+        /// </summary>
+        /// <param name="name">the name to look up</param>
+        /// <returns>the parameter instance or null when the name is not registered</returns>
         public static object ParameterByName(String name)
         {
-            lock(_PARAMETER_MAP) {
+            lock (_PARAMETER_MAP)
+            {
                 if (!_PARAMETER_MAP.ContainsKey(name))
                 {
                     return null;
@@ -123,43 +129,35 @@ namespace XNATWL.Renderer
             }
         }
 
-        /**
-         * Registers a new parameter.
-         * 
-         * <p>The data class is extracted from the default value.</p>
-         * <p>If the name is already registered then the existing parameter is returned.</p>
-         * 
-         * @param <T> the data type of the parameter
-         * @param name the parameter name
-         * @param defaultValue the default value
-         * @return the parameter instance
-         * @throws NullPointerException when one of the parameters is null
-         * @throws IllegalStateException when the name is already registered but with
-         *                               different dataClass or defaultValue
-         */
+        /// <summary>
+        /// Registers a new parameter.
+        /// <para>The data class is extracted from the default value</para>
+        /// <para>If the name is already registered then the existing parameter is returned</para>
+        /// </summary>
+        /// <typeparam name="T">the data type of the parameter</typeparam>
+        /// <param name="name">the parameter name</param>
+        /// <param name="defaultValue">the default value</param>
+        /// <returns>the parameter instance</returns>
         public static Parameter<T> NewParameter<T>(String name, T defaultValue)
         {
             Type dataClass = (Type)defaultValue.GetType();
             return NewParameter(name, dataClass, defaultValue);
         }
 
-        /**
-         * Registers a new parameter.
-         * 
-         * <p>If the name is already registered then the existing parameter is returned.</p>
-         * 
-         * @param <T> the data type of the parameter
-         * @param name the parameter name
-         * @param dataClass the data class
-         * @param defaultValue the default value - can be null.
-         * @return the parameter instance
-         * @throws NullPointerException when name or dataClass is null
-         * @throws IllegalStateException when the name is already registered but with
-         *                               different dataClass or defaultValue
-         */
+        /// <summary>
+        /// Registers a new parameter.
+        /// <para>If the name is already registered then the existing parameter is returned.</para>
+        /// </summary>
+        /// <typeparam name="T">the data type of the parameter</typeparam>
+        /// <param name="name">the parameter name</param>
+        /// <param name="dataClass">the data class</param>
+        /// <param name="defaultValue">the default value - can be null</param>
+        /// <returns>the parameter instance</returns>
+        /// <exception cref="InvalidCastException">Asset exception</exception>
+        /// <exception cref="InvalidOperationException">when the name is already registered but with different dataClass or defaultValue</exception>
         public static Parameter<T> NewParameter<T>(String name, Type dataClass, T defaultValue)
         {
-            lock(_PARAMETER_MAP)
+            lock (_PARAMETER_MAP)
             {
                 object existing = ParameterByName(name);
                 if (existing != null)
@@ -167,10 +165,10 @@ namespace XNATWL.Renderer
                     var existingsType = existing.GetType();
                     if (existingsType != typeof(Parameter<T>))
                     {
-                        throw new Exception("Asset exception");
+                        throw new InvalidCastException("Parameter type already stored for '" + name + "' does not match the given type");
                     }
 
-                    if ((Type) existingsType.GetField("dataClass").GetValue(existing) != dataClass || !_equals(existingsType.GetField("defaultValue").GetValue(existing), defaultValue))
+                    if ((Type)existingsType.GetField("dataClass").GetValue(existing) != dataClass || !_equals(existingsType.GetField("defaultValue").GetValue(existing), defaultValue))
                     {
                         throw new InvalidOperationException("type '" + name + "' already registered but different");
                     }
@@ -234,7 +232,7 @@ namespace XNATWL.Renderer
 
             public new T GetDefaultValue()
             {
-                return (T) _defaultValue;
+                return (T)_defaultValue;
             }
         }
     }

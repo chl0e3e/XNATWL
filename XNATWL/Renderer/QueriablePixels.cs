@@ -30,8 +30,17 @@
 
 namespace XNATWL.Renderer
 {
+    /// <summary>
+    /// Optional interface for <see cref="Image"/> and <see cref="Texture"/> to get access to the pixel data
+    /// </summary>
     public interface QueriablePixels
     {
+        /// <summary>
+        /// Returns the color value of the specified pixel
+        /// </summary>
+        /// <param name="x">the X coordinate</param>
+        /// <param name="y">the Y coordinate</param>
+        /// <returns>the ARGB value</returns>
         int PixelValueAt(int x, int y);
     }
 }

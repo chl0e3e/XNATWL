@@ -277,7 +277,7 @@ namespace XNATWL.Renderer.XNA
 
         public void PopGlobalTintColor()
         {
-            _tintStack = _tintStack.pop();
+            _tintStack = _tintStack.Pop();
         }
 
         public void PushGlobalTintColor(float r, float g, float b, float a)
@@ -328,7 +328,7 @@ namespace XNATWL.Renderer.XNA
         public void EndRendering()
         {
             XNACursor cursor = this._mouseCursor == null ? this._defaultCursor : ((XNACursor)this._mouseCursor);
-            cursor.DrawQuad(Color.WHITE, this._mouseX, this._mouseY, cursor.getWidth(), cursor.getHeight());
+            cursor.DrawQuad(Color.WHITE, this._mouseX, this._mouseY, cursor.Width, cursor.Height);
 
             this._rendering = false;
             this.Disposer.Update();

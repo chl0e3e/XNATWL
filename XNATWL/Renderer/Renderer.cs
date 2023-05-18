@@ -33,234 +33,195 @@ using XNATWL.Utils;
 
 namespace XNATWL.Renderer
 {
+    /// <summary>
+    /// Interface outlining what an implementation of a TWL renderer requires
+    /// </summary>
     public interface Renderer
     {
-        /**
-         * Returns the elapsed time in milliseconds.
-         * @return the elapsed time in milliseconds.
-         */
+        /// <summary>
+        /// The elapsed time in milliseconds.
+        /// </summary>
         long TimeMillis
         {
             get;
         }
 
-        /**
-         * Returns the polled input object for this renderer target.
-         * 
-         * <p>When using the "push" method for input event generation
-         * return null.</p>
-         * 
-         * @return the Input object or null if none is available/used.
-         */
+        /// <summary>
+        /// The polled input object for this renderer target.
+        /// </summary>
         Input.Input Input
         {
             get;
         }
 
-        /**
-         * Setup rendering for TWL.
-         * <p>Must be called before any Font or Image objects is drawn.</p>
-         * <p>When this method returned {@code true} then {@link #endRendering()}
-         * must be called.</p>
-         * @return true if rendering was started, false otherwise
-         */
+        /// <summary>
+        /// Setup rendering for TWL.
+        /// <para>Must be called before any Font or Image objects is drawn</para>
+        /// <para>When this method returned <Strong>true</Strong> then <see cref="EndRendering"/> must be called</para>
+        /// </summary>
+        /// <returns><strong>true</strong> if rendering was started, <strong>false</strong> otherwise</returns>
         bool StartRendering();
 
-        /**
-         * Clean up after rendering TWL.
-         * Only call this method when {@link #startRendering()} returned {@code true}
-         */
+        /// <summary>
+        /// Clean up after rendering TWL. Only call this method when <see cref="StartRendering"/> returns <strong>true</strong>
+        /// </summary>
         void EndRendering();
 
-        /**
-         * Returns the width of the renderable surface
-         * @return the width of the renderable surface
-         */
+        /// <summary>
+        /// The width of the renderable surface
+        /// </summary>
         int Width
         {
             get;
         }
 
-        /**
-         * Returns the height of the renderable surface
-         * @return the height of the renderable surface
-         */
+        /// <summary>
+        /// The height of the renderable surface
+        /// </summary>
         int Height
         {
             get;
         }
 
-        /**
-         * Creates a new cache context.
-         * Call setActiveCacheContext to activate it.
-         * 
-         * @return a new CacheContext
-         * @see #setActiveCacheContext(de.matthiasmann.twl.renderer.CacheContext) 
-         */
+        /// <summary>
+        /// Creates a new cache context. Call <see cref="SetActiveCacheContext"/> to activate it.
+        /// </summary> 
+        /// <returns>a new CacheContext</returns>
         CacheContext CreateNewCacheContext();
 
-        /**
-         * Sets the active cache context. It will be used for all future load operations.
-         *
-         * @param cc The CacheContext object
-         * @throws NullPointerException when cc is null
-         * @throws IllegalStateException when the CacheContext object is invalid
-         */
+        /// <summary>
+        /// Sets the active cache context. It will be used for all future load operations.
+        /// </summary>
+        /// <param name="cc">The CacheContext object</param>
         void SetActiveCacheContext(CacheContext cc);
 
-        /**
-         * Returns the active cache context.
-         * If no valid cache context is active then a new one is created and activated.
-         * 
-         * @return the active CacheContext object
-         */
+        /// <summary>
+        /// Returns the active cache context. If no valid cache context is active then a new one is created and activated.
+        /// </summary>
+        /// <returns>the active CacheContext object</returns>
         CacheContext GetActiveCacheContext();
 
-        /**
-         * Loads a font.
-         * 
-         * @param baseUrl the base URL that can be used to load font data
-         * @param select the StateSelect object
-         * @param parameterList the font parameters - must be exactly 1 more then
-         *                      the number of expressions in the select object
-         * @return a Font object
-         * @throws java.io.IOException if the font could not be loaded
-         * @throws NullPointerException when one of the parameters is null
-         * @throws IllegalArgumentException when the number of font parameters doesn't match the number of state expressions
-         */
+        /// <summary>
+        /// Loads a font.
+        /// </summary>
+        /// <param name="baseFile">the base FSO that can be used to load font data</param>
+        /// <param name="select">the StateSelect object</param>
+        /// <param name="parameterList"> the font parameters - must be exactly 1 more than the number of expressions in the select object</param>
+        /// <returns>a Font object</returns>
         Font LoadFont(FileSystemObject baseFile, StateSelect select, params FontParameter[] parameterList);
 
-        /**
-         * Loads a texture. Textures are used to create images.
-         * 
-         * @param url the URL of the texture file
-         * @param format a format description - depends on the implementation
-         * @param filter how the texture should be filtered - should support "nearest" and linear"
-         * @return a Texture object
-         * @throws java.io.IOException if the texture could not be loaded
-         */
+        /// <summary>
+        /// Loads a texture. Textures are used to create images.
+        /// </summary>
+        /// <param name="file">the base FSO that can be used to load font data</param>
+        /// <param name="format">a format description - depends on the implementation</param>
+        /// <param name="filter">how the texture should be filtered - should support "nearest" and linear"</param>
+        /// <returns>a Texture object</returns>
         Texture LoadTexture(FileSystemObject file, String format, String filter);
 
-        /**
-         * Returns the line renderer. If line rendering is not supported then this method returns null.
-         *
-         * This is an optional operation.
-         *
-         * @return the line renderer or null if not supported.
-         */
+        /// <summary>
+        /// The 2D line renderer. If line rendering is not supported then this method returns null. This is an optional operation.
+        /// </summary>
         LineRenderer LineRenderer
         {
             get;
         }
 
-        /**
-         * Returns the offscreen renderer. If offscreen rendering is not supported then this method returns null.
-         * 
-         * This is an optional operation.
-         *
-         * @return the offscreen renderer or null if not supported.
-         */
+        /// <summary>
+        /// The offscreen renderer. If offscreen rendering is not supported then this method returns null. This is an optional operation.
+        /// </summary>
         OffscreenRenderer OffscreenRenderer
         {
             get;
         }
 
-        /**
-         * Returns the font mapper object if one is available.
-         * 
-         * This is an optional operation.
-         *
-         * @return the font mapper or null if not supported.
-         */
+        /// <summary>
+        /// The font mapper object if one is available. This is an optional operation.
+        /// </summary>
         FontMapper FontMapper
         {
             get;
         }
 
-        /**
-         * Creates a dynamic image with undefined content.
-         * 
-         * This is an optional operation.
-         * 
-         * @param width the width of the image
-         * @param height the height of the image
-         * @return a new dynamic image or null if the image could not be created
-         */
+        /// <summary>
+        /// Creates a <see cref="DynamicImage"/> with undefined content. This is an optional operation.
+        /// </summary>
+        /// <param name="width">the width of the image</param>
+        /// <param name="height">the height of the image</param>
+        /// <returns>a new dynamic image or null if the image could not be created</returns>
         DynamicImage CreateDynamicImage(int width, int height);
 
+        /// <summary>
+        /// Create an image from a given <see cref="Gradient"/>
+        /// </summary>
+        /// <param name="gradient"></param>
+        /// <returns></returns>
         Image CreateGradient(Gradient gradient);
 
-        /**
-         * Enters a clip region.
-         * 
-         * The new clip region is the intersection of the current clip region with
-         * the specified coordinates.
-         * 
-         * @param x the left edge
-         * @param y the top edge
-         * @param w the width
-         * @param h the height
-         */
+        /// <summary>
+        /// Enters a clip region.
+        /// <para>The new clip region is the intersection of the current clip region with the specified coordinates.</para>
+        /// </summary>
+        /// <param name="x">the left edge</param>
+        /// <param name="y">the top edge</param>
+        /// <param name="w">the width</param>
+        /// <param name="h">the height</param>
         void ClipEnter(int x, int y, int w, int h);
 
-        /**
-         * Enters a clip region.
-         * 
-         * The new clip region is the intersection of the current clip region with
-         * the specified coordinates.
-         * 
-         * @param rect the coordinates
-         */
+        /// <summary>
+        /// Enters a clip region.
+        /// <para>The new clip region is the intersection of the current clip region with the specified coordinates</para>
+        /// </summary>
+        /// <param name="rect">the coordinates</param>
         void ClipEnter(Rect rect);
 
-        /**
-         * Checks if the active clip region is empty (nothing will render).
-         * @return true if the active clip region is empty
-         */
+        /// <summary>
+        /// Checks if the active clip region is empty (nothing will render).
+        /// </summary>
+        /// <returns><b>true</b> if the active clip region is empty</returns>
         bool ClipIsEmpty();
 
-        /**
-         * Leaves a clip region creeated by {@code #clipEnter}
-         * @see #clipEnter(int, int, int, int) 
-         * @see #clipEnter(de.matthiasmann.twl.Rect) 
-         */
+        /// <summary>
+        /// Leaves a clip region entered by <see cref="ClipEnter"/>
+        /// </summary>
         void ClipLeave();
 
+        /// <summary>
+        /// Set the current <see cref="MouseCursor"/>
+        /// </summary>
+        /// <param name="cursor">Cursor object</param>
         void SetCursor(MouseCursor cursor);
 
-        /**
-         * Sets the mouse position for SW mouse cursor rendering
-         * 
-         * @param mouseX X mouse position
-         * @param mouseY Y mouse position
-         */
+        /// <summary>
+        /// Sets the mouse position for SW mouse cursor rendering
+        /// </summary>
+        /// <param name="mouseX">X mouse position</param>
+        /// <param name="mouseY">Y mouse position</param>
         void SetMousePosition(int mouseX, int mouseY);
 
-        /**
-         * Sets the mouse button state for SW mouse cursor rendering
-         * 
-         * @param button the mouse button
-         * @param state true if the mouse button is pressed
-         * @see Event#MOUSE_LBUTTON
-         * @see Event#MOUSE_MBUTTON
-         * @see Event#MOUSE_RBUTTON
-         */
+        /// <summary>
+        /// Sets the mouse button state for SW mouse cursor rendering
+        /// </summary>
+        /// <param name="button">the mouse button</param>
+        /// <param name="state"><strong>true</strong> if the mouse button is pressed</param>
         void SetMouseButton(int button, bool state);
 
-        /**
-         * Pushes a new tint color on the tint stack. The current tint color is
-         * multiplied by the new tint color.
-         *
-         * For every call of {@code pushGlobalTintColor} a call to {@code popGlobalTintColor}
-         * must be made.
-         * 
-         * @param r red, must be 0.0f &lt;= r &lt;= 1.0f
-         * @param g green, must be 0.0f &lt;= g &lt;= 1.0f
-         * @param b blue, must be 0.0f &lt;= b &lt;= 1.0f
-         * @param a alpha, must be 0.0f &lt;= a &lt;= 1.0f
-         */
+        /// <summary>
+        /// Pushes a new tint color on the tint stack. The current tint color is
+        /// multiplied by the new tint color.
+        /// 
+        /// <para> For every call of <see cref="PushGlobalTintColor"/> a call to <see cref="PopGlobalTintColor"/> 
+        /// must be made.</para>
+        /// </summary>
+        /// <param name="r">red, must be 0.0f >= r <= 1.0f</param>
+        /// <param name="g">green, must be 0.0f >= g <= 1.0f</param>
+        /// <param name="b">blue, must be 0.0f >= b <= 1.0f</param>
+        /// <param name="a">alpha, must be 0.0f >= a <= 1.0f</param>
         void PushGlobalTintColor(float r, float g, float b, float a);
 
+        /// <summary>
+        /// Pops the top element on the tint stack
+        /// </summary>
         void PopGlobalTintColor();
     }
 }

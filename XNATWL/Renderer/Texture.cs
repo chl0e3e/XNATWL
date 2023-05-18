@@ -38,22 +38,45 @@ namespace XNATWL.Renderer
         Clockwise270
     }
 
+    /// <summary>
+    /// A texture class. Can not be used for rendering directly.
+    /// </summary>
     public interface Texture
     {
+        /// <summary>
+        /// The width in pixels of this texture.
+        /// </summary>
         int Width
         {
             get;
         }
 
+        /// <summary>
+        /// The height in pixels of this texture.
+        /// </summary>
         int Height
         {
             get;
         }
 
+        /// <summary>
+        /// Creates an image from a sub section of this texture.
+        /// </summary>
+        /// <param name="x">left coordinate in the texture of the image</param>
+        /// <param name="y">y top coordinate in the texture of the image</param>
+        /// <param name="width">width in pixels of the image - if negative the image is horizontaly flipped</param>
+        /// <param name="height">height in pixels of the image - if negative the image is vertically flipped</param>
+        /// <param name="tintColor">the tintColor - may be null</param>
+        /// <param name="tiled"><strong>true</strong> if this image should do tiled rendering</param>
+        /// <param name="rotation">the rotation to apply to this sub section while rendering</param>
+        /// <returns>an image object</returns>
         Image GetImage(int x, int y, int width, int height, Color tintColor, bool tiled, TextureRotation rotation);
 
         MouseCursor CreateCursor(int x, int y, int width, int height, int hotSpotX, int hotSpotY, Image imageRef);
 
+        /// <summary>
+        /// After calling this function <see cref="GetImage"/> and <see cref="CreateCursor"/> may fail to work
+        /// </summary>
         void ThemeLoadingDone();
     }
 }

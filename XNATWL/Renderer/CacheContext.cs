@@ -28,10 +28,27 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System.Resources;
+
 namespace XNATWL.Renderer
 {
+    /// <summary>
+    /// <para>A cache context is used by the renderer to cache images and fonts.</para>
+    ///  
+    /// <para>When reloading a theme a new CacheContext should be used to ensure that
+    /// all images and fonts are reloaded.</para>
+    ///  
+    /// <para>When switching between different themes the same CacheContext should be
+    /// used to prevent reloading of already loaded images and fonts.</para>
+    ///  
+    /// <para>When a cache context is destroyed then all loaded resources may become
+    /// unavilable.</para>
+    /// </summary>
     public interface CacheContext : Resource
     {
+        /// <summary>
+        /// A cache context is valid until it's destroyed.
+        /// </summary>
         bool Valid
         {
             get;

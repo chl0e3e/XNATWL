@@ -30,6 +30,9 @@
 
 namespace XNATWL.Renderer
 {
+    /// <summary>
+    /// A helper class to implement tinting.
+    /// </summary>
     public class TintStack
     {
         private static float ONE_OVER_255 = 1f;// / 255f;
@@ -38,6 +41,9 @@ namespace XNATWL.Renderer
         TintStack _next;
         float _r, _g, _b, _a;
 
+        /// <summary>
+        /// Create a clean tint stack
+        /// </summary>
         public TintStack()
         {
             this._prev = this;
@@ -47,11 +53,19 @@ namespace XNATWL.Renderer
             this._a = ONE_OVER_255;
         }
 
+        /// <summary>
+        /// Create a new tint stack given a previous tint
+        /// </summary>
+        /// <param name="prev">Previous tint on the stack</param>
         private TintStack(TintStack prev)
         {
             this._prev = prev;
         }
 
+        /// <summary>
+        /// Push a reset tint to the stack
+        /// </summary>
+        /// <returns>New tint on the stack, set up using the default tint value</returns>
         public TintStack PushReset()
         {
             if (_next == null)
@@ -65,6 +79,14 @@ namespace XNATWL.Renderer
             return _next;
         }
 
+        /// <summary>
+        /// Push a specific RGBA tinting on the stack 
+        /// </summary>
+        /// <param name="r">Red</param>
+        /// <param name="g">Green</param>
+        /// <param name="b">Blue</param>
+        /// <param name="a">Alpha</param>
+        /// <returns>New tint on the stack, set up using parameter values</returns>
         public TintStack Push(float r, float g, float b, float a)
         {
             if (_next == null)
@@ -78,6 +100,11 @@ namespace XNATWL.Renderer
             return _next;
         }
 
+        /// <summary>
+        /// Push a specific RGBA tinting on to the stack using values from <see cref="Color"/>
+        /// </summary>
+        /// <param name="color">Color to extract RGBA values from</param>
+        /// <returns>New tint on the stack</returns>
         public TintStack Push(Color color)
         {
             return Push(
@@ -87,34 +114,23 @@ namespace XNATWL.Renderer
                     color.AlphaF) ;
         }
 
-        public Microsoft.Xna.Framework.Color TintColorForXNA(Color color)
+        /// <summary>
+        /// Returns a matching XNA colour object
+        /// </summary>
+        /// <param name="color"></param>
+        /// <returns></returns>
+        public Microsoft.Xna.Framework.Color XNATint(Color color)
         {
             return new Microsoft.Xna.Framework.Color(this._r * color.RedF, this._g * color.GreenF, this._b * color.BlueF, this._a * color.AlphaF);
         }
 
-        public TintStack pop()
+        /// <summary>
+        /// Return the last tint on the stack
+        /// </summary>
+        /// <returns></returns>
+        public TintStack Pop()
         {
             return _prev;
-        }
-
-        public float Red()
-        {
-            return _r;
-        }
-
-        public float Green()
-        {
-            return _g;
-        }
-
-        public float Blue()
-        {
-            return _b;
-        }
-
-        public float Alpha()
-        {
-            return _a;
         }
     }
 }

@@ -56,6 +56,9 @@ namespace XNATWL.Renderer.XNA
         private SpriteBatch _batch;
         private XNARenderer _renderer;
 
+        /// <summary>
+        /// Target renderer
+        /// </summary>
         public XNARenderer Renderer
         {
             get
@@ -64,6 +67,9 @@ namespace XNATWL.Renderer.XNA
             }
         }
 
+        /// <summary>
+        /// XNA representation of the texture
+        /// </summary>
         public Texture2D Texture2D
         {
             get
@@ -72,6 +78,9 @@ namespace XNATWL.Renderer.XNA
             }
         }
 
+        /// <summary>
+        /// XNA implementation for batching sprite draw calls
+        /// </summary>
         public SpriteBatch SpriteBatch
         {
             get
@@ -80,6 +89,14 @@ namespace XNATWL.Renderer.XNA
             }
         }
 
+        /// <summary>
+        /// New <see cref="XNATexture"/> given the XNA internal representation of 2D textures ( <see cref="Texture2D"/> )
+        /// </summary>
+        /// <param name="renderer">Parent renderer</param>
+        /// <param name="spriteBatch">Batch to render with</param>
+        /// <param name="width">Full width of the texture</param>
+        /// <param name="height">Full height of the texture</param>
+        /// <param name="texture">XNA texture representation</param>
         public XNATexture(XNARenderer renderer, SpriteBatch spriteBatch, int width, int height, Texture2D texture)
         {
             this._texture = texture;
@@ -89,14 +106,31 @@ namespace XNATWL.Renderer.XNA
             this._renderer = renderer;
         }
 
+        /// <summary>
+        /// New <see cref="XNATexture"/> given the XNA internal representation of 2D textures ( <see cref="Texture2D"/> )
+        /// </summary>
+        /// <param name="renderer">Parent renderer</param>
+        /// <param name="width">Full width of the texture</param>
+        /// <param name="height">Full height of the texture</param>
+        /// <param name="texture">XNA texture representation</param>
         public XNATexture(XNARenderer renderer, int width, int height, Texture2D texture) : this(renderer, renderer.SpriteBatch, width, height, texture)
         {
         }
 
+        /// <summary>
+        /// Create a new XNACursor using this texture
+        /// </summary>
+        /// <param name="x">X of cursor</param>
+        /// <param name="y">Y of cursor</param>
+        /// <param name="width">Width of cursor</param>
+        /// <param name="height">Height of cursor</param>
+        /// <param name="hotSpotX">Hotspot offset X</param>
+        /// <param name="hotSpotY">Hotspot offset Y</param>
+        /// <param name="imageRef">Reference image</param>
+        /// <returns>new <see cref="XNACursor"/></returns>
         public MouseCursor CreateCursor(int x, int y, int width, int height, int hotSpotX, int hotSpotY, Image imageRef)
         {
-            return new XNACursor(this, x, y, width, height, hotSpotX, hotSpotY);
-            //throw new NotImplementedException();
+            return new XNACursor(this, x, y, width, height, hotSpotX, hotSpotY, imageRef);
         }
 
         public Image GetImage(int x, int y, int width, int height, Color tintColor, bool tiled, TextureRotation rotation)

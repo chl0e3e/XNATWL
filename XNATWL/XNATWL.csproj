@@ -218,7 +218,7 @@
     <Compile Include="Renderer\Resource.cs" />
     <Compile Include="Renderer\SupportsDrawRepeat.cs" />
     <Compile Include="Renderer\Texture.cs" />
-    <Compile Include="Renderer\TintStack.cs" />
+    <Compile Include="Renderer\XNA\TintStack.cs" />
     <Compile Include="Renderer\XNA\BitmapFont.cs" />
     <Compile Include="Renderer\XNA\CacheContext.cs" />
     <Compile Include="Renderer\XNA\DeferredDisposer.cs" />
@@ -227,7 +227,7 @@
     <Compile Include="Renderer\XNA\XNACursor.cs" />
     <Compile Include="Renderer\XNA\XNADynamicImage.cs" />
     <Compile Include="Renderer\XNA\XNAFont.cs" />
-    <Compile Include="Renderer\XNA\XNALine.cs" />
+    <Compile Include="Renderer\XNA\Primitives2D.cs" />
     <Compile Include="Renderer\XNA\XNARenderer.cs" />
     <Compile Include="Renderer\XNA\XNATexture.cs" />
     <Compile Include="ResizableFrame.cs" />

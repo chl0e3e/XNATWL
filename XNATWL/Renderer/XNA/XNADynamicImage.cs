@@ -29,34 +29,29 @@
  */
 
 using Microsoft.Xna.Framework.Graphics;
+using System;
 
 namespace XNATWL.Renderer.XNA
 {
-    public class XNADynamicImage : TextureAreaBase, DynamicImage
+    /// <summary>
+    /// A <see cref="TextureAreaBase"/> which deals with dynamic images (whose texture is set by calling <see cref="Update(Microsoft.Xna.Framework.Color[])"/>
+    /// </summary>
+    public class XNADynamicImage : TextureAreaBase, DynamicImage, IDisposable
     {
         private XNARenderer _renderer;
         private Color _tintColor;
-
+        
+        /// <summary>
+        /// Create a new dynamic image
+        /// </summary>
+        /// <param name="renderer">Renderer to which the image belongs</param>
+        /// <param name="width">Maximum X coordinate</param>
+        /// <param name="height">Maximum Y coordinate</param>
+        /// <param name="tintColor">After-render tinting</param>
         public XNADynamicImage(XNARenderer renderer, int width, int height, Color tintColor) : base(null, 0, 0, width, height)
         {
             this._tintColor = tintColor;
             this._renderer = renderer;
-        }
-
-        public int Width
-        {
-            get
-            {
-                return this._width;
-            }
-        }
-
-        public int Height
-        {
-            get
-            {
-                return this._height;
-            }
         }
 
         public Image CreateTintedVersion(Color color)

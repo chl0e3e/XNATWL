@@ -30,8 +30,15 @@
 
 namespace XNATWL.Renderer
 {
+    /// <summary>
+    /// A dynamic image is created at runtime by the application and can be updated at any time
+    /// </summary>
     public interface DynamicImage : Image, Resource
     {
+        /// <summary>
+        /// Updates the complete image.
+        /// </summary>
+        /// <param name="data">Texels as contiguous XNA Color elements in a one-dimensional Color array</param>
         void Update(Microsoft.Xna.Framework.Color[] data);
         //void Update(Microsoft.Xna.Framework.Color[] data, DynamicImageFormat format);
         //void Update(Microsoft.Xna.Framework.Color[] data, int stride, DynamicImageFormat format);
@@ -39,6 +46,11 @@ namespace XNATWL.Renderer
         //void Update(int xoffset, int yoffset, int width, int height, byte[] data, int stride, DynamicImageFormat format);
     }
 
+    /// <summary>
+    /// Color byte order<br/><br/>
+    /// RGBA = Red, Green, Blue, Alpha<br/>
+    /// BGRA = Blue, Green, Red, Alpha
+    /// </summary>
     public enum DynamicImageFormat
     {
         RGBA,
