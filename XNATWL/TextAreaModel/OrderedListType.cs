@@ -33,22 +33,37 @@ using XNATWL.Utils;
 
 namespace XNATWL.TextAreaModel
 {
+    /// <summary>
+    /// Number formatting for ordered lists
+    /// </summary>
     public class OrderedListType
     {
         public static OrderedListType DECIMAL = new OrderedListType();
 
         protected string _characterList;
 
+        /// <summary>
+        /// Creates a new OrderedListType which just uses <see cref="int.ToString()"/>
+        /// </summary>
         public OrderedListType()
         {
             this._characterList = null;
         }
 
+        /// <summary>
+        /// Creates a new OrderedListType which uses <see cref="TextUtil.ToCharListNumber(int, string)"/> for positive numbers and <see cref="int.ToString()"/> for the rest.
+        /// </summary>
+        /// <param name="characterList">the character list</param>
         public OrderedListType(String characterList)
         {
             this._characterList = characterList;
         }
 
+        /// <summary>
+        ///  Convert the number into a String
+        /// </summary>
+        /// <param name="nr">the number</param>
+        /// <returns>the string which represents the number</returns>
         public virtual string Format(int nr)
         {
             if (nr >= 1 && _characterList != null)

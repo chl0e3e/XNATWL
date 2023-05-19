@@ -29,6 +29,7 @@
  */
 
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -79,6 +80,9 @@ namespace XNATWL.TextAreaModel
         public static BoxAttribute MARGIN = new BoxAttribute(MARGIN_TOP, MARGIN_LEFT, MARGIN_RIGHT, MARGIN_BOTTOM);
         public static BoxAttribute PADDING = new BoxAttribute(PADDING_TOP, PADDING_LEFT, PADDING_RIGHT, PADDING_BOTTOM);
 
+        /// <summary>
+        /// The number of implemented StyleAttributes.
+        /// </summary>
         public static int Attributes
         {
             get
@@ -87,11 +91,14 @@ namespace XNATWL.TextAreaModel
             }
         }
 
-        internal bool _inherited;
-        internal Type _dataType;
-        internal object _defaultValue;
-        internal int _ordinal;
+        protected internal bool _inherited;
+        protected internal Type _dataType;
+        protected internal object _defaultValue;
+        protected internal int _ordinal;
 
+        /// <summary>
+        /// A inherited attribute will be looked up in the parent style if it is not set.
+        /// </summary>
         public bool Inherited
         {
             get
@@ -100,6 +107,9 @@ namespace XNATWL.TextAreaModel
             }
         }
 
+        /// <summary>
+        /// Type representing the value of the attribute
+        /// </summary>
         public Type DataType
         {
             get
@@ -108,6 +118,9 @@ namespace XNATWL.TextAreaModel
             }
         }
 
+        /// <summary>
+        /// Default value of the attribute
+        /// </summary>
         public object DefaultValue
         {
             get
@@ -116,6 +129,9 @@ namespace XNATWL.TextAreaModel
             }
         }
 
+        /// <summary>
+        /// A unique id for this <see cref="StyleAttribute"/>. This value is may change when this class is modified and should not be used for persistent storage.
+        /// </summary>
         public int Ordinal
         {
             get
@@ -127,11 +143,9 @@ namespace XNATWL.TextAreaModel
 
     public class StyleAttribute<T> : StyleAttribute
     {
-        /**
-         * Returns the name of this StyleAttribute.
-         * This method uses reflection to search for the field name.
-         * @return the name of this StyleAttribute.
-         */
+        /// <summary>
+        /// Returns the name of this StyleAttribute. This method uses reflection to search for the field name.
+        /// </summary>
         public String Name
         {
             get
@@ -155,6 +169,9 @@ namespace XNATWL.TextAreaModel
             }
         }
 
+        /// <summary>
+        /// Default value of the attribute
+        /// </summary>
         public new T DefaultValue
         {
             get
@@ -168,7 +185,7 @@ namespace XNATWL.TextAreaModel
             return this.Name;
         }
 
-        internal StyleAttribute(bool inherited, Type dataType, T defaultValue)
+        protected internal StyleAttribute(bool inherited, Type dataType, T defaultValue)
         {
             this._inherited = inherited;
             this._dataType = dataType;
@@ -177,25 +194,22 @@ namespace XNATWL.TextAreaModel
             StyleAttribute.ATTRIBUTES.Add(this);
         }
 
-        /**
-         * Returns the StyleAttribute given it's unique id.
-         * @param ordinal the unique id of the desired StyleAttribute.
-         * @return the StyleAttribute given it's unique id.
-         * @throws IndexOutOfBoundsException if the given id is invalid.
-         * @see #ordinal()
-         */
+        /// <summary>
+        /// Returns the StyleAttribute given it's unique id.
+        /// </summary>
+        /// <param name="ordinal">the unique id of the desired StyleAttribute.</param>
+        /// <returns>the StyleAttribute given it's unique id.</returns>
         public static StyleAttribute<T> ByOrdinal(int ordinal)
         {
             return (StyleAttribute<T>) StyleAttribute.ATTRIBUTES[ordinal];
         }
 
-        /**
-         * Returns the StyleAttribute given it's name.
-         * @param name the name of the StyleAttribute.
-         * @return the StyleAttribute
-         * @throws IllegalArgumentException if no StyleAttribute with the given name exists.
-         * @see #name() 
-         */
+        /// <summary>
+        /// Returns the StyleAttribute given it's name.
+        /// </summary>
+        /// <param name="name">the name of the StyleAttribute.</param>
+        /// <returns>the StyleAttribute</returns>
+        /// <exception cref="ArgumentOutOfRangeException">if no StyleAttribute with the given name exists</exception>
         public static StyleAttribute<T> ByName(String name)
         {
             try

@@ -54,6 +54,9 @@ namespace XNATWL.TextAreaModel
         private Dictionary<Style, Object> _cache;
         private List<AtRule> _atRules;
 
+        /// <summary>
+        /// Create an empty stylesheet representation
+        /// </summary>
         public StyleSheet()
         {
             this._rules = new List<Selector>();
@@ -62,6 +65,10 @@ namespace XNATWL.TextAreaModel
             _rules.Add(PRE_SELECTOR);
         }
 
+        /// <summary>
+        /// Parse a stylesheet by loading it from a given path on the file system
+        /// </summary>
+        /// <param name="fso">File system object giving path</param>
         public void Parse(IO.FileSystemObject fso)
         {
             FileStream stream = File.OpenRead(fso.Path);
@@ -75,7 +82,11 @@ namespace XNATWL.TextAreaModel
             }
         }
 
-        public void Parse(String style)
+        /// <summary>
+        /// Parse stylesheet by reading it as a string into a MemoryStream and then passing that to <see cref="Parse(StreamReader)"/>
+        /// </summary>
+        /// <param name="style">stylesheet as a string</param>
+        public void Parse(string style)
         {
             Stream s = new MemoryStream(Encoding.UTF8.GetBytes(style));
             try
@@ -88,6 +99,10 @@ namespace XNATWL.TextAreaModel
             }
         }
 
+        /// <summary>
+        /// Parse stylesheet using a stream reader
+        /// </summary>
+        /// <param name="r">Stream reader</param>
         public void Parse(StreamReader r)
         {
             Parser parser = new Parser(r);
@@ -117,7 +132,7 @@ namespace XNATWL.TextAreaModel
                         String value = TextUtil.Trim(parser._stringBuilder.ToString(), 0);
                         try
                         {
-                            atrule._entries.Add(key, value);
+                            atrule.Add(key, value);
                         }
                         catch (ArgumentOutOfRangeException ex)
                         {
@@ -277,20 +292,35 @@ namespace XNATWL.TextAreaModel
             }
         }
 
+        /// <summary>
+        /// Return the number of at rules registered
+        /// </summary>
+        /// <returns>the number of at rules registered</returns>
         public int NumberOfAtRules()
         {
             return (_atRules != null) ? _atRules.Count : 0;
         }
 
+        /// <summary>
+        /// Get an at rule by index
+        /// </summary>
+        /// <param name="idx">index of rule</param>
+        /// <returns>AtRule information</returns>
+        /// <exception cref="NullReferenceException">internal at rules array was not created</exception>
         public AtRule GetAtRule(int idx)
         {
             if (_atRules == null)
             {
-                throw new IndexOutOfRangeException();
+                throw new NullReferenceException();
             }
             return _atRules[idx];
         }
 
+        /// <summary>
+        /// Register and load fonts from the at rules parsed from the stylesheet
+        /// </summary>
+        /// <param name="fontMapper">Class for registering fonts</param>
+        /// <param name="baseFso">Relative directory to search for assets</param>
         public void RegisterFonts(FontMapper fontMapper, FileSystemObject baseFso)
         {
             if (_atRules == null)
@@ -301,8 +331,8 @@ namespace XNATWL.TextAreaModel
             {
                 if ("font-face".Equals(atrule._name))
                 {
-                    String family = atrule.Get("font-family");
-                    String src = atrule.Get("src");
+                    String family = atrule["font-family"];
+                    String src = atrule["src"];
 
                     if (family != null && src != null)
                     {
@@ -353,6 +383,11 @@ namespace XNATWL.TextAreaModel
             return (Style)cacheData;
         }
 
+        /// <summary>
+        /// Match style against selectors stored in <see cref="_rules"/>
+        /// </summary>
+        /// <param name="style">Style to lookup</param>
+        /// <returns>Style matched</returns>
         private Style ResolveSlow(Style style)
         {
             Selector[] candidates = new Selector[_rules.Count];
@@ -400,11 +435,22 @@ namespace XNATWL.TextAreaModel
             return result;
         }
 
+        /// <summary>
+        /// Adds a <see cref="Style"/> to the <see cref="StyleSheet"/> cache
+        /// </summary>
+        /// <param name="key">Style key</param>
+        /// <param name="style">Style info</param>
         private void PutIntoCache(Style key, Style style)
         {
             _cache.Add(key, (style == null) ? NULL : style);
         }
 
+        /// <summary>
+        /// Test if the given selector matches the given style
+        /// </summary>
+        /// <param name="selector">CSS selector</param>
+        /// <param name="style">Styling information</param>
+        /// <returns><strong>true</strong> if match</returns>
         private bool Matches(Selector selector, Style style)
         {
             do
@@ -430,7 +476,13 @@ namespace XNATWL.TextAreaModel
             return false;
         }
 
-        private Style TransformStyle(CSSStyle style, String pseudoClass)
+        /// <summary>
+        /// Setup hoverable attributes and return cacheable object
+        /// </summary>
+        /// <param name="style">Parsed style</param>
+        /// <param name="pseudoClass">Pseudo class</param>
+        /// <returns>Cacheable <see cref="Style"/></returns>
+        private Style TransformStyle(CSSStyle style, string pseudoClass)
         {
             Style result = new Style(style.Parent, style.StyleSheetKey);
             if ("hover".Equals(pseudoClass))
@@ -442,15 +494,26 @@ namespace XNATWL.TextAreaModel
             return result;
         }
 
+        /// <summary>
+        /// CSS selector representation
+        /// </summary>
         public class Selector : StyleSheetKey, IComparable<Selector>
         {
-            internal String _pseudoClass;
-            internal Selector _tail;
-            internal bool _directChild;
-            internal Style _style;
-            internal int _score;
+            protected internal string _pseudoClass;
+            protected internal Selector _tail;
+            protected internal bool _directChild;
+            protected internal Style _style;
+            protected internal int _score;
 
-            public Selector(String element, String className, String id, String pseudoClass, Selector tail) : base(element, className, id)
+            /// <summary>
+            /// Create a new selector for identifying affected elements
+            /// </summary>
+            /// <param name="element">Tag name</param>
+            /// <param name="className">Class name</param>
+            /// <param name="id">ID</param>
+            /// <param name="pseudoClass">Pseudoselector</param>
+            /// <param name="tail">Previous selector</param>
+            public Selector(string element, string className, string id, string pseudoClass, Selector tail) : base(element, className, id)
             {
                 this._pseudoClass = pseudoClass;
                 this._tail = tail;
@@ -462,25 +525,21 @@ namespace XNATWL.TextAreaModel
             }
         }
 
+        /// <summary>
+        /// At rule representation
+        /// </summary>
         public class AtRule : Dictionary<string, string>//<DictionaryEntry<String, String>>
         {
-            internal String _name;
-            internal Dictionary<String, String> _entries;
+            protected internal string _name;
 
-            public AtRule(String name)
+            public AtRule(string name)
             {
                 this._name = name;
-                this._entries = new Dictionary<String, String>();
             }
 
-            public String GetName()
+            public string GetName()
             {
                 return _name;
-            }
-
-            public String Get(String key)
-            {
-                return _entries[key];
             }
         }
     }

@@ -31,21 +31,62 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using static System.Net.Mime.MediaTypeNames;
+using static XNATWL.Utils.SparseGrid;
 
 namespace XNATWL.TextAreaModel
 {
+    /// <summary>
+    /// A simple text area model which represents the complete text as a single paragraph.
+    ///  
+    /// <para>The initial style is an empty style - see <see cref="XNATWL.TextAreaModel.Style()"/>. It can be changed before setting the text.</para>
+    /// </summary>
     public class SimpleTextAreaModel : TextAreaModel
     {
+        /// <summary>
+        /// Change detected in the TextArea
+        /// </summary>
         public event EventHandler<TextAreaChangedEventArgs> Changed;
 
         private Style _style;
         private Element _element;
 
+        /// <summary>
+        /// A <see cref="SimpleTextAreaModel"/> without the text element instantiated.
+        /// </summary>
         public SimpleTextAreaModel()
         {
             _style = new Style();
         }
 
+        /// <summary>
+        /// Constructs a <see cref="SimpleTextAreaModel"/> with pre-formatted text. Use <c>\n</c> to create line breaks.
+        /// </summary>
+        /// <param name="text">Text to display</param>
+        public SimpleTextAreaModel(string text) : this()
+        {
+            Text = text;
+        }
+
+        /// <summary>
+        /// Will set the text for this <see cref="SimpleTextAreaModel"/> as pre-formatted text.
+        /// </summary>
+        public string Text
+        {
+            get
+            {
+                return ((TextElement)this._element).Text;
+            }
+
+            set
+            {
+                this.SetText(value, true);
+            }
+        }
+
+        /// <summary>
+        /// Returns the style used for the next call to <see cref="SetText(string, bool)"/>
+        /// </summary>
         public Style Style
         {
             get
@@ -59,11 +100,13 @@ namespace XNATWL.TextAreaModel
             }
         }
 
-        public void SetText(string text)
-        {
-            this.SetText(text, true);
-        }
-
+        /// <summary>
+        /// Sets the text for this SimpleTextAreaModel. Use <c>\n</c> to create line breaks.
+        /// <para>The <string>preformatted</string> will set the white space attribute as follows:
+        /// <code>false = { white-space: normal }<br/>true  = { white-space: pre }</code></para>
+        /// </summary>
+        /// <param name="text">Text to display</param>
+        /// <param name="preformatted">Preformatted tag</param>
         public void SetText(string text, bool preformatted)
         {
             Style textstyle = _style.With(StyleAttribute.PREFORMATTED, preformatted);
@@ -74,11 +117,19 @@ namespace XNATWL.TextAreaModel
             }
         }
 
+        /// <summary>
+        /// Iterate a list containing just the text element
+        /// </summary>
+        /// <returns>Iterator on one element</returns>
         public IEnumerator<Element> GetEnumerator()
         {
             return new List<Element> { _element }.GetEnumerator();
         }
 
+        /// <summary>
+        /// Iterate a list containing just the text element
+        /// </summary>
+        /// <returns>Iterator on one element</returns>
         IEnumerator IEnumerable.GetEnumerator()
         {
             return new List<Element> { _element }.GetEnumerator();

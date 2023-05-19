@@ -30,12 +30,21 @@
 
 namespace XNATWL.TextAreaModel
 {
+    /// <summary>
+    /// Represents an inline-style key
+    /// </summary>
     public class StyleSheetKey
     {
         private string _element;
         private string _className;
         private string _id;
 
+        /// <summary>
+        /// Create a new <see cref="StyleSheetKey"/>
+        /// </summary>
+        /// <param name="element">Element tag name</param>
+        /// <param name="className">Element class name</param>
+        /// <param name="id">Element ID</param>
         public StyleSheetKey(string element, string className, string id)
         {
             _element = element;
@@ -43,6 +52,9 @@ namespace XNATWL.TextAreaModel
             _id = id;
         }
 
+        /// <summary>
+        /// CSS class
+        /// </summary>
         public string ClassName
         {
             get
@@ -51,6 +63,9 @@ namespace XNATWL.TextAreaModel
             }
         }
 
+        /// <summary>
+        /// XHTML node tag name
+        /// </summary>
         public string Element
         {
             get
@@ -59,6 +74,9 @@ namespace XNATWL.TextAreaModel
             }
         }
         
+        /// <summary>
+        /// Unique XHTML DOM identifier
+        /// </summary>
         public string ID
         {
             get
@@ -76,20 +94,28 @@ namespace XNATWL.TextAreaModel
             return hash;
         }
 
+        /// <summary>
+        /// Compare this with another <see cref="StyleSheetKey"/>
+        /// </summary>
+        /// <param name="what">object of comparison</param>
+        /// <returns><strong>true</strong> if matched</returns>
         public bool Matches(StyleSheetKey what)
         {
             if (this._element != null && !this._element.Equals(what.Element))
             {
                 return false;
             }
-            if (this.ClassName != null && !this.ClassName.Equals(what.ClassName))
+
+            if (this._className != null && !this._className.Equals(what.ClassName))
             {
                 return false;
             }
-            if (this.ID != null && !this.ID.Equals(what.ID))
+
+            if (this._id != null && !this._id.Equals(what.ID))
             {
                 return false;
             }
+
             return true;
         }
 

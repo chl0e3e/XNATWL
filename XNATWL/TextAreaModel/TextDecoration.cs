@@ -30,6 +30,9 @@
 
 namespace XNATWL.TextAreaModel
 {
+    /// <summary>
+    /// CSS text-decoration values
+    /// </summary>
     public enum eTextDecoration
     {
         NONE,
@@ -37,6 +40,9 @@ namespace XNATWL.TextAreaModel
         LINE_THROUGH
     }
 
+    /// <summary>
+    /// CSS text-decoration constant values and object
+    /// </summary>
     public class TextDecoration
     {
         public static TextDecoration NONE = new TextDecoration(eTextDecoration.NONE);

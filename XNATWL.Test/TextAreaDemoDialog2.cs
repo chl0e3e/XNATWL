@@ -7,7 +7,7 @@ namespace XNATWL.Test
         public TextAreaDemoDialog2()
         {
             SimpleTextAreaModel tam = new SimpleTextAreaModel();
-            tam.SetText("This is a small test message. It's not too long.\n" +
+            tam.Text = "This is a small test message. It's not too long.\n" +
                     "\tThis is a small test message. It's not too long.\n" +
                     "This\tis a small test message. It's not too long.\n" +
                     "This is\ta small test message. It's not too long.\n" +
@@ -17,7 +17,7 @@ namespace XNATWL.Test
                     "This is a small test message.\tIt's not too long.\n" +
                     "This is a small test message. It's\tnot too long.\n" +
                     "This is a small test message. It's not\ttoo long.\n" +
-                    "This is a small test message. It's not too\tlong.");
+                    "This is a small test message. It's not too\tlong.";
 
             TextArea scrolledWidget2 = new TextArea(tam);
             scrolledWidget2.SetTheme("textarea");

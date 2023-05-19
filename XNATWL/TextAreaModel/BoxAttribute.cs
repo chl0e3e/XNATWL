@@ -30,13 +30,35 @@
 
 namespace XNATWL.TextAreaModel
 {
+    /// <summary>
+    /// Attribute value for inset boxes (padding and margin)
+    /// </summary>
     public class BoxAttribute
     {
-        public StyleAttribute<Value> Top;
-        public StyleAttribute<Value> Left;
-        public StyleAttribute<Value> Right;
-        public StyleAttribute<Value> Bottom;
+        /// <summary>
+        /// Pixels for the top inset
+        /// </summary>
+        public readonly StyleAttribute<Value> Top;
+        /// <summary>
+        /// Pixels for the left inset
+        /// </summary>
+        public readonly StyleAttribute<Value> Left;
+        /// <summary>
+        /// Pixels for the right inset
+        /// </summary>
+        public readonly StyleAttribute<Value> Right;
+        /// <summary>
+        /// Pixels for the bottom inset
+        /// </summary>
+        public readonly StyleAttribute<Value> Bottom;
 
+        /// <summary>
+        /// Create a new CSS inset box
+        /// </summary>
+        /// <param name="top">Pixels for the top inset</param>
+        /// <param name="left">Pixels for the left inset</param>
+        /// <param name="right">Pixels for the right inset</param>
+        /// <param name="bottom">Pixels for the bottom inset</param>
         public BoxAttribute(StyleAttribute<Value> top, StyleAttribute<Value> left, StyleAttribute<Value> right, StyleAttribute<Value> bottom)
         {
             this.Top = top;

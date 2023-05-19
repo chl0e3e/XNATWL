@@ -32,11 +32,21 @@ using System;
 
 namespace XNATWL.TextAreaModel
 {
+    /// <summary>
+    /// A class to hold a value and the unit in which it is specified.
+    /// </summary>
     public class Value
     {
         private float _value;
         private Unit _unit;
 
+        /// <summary>
+        /// Initialise object given a <paramref name="value"/> and its <paramref name="unit"/>
+        /// </summary>
+        /// <param name="value">value</param>
+        /// <param name="unit">unit</param>
+        /// <exception cref="ArgumentNullException">unknown unit</exception>
+        /// <exception cref="ArgumentOutOfRangeException">unit out of range</exception>
         public Value(float value, Unit unit)
         {
             if (unit == null)
@@ -53,6 +63,9 @@ namespace XNATWL.TextAreaModel
             this._unit = unit;
         }
 
+        /// <summary>
+        /// Direct float value
+        /// </summary>
         public float FloatValue
         {
             get
@@ -61,6 +74,9 @@ namespace XNATWL.TextAreaModel
             }
         }
 
+        /// <summary>
+        /// Direct unit
+        /// </summary>
         public Unit UnitOfValue
         {
             get
@@ -82,6 +98,9 @@ namespace XNATWL.TextAreaModel
         public static Value ZERO_PX = new Value(0, Unit.PX);
         public static Value AUTO = new Value(0, Unit.AUTO);
 
+        /// <summary>
+        /// CSS unit representation
+        /// </summary>
         public class Unit
         {
             public static Unit PX = new Unit(false, "px");
@@ -94,12 +113,20 @@ namespace XNATWL.TextAreaModel
             private bool _fontBased;
             private string _postfix;
 
+            /// <summary>
+            /// New unit type
+            /// </summary>
+            /// <param name="fontBased">If the unit is proportional to font sizing</param>
+            /// <param name="postfix">Human readable unit postfix</param>
             public Unit(bool fontBased, string postfix)
             {
                 this._fontBased = fontBased;
                 this._postfix = postfix;
             }
 
+            /// <summary>
+            /// If the unit is proportional to font sizing
+            /// </summary>
             public bool FontBased
             {
                 get
@@ -108,6 +135,9 @@ namespace XNATWL.TextAreaModel
                 }
             }
 
+            /// <summary>
+            /// Human readable unit postfix
+            /// </summary>
             public string Postfix
             {
                 get

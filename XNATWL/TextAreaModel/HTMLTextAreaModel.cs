@@ -39,6 +39,86 @@ using System.Xml;
 
 namespace XNATWL.TextAreaModel
 {
+    /// <summary>
+    /// A simple XHTML parser.
+    /// The following tags are supported:
+    /// <list type="table">
+    ///     <listheader>
+    ///         <term>Tag</term>
+    ///         <description>Human name</description>
+    ///     </listheader>
+    ///     <item>
+    ///         <term>a</term>
+    ///         <description>Hyperlink<br/>Attributes: <strong>href</strong></description>
+    ///     </item>
+    ///     <item>
+    ///         <term>p</term>
+    ///         <description>Paragraph<br/>Attributes: <em>none</em></description>
+    ///     </item>
+    ///     <item>
+    ///         <term>br</term>
+    ///         <description>New line<br/>Attributes: <em>none</em></description>
+    ///     </item>
+    ///     <item>
+    ///         <term>img</term>
+    ///         <description>Image<br/>Attributes: <strong>src</strong>, <strong>alt</strong><br/>Styles: <strong>float</strong>, <strong>display</strong>, <strong>width</strong>, <strong>height</strong></description>
+    ///     </item>
+    ///     <item>
+    ///         <term>span</term>
+    ///         <description>Generic inline element<br/>Attributes: <em>none</em></description>
+    ///     </item>
+    ///     <item>
+    ///         <term>div</term>
+    ///         <description>Generic blocking element<br/>Attributes: <em>none</em><br/>Styles: <strong>background-image</strong>, <strong>float</strong>, <strong>width</strong></description>
+    ///     </item>
+    ///     <item>
+    ///         <term>ul</term>
+    ///         <description>List<br/>Attributes: <em>none</em></description>
+    ///     </item>
+    ///     <item>
+    ///         <term>li</term>
+    ///         <description>List item<br/>Attributes: <em>none</em><br/>Styles: <strong>list-style-image</strong></description>
+    ///     </item>
+    ///     <item>
+    ///         <term>button</term>
+    ///         <description>Button<br/>Attributes: <strong>name</strong>, <strong>value</strong><br/>Styles: <strong>float</strong>, <strong>display</strong>, <strong>width</strong>, <strong>height</strong></description>
+    ///     </item>
+    ///     <item>
+    ///         <term>table</term>
+    ///         <description>Table<br/>Attributes: <strong>cellspacing</strong>, <strong>cellpadding</strong><br/>Styles: <strong>list-style-image</strong></description>
+    ///     </item>
+    ///     <item>
+    ///         <term>tr</term>
+    ///         <description>Table row<br/>Attributes: <em>none</em><br/>Styles:  <strong>height</strong></description>
+    ///     </item>
+    ///     <item>
+    ///         <term>td</term>
+    ///         <description>Table cell<br/>Attributes: <strong>colspan</strong><br/>Styles: <strong>width</strong></description>
+    ///     </item>
+    /// </list>
+    ///
+    /// The following generic CSS attributes are supported:
+    /// <ul>
+    ///  <li><strong>font-family</strong>,</li>
+    ///  <li><strong>text-align</strong>,</li>
+    ///  <li><strong>text-ident</strong>,</li>
+    ///  <li><strong>margin</strong>,</li>
+    ///  <li><strong>margin-top</strong>,</li>
+    ///  <li><strong>margin-left</strong>,</li>
+    ///  <li><strong>margin-right</strong>,</li>
+    ///  <li><strong>margin-bottom</strong>,</li>
+    ///  <li><strong>padding</strong>,</li>
+    ///  <li><strong>padding-top</strong>,</li>
+    ///  <li><strong>padding-left</strong>,</li>
+    ///  <li><strong>padding-right</strong>,</li>
+    ///  <li><strong>padding-bottom</strong>,</li>
+    ///  <li><strong>clear</strong>,</li>
+    ///  <li><strong>vertical-align</strong>,</li>
+    ///  <li><strong>white-space</strong></li>
+    /// </ul>
+    /// <para>You can only use <strong>white-space</strong> on <strong>normal</strong> and <strong>pre</strong></para>
+    /// Numeric values must use on of the following units: <strong>em</strong>, <strong>ex</strong>, <strong>px</strong>, <strong>%</strong>
+    /// </summary>
     public class HTMLTextAreaModel : TextAreaModel
     {
         private List<Element> _elements;
@@ -52,11 +132,14 @@ namespace XNATWL.TextAreaModel
 
         private ContainerElement _curContainer;
 
+        /// <summary>
+        /// A change to the HTML contents
+        /// </summary>
         public event EventHandler<TextAreaChangedEventArgs> Changed;
 
-        /**
-         * Creates a new {@code HTMLTextAreaModel} without content.
-         */
+        /// <summary>
+        /// Creates a new <see cref="HTMLTextAreaModel"/> without content.
+        /// </summary>
         public HTMLTextAreaModel()
         {
             this._elements = new List<Element>();
@@ -67,115 +150,88 @@ namespace XNATWL.TextAreaModel
             this._startLength = new int[2];
         }
 
-        /**
-         * Creates a new {@code HTMLTextAreaModel} and parses the given html.
-         * @param html the HTML to parse
-         * @see #setHtml(java.lang.String)
-         */
+        /// <summary>
+        /// Creates a new <see cref="HTMLTextAreaModel"/> and parses the given HTML
+        /// </summary>
+        /// <param name="html">the HTML to parse</param>
         public HTMLTextAreaModel(string html) : this()
         {
-            SetHtml(html);
+            SetHTML(html);
         }
 
-        /**
-         * Creates a new {@code HTMLTextAreaModel} and parses the content of the
-         * given {@code Reader}.
-         *
-         * @see #parseXHTML(java.io.Reader)
-         * @param r the reader to parse html from
-         * @throws IOException if an error occured while reading
-         */
+        /// <summary>
+        /// Creates a new <see cref="HTMLTextAreaModel"/> and parses the content of the givev <see cref="Stream"/>
+        /// </summary>
+        /// <param name="r">the stream to parse the HTML from</param>
         public HTMLTextAreaModel(Stream r) : this()
         {
             ParseXHTML(r);
         }
 
-        /**
-         * Sets the a html to parse.
-         * 
-         * @param html the html.
-         */
-        public void SetHtml(string html)
+        /// <summary>
+        /// Sets the HTML to parse.
+        /// </summary>
+        /// <param name="html">the HTML</param>
+        public void SetHTML(string html)
         {
             if (!IsXHTML(html))
             {
                 html = "<html><body>" + html + "</body></html>";
             }
+
             ParseXHTML(new MemoryStream(Encoding.UTF8.GetBytes(html)));
         }
 
-        /**
-         * Reads HTML from the given {@code Reader}.
-         *
-         * @param r the reader to parse html from
-         * @throws IOException if an error occured while reading
-         * @see #setHtml(java.lang.String)
-         * @deprecated use {@link #parseXHTML(java.io.Reader)}
-         */
-       /* public void readHTMLFromStream(Reader r)
+        /// <summary>
+        /// An Iterable containing all links to CSS style sheets
+        /// </summary>
+        public IEnumerable<String> StyleSheetLinks
         {
-            parseXHTML(r);
-        }*/
-
-        /**
-         * Reads HTML from the given {@code URL}.
-         *
-         * @param url the URL to parse.
-         * @throws IOException if an error occured while reading
-         * @see #parseXHTML(java.io.Reader)
-         */
-        /*public void readHTMLFromFSO(FileSystemObject url)
-        {
-            InputStream in = url.openStream();
-            try
+            get
             {
-                parseXHTML(new InputStreamReader(in, "UTF8"));
+                return _styleSheetLinks;
             }
-            finally
+        }
+
+        /// <summary>
+        /// The title of this XHTML document or null if it has no title.
+        /// </summary>
+        public string Title
+        {
+            get
             {
-                try
-                {
-                in.close();
-                }
-                catch (IOException ex)
-                {
-                    Logger.getLogger(typeof(HTMLTextAreaModel)).log(Level.SEVERE, "Exception while closing InputStream", ex);
-                }
+                return _title;
             }
-        }*/
-
-        /**
-         * Returns all links to CSS style sheets
-         * @return an Iterable containing all hrefs
-         */
-        public IEnumerable<String> GetStyleSheetLinks()
-        {
-            return _styleSheetLinks;
         }
 
-        /**
-         * Returns the title of this XHTML document or null if it has no title.
-         * @return the title of this XHTML document or null if it has no title.
-         */
-        public String Title()
+        /// <summary>
+        /// Get an element by ID
+        /// </summary>
+        /// <param name="id">ID of the element</param>
+        /// <returns>The element with the matching ID</returns>
+        public Element this[string id]
         {
-            return _title;
+            get
+            {
+                return _idMap[id];
+            }
         }
 
-        public Element GetElementById(String id)
-        {
-            return _idMap[id];
-        }
-
+        /// <summary>
+        /// Called when the <see cref="HTMLTextAreaModel"/> value has changed
+        /// </summary>
         public void DomModified()
         {
-            this.Changed.Invoke(this, new TextAreaChangedEventArgs());
+            if (this.Changed != null)
+            {
+                this.Changed.Invoke(this, new TextAreaChangedEventArgs());
+            }
         }
 
-        /**
-         * Parse a XHTML document. The root element must be &lt;html&gt;
-         * @param reader the reader used to read the XHTML document.
-         */
+        /// <summary>
+        /// Parse a XHTML document. The root element must be a HTML tag
+        /// </summary>
+        /// <param name="stream">the stream used to read the XHTML document.</param>
         public void ParseXHTML(Stream stream)
         {
             this._elements.Clear();
@@ -219,7 +275,7 @@ namespace XNATWL.TextAreaModel
                     else if ("body".Equals(xpp.Name))
                     {
                         PushStyle(xpp);
-                        BlockElement be = new BlockElement(GetStyle());
+                        BlockElement be = new BlockElement(CurrentStyle);
                         _elements.Add(be);
                         ParseContainer(xpp, be);
                     }
@@ -242,99 +298,108 @@ namespace XNATWL.TextAreaModel
             }
         }
 
-        private void ParseContainer(XmlReader xpp, ContainerElement container)
+        /// <summary>
+        /// Parse a <see cref="ContainerElement"/> with a blank slate on the top of the style stack
+        /// </summary>
+        /// <param name="xmlReader"></param>
+        /// <param name="container"></param>
+        private void ParseContainer(XmlReader xmlReader, ContainerElement container)
         {
             ContainerElement prevContainer = _curContainer;
             _curContainer = container;
             PushStyle(null);
-            ParseMain(xpp);
+            ParseMain(xmlReader);
             PopStyle();
             _curContainer = prevContainer;
         }
 
-        private void ParseMain(XmlReader xpp)
+        /// <summary>
+        /// Generic parse most HTML tags
+        /// </summary>
+        /// <param name="xmlReader">XML reader</param>
+        private void ParseMain(XmlReader xmlReader)
         {
             int level = 1;
-            while (level > 0 && xpp.Read())
+            while (level > 0 && xmlReader.Read())
             {
-                XmlNodeType type = xpp.NodeType;
+                XmlNodeType type = xmlReader.NodeType;
                 switch (type)
                 {
                     case XmlNodeType.Element:
                         {
-                            if ("head".Equals(xpp.Name))
+                            if ("head".Equals(xmlReader.Name))
                             {
-                                ParseHead(xpp);
+                                ParseHead(xmlReader);
                                 break;
                             }
                             ++level;
                             FinishText();
-                            Style style = PushStyle(xpp);
+                            Style style = PushStyle(xmlReader);
                             Element element;
 
-                            if ("img".Equals(xpp.Name))
+                            if ("img".Equals(xmlReader.Name))
                             {
-                                String src = TextUtil.NotNull(xpp.GetAttribute("src"));
-                                String alt = xpp.GetAttribute("alt");
+                                String src = TextUtil.NotNull(xmlReader.GetAttribute("src"));
+                                String alt = xmlReader.GetAttribute("alt");
                                 element = new ImageElement(style, src, alt);
                             }
-                            else if ("p".Equals(xpp.Name))
+                            else if ("p".Equals(xmlReader.Name))
                             {
                                 ParagraphElement pe = new ParagraphElement(style);
-                                ParseContainer(xpp, pe);
+                                ParseContainer(xmlReader, pe);
                                 element = pe;
                                 --level;
                             }
-                            else if ("button".Equals(xpp.Name))
+                            else if ("button".Equals(xmlReader.Name))
                             {
-                                String btnName = TextUtil.NotNull(xpp.GetAttribute("name"));
-                                String btnParam = TextUtil.NotNull(xpp.GetAttribute("value"));
+                                String btnName = TextUtil.NotNull(xmlReader.GetAttribute("name"));
+                                String btnParam = TextUtil.NotNull(xmlReader.GetAttribute("value"));
                                 element = new WidgetElement(style, btnName, btnParam);
                             }
-                            else if ("ul".Equals(xpp.Name))
+                            else if ("ul".Equals(xmlReader.Name))
                             {
                                 ContainerElement ce = new ContainerElement(style);
-                                ParseContainer(xpp, ce);
+                                ParseContainer(xmlReader, ce);
                                 element = ce;
                                 --level;
                             }
-                            else if ("ol".Equals(xpp.Name))
+                            else if ("ol".Equals(xmlReader.Name))
                             {
-                                element = ParseOL(xpp, style);
+                                element = ParseOL(xmlReader, style);
                                 --level;
                             }
-                            else if ("li".Equals(xpp.Name))
+                            else if ("li".Equals(xmlReader.Name))
                             {
                                 ListElement le = new ListElement(style);
-                                ParseContainer(xpp, le);
+                                ParseContainer(xmlReader, le);
                                 element = le;
                                 --level;
                             }
-                            else if ("div".Equals(xpp.Name) || IsHeading(xpp.Name))
+                            else if ("div".Equals(xmlReader.Name) || IsHeading(xmlReader.Name))
                             {
                                 BlockElement be = new BlockElement(style);
-                                ParseContainer(xpp, be);
+                                ParseContainer(xmlReader, be);
                                 element = be;
                                 --level;
                             }
-                            else if ("a".Equals(xpp.Name))
+                            else if ("a".Equals(xmlReader.Name))
                             {
-                                String href = xpp.GetAttribute("href");
+                                String href = xmlReader.GetAttribute("href");
                                 if (href == null)
                                 {
                                     break;
                                 }
                                 LinkElement le = new LinkElement(style, href);
-                                ParseContainer(xpp, le);
+                                ParseContainer(xmlReader, le);
                                 element = le;
                                 --level;
                             }
-                            else if ("table".Equals(xpp.Name))
+                            else if ("table".Equals(xmlReader.Name))
                             {
-                                element = ParseTable(xpp, style);
+                                element = ParseTable(xmlReader, style);
                                 --level;
                             }
-                            else if ("br".Equals(xpp.Name))
+                            else if ("br".Equals(xmlReader.Name))
                             {
                                 element = new LineBreakElement(style);
                             }
@@ -356,44 +421,49 @@ namespace XNATWL.TextAreaModel
                         }
                     case XmlNodeType.Text:
                         {
-                            _stringBuilder.Append(xpp.Value);
+                            _stringBuilder.Append(xmlReader.Value);
                             break;
                         }
                     case XmlNodeType.EntityReference:
-                        _stringBuilder.Append(xpp.Value);
+                        _stringBuilder.Append(xmlReader.Value);
                         break;
                 }
             }
         }
 
-        private void ParseHead(XmlReader xpp)
+        /// <summary>
+        /// Parse the head of an XHTML document. The head normally contains LINK tags to a stylesheet or a TITLE tag for the document title.
+        /// </summary>
+        /// <param name="xmlReader">XMLReader to read from</param>
+        /// <exception cref="Exception">The header has nothing to read immediately (invalid XHTML?)</exception>
+        private void ParseHead(XmlReader xmlReader)
         {
             int level = 1;
             while (level > 0)
             {
-                if (!xpp.Read())
+                if (!xmlReader.Read())
                 {
                     throw new Exception("Unexpected end of head tag");
                 }
 
-                switch (xpp.NodeType)
+                switch (xmlReader.NodeType)
                 {
                     case XmlNodeType.Element:
                         {
                             ++level;
-                            if ("link".Equals(xpp.Name))
+                            if ("link".Equals(xmlReader.Name))
                             {
-                                String linkhref = xpp.GetAttribute("href");
-                                if ("stylesheet".Equals(xpp.GetAttribute("rel")) &&
-                                        "text/css".Equals(xpp.GetAttribute("type")) &&
+                                String linkhref = xmlReader.GetAttribute("href");
+                                if ("stylesheet".Equals(xmlReader.GetAttribute("rel")) &&
+                                        "text/css".Equals(xmlReader.GetAttribute("type")) &&
                                         linkhref != null)
                                 {
                                     _styleSheetLinks.Add(linkhref);
                                 }
                             }
-                            if ("title".Equals(xpp.Name))
+                            if ("title".Equals(xmlReader.Name))
                             {
-                                _title = xpp.Value;
+                                _title = xmlReader.Value;
                                 --level;
                             }
                             break;
@@ -407,32 +477,39 @@ namespace XNATWL.TextAreaModel
             }
         }
 
-        private TableElement ParseTable(XmlReader xpp, Style tableStyle)
+        /// <summary>
+        /// Parse a table tag from an XHTML document using <see cref="XmlReader"/>
+        /// </summary>
+        /// <param name="xmlReader">XML reader</param>
+        /// <param name="tableStyle">Table styling information</param>
+        /// <returns>Table element</returns>
+        /// <exception cref="Exception">The table had nothing to parse immediately (invalid XHTML?)</exception>
+        private TableElement ParseTable(XmlReader xmlReader, Style tableStyle)
         {
             List<TableCellElement> cells = new List<TableCellElement>();
             List<Style> rowStyles = new List<Style>();
             int numColumns = 0;
-            int cellSpacing = ParseInt(xpp, "cellspacing", 0);
-            int cellPadding = ParseInt(xpp, "cellpadding", 0);
+            int cellSpacing = ParseInt(xmlReader, "cellspacing", 0);
+            int cellPadding = ParseInt(xmlReader, "cellpadding", 0);
 
             for (; ; )
             {
-                if (!xpp.Read())
+                if (!xmlReader.Read())
                 {
                     throw new Exception("Unexpected end of table");
                 }
 
-                switch (xpp.NodeType)
+                switch (xmlReader.NodeType)
                 {
                     case XmlNodeType.Element:
                         {
-                            PushStyle(xpp);
+                            PushStyle(xmlReader);
 
-                            if ("td".Equals(xpp.Name) || "th".Equals(xpp.Name))
+                            if ("td".Equals(xmlReader.Name) || "th".Equals(xmlReader.Name))
                             {
-                                int colspan = ParseInt(xpp, "colspan", 1);
-                                TableCellElement cell = new TableCellElement(GetStyle(), colspan);
-                                ParseContainer(xpp, cell);
+                                int colspan = ParseInt(xmlReader, "colspan", 1);
+                                TableCellElement cell = new TableCellElement(CurrentStyle, colspan);
+                                ParseContainer(xmlReader, cell);
                                 RegisterElement(cell);
 
                                 cells.Add(cell);
@@ -441,23 +518,23 @@ namespace XNATWL.TextAreaModel
                                     cells.Add(null);
                                 }
                             }
-                            if ("tr".Equals(xpp.Name))
+                            if ("tr".Equals(xmlReader.Name))
                             {
-                                rowStyles.Add(GetStyle());
+                                rowStyles.Add(CurrentStyle);
                             }
                         }
                         break;
                     case XmlNodeType.EndElement:
                         {
                             PopStyle();
-                            if ("tr".Equals(xpp.Name))
+                            if ("tr".Equals(xmlReader.Name))
                             {
                                 if (numColumns == 0)
                                 {
                                     numColumns = cells.Count;
                                 }
                             }
-                            if ("table".Equals(xpp.Name))
+                            if ("table".Equals(xmlReader.Name))
                             {
                                 TableElement tableElement = new TableElement(tableStyle,
                                         numColumns, rowStyles.Count, cellSpacing, cellPadding);
@@ -478,27 +555,34 @@ namespace XNATWL.TextAreaModel
             }
         }
 
-        private OrderedListElement ParseOL(XmlReader xpp, Style olStyle)
+        /// <summary>
+        /// Parse an OL tag from an XHTML document provided by an <see cref="XmlReader"/>
+        /// </summary>
+        /// <param name="xmlReader">XML reader to read from</param>
+        /// <param name="olStyle">OL styling information</param>
+        /// <returns><see cref="OrderedListElement"/></returns>
+        /// <exception cref="Exception"></exception>
+        private OrderedListElement ParseOL(XmlReader xmlReader, Style olStyle)
         {
-            int start = ParseInt(xpp, "start", 1);
+            int start = ParseInt(xmlReader, "start", 1);
             OrderedListElement ole = new OrderedListElement(olStyle, start);
             RegisterElement(ole);
             for (; ; )
             {
-                if (!xpp.Read())
+                if (!xmlReader.Read())
                 {
                     throw new Exception("Unexpected end of table");
                 }
 
-                switch (xpp.NodeType)
+                switch (xmlReader.NodeType)
                 {
                     case XmlNodeType.Element:
                         {
-                            PushStyle(xpp);
-                            if ("li".Equals(xpp.Name))
+                            PushStyle(xmlReader);
+                            if ("li".Equals(xmlReader.Name))
                             {
-                                ContainerElement ce = new ContainerElement(GetStyle());
-                                ParseContainer(xpp, ce);
+                                ContainerElement ce = new ContainerElement(CurrentStyle);
+                                ParseContainer(xmlReader, ce);
                                 RegisterElement(ce);
                                 ole.Add(ce);
                             }
@@ -507,7 +591,7 @@ namespace XNATWL.TextAreaModel
                     case XmlNodeType.EndElement:
                         {
                             PopStyle();
-                            if ("ol".Equals(xpp.Name))
+                            if ("ol".Equals(xmlReader.Name))
                             {
                                 return ole;
                             }
@@ -517,9 +601,13 @@ namespace XNATWL.TextAreaModel
             }
         }
 
+        /// <summary>
+        /// Register a new element by it's ID
+        /// </summary>
+        /// <param name="element">Element to register</param>
         private void RegisterElement(Element element)
         {
-            StyleSheetKey styleSheetKey = element.GetStyle().StyleSheetKey;
+            StyleSheetKey styleSheetKey = element.Style.StyleSheetKey;
             if (styleSheetKey != null)
             {
                 String id = styleSheetKey.ID;
@@ -530,16 +618,28 @@ namespace XNATWL.TextAreaModel
             }
         }
 
-        private static int ParseInt(XmlReader xpp, String attribute, int defaultValue)
+        /// <summary>
+        /// Parse XML attribute as an integer
+        /// </summary>
+        /// <param name="xmlReader">XML reader to read from</param>
+        /// <param name="attribute">Name of the attribute</param>
+        /// <param name="defaultValue">Default value if the attribute wasn't found</param>
+        /// <returns>Parsed <see cref="int"/></returns>
+        private static int ParseInt(XmlReader xmlReader, String attribute, int defaultValue)
         {
-            String value = xpp.GetAttribute(attribute);
+            string value = xmlReader.GetAttribute(attribute);
             if (value != null)
             {
-                return int.Parse(xpp.GetAttribute(attribute));
+                return int.Parse(value);
             }
             return defaultValue;
         }
 
+        /// <summary>
+        /// Detect if a string contains valid XHTML
+        /// </summary>
+        /// <param name="doc">document as a string</param>
+        /// <returns><strong>true</strong> if valid XHTML</returns>
         private static bool IsXHTML(String doc)
         {
             if (doc.Length > 5 && doc[0] == '<')
@@ -549,30 +649,45 @@ namespace XNATWL.TextAreaModel
             return false;
         }
 
-        private bool IsHeading(String name)
+        /// <summary>
+        /// Detect if XHTML tag name is a heading
+        /// </summary>
+        /// <param name="name">XHTML tag name</param>
+        /// <returns><strong>true</strong> if heading</returns>
+        private bool IsHeading(string name)
         {
-            return name.Length == 2 && name[0] == 'h' &&
-                    (name[1] >= '0' && name[1] <= '6');
+            return name.Length == 2 && name[0] == 'h' && (name[1] >= '0' && name[1] <= '6');
         }
 
-        private Style GetStyle()
+        /// <summary>
+        /// The style at the top of the stack
+        /// </summary>
+        private Style CurrentStyle
         {
-            return _styleStack[_styleStack.Count - 1];
+            get
+            {
+                return _styleStack[_styleStack.Count - 1];
+            }
         }
 
-        private Style PushStyle(XmlReader xpp)
+        /// <summary>
+        /// Push a new style onto the top of the stack
+        /// </summary>
+        /// <param name="xmlReader">XML reader to read XHTML</param>
+        /// <returns>new <see cref="Style"/> at the top of the stack</returns>
+        private Style PushStyle(XmlReader xmlReader)
         {
-            Style parent = GetStyle();
+            Style parent = CurrentStyle;
             StyleSheetKey key = null;
             String style = null;
 
-            if (xpp != null)
+            if (xmlReader != null)
             {
-                String className = xpp.GetAttribute("class");
-                String element = xpp.Name;
-                String id = xpp.GetAttribute("id");
+                String className = xmlReader.GetAttribute("class");
+                String element = xmlReader.Name;
+                String id = xmlReader.GetAttribute("id");
                 key = new StyleSheetKey(element, className, id);
-                style = xpp.GetAttribute("style");
+                style = xmlReader.GetAttribute("style");
             }
 
             Style newStyle;
@@ -590,6 +705,9 @@ namespace XNATWL.TextAreaModel
             return newStyle;
         }
 
+        /// <summary>
+        /// Pop the last <see cref="Style"/> on the stack
+        /// </summary>
         private void PopStyle()
         {
             int stackSize = _styleStack.Count;
@@ -599,11 +717,14 @@ namespace XNATWL.TextAreaModel
             }
         }
 
+        /// <summary>
+        /// Register the built-up DOM values on the current XHTML tag as an element
+        /// </summary>
         private void FinishText()
         {
             if (_stringBuilder.Length > 0)
             {
-                Style style = GetStyle();
+                Style style = CurrentStyle;
                 TextElement e = new TextElement(style, _stringBuilder.ToString());
                 RegisterElement(e);
                 _curContainer.Add(e);
@@ -611,11 +732,19 @@ namespace XNATWL.TextAreaModel
             }
         }
 
+        /// <summary>
+        /// Enumerate the elements in the HTML model
+        /// </summary>
+        /// <returns>Element enumerator</returns>
         IEnumerator<Element> IEnumerable<Element>.GetEnumerator()
         {
             return _elements.GetEnumerator();
         }
 
+        /// <summary>
+        /// Enumerate the elements in the HTML model
+        /// </summary>
+        /// <returns>Element enumerator</returns>
         IEnumerator IEnumerable.GetEnumerator()
         {
             return _elements.GetEnumerator();

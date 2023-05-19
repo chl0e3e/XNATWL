@@ -32,10 +32,21 @@ namespace XNATWL.TextAreaModel
 {
     public interface StyleSheetResolver
     {
+        /// <summary>
+        /// Start composing widget layout
+        /// </summary>
         void StartLayout();
 
+        /// <summary>
+        /// Resolve a style using another's selector
+        /// </summary>
+        /// <param name="style">style to match</param>
+        /// <returns>style matcheds</returns>
         Style Resolve(Style style);
 
+        /// <summary>
+        /// Stop composing widget layout
+        /// </summary>
         void LayoutFinished();
     }
 }

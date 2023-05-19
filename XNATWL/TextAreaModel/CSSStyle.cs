@@ -35,22 +35,37 @@ using XNATWL.Utils;
 
 namespace XNATWL.TextAreaModel
 {
+    /// <summary>
+    /// A <see cref="Style"/> which is constructed from a CSS style string.
+    /// </summary>
     public class CSSStyle : Style
     {
         internal CSSStyle()
         {
         }
 
+        /// <summary>
+        /// Parse a CSS style from a single line of attribute:value
+        /// </summary>
+        /// <param name="cssStyle">CSS attribute:value string</param>
         public CSSStyle(string cssStyle)
         {
             this.ParseCSS(cssStyle);
         }
 
+        /// <summary>
+        /// Parse a CSS style from a single line of attribute:value, and specify a parent and/or <see cref="StyleSheetKey"/>
+        /// </summary>
+        /// <param name="cssStyle">CSS attribute:value string</param>
         public CSSStyle(Style parent, StyleSheetKey styleSheetKey, string cssStyle) : base(parent, styleSheetKey)
         {
             this.ParseCSS(cssStyle);
         }
 
+        /// <summary>
+        /// Parse a line of CSS
+        /// </summary>
+        /// <param name="style">Line of CSS</param>
         private void ParseCSS(string style)
         {
             ParameterStringParser psp = new ParameterStringParser(style, ';', ':');
@@ -68,6 +83,12 @@ namespace XNATWL.TextAreaModel
             }
         }
 
+        /// <summary>
+        /// Parse a specific attribute for the current style in the stylesheet
+        /// </summary>
+        /// <param name="key">Attribute name</param>
+        /// <param name="value">Value of attribute</param>
+        /// <exception cref="ArgumentOutOfRangeException">The CSS attribute is unsupported</exception>
         internal void ParseCSSAttribute(string key, string value)
         {
             if (key.StartsWith("margin"))
@@ -183,6 +204,13 @@ namespace XNATWL.TextAreaModel
             throw new ArgumentOutOfRangeException("Unsupported key: " + key);
         }
 
+        /// <summary>
+        /// Parse a CSS box attribute (specifies a top, left, right or bottom)
+        /// </summary>
+        /// <param name="key">Inset direction</param>
+        /// <param name="value">Value in pixels</param>
+        /// <param name="box">containing relevant output attribute keys</param>
+        /// <exception cref="ArgumentOutOfRangeException">Non-standard box units parsed</exception>
         private void ParseBox(string key, string value, BoxAttribute box)
         {
             if ("-top".Equals(key))
@@ -237,6 +265,11 @@ namespace XNATWL.TextAreaModel
             }
         }
 
+        /// <summary>
+        /// Parse a font attribute to render with
+        /// </summary>
+        /// <param name="key">Font attribute name</param>
+        /// <param name="value">Font attribute value</param>
         private void ParseFont(string key, string value)
         {
             if ("font-family".Equals(key))
@@ -284,6 +317,12 @@ namespace XNATWL.TextAreaModel
             }
         }
 
+        /// <summary>
+        /// Parse a value unit using one of many measurement units
+        /// </summary>
+        /// <param name="value">Value to parse</param>
+        /// <returns>Value using a unit-respecting object</returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         private Value ParseValueUnit(string value)
         {
             Value.Unit unit;
@@ -326,6 +365,11 @@ namespace XNATWL.TextAreaModel
             return new Value(float.Parse(numberPart), unit);
         }
 
+        /// <summary>
+        /// Parse a string of value units
+        /// </summary>
+        /// <param name="value">Value(s) to parse</param>
+        /// <returns>Array of values using a unit-respecting object</returns>
         private Value[] ParseValueUnits(string value)
         {
             string[] parts = value.Split(new string[] { "\\s+" }, StringSplitOptions.None);
@@ -337,11 +381,21 @@ namespace XNATWL.TextAreaModel
             return result;
         }
 
+        /// <summary>
+        /// Parse a value unit and set it for a <see cref="StyleAttribute"/>
+        /// </summary>
+        /// <param name="attribute">Target attribute</param>
+        /// <param name="value">Value to parse</param>
         private void ParseValueUnit(StyleAttribute attribute, string value)
         {
             this.Put(attribute, ParseValueUnit(value));
         }
 
+        /// <summary>
+        /// Parse an integer into a <see cref="StyleAttribute"/>
+        /// </summary>
+        /// <param name="attribute">Target attribute</param>
+        /// <param name="value">Integer value to parse as a string</param>
         private void ParseInteger(StyleAttribute<Int32> attribute, string value)
         {
             if ("inherit".Equals(value))
@@ -355,6 +409,14 @@ namespace XNATWL.TextAreaModel
             }
         }
 
+        /// <summary>
+        /// Parse a lookup map for <see cref="StyleAttribute"/>
+        /// </summary>
+        /// <typeparam name="T">attribute type</typeparam>
+        /// <param name="attribute">target attribute</param>
+        /// <param name="map">value map</param>
+        /// <param name="value">value to look up</param>
+        /// <exception cref="ArgumentOutOfRangeException">enum value not in map</exception>
         private void ParseEnum<T>(StyleAttribute<T> attribute, Dictionary<string, T> map, string value)
         {
             if (!map.ContainsKey(value))
@@ -366,12 +428,26 @@ namespace XNATWL.TextAreaModel
             this.Put(attribute, obj);
         }
 
+        /// <summary>
+        /// Parse an enum value into a <see cref="StyleAttribute"/>
+        /// </summary>
+        /// <typeparam name="E">Enum type</typeparam>
+        /// <param name="attribute">target attribute</param>
+        /// <param name="value">enum value</param>
         private void ParseEnum<E>(StyleAttribute<E> attribute, string value) where E : struct, IConvertible
         {
             object obj = Enum.Parse(attribute.DataType, value.ToUpper());
             Put(attribute, obj);
         }
 
+        /// <summary>
+        /// Parse the first word of a string and lookup using a map and return the rest
+        /// </summary>
+        /// <typeparam name="E">Generic attribute type target</typeparam>
+        /// <param name="attribute">Target attribute</param>
+        /// <param name="map">Lookup map</param>
+        /// <param name="value">Value to look up</param>
+        /// <returns>The rest of the words in the string</returns>
         private string ParseStartsWith<E>(StyleAttribute<E> attribute, Dictionary<string, E> map, string value)
         {
             int end = TextUtil.IndexOf(value, ' ', 0);
@@ -385,16 +461,33 @@ namespace XNATWL.TextAreaModel
             return value;
         }
 
+        /// <summary>
+        /// Parse a URL stripping any CSS 'function' conveniences
+        /// </summary>
+        /// <param name="attribute">Target attribute</param>
+        /// <param name="value">URL string</param>
         private void ParseURL(StyleAttribute<string> attribute, string value)
         {
             Put(attribute, StripURL(value));
         }
 
+        /// <summary>
+        /// Trim a substring of a string
+        /// </summary>
+        /// <param name="value">specified string</param>
+        /// <param name="start">substring start</param>
+        /// <param name="end">substring end</param>
+        /// <returns>string containing the trimmed substring</returns>
         static string StripTrim(string value, int start, int end)
         {
             return TextUtil.Trim(value, start, value.Length - end);
         }
 
+
+        /// <summary>
+        /// Strip a URL of any CSS 'function' conveniences
+        /// </summary>
+        /// <param name="value">URL string</param>
         public static string StripURL(string value)
         {
             if (value.StartsWith("url(") && value.EndsWith(")"))
@@ -404,6 +497,11 @@ namespace XNATWL.TextAreaModel
             return value;
         }
 
+        /// <summary>
+        /// Strip surrounding quotes, if any (only index 0 and index count - 1)
+        /// </summary>
+        /// <param name="value">string with maybe something to strip</param>
+        /// <returns>Stripped text if the quotes were there</returns>
         static string StripQuotes(string value)
         {
             if ((value.StartsWith("\"") && value.EndsWith("\"")) ||
@@ -414,9 +512,16 @@ namespace XNATWL.TextAreaModel
             return value;
         }
 
+        /// <summary>
+        /// Parse RGBA colour to a <see cref="Color"/> object
+        /// </summary>
+        /// <param name="attribute">Target attribute</param>
+        /// <param name="value">Color value</param>
+        /// <exception cref="ArgumentOutOfRangeException">Unable to parse CSS color</exception>
         private void ParseColor(StyleAttribute<Color> attribute, string value)
         {
             Color color;
+
             if (value.StartsWith("rgb(") && value.EndsWith(")"))
             {
                 value = StripTrim(value, 4, 1);
@@ -437,9 +542,17 @@ namespace XNATWL.TextAreaModel
                     throw new ArgumentOutOfRangeException("unknown color name: " + value);
                 }
             }
+
             Put(attribute, color);
         }
 
+        /// <summary>
+        /// Parse RGBA as byte array containing <paramref name="numElements"/> elements
+        /// </summary>
+        /// <param name="value">RGBA string</param>
+        /// <param name="numElements">Number of components</param>
+        /// <returns>Byte array of colors</returns>
+        /// <exception cref="ArgumentOutOfRangeException">The specified numElements does not match the possible components of a colour's string representation</exception>
         private byte[] ParseRGBA(string value, int numElements)
         {
             string[] parts = value.Split(',');
@@ -476,11 +589,23 @@ namespace XNATWL.TextAreaModel
             return rgba;
         }
 
+        /// <summary>
+        /// Parse a list from a string into a <see cref="StyleAttribute{List{string}}"/> starting at index 0
+        /// </summary>
+        /// <param name="attribute">Target attribute</param>
+        /// <param name="value">CSS list value</param>
         private void ParseList(StyleAttribute<List<string>> attribute, string value)
         {
             Put(attribute, ParseList(value, 0));
         }
 
+        /// <summary>
+        /// Parses a CSS string list (comma-delimited) from a given string and its starting index
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="idx"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public static List<String> ParseList(string value, int idx)
         {
             idx = TextUtil.SkipSpaces(value, idx);
@@ -529,11 +654,19 @@ namespace XNATWL.TextAreaModel
         static Dictionary<string, TextDecoration> TEXTDECORATION = new Dictionary<string, TextDecoration>();
         static Dictionary<string, Boolean> INHERITHOVER = new Dictionary<string, Boolean>();
 
+        /// <summary>
+        /// Create a Roman numeral list type specifying if it is lowercase or uppercase
+        /// </summary>
+        /// <param name="lowercase">Lowercase roman numbers</param>
+        /// <returns><see cref="OrderedListType"/></returns>
         static OrderedListType CreateRoman(bool lowercase)
         {
             return new RomanOrderedListType(lowercase);
         }
 
+        /// <summary>
+        /// List type using Roman numerals
+        /// </summary>
         class RomanOrderedListType : OrderedListType
         {
             private bool _lowercase;
@@ -542,6 +675,11 @@ namespace XNATWL.TextAreaModel
                 this._lowercase = lowercase;
             }
 
+            /// <summary>
+            /// Format integer using Roman numerals
+            /// </summary>
+            /// <param name="nr"></param>
+            /// <returns></returns>
             public override string Format(int nr)
             {
                 if (nr >= 1 && nr <= TextUtil.MAX_ROMAN_INTEGER)

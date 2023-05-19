@@ -41,7 +41,7 @@ namespace XNATWL.Renderer
     public interface FontMapper
     {
         /// <summary>
-        /// Retrieve the cloest font for the given parameters
+        /// Retrieve the closest font for the given parameters
         /// </summary>
         /// <param name="fontFamilies">a list of family names with decreasing priority</param>
         /// <param name="fontSize">the desired font size in pixels</param>

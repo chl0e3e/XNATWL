@@ -677,7 +677,7 @@ namespace XNATWL
             {
                 if (_curLElementUnderMouse._element is ImageElement)
                 {
-                    return ((ImageElement)_curLElementUnderMouse._element).GetToolTip();
+                    return ((ImageElement)_curLElementUnderMouse._element).ToolTip;
                 }
             }
             return base.GetTooltipContentAt(mouseX, mouseY);
@@ -765,7 +765,7 @@ namespace XNATWL
 
         private void LayoutElement(Box box, Element e)
         {
-            box.ClearFloater(e.GetStyle().Get(StyleAttribute.CLEAR, _styleClassResolver));
+            box.ClearFloater(e.Style.Get(StyleAttribute.CLEAR, _styleClassResolver));
 
             if (e is TextElement)
             {
@@ -827,7 +827,7 @@ namespace XNATWL
 
         private void LayoutImageElement(Box box, ImageElement ie)
         {
-            Image image = SelectImage(ie.GetImageName());
+            Image image = SelectImage(ie.ImageName);
             if (image == null)
             {
                 return;
@@ -840,13 +840,13 @@ namespace XNATWL
 
         private void LayoutWidgetElement(Box box, WidgetElement we)
         {
-            Widget widget = _widgets[we.GetWidgetName()];
+            Widget widget = _widgets[we.WidgetName];
             if (widget == null)
             {
-                WidgetResolver resolver = _widgetResolvers[we.GetWidgetName()];
+                WidgetResolver resolver = _widgetResolvers[we.WidgetName];
                 if (resolver != null)
                 {
-                    widget = resolver.ResolveWidget(we.GetWidgetName(), we.GetWidgetParam());
+                    widget = resolver.ResolveWidget(we.WidgetName, we.WidgetParam);
                 }
                 if (widget == null)
                 {
@@ -872,7 +872,7 @@ namespace XNATWL
 
         private void Layout(Box box, Element e, LElement le)
         {
-            Style style = e.GetStyle();
+            Style style = e.Style;
 
             FloatPosition floatPosition = style.Get(StyleAttribute.FLOAT_POSITION, _styleClassResolver);
             Display display = style.Get(StyleAttribute.DISPLAY, _styleClassResolver);
@@ -945,7 +945,7 @@ namespace XNATWL
             }
             else
             {
-                switch (e.GetStyle().Get(StyleAttribute.HORIZONTAL_ALIGNMENT, _styleClassResolver))
+                switch (e.Style.Get(StyleAttribute.HORIZONTAL_ALIGNMENT, _styleClassResolver))
                 {
                     case TextAreaModel.HAlignment.CENTER:
                     case TextAreaModel.HAlignment.JUSTIFY:
@@ -1231,7 +1231,7 @@ namespace XNATWL
 
         private void LayoutParagraphElement(Box box, ParagraphElement pe)
         {
-            Style style = pe.GetStyle();
+            Style style = pe.Style;
             Font font = SelectFont(style);
 
             DoMarginTop(box, style);
@@ -1253,8 +1253,8 @@ namespace XNATWL
 
         private void LayoutTextElement(Box box, TextElement te)
         {
-            String text = te.GetText();
-            Style style = te.GetStyle();
+            String text = te.Text;
+            Style style = te.Style;
             FontData fontData = CreateFontData(style);
             bool pre = style.Get(StyleAttribute.PREFORMATTED, _styleClassResolver);
 
@@ -1386,7 +1386,7 @@ namespace XNATWL
                     }
                     if (breakWord == null)
                     {
-                        breakWord = te.GetStyle().Get(StyleAttribute.BREAKWORD, _styleClassResolver);
+                        breakWord = te.Style.Get(StyleAttribute.BREAKWORD, _styleClassResolver);
                     }
                     if ((bool)breakWord)
                     {
@@ -1467,7 +1467,7 @@ namespace XNATWL
                     if (text[idx] == '\t')
                     {
                         idx++;
-                        int tabX = box.ComputeNextTabStop(te.GetStyle(), font);
+                        int tabX = box.ComputeNextTabStop(te.Style, font);
                         if (tabX < box._lineWidth)
                         {
                             box._curX = tabX;
@@ -1529,7 +1529,7 @@ namespace XNATWL
 
         private void LayoutContainerElement(Box box, ContainerElement ce)
         {
-            Style style = ce.GetStyle();
+            Style style = ce.Style;
             DoMarginTop(box, style);
             box.AddAnchor(ce);
             LayoutElements(box, ce);
@@ -1539,9 +1539,9 @@ namespace XNATWL
         private void LayoutLinkElement(Box box, LinkElement le)
         {
             String oldHref = box._href;
-            box._href = le.GetHREF();
+            box._href = le.HREF;
 
-            Style style = le.GetStyle();
+            Style style = le.Style;
             Display display = style.Get(StyleAttribute.DISPLAY, _styleClassResolver);
             if (display == Display.BLOCK)
             {
@@ -1557,7 +1557,7 @@ namespace XNATWL
 
         private void LayoutListElement(Box box, ListElement le)
         {
-            Style style = le.GetStyle();
+            Style style = le.Style;
 
             DoMarginTop(box, style);
 
@@ -1590,7 +1590,7 @@ namespace XNATWL
 
         private void LayoutOrderedListElement(Box box, OrderedListElement ole)
         {
-            Style style = ole.GetStyle();
+            Style style = ole.Style;
             FontData fontData = CreateFontData(style);
 
             if (fontData == null)
@@ -1601,7 +1601,7 @@ namespace XNATWL
             DoMarginTop(box, style);
             LElement anchor = box.AddAnchor(ole);
 
-            int start = Math.Max(1, ole.GetStart());
+            int start = Math.Max(1, ole.Start);
             int count = ole.Count;
             OrderedListType type = style.Get(StyleAttribute.LIST_STYLE_TYPE, _styleClassResolver);
 
@@ -1617,8 +1617,8 @@ namespace XNATWL
             for (int i = 0; i < count; i++)
             {
                 String label = labels[i];
-                Element li = ole.ElementAt(i);
-                Style liStyle = li.GetStyle();
+                Element li = ole[i];
+                Style liStyle = li.Style;
                 DoMarginTop(box, liStyle);
 
                 LText lt = new LText(ole, fontData, label, 0, label.Length, box._doCacheText);
@@ -1647,7 +1647,7 @@ namespace XNATWL
 
         private Box LayoutBox(LClip clip, int continerWidth, int paddingLeft, int paddingRight, ContainerElement ce, String href, bool doCacheText)
         {
-            Style style = ce.GetStyle();
+            Style style = ce.Style;
             int paddingTop = ConvertToPX0(style, StyleAttribute.PADDING_TOP, continerWidth);
             int paddingBottom = ConvertToPX0(style, StyleAttribute.PADDING_BOTTOM, continerWidth);
             int marginBottom = ConvertToPX0(style, StyleAttribute.MARGIN_BOTTOM, continerWidth);
@@ -1688,7 +1688,7 @@ namespace XNATWL
         {
             box.NextLine(false);
 
-            Style style = be.GetStyle();
+            Style style = be.Style;
             FloatPosition floatPosition = style.Get(StyleAttribute.FLOAT_POSITION, _styleClassResolver);
 
             LImage bgImage = CreateBGImage(box, be);
@@ -1787,10 +1787,10 @@ namespace XNATWL
 
         private void ComputeTableWidth(TableElement te, int maxTableWidth, int[] columnWidth, int[] columnSpacing, bool[] columnsWithFixedWidth)
         {
-            int numColumns = te.GetNumColumns();
-            int numRows = te.GetNumRows();
-            int cellSpacing = te.GetCellSpacing();
-            int cellPadding = te.GetCellPadding();
+            int numColumns = te.NumColumns;
+            int numRows = te.NumRows;
+            int cellSpacing = te.CellSpacing;
+            int cellPadding = te.CellPadding;
 
             Dictionary<int, int> colspanWidths = null;
 
@@ -1806,8 +1806,8 @@ namespace XNATWL
                     TableCellElement cell = te.GetCell(row, col);
                     if (cell != null)
                     {
-                        Style cellStyle = cell.GetStyle();
-                        int colspan = cell.GetColspan();
+                        Style cellStyle = cell.Style;
+                        int colspan = cell.Colspan;
                         int cellWidth = ConvertToPX(cellStyle, StyleAttribute.WIDTH, maxTableWidth, int.MinValue);
                         if (cellWidth == int.MinValue && (colspan > 1 || !hasFixedWidth))
                         {
@@ -1902,11 +1902,11 @@ namespace XNATWL
 
         private void LayoutTableElement(Box box, TableElement te)
         {
-            int numColumns = te.GetNumColumns();
-            int numRows = te.GetNumRows();
-            int cellSpacing = te.GetCellSpacing();
-            int cellPadding = te.GetCellPadding();
-            Style tableStyle = te.GetStyle();
+            int numColumns = te.NumColumns;
+            int numRows = te.NumRows;
+            int cellSpacing = te.CellSpacing;
+            int cellPadding = te.CellPadding;
+            Style tableStyle = te.Style;
 
             if (numColumns == 0 || numRows == 0)
             {
@@ -2042,12 +2042,12 @@ namespace XNATWL
                     int width = columnWidth[col];
                     if (cell != null)
                     {
-                        for (int c = 1; c < cell.GetColspan(); c++)
+                        for (int c = 1; c < cell.Colspan; c++)
                         {
                             width += columnSpacing[col + c] + columnWidth[col + c];
                         }
 
-                        Style cellStyle = cell.GetStyle();
+                        Style cellStyle = cell.Style;
 
                         int paddingLeft = Math.Max(cellPadding, ConvertToPX0(cellStyle, StyleAttribute.PADDING_LEFT, tableWidth));
                         int paddingRight = Math.Max(cellPadding, ConvertToPX0(cellStyle, StyleAttribute.PADDING_RIGHT, tableWidth));
@@ -2070,7 +2070,7 @@ namespace XNATWL
 
                         LayoutBox(clip, tableWidth, paddingLeft, paddingRight, cell, null, box._doCacheText);
 
-                        col += Math.Max(0, cell.GetColspan() - 1);
+                        col += Math.Max(0, cell.Colspan - 1);
                     }
                     x += width;
                 }
@@ -2120,7 +2120,7 @@ namespace XNATWL
 
         private LImage CreateBGImage(Box box, Element element)
         {
-            Style style = element.GetStyle();
+            Style style = element.Style;
             Image image = SelectImage(style, StyleAttribute.BACKGROUND_IMAGE);
             if (image == null)
             {
@@ -2475,7 +2475,7 @@ namespace XNATWL
                     for (int idx = _lineStartIdx; idx < _layout.Count; idx++)
                     {
                         LElement le = _layout[idx];
-                        switch (le._element.GetStyle().Get(StyleAttribute.VERTICAL_ALIGNMENT, _textAreaW._styleClassResolver))
+                        switch (le._element.Style.Get(StyleAttribute.VERTICAL_ALIGNMENT, _textAreaW._styleClassResolver))
                         {
                             case TextAreaModel.VAlignment.BOTTOM:
                                 le._y = lineHeight - le._height;

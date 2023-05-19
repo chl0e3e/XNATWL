@@ -30,6 +30,9 @@
 
 namespace XNATWL.Renderer
 {
+    /// <summary>
+    /// Enum for clockwise rotations of a texture
+    /// </summary>
     public enum TextureRotation
     {
         None,
