@@ -32,6 +32,9 @@ namespace XNATWL.Theme
 {
     public interface HasBorder
     {
+        /// <summary>
+        /// Image border
+        /// </summary>
         Border Border
         {
             get;

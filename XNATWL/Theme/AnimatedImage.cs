@@ -33,22 +33,61 @@ using XNATWL.Renderer;
 
 namespace XNATWL.Theme
 {
+    /// <summary>
+    /// Representing an <see cref="Image"/> extended to use animation
+    /// </summary>
     public class AnimatedImage : Image, HasBorder
     {
+        /// <summary>
+        /// A single element of the <see cref="AnimatedImage"/>
+        /// </summary>
         public abstract class Element
         {
-            internal int _duration;
+            /// <summary>
+            /// Animation duration in seconds
+            /// </summary>
+            protected internal int _duration;
 
-            public abstract int GetWidth();
-            public abstract int GetHeight();
-            public abstract Img GetFirstImg();
+            /// <summary>
+            /// Width of the element
+            /// </summary>
+            public abstract int Width { get; }
+
+            /// <summary>
+            /// Height of the element
+            /// </summary>
+            public abstract int Height { get; }
+
+            /// <summary>
+            /// First image in animated set
+            /// </summary>
+            public abstract Img FirstImg { get; }
+
+            /// <summary>
+            /// Render the current element
+            /// </summary>
+            /// <param name="time">Animation time</param>
+            /// <param name="next">Next image in set</param>
+            /// <param name="x">X coordinate to render at</param>
+            /// <param name="y">Y coordinate to render at </param>
+            /// <param name="width">Width of animated image</param>
+            /// <param name="height">Height of animated image</param>
+            /// <param name="ai">Current <see cref="AnimatedImage"/> state</param>
+            /// <param name="animationState">Other related variables for animation</param>
             public abstract void Render(int time, Img next, int x, int y,
                     int width, int height, AnimatedImage ai, Renderer.AnimationState animationState);
         }
-
+        
+        /// <summary>
+        /// A single element of the <see cref="AnimatedImage"/> using <see cref="Image"/>
+        /// </summary>
         public class Img : Element
         {
+            /// <summary>
+            /// Image to draw with
+            /// </summary>
             public Image Image;
+
             float _r;
             float _g;
             float _b;
@@ -58,6 +97,17 @@ namespace XNATWL.Theme
             float _zoomCenterX;
             float _zoomCenterY;
 
+            /// <summary>
+            /// Single static element in animated set
+            /// </summary>
+            /// <param name="duration">Image duration</param>
+            /// <param name="image">parent Image object used by the renderer</param>
+            /// <param name="tintColor">recolour image using color</param>
+            /// <param name="zoomX">Zoom X</param>
+            /// <param name="zoomY">Zoom Y</param>
+            /// <param name="zoomCenterX">Zoom center X</param>
+            /// <param name="zoomCenterY">Zoom center Y</param>
+            /// <exception cref="ArgumentOutOfRangeException">Duration out of bounds (needs to be more than 0)</exception>
             public Img(int duration, Image image, Color tintColor, float zoomX, float zoomY, float zoomCenterX, float zoomCenterY)
             {
                 if (duration < 0)
@@ -77,20 +127,11 @@ namespace XNATWL.Theme
                 this._zoomCenterY = zoomCenterY;
             }
 
-            public override int GetWidth()
-            {
-                return Image.Width;
-            }
+            public override int Width => Image.Width;
 
-            public override int GetHeight()
-            {
-                return Image.Height;
-            }
+            public override int Height => Image.Height;
 
-            public override Img GetFirstImg()
-            {
-                return this;
-            }
+            public override Img FirstImg => this;
 
             public override void Render(int time, Img next, int x, int y, int width, int height, AnimatedImage ai, Renderer.AnimationState animationState)
             {
@@ -99,14 +140,14 @@ namespace XNATWL.Theme
                 if (next != null)
                 {
                     float t = time / (float)_duration;
-                    rr = blend(rr, next._r, t);
-                    gg = blend(gg, next._g, t);
-                    bb = blend(bb, next._b, t);
-                    aa = blend(aa, next._a, t);
-                    zx = blend(zx, next._zoomX, t);
-                    zy = blend(zy, next._zoomY, t);
-                    cx = blend(cx, next._zoomCenterX, t);
-                    cy = blend(cy, next._zoomCenterY, t);
+                    rr = Blend(rr, next._r, t);
+                    gg = Blend(gg, next._g, t);
+                    bb = Blend(bb, next._b, t);
+                    aa = Blend(aa, next._a, t);
+                    zx = Blend(zx, next._zoomX, t);
+                    zy = Blend(zy, next._zoomY, t);
+                    cx = Blend(cx, next._zoomCenterX, t);
+                    cy = Blend(cy, next._zoomCenterY, t);
                 }
                 ai._renderer.PushGlobalTintColor(rr * ai._r, gg * ai._g, bb * ai._b, aa * ai._a);
                 try
@@ -124,18 +165,34 @@ namespace XNATWL.Theme
                 }
             }
 
-            private static float blend(float a, float b, float t)
+            /// <summary>
+            /// Blend colour values
+            /// </summary>
+            /// <param name="a">component to blend</param>
+            /// <param name="b">next image's component</param>
+            /// <param name="t">animation completion per 0>t>1</param>
+            /// <returns>Blended color component</returns>
+            private static float Blend(float a, float b, float t)
             {
                 return a + (b - a) * t;
             }
         }
 
+        /// <summary>
+        /// A repeatedly drawn image element of the <see cref="AnimatedImage"/> using <see cref="Image"/>
+        /// </summary>
         public class Repeat : Element
         {
-            public Element[] _children;
-            public int _repeatCount;
-            public int _singleDuration;
+            protected internal Element[] _children;
+            protected internal int _repeatCount;
+            protected internal int _singleDuration;
 
+            /// <summary>
+            /// Repeated element in animated set
+            /// </summary>
+            /// <param name="children">Images to repeatedly draw</param>
+            /// <param name="repeatCount">duration/(repeated number of times) of each in the set</param>
+            /// <exception cref="Exception">Image not initialised correctly</exception>
             public Repeat(Element[] children, int repeatCount)
             {
                 this._children = children;
@@ -165,32 +222,33 @@ namespace XNATWL.Theme
                 }
             }
 
-            //@Override
-            public override int GetHeight()
+            public override int Height
             {
-                int tmp = 0;
-                foreach (Element e in _children)
+                get
                 {
-                    tmp = Math.Max(tmp, e.GetHeight());
+                    int tmp = 0;
+                    foreach (Element e in _children)
+                    {
+                        tmp = Math.Max(tmp, e.Height);
+                    }
+                    return tmp;
                 }
-                return tmp;
             }
 
-            //@Override
-            public override int GetWidth()
+            public override int Width
             {
-                int tmp = 0;
-                foreach (Element e in _children)
+                get
                 {
-                    tmp = Math.Max(tmp, e.GetWidth());
+                    int tmp = 0;
+                    foreach (Element e in _children)
+                    {
+                        tmp = Math.Max(tmp, e.Width);
+                    }
+                    return tmp;
                 }
-                return tmp;
             }
 
-            public override Img GetFirstImg()
-            {
-                return _children[0].GetFirstImg();
-            }
+            public override Img FirstImg => _children[0].FirstImg;
 
             public override void Render(int time, Img next, int x, int y, int width, int height, AnimatedImage ai, Renderer.AnimationState animationState)
             {
@@ -219,11 +277,11 @@ namespace XNATWL.Theme
                     {
                         if (i + 1 < _children.Length)
                         {
-                            next = _children[i + 1].GetFirstImg();
+                            next = _children[i + 1].FirstImg;
                         }
                         else if (_repeatCount == 0 || iteration + 1 < _repeatCount)
                         {
-                            next = GetFirstImg();
+                            next = FirstImg;
                         }
                         break;
                     }
@@ -260,8 +318,8 @@ namespace XNATWL.Theme
             this._g = tintColor.GreenF;
             this._b = tintColor.BlueF;
             this._a = tintColor.AlphaF;
-            this._width = root.GetWidth();
-            this._height = root.GetHeight();
+            this._width = root.Width;
+            this._height = root.Height;
             this._frozenTime = frozenTime;
         }
 
@@ -278,11 +336,6 @@ namespace XNATWL.Theme
             this._width = src._width;
             this._height = src._height;
             this._frozenTime = src._frozenTime;
-        }
-
-        public int GetWidth()
-        {
-            return _width;
         }
 
         public int Width
@@ -323,6 +376,9 @@ namespace XNATWL.Theme
             _root.Render(time, null, x, y, width, height, this, animationState);
         }
 
+        /// <summary>
+        /// Image border
+        /// </summary>
         public Border Border
         {
             get

@@ -32,11 +32,19 @@ using XNATWL.Renderer;
 
 namespace XNATWL.Theme
 {
+    /// <summary>
+    /// An <see cref="Image"/> represented by smaller images which are layered and drawn together
+    /// </summary>
     public class ComposedImage : Image, HasBorder
     {
         private Image[] _layers;
         private Border _border;
 
+        /// <summary>
+        /// Create an image given layers of other images and a border
+        /// </summary>
+        /// <param name="layers">A set of images</param>
+        /// <param name="border">Border inset</param>
         public ComposedImage(Image[] layers, Border border) : base()
         {
             this._layers = layers;
@@ -72,6 +80,9 @@ namespace XNATWL.Theme
             }
         }
 
+        /// <summary>
+        /// Image border
+        /// </summary>
         public Border Border
         {
             get

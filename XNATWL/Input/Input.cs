@@ -15,7 +15,7 @@ namespace XNATWL.Input
         /// Poll any input devices or APIs (mouse, keyboard, etc.)
         /// </summary>
         /// <param name="gui">TWL GUI to send input events</param>
-        /// <returns></returns>
+        /// <returns><strong>true</strong> if successful</returns>
         bool PollInput(GUI gui);
     }
 }

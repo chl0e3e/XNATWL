@@ -35,94 +35,134 @@ namespace XNATWL
 {
     public interface ParameterMap
     {
-        /**
-         * Returns the font with the given name.
-         * If no font with that name was found then the default font is returned.
-         *
-         * @param name The name of the font
-         * @return A font object
-         */
+        /// <summary>
+        /// Returns the <see cref="Font"/> with the given name. If no font with that name was found then the default font is returned.
+        /// </summary>
+        /// <param name="name">The name of the font</param>
+        /// <returns>A <see cref="Font"/> object</returns>
         Font GetFont(string name);
 
-        /**
-         * Returns the image with the given name.
-         * If no image with that name was found then null is returned.
-         *
-         * @param name The name of the image.
-         * @return A image object or null.
-         */
+        /// <summary>
+        /// Returns the <see cref="Image"/> with the given name. If no image with that name was found then null is returned.
+        /// </summary>
+        /// <param name="name">The name of the image.</param>
+        /// <returns>A <see cref="Image"/> object or null.</returns>
         Image GetImage(string name);
 
-        /**
-         * Returns the mouse cursor with the given name.
-         * If no mouse cursor with that name was found then null is returned.
-         *
-         * @param name The name of the mouse cursor.
-         * @return A mouse cursor object or null.
-         */
+        /// <summary>
+        /// Returns the <see cref="MouseCursor"/> with the given name. If no mouse cursor with that name was found then null is returned.
+        /// </summary>
+        /// <param name="name">The name of the mouse cursor.</param>
+        /// <returns>A <see cref="MouseCursor"/> object or null.</returns>
         MouseCursor GetMouseCursor(string name);
 
-        /**
-         * Returns a parameter map with the given name.
-         * If no parameter map with that name was found then an empty map is returned.
-         *
-         * @param name The name of the parameter map.
-         * @return A parameter map object.
-         */
+        /// <summary>
+        /// Returns a <see cref="ParameterMap"/> with the given name. If no parameter map with that name was found then an empty map is returned.
+        /// </summary>
+        /// <param name="name">The name of the parameter map.</param>
+        /// <returns>A <see cref="ParameterMap"/> object.</returns>
         ParameterMap GetParameterMap(string name);
 
-        /**
-         * Returns a parameter list with the given name.
-         * If no parameter map with that name was found then an empty list is returned.
-         *
-         * @param name The name of the parameter list.
-         * @return A parameter list object.
-         */
+        /// <summary>
+        /// Returns a <see cref="ParameterList"/> with the given name. If no parameter map with that name was found then an empty list is returned.
+        /// </summary>
+        /// <param name="name">The name of the parameter list.</param>
+        /// <returns>A <see cref="ParameterList"/> object.</returns>
         ParameterList GetParameterList(string name);
 
+        /// <summary>
+        /// Returns the <see cref="object"/> with the given name. If no object with that name was found then the <paramref name="defaultValue"/> is returned.
+        /// </summary>
+        /// <param name="name">The name of the object.</param>
+        /// <param name="defaultValue">Default value if name not found</param>
+        /// <returns>an <see cref="object"/></returns>
         object GetParameter(string name, object defaultValue);
 
+        /// <summary>
+        /// Returns the <see cref="bool"/> with the given name. If no boolean with that name was found then the <paramref name="defaultValue"/> is returned.
+        /// </summary>
+        /// <param name="name">The name of the object.</param>
+        /// <param name="defaultValue">Default value if name not found</param>
+        /// <returns>a <see cref="bool"/></returns>
         bool GetParameter(string name, bool defaultValue);
 
+        /// <summary>
+        /// Returns the <see cref="int"/> with the given name. If no integer with that name was found then the <paramref name="defaultValue"/> is returned.
+        /// </summary>
+        /// <param name="name">The name of the object.</param>
+        /// <param name="defaultValue">Default value if name not found</param>
+        /// <returns>a <see cref="int"/></returns>
         int GetParameter(string name, int defaultValue);
 
+        /// <summary>
+        /// Returns the <see cref="float"/> with the given name. If no float with that name was found then the <paramref name="defaultValue"/> is returned.
+        /// </summary>
+        /// <param name="name">The name of the object.</param>
+        /// <param name="defaultValue">Default value if name not found</param>
+        /// <returns>a <see cref="float"/></returns>
         float GetParameter(string name, float defaultValue);
 
+        /// <summary>
+        /// Returns the <see cref="string"/> with the given name. If no string with that name was found then the <paramref name="defaultValue"/> is returned.
+        /// </summary>
+        /// <param name="name">The name of the object.</param>
+        /// <param name="defaultValue">Default value if name not found</param>
+        /// <returns>a <see cref="string"/></returns>
         string GetParameter(string name, string defaultValue);
 
+        /// <summary>
+        /// Returns the <see cref="Color"/> with the given name. If no string with that name was found then the <paramref name="defaultValue"/> is returned.
+        /// </summary>
+        /// <param name="name">The name of the object.</param>
+        /// <param name="defaultValue">Default value if name not found</param>
+        /// <returns>a <see cref="Color"/></returns>
         Color GetParameter(string name, Color defaultValue);
 
+        /// <summary>
+        /// Returns the <see cref="Enum"/> with the given name. If no string with that name was found then the <paramref name="defaultValue"/> is returned.
+        /// </summary>
+        /// <typeparam name="E">Enum type</typeparam>
+        /// <param name="name">The name of the object.</param>
+        /// <param name="defaultValue">Default value if name not found</param>
+        /// <returns>a <see cref="Enum"/></returns>
         E GetParameter<E>(string name, E defaultValue) where E : struct, IConvertible;
 
-        /**
-         * Retrives a parameter.
-         * @param name the parameter name
-         * @param warnIfNotPresent if true and the parameter was not set then a warning is issued
-         * @return the parameter value
-         */
-        Object GetParameterValue(string name, bool warnIfNotPresent);
+        /// <summary>
+        /// Retrieves a parameter.
+        /// </summary>
+        /// <param name="name">the parameter name</param>
+        /// <param name="warnIfNotPresent">if true and the parameter was not set then a warning is issued</param>
+        /// <returns>the parameter value</returns>
+        object GetParameterValue(string name, bool warnIfNotPresent);
 
-        /**
-         * Retrieves a parameter and ensures that it has the desired type.
-         * @param <T> The desired return type generic
-         * @param name the parameter name
-         * @param warnIfNotPresent if true a warning is generated if the parameter was not found or has wrong type
-         * @param clazz the required data type
-         * @return the parameter value or null if the type does not match
-         */
+        /// <summary>
+        /// Retrieves a parameter and ensures that it has the desired type.
+        /// </summary>
+        /// <param name="name">the parameter name</param>
+        /// <param name="warnIfNotPresent">if true a warning is generated if the parameter was not found or has wrong type</param>
+        /// <param name="type">the required data type</param>
+        /// <returns>the parameter value or null if the type does not match</returns>
         object GetParameterValue(string name, bool warnIfNotPresent, Type type);
 
-        /**
-         * Retrieves a parameter and ensures that it has the desired type.
-         * @param <T> The desired return type generic
-         * @param name the parameter name
-         * @param warnIfNotPresent if true a warning is generated if the parameter was not found or has wrong type
-         * @param clazz the required data type
-         * @param defaultValue the default value
-         * @return the parameter value or the defaultValue if the type does not match
-         */
+        /// <summary>
+        /// Retrieves a parameter and ensures that it has the desired type.
+        /// </summary>
+        /// <typeparam name="T">The desired return type generic</typeparam>
+        /// <param name="name">the parameter name</param>
+        /// <param name="warnIfNotPresent">if true a warning is generated if the parameter was not found or has wrong type</param>
+        /// <param name="type">the required data type</param>
+        /// <param name="defaultValue">the default value</param>
+        /// <returns>the parameter value or the defaultValue if the type does not match</returns>
         T GetParameterValue<T>(string name, bool warnIfNotPresent, Type type, T defaultValue);
 
+        /// <summary>
+        /// Retrieves a parameter.
+        /// </summary>
+        /// <param name="name">the parameter name</param>
+        /// <param name="warnIfNotPresent">if true and the parameter was not set then a warning is issued</param>
+        /// <param name="type">the required data type</param>
+        /// <param name="defaultValue">the default value</param>
+        /// <returns>the parameter value or the defaultValue if the type does not match</returns>
         object GetParameterValue(string name, bool warnIfNotPresent, Type type, object defaultValue);
     }
 }

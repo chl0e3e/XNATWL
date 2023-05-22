@@ -33,6 +33,9 @@ using XNATWL.Renderer;
 
 namespace XNATWL.Theme
 {
+    /// <summary>
+    /// <see cref="Image"/>s in a <see cref="GridImage"/> container
+    /// </summary>
     public class GridImage : Image, HasBorder
     {
         private Image[] _images;
@@ -46,6 +49,15 @@ namespace XNATWL.Theme
         private int _weightSumX;
         private int _weightSumY;
 
+        /// <summary>
+        /// Create a new grid image given a number of images and weights corresponding to <paramref name="images"/> indexes
+        /// </summary>
+        /// <param name="images">Images to grid</param>
+        /// <param name="weightX">Grid X per image</param>
+        /// <param name="weightY">Grid Y per image</param>
+        /// <param name="border">Image border</param>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        /// <exception cref="Exception"></exception>
         public GridImage(Image[] images, int[] weightX, int[] weightY, Border border)
         {
             if (weightX.Length == 0 || weightY.Length == 0)
@@ -121,6 +133,11 @@ namespace XNATWL.Theme
             }
         }
 
+        /// <summary>
+        /// Duplicate another <see cref="GridImage"/> with a <paramref name="src"/> to copy weights and sizes from
+        /// </summary>
+        /// <param name="images">Images to grid</param>
+        /// <param name="src"><see cref="GridImage"/> to duplicate values from</param>
         private GridImage(Image[] images, GridImage src)
         {
             this._images = images;
@@ -193,6 +210,9 @@ namespace XNATWL.Theme
             }
         }
 
+        /// <summary>
+        /// Image border
+        /// </summary>
         public Border Border
         {
             get
@@ -211,6 +231,12 @@ namespace XNATWL.Theme
             return new GridImage(newImages, this);
         }
 
+        /// <summary>
+        /// Get image given a relevant grid X and Y
+        /// </summary>
+        /// <param name="x">X in grid image found by weight</param>
+        /// <param name="y">Y in grid image found by weight</param>
+        /// <returns>Image from grid</returns>
         private Image GetImage(int x, int y)
         {
             return _images[x + y * _weightX.Length];

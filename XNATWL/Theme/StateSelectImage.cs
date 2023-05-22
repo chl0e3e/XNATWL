@@ -33,34 +33,59 @@ using XNATWL.Utils;
 
 namespace XNATWL.Theme
 {
+    /// <summary>
+    /// An <see cref="Image"/> rendered from an array of <see cref="Images"/> and expressions evaluated by a <see cref="StateSelect"/>
+    /// </summary>
     public class StateSelectImage : Renderer.Image, HasBorder
     {
         private Border _border;
+        private Renderer.Image[] _images;
+        private StateSelect _select;
 
-        public Renderer.Image[] Images;
-        public StateSelect Select;
-
-        public StateSelectImage(StateSelect select, Border border, params Renderer.Image[] ximages)
+        /// <summary>
+        /// Construct a new container for a collection of <see cref="Image"/>s to render decided by given <see cref="StateSelect"/>
+        /// </summary>
+        /// <param name="select">Expressions/conditions</param>
+        /// <param name="border">Image <see cref="Border"/></param>
+        /// <param name="ximages">Image collection</param>
+        /// <exception cref="Exception"></exception>
+        public StateSelectImage(StateSelect select, Border border, params Renderer.Image[] images)
         {
-            if (!(ximages.Length >= select.Expressions()))
+            if (!(images.Length >= select.Expressions()))
             {
                 throw new Exception("Assert exception");
             }
-            if (!(ximages.Length <= select.Expressions() + 1))
+            if (!(images.Length <= select.Expressions() + 1))
             {
                 throw new Exception("Assert exception");
             }
 
-            this.Images = ximages;
-            this.Select = select;
+            this._images = images;
+            this._select = select;
             this._border = border;
+        }
+
+        public Renderer.Image[] Images
+        {
+            get
+            {
+                return _images;
+            }
+        }
+
+        public StateSelect Select
+        {
+            get
+            {
+                return _select;
+            }
         }
 
         public int Width
         {
             get
             {
-                return Images[0].Width;
+                return _images[0].Width;
             }
         }
 
@@ -68,7 +93,7 @@ namespace XNATWL.Theme
         {
             get
             {
-                return Images[0].Height;
+                return _images[0].Height;
             }
         }
 
@@ -79,10 +104,10 @@ namespace XNATWL.Theme
 
         public void Draw(Renderer.AnimationState animationState, int x, int y, int width, int height)
         {
-            int idx = Select.Evaluate(animationState);
-            if (idx < Images.Length)
+            int idx = _select.Evaluate(animationState);
+            if (idx < _images.Length)
             {
-                Images[idx].Draw(animationState, x, y, width, height);
+                _images[idx].Draw(animationState, x, y, width, height);
             }
         }
 
@@ -96,12 +121,12 @@ namespace XNATWL.Theme
 
         public Renderer.Image CreateTintedVersion(Color color)
         {
-            Renderer.Image[] newImages = new Renderer.Image[Images.Length];
+            Renderer.Image[] newImages = new Renderer.Image[_images.Length];
             for (int i = 0; i < newImages.Length; i++)
             {
-                newImages[i] = Images[i].CreateTintedVersion(color);
+                newImages[i] = _images[i].CreateTintedVersion(color);
             }
-            return new StateSelectImage(Select, Border, newImages);
+            return new StateSelectImage(_select, Border, newImages);
         }
 
     }

@@ -32,8 +32,16 @@ using System;
 
 namespace XNATWL
 {
+    /// <summary>
+    /// The theme info class contains all theme specific information for a given widget.
+    /// </summary>
     public interface ThemeInfo : ParameterMap
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="theme"></param>
+        /// <returns></returns>
         ThemeInfo GetChildTheme(String theme);
 
         String GetThemePath();

@@ -34,6 +34,9 @@ using XNATWL.Renderer;
 
 namespace XNATWL.Theme
 {
+    /// <summary>
+    /// <see cref="Image"/> wrapper that performs adjustments to another <see cref="Image"/>
+    /// </summary>
     internal class ImageAdjustments : Image, HasBorder
     {
         internal Renderer.Image _image;
@@ -44,6 +47,16 @@ namespace XNATWL.Theme
         bool _center;
         internal StateExpression _condition;
 
+        /// <summary>
+        /// Create a wrapper <see cref="Image"/> modifying the given to image to match the given adjustments
+        /// </summary>
+        /// <param name="image">Image to adjust</param>
+        /// <param name="border">Border for adjusted image</param>
+        /// <param name="inset">Inset for adjusted image</param>
+        /// <param name="sizeOverwriteH">Force width</param>
+        /// <param name="sizeOverwriteV">Force height</param>
+        /// <param name="center">Center the image in position</param>
+        /// <param name="condition">Condition for drawing the image passed an <see cref="AnimationState"/></param>
         public ImageAdjustments(Renderer.Image image, Border border, Border inset,
                 int sizeOverwriteH, int sizeOverwriteV,
                 bool center, StateExpression condition)
@@ -138,6 +151,10 @@ namespace XNATWL.Theme
                     _inset, _sizeOverwriteH, _sizeOverwriteV, _center, _condition);
         }
 
+        /// <summary>
+        /// Whether or not performed is regardless adjustments
+        /// </summary>
+        /// <returns></returns>
         public bool IsSimple()
         {
             // used for ImageManager.parseStateSelect

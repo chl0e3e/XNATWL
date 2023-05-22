@@ -30,17 +30,29 @@
 
 namespace XNATWL.Theme
 {
+    /// <summary>
+    /// Child theme implementation
+    /// </summary>
     public class ThemeChildImpl
     {
-        internal ThemeManager _manager;
-        internal ThemeInfoImpl _parent;
+        protected internal ThemeManager _manager;
+        protected internal ThemeInfoImpl _parent;
 
-        internal ThemeChildImpl(ThemeManager manager, ThemeInfoImpl parent)
+        /// <summary>
+        /// Construct a child theme
+        /// </summary>
+        /// <param name="manager">Parent theme manager</param>
+        /// <param name="parent">Parent theme info implementation</param>
+        protected internal ThemeChildImpl(ThemeManager manager, ThemeInfoImpl parent)
         {
             this._manager = manager;
             this._parent = parent;
         }
 
+        /// <summary>
+        /// Parent theme info path
+        /// </summary>
+        /// <returns></returns>
         protected string GetParentDescription()
         {
             if (_parent != null)

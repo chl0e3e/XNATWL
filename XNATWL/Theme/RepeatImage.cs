@@ -33,6 +33,9 @@ using XNATWL.Renderer;
 
 namespace XNATWL.Theme
 {
+    /// <summary>
+    /// Draw <see cref="Image"/> using tile repeating functions provided by <see cref="SupportsDrawRepeat"/> implementations
+    /// </summary>
     public class RepeatImage : Image, HasBorder, SupportsDrawRepeat
     {
         private Image _baseImage;
@@ -41,6 +44,14 @@ namespace XNATWL.Theme
         private bool _repeatY;
         private SupportsDrawRepeat _supportsDrawRepeat;
 
+        /// <summary>
+        /// Draw <paramref name="baseImage"/> repeatedly, using tiling
+        /// </summary>
+        /// <param name="baseImage">Image to repeat</param>
+        /// <param name="border">Image border</param>
+        /// <param name="repeatX">Repeat in X axis</param>
+        /// <param name="repeatY">Repeat in Y axis</param>
+        /// <exception cref="Exception">no axis to repeat in</exception>
         public RepeatImage(Image baseImage, Border border, bool repeatX, bool repeatY)
         {
             if (!repeatX && !repeatY)

@@ -33,77 +33,122 @@ using XNATWL.Renderer;
 
 namespace XNATWL
 {
+    /// <summary>
+    /// An interface representing a list of theme parameters
+    /// </summary>
     public interface ParameterList
     {
-        int GetSize();
+        /// <summary>
+        /// Size of the list
+        /// </summary>
+        int Size { get; }
 
-        /**
-         * Returns the font at the given list index.
-         * If no font with that name was found then the default font is returned.
-         *
-         * @param idx The index in the list
-         * @return A font object
-         */
+        /// <summary>
+        /// Returns the <see cref="Font"/> at the given list index. If no font with that name was found then the default font is returned.
+        /// </summary>
+        /// <param name="idx">The index in the list</param>
+        /// <returns>A font object</returns>
         Font GetFont(int idx);
 
-        /**
-         * Returns the image at the given list index.
-         * If no image with that name was found then null is returned.
-         *
-         * @param idx The index in the list
-         * @return A image object or null.
-         */
+        /// <summary>
+        /// Returns the <see cref="Image"/> at the given list index. If no image with that name was found then null is returned.
+        /// </summary>
+        /// <param name="idx">The index in the list</param>
+        /// <returns>A image object or null.</returns>
         Image GetImage(int idx);
 
-        /**
-         * Returns the mouse cursor at the given list index.
-         * If no mouse cursor with that name was found then null is returned.
-         *
-         * @param idx The index in the list
-         * @return A mouse cursor object or null.
-         */
+        /// <summary>
+        /// Returns the <see cref="MouseCursor"/> at the given list index. If no mouse cursor with that name was found then null is returned.
+        /// </summary>
+        /// <param name="idx">The index in the list</param>
+        /// <returns>A mouse cursor object or null.</returns>
         MouseCursor GetMouseCursor(int idx);
 
-        /**
-         * Returns a parameter map at the given list index.
-         * If no parameter map with that name was found then an empty map is returned.
-         *
-         * @param idx The index in the list
-         * @return A parameter map object.
-         */
+        /// <summary>
+        /// Returns a <see cref="ParameterMap"/> at the given list index. If no parameter map with that name was found then an empty map is returned.
+        /// </summary>
+        /// <param name="idx">The index in the list</param>
+        /// <returns>A parameter map object.</returns>
         ParameterMap GetParameterMap(int idx);
 
-        /**
-         * Returns a parameter list at the given list index.
-         * If no parameter map with that name was found then an empty list is returned.
-         *
-         * @param idx The index in the list
-         * @return A parameter list object.
-         */
+        /// <summary>
+        /// Returns a <see cref="ParameterList"/> at the given list index. If no parameter map with that name was found then an empty list is returned.
+        /// </summary>
+        /// <param name="idx">The index in the list</param>
+        /// <returns>A parameter list object.</returns>
         ParameterList GetParameterList(int idx);
 
+        /// <summary>
+        /// Returns a <see cref="bool"/> at the given list index. If no value with that index was found then <paramref name="defaultValue"/> is returned.
+        /// </summary>
+        /// <param name="idx">The index in the list</param>
+        /// <param name="defaultValue">Default value if index not found</param>
+        /// <returns>A <see cref="bool"/> value</returns>
         bool GetParameter(int idx, bool defaultValue);
 
+        /// <summary>
+        /// Returns an <see cref="int"/> at the given list index. If no value with that index was found then <paramref name="defaultValue"/> is returned.
+        /// </summary>
+        /// <param name="idx">The index in the list</param>
+        /// <param name="defaultValue">Default value if index not found</param>
+        /// <returns>An <see cref="int"/> value</returns>
         int GetParameter(int idx, int defaultValue);
 
+        /// <summary>
+        /// Returns a <see cref="float"/> at the given list index. If no value with that index was found then <paramref name="defaultValue"/> is returned.
+        /// </summary>
+        /// <param name="idx">The index in the list</param>
+        /// <param name="defaultValue">Default value if index not found</param>
+        /// <returns>A <see cref="float"/> value</returns>
         float GetParameter(int idx, float defaultValue);
 
+        /// <summary>
+        /// Returns a <see cref="string"/> at the given list index. If no value with that index was found then <paramref name="defaultValue"/> is returned.
+        /// </summary>
+        /// <param name="idx">The index in the list</param>
+        /// <param name="defaultValue">Default value if index not found</param>
+        /// <returns>A <see cref="string"/> value</returns>
         string GetParameter(int idx, string defaultValue);
 
+        /// <summary>
+        /// Returns a <see cref="Color"/> at the given list index. If no value with that index was found then <paramref name="defaultValue"/> is returned.
+        /// </summary>
+        /// <param name="idx">The index in the list</param>
+        /// <param name="defaultValue">Default value if index not found</param>
+        /// <returns>A <see cref="Color"/> value</returns>
         Color GetParameter(int idx, Color defaultValue);
 
+        /// <summary>
+        /// Returns an <see cref="Enum"/> at the given list index. If no value with that index was found then <paramref name="defaultValue"/> is returned.
+        /// </summary>
+        /// <typeparam name="E">Enum type</typeparam>
+        /// <param name="idx">The index in the list</param>
+        /// <param name="defaultValue">Default value if index not found</param>
+        /// <returns>A enum value</returns>
         E GetParameter<E>(int idx, E defaultValue) where E : struct, IConvertible;
 
-        /**
-         * Retrives a parameter.
-         * @param idx The index in the list
-         * @return the parameter value
-         */
-        Object GetParameterValue(int idx);
+        /// <summary>
+        /// Retrieves a parameter.
+        /// </summary>
+        /// <param name="idx">The index in the list</param>
+        /// <returns>the parameter value</returns>
+        object GetParameterValue(int idx);
 
+        /// <summary>
+        /// Retrieves a parameter as an object given a type.
+        /// </summary>
+        /// <param name="idx">The index in the list</param
+        /// <param name="type">The type of object</param>
+        /// <returns>the parameter value</returns>
         object GetParameterValue(int idx, Type type);
 
-        object GetParameterValue<T>(int idx, Type type);
+        /// <summary>
+        /// Retrieves a parameter as an object given a type.
+        /// </summary>
+        /// <param name="idx">The index in the list</param
+        /// <param name="type">The type of object</param>
+        /// <returns>the parameter value</returns>
+        T GetParameterValue<T>(int idx, Type type);
 
     }
 }

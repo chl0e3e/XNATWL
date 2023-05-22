@@ -34,19 +34,24 @@ using XNATWL.Renderer;
 
 namespace XNATWL.Theme
 {
+    /// <summary>
+    /// A class to manage a list of parameters
+    /// </summary>
     public class ParameterListImpl : ThemeChildImpl, ParameterList
     {
         internal List<object> _parameters;
 
+        /// <summary>
+        /// Initialise a <see cref="ParameterList"/> implementation
+        /// </summary>
+        /// <param name="manager">Parent theme manager</param>
+        /// <param name="parent">Parent theme info parameter map</param>
         public ParameterListImpl(ThemeManager manager, ThemeInfoImpl parent) : base(manager, parent)
         {
             this._parameters = new List<Object>();
         }
 
-        public int GetSize()
-        {
-            return _parameters.Count;
-        }
+        public int Size => _parameters.Count;
 
         public Font GetFont(int idx)
         {
@@ -157,11 +162,21 @@ namespace XNATWL.Theme
             return defaultValue;
         }
 
-        public Object GetParameterValue(int idx)
+        /// <summary>
+        /// Get parameter value as <see cref="object"/> given <paramref name="idx"/>
+        /// </summary>
+        /// <param name="idx">parameter index</param>
+        /// <returns><see cref="object"/> value</returns>
+        public object GetParameterValue(int idx)
         {
             return _parameters[idx];
         }
 
+        /// <summary>
+        /// Get parameter value as <see cref="object"/> given <paramref name="idx"/> testing the <paramref name="type"/>
+        /// </summary>
+        /// <param name="idx">parameter index</param>
+        /// <returns><see cref="object"/> value</returns>
         public object GetParameterValue(int idx, Type type)
         {
             object value = GetParameterValue(idx);
@@ -173,17 +188,28 @@ namespace XNATWL.Theme
             return value;
         }
 
-        public object GetParameterValue<T>(int idx, Type type)
+        /// <summary>
+        /// Get parameter value as <c>T</c> given <paramref name="idx"/> testing the <paramref name="type"/>
+        /// </summary>
+        /// <param name="idx">parameter index</param>
+        /// <returns><see cref="object"/> value</returns>
+        public T GetParameterValue<T>(int idx, Type type)
         {
             T value = (T) GetParameterValue(idx);
             if (value != null && !type.IsInstanceOfType(value))
             {
                 WrongParameterType(idx, type, value.GetType());
-                return null;
+                return default(T);
             }
             return value;
         }
 
+        /// <summary>
+        /// Fire the debug hook for a non-matching parameter type
+        /// </summary>
+        /// <param name="idx">parameter index</param>
+        /// <param name="expectedType">expected type</param>
+        /// <param name="foundType">found type</param>
         protected void WrongParameterType(int idx, Type expectedType, Type foundType)
         {
             DebugHook.getDebugHook().WrongParameterType(this, idx, expectedType, foundType, GetParentDescription());

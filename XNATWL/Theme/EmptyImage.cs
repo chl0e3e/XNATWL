@@ -32,11 +32,19 @@ using XNATWL.Renderer;
 
 namespace XNATWL.Theme
 {
+    /// <summary>
+    /// Blank <see cref="Image"/>
+    /// </summary>
     public class EmptyImage : Image
     {
         private int _width;
         private int _height;
 
+        /// <summary>
+        /// Construct a new blank image of given dimensions
+        /// </summary>
+        /// <param name="width">Width of blank image</param>
+        /// <param name="height">Height of blank image</param>
         public EmptyImage(int width, int height)
         {
             this._width = width;

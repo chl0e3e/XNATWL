@@ -34,12 +34,16 @@ using XNATWL.Utils;
 
 namespace XNATWL.Theme
 {
+    /// <summary>
+    /// Utility for parsing various values from theme XML
+    /// </summary>
     public class ParserUtil
     {
-        private ParserUtil()
-        {
-        }
-
+        /// <summary>
+        /// Check name is not empty, invalid or uses a wildcard selector illegally
+        /// </summary>
+        /// <param name="name">Parameter name</param>
+        /// <param name="xmlp"><see cref="XMLParser"/> to throw error on</param>
         public static void CheckNameNotEmpty(String name, XMLParser xmlp)
         {
             if (name == null)
@@ -64,9 +68,15 @@ namespace XNATWL.Theme
             }
         }
 
-        public static Border ParseBorderFromAttribute(XMLParser xmlp, String attribute)
+        /// <summary>
+        /// Parse <see cref="Border"/> from <see cref="XMLParser"/> with a look up using <paramref name="attribute"/> parameter
+        /// </summary>
+        /// <param name="xmlp"><see cref="XMLParser"/></param>
+        /// <param name="attribute">attribute name</param>
+        /// <returns><see cref="Border"/> object</returns>
+        public static Border ParseBorderFromAttribute(XMLParser xmlp, string attribute)
         {
-            String value = xmlp.GetAttributeValue(null, attribute);
+            string value = xmlp.GetAttributeValue(null, attribute);
             if (value == null)
             {
                 return null;
@@ -74,6 +84,12 @@ namespace XNATWL.Theme
             return ParseBorder(xmlp, value);
         }
 
+        /// <summary>
+        /// Parse <see cref="Border"/> from comma delimited int array
+        /// </summary>
+        /// <param name="xmlp"><see cref="XMLParser"/></param>
+        /// <param name="value">values as comma delimited int array</param>
+        /// <returns><see cref="Border"/> object</returns>
         public static Border ParseBorder(XMLParser xmlp, String value)
         {
             try
@@ -97,6 +113,14 @@ namespace XNATWL.Theme
             }
         }
 
+        /// <summary>
+        /// Parse XML attribute using <see cref="Color.Parse(string)"/>
+        /// </summary>
+        /// <param name="xmlp">XML parser</param>
+        /// <param name="attribute">Attribute to read from in XML</param>
+        /// <param name="constants">Constants dictionary to look up</param>
+        /// <param name="defaultColor">If colour not found, use this</param>
+        /// <returns><see cref="Color"/> object for drawing</returns>
         public static Color ParseColorFromAttribute(XMLParser xmlp, String attribute, ParameterMapImpl constants, Color defaultColor)
         {
             String value = xmlp.GetAttributeValue(null, attribute);
@@ -107,6 +131,13 @@ namespace XNATWL.Theme
             return ParseColor(xmlp, value, constants);
         }
 
+        /// <summary>
+        /// Parse colour string using <see cref="Color.Parse(string)"/>
+        /// </summary>
+        /// <param name="xmlp">XML parser</param>
+        /// <param name="value">colour string</param>
+        /// <param name="constants">named colour constants map</param>
+        /// <returns><see cref="Color"/> object for drawing</returns>
         public static Color ParseColor(XMLParser xmlp, String value, ParameterMapImpl constants)
         {
             try
@@ -128,6 +159,11 @@ namespace XNATWL.Theme
             }
         }
 
+        /// <summary>
+        /// Append dot to the string if it doesn't end with one
+        /// </summary>
+        /// <param name="name">parameter name</param>
+        /// <returns>string suffixed with dot</returns>
         public static String AppendDot(String name)
         {
             int len = name.Length;
@@ -137,7 +173,13 @@ namespace XNATWL.Theme
             }
             return name;
         }
-
+        
+        /// <summary>
+        /// Parse int array from an XML attribute using <see cref="XMLParser"/>
+        /// </summary>
+        /// <param name="xmlp">XML parser</param>
+        /// <param name="attribute">attribute name</param>
+        /// <returns>int array</returns>
         public static int[] ParseIntArrayFromAttribute(XMLParser xmlp, String attribute)
         {
             try
@@ -151,6 +193,14 @@ namespace XNATWL.Theme
             }
         }
 
+        /// <summary>
+        /// Parse int expression from an attribute pointed to by <see cref="XMLParser"/>
+        /// </summary>
+        /// <param name="xmlp">XML parser</param>
+        /// <param name="attribute">attribute name</param>
+        /// <param name="defaultValue">The default value returned when attribute value could not be found</param>
+        /// <param name="interpreter">Math interpreter</param>
+        /// <returns>integer</returns>
         public static int ParseIntExpressionFromAttribute(XMLParser xmlp, String attribute, int defaultValue, AbstractMathInterpreter interpreter)
         {
             try
@@ -183,6 +233,13 @@ namespace XNATWL.Theme
             }
         }
 
+        /// <summary>
+        /// Searches a sorted dictionary for <paramref name="baseName"/>
+        /// </summary>
+        /// <typeparam name="V">dictionary's value object type</typeparam>
+        /// <param name="map">sorted dictionary to search</param>
+        /// <param name="baseName">prefix to match</param>
+        /// <returns>Matching entries</returns>
         public static SortedDictionary<String, V> Find<V>(SortedDictionary<String, V> map, String baseName)
         {
             SortedDictionary<string, V> subMap = new SortedDictionary<string, V>();
@@ -198,6 +255,16 @@ namespace XNATWL.Theme
             return subMap;
         }
 
+        /// <summary>
+        /// Resolving a sub-dictionary given a parameter name's prefix and what to map null objects to
+        /// </summary>
+        /// <typeparam name="V">dictionary's value object type</typeparam>
+        /// <param name="map">sorted dictionary to search</param>
+        /// <param name="reference">prefix to match</param>
+        /// <param name="name">name to match</param>
+        /// <param name="mapToNull">null object value</param>
+        /// <returns>resolved dictionary</returns>
+        /// <exception cref="Exception">reference does not match expected <see cref="Find{V}(SortedDictionary{string, V}, string)"/> output</exception>
         public static Dictionary<String, V> Resolve<V>(SortedDictionary<String, V> map, String reference, String name, V mapToNull)
         {
             name = ParserUtil.AppendDot(name);
@@ -229,6 +296,11 @@ namespace XNATWL.Theme
             return result;
         }
 
+        /// <summary>
+        /// Parse <see cref="StateExpression"/> from XML parser
+        /// </summary>
+        /// <param name="xmlp">XML parser</param>
+        /// <returns>conditions</returns>
         public static StateExpression ParseCondition(XMLParser xmlp)
         {
             String expression = xmlp.GetAttributeValue(null, "if");

@@ -37,25 +37,33 @@ using XNATWL.Utils;
 
 namespace XNATWL.Theme
 {
+    /// <summary>
+    /// Used for managing <see cref="Image"/> objects by a reference
+    /// </summary>
     public class ImageManager
     {
         ParameterMapImpl _constants;
         private Renderer.Renderer _renderer;
-        private SortedDictionary<String, Image> _images;
-        private SortedDictionary<String, MouseCursor> _cursors;
+        private SortedDictionary<string, Image> _images;
+        private SortedDictionary<string, MouseCursor> _cursors;
         private MathInterpreter _mathInterpreter;
 
         private Texture _currentTexture;
 
-        internal static EmptyImage NONE = new EmptyImage(0, 0);
+        protected internal static EmptyImage NONE = new EmptyImage(0, 0);
         private static MouseCursor INHERIT_CURSOR = InheritedMouseCursor.INHERITED_DEFAULT;// new MouseCursor() { };
 
+        /// <summary>
+        /// Create a new <see cref="ImageManager"/> given constants and the target renderer
+        /// </summary>
+        /// <param name="constants">Parameter map for constants</param>
+        /// <param name="renderer">Target renderer</param>
         public ImageManager(ParameterMapImpl constants, Renderer.Renderer renderer)
         {
             this._constants = constants;
             this._renderer = renderer;
-            this._images = new SortedDictionary<String, Image>();
-            this._cursors = new SortedDictionary<String, MouseCursor>();
+            this._images = new SortedDictionary<string, Image>();
+            this._cursors = new SortedDictionary<string, MouseCursor>();
             this._mathInterpreter = new MathInterpreter(this);
 
             _images.Add("none", NONE);
@@ -63,22 +71,41 @@ namespace XNATWL.Theme
             _cursors.Add("inherit", INHERIT_CURSOR);
         }
 
-        public Image GetImage(String name)
+        /// <summary>
+        /// Retrieve an <see cref="Image"/> given a name
+        /// </summary>
+        /// <param name="name"><see cref="Image"/> name</param>
+        /// <returns>the <see cref="Image"/></returns>
+        public Image this[string name]
         {
-            if (!_images.ContainsKey(name))
+            get
             {
-                return null;
+                if (!_images.ContainsKey(name))
+                {
+                    return null;
+                }
+                return _images[name];
             }
-            return _images[name];
         }
 
+        /// <summary>
+        /// Get a referenced image from the attribute in the current state of the <see cref="XMLParser"/>
+        /// </summary>
+        /// <param name="xmlp">Theme XML parser</param>
+        /// <returns><see cref="Image"/> referenced</returns>
         public Image GetReferencedImage(XMLParser xmlp)
         {
-            String reference = xmlp.GetAttributeNotNull("ref");
+            string reference = xmlp.GetAttributeNotNull("ref");
             return GetReferencedImage(xmlp, reference);
         }
 
-        public Image GetReferencedImage(XMLParser xmlp, String reference)
+        /// <summary>
+        /// Get a referenced <see cref="Image"/> from a reference, failing using the <see cref="XMLParser"/>
+        /// </summary>
+        /// <param name="xmlp">Theme XML parser</param>
+        /// <param name="reference">Image reference</param>
+        /// <returns>the <see cref="Image"/></returns>
+        public Image GetReferencedImage(XMLParser xmlp, string reference)
         {
             if (reference.EndsWith(".*"))
             {
@@ -92,7 +119,13 @@ namespace XNATWL.Theme
             return img;
         }
 
-        public MouseCursor GetReferencedCursor(XMLParser xmlp, String reference)
+        /// <summary>
+        /// Get a referenced <see cref="MouseCursor"/> from a given reference, failing using the <see cref="XMLParser"/>. Defaults to null if the cursor is inherited
+        /// </summary>
+        /// <param name="xmlp">Theme XML parser</param>
+        /// <param name="reference">Cursor reference</param>
+        /// <returns><see cref="MouseCursor"/ matching reference></returns>
+        public MouseCursor GetReferencedCursor(XMLParser xmlp, string reference)
         {
             MouseCursor cursor = _cursors[reference];
             if (cursor == null)
@@ -102,21 +135,44 @@ namespace XNATWL.Theme
             return UnwrapCursor(cursor);
         }
 
-        public Dictionary<String, Image> GetImages(String reference, String name)
+        /// <summary>
+        /// Get <see cref="Image"/>s with matching key 'name + reference'
+        /// </summary>
+        /// <param name="reference">Reference</param>
+        /// <param name="name">Identifier</param>
+        /// <returns>Matching <see cref="Image"/> dictionary</returns>
+        public Dictionary<string, Image> GetImages(string reference, string name)
         {
             return ParserUtil.Resolve(_images, reference, name, null);
         }
 
-        public MouseCursor GetCursor(String name)
+        /// <summary>
+        /// Get cursor by name
+        /// </summary>
+        /// <param name="name">Name of cursor</param>
+        /// <returns><see cref="MouseCursor"/></returns>
+        public MouseCursor GetCursor(string name)
         {
             return UnwrapCursor(_cursors[name]);
         }
 
-        public Dictionary<String, MouseCursor> GetCursors(String reference, String name)
+        /// <summary>
+        /// Get <see cref="MouseCursor"/>s with matching key 'name + reference'
+        /// </summary>
+        /// <param name="reference">Reference</param>
+        /// <param name="name">Identifier</param>
+        /// <returns>Matching <see cref="MouseCursor"/> dictionary</returns>
+        public Dictionary<string, MouseCursor> GetCursors(string reference, string name)
         {
             return ParserUtil.Resolve(_cursors, reference, name, INHERIT_CURSOR);
         }
 
+        /// <summary>
+        /// Parse images from an <see cref="XMLParser"/> pointing at an image tag, finding assets in <paramref name="baseFolder"/>
+        /// </summary>
+        /// <param name="xmlp">XML parser</param>
+        /// <param name="baseFolder">base folder containing images</param>
+        /// <exception cref="NullReferenceException">Failed to find image referenced</exception>
         public void ParseImages(XMLParser xmlp, FileSystemObject baseFolder)
         {
             xmlp.Require(XmlPullParser.START_TAG, null, null);
@@ -184,11 +240,21 @@ namespace XNATWL.Theme
             }
         }
 
+        /// <summary>
+        /// Inherited cursors return null, otherwise, returns the <see cref="MouseCursor"/> object given
+        /// </summary>
+        /// <param name="cursor">Cursor to check</param>
+        /// <returns><see cref="MouseCursor"/> that is not the inherited placeholder</returns>
         private MouseCursor UnwrapCursor(MouseCursor cursor)
         {
             return (cursor == INHERIT_CURSOR) ? null : cursor;
         }
 
+        /// <summary>
+        /// Throw if the <see cref="Image"/> name is empty or not defined
+        /// </summary>
+        /// <param name="name">Image name</param>
+        /// <param name="xmlp">XML parser</param>
         private void CheckImageName(String name, XMLParser xmlp)
         {
             ParserUtil.CheckNameNotEmpty(name, xmlp);
@@ -198,6 +264,12 @@ namespace XNATWL.Theme
             }
         }
 
+        /// <summary>
+        /// Get <see cref="Border"/> of specified <see cref="Image"/>
+        /// </summary>
+        /// <param name="image"><see cref="Image"/> to get <see cref="Border"/> from</param>
+        /// <param name="border"><see cref="Border"/> returned if not null</param>
+        /// <returns><see cref="Image"/> <see cref="Border"/></returns>
         private static Border GetBorder(Image image, Border border)
         {
             if (border == null && (image is HasBorder))
@@ -207,6 +279,11 @@ namespace XNATWL.Theme
             return border;
         }
 
+        /// <summary>
+        /// Parse <see cref="MouseCursor"/> from XML parser
+        /// </summary>
+        /// <param name="xmlp">XML parser</param>
+        /// <param name="name"><see cref="MouseCursor"/> name</param>
         private void ParseCursor(XMLParser xmlp, String name)
         {
             String reference = xmlp.GetAttributeValue(null, "ref");
@@ -242,6 +319,12 @@ namespace XNATWL.Theme
             xmlp.NextTag();
         }
 
+        /// <summary>
+        /// Parse an <see cref="Image"/> and <see cref="StateExpression"/> from the <see cref="XMLParser"/>
+        /// </summary>
+        /// <param name="xmlp"><see cref="XMLParser"/></param>
+        /// <param name="tagName">Image type denoted by an XML tag</param>
+        /// <returns>Parsed drawable <see cref="Image"/></returns>
         private Image ParseImage(XMLParser xmlp, String tagName)
         {
             ImageParams parameters = new ImageParams();
@@ -249,6 +332,13 @@ namespace XNATWL.Theme
             return ParseImageNoCond(xmlp, tagName, parameters);
         }
 
+        /// <summary>
+        /// Parse an <see cref="Image"/> without any condition from the <see cref="XMLParser"/>
+        /// </summary>
+        /// <param name="xmlp"><see cref="XMLParser"/></param>
+        /// <param name="tagName">Image type denoted by an XML tag</param>
+        /// <param name="parameters">Standard image attributes to adjust and render with</param>
+        /// <returns>Parsed drawable <see cref="Image"/></returns>
         private Image ParseImageNoCond(XMLParser xmlp, String tagName, ImageParams parameters)
         {
             ParseStdAttributes(xmlp, parameters);
@@ -256,6 +346,12 @@ namespace XNATWL.Theme
             return AdjustImage(image, parameters);
         }
 
+        /// <summary>
+        /// Adjust an <see cref="Image"/> according to the <see cref="ImageParams"/>, returning a wrapper <see cref="Image"/> to be used in place
+        /// </summary>
+        /// <param name="image">Image to wrap</param>
+        /// <param name="parameters">Standard image attributes to adjust and render with</param>
+        /// <returns>Parsed drawable <see cref="Image"/> with adjustments</returns>
         private Image AdjustImage(Image image, ImageParams parameters)
         {
             Border border = GetBorder(image, parameters.Border);
@@ -279,6 +375,13 @@ namespace XNATWL.Theme
             return image;
         }
 
+        /// <summary>
+        /// Parse an <see cref="Image"/> given the element currently being parsed by <see cref="XMLParser"/> and acquired <see cref="ImageParams"/>
+        /// </summary>
+        /// <param name="xmlp"><see cref="XMLParser"/></param>
+        /// <param name="tagName">Image type denoted by an XML tag</param>
+        /// <param name="parameters">Standard image attributes to adjust and render with</param>
+        /// <returns>Parsed drawable <see cref="Image"/></returns>
         private Image ParseImageDelegate(XMLParser xmlp, String tagName, ImageParams parameters)
         {
             if ("area".Equals(tagName))
@@ -315,6 +418,12 @@ namespace XNATWL.Theme
             }
         }
 
+        /// <summary>
+        /// Parse a <see cref="ComposedImage"/> using <see cref="XMLParser"/> which is constructed by layering multiple instances of <see cref="Image"/>
+        /// </summary>
+        /// <param name="xmlp"><see cref="XMLParser"/></param>
+        /// <param name="parameters">Standard image attributes to adjust and render with</param>
+        /// <returns>Parsed drawable <see cref="Image"/></returns>
         private Image ParseComposed(XMLParser xmlp, ImageParams parameters)
         {
             List<Image> layers = new List<Image>();
@@ -342,6 +451,12 @@ namespace XNATWL.Theme
             }
         }
 
+        /// <summary>
+        /// Parse <see cref="Image"/>s with conditions from <see cref="StateSelect"/> using an <see cref="XMLParser"/>
+        /// </summary>
+        /// <param name="xmlp">XML parser</param>
+        /// <param name="parameters">Standard image attributes to adjust and render with</param>
+        /// <returns>Parsed drawable <see cref="Image"/></returns>
         private Image ParseStateSelect(XMLParser xmlp, ImageParams parameters)
         {
             List<Image> stateImages = new List<Image>();
@@ -400,6 +515,13 @@ namespace XNATWL.Theme
             return image;
         }
 
+        /// <summary>
+        /// Apply parent expressions to another included <see cref="StateSelectImage"/>
+        /// </summary>
+        /// <param name="src"><see cref="StateSelectImage"/> with items to compare</param>
+        /// <param name="cond">Common <see cref="StateExpression"/></param>
+        /// <param name="stateImages">Output here list of working <see cref="Image"/>s</param>
+        /// <param name="conditions">Output here list of working conditions</param>
         private static void InlineSelect(StateSelectImage src, StateExpression cond, List<Image> stateImages, List<StateExpression> conditions)
         {
             int n = src.Images.Length;
@@ -424,6 +546,12 @@ namespace XNATWL.Theme
             }
         }
 
+        /// <summary>
+        /// Logic AND - Test 2 <see cref="StateExpression"/>s evaluate true together
+        /// </summary>
+        /// <param name="imgCond">Left operand</param>
+        /// <param name="cond">Right operand</param>
+        /// <returns>Logic object used for comparing both, or if one operand is null, the other operand that isn't null</returns>
         private static StateExpression And(StateExpression imgCond, StateExpression cond)
         {
             if (imgCond == null)
@@ -437,6 +565,12 @@ namespace XNATWL.Theme
             return imgCond;
         }
 
+        /// <summary>
+        /// Parse an <see cref="Image"/> defined by an area in an image file
+        /// </summary>
+        /// <param name="xmlp">XML parser</param>
+        /// <param name="parameters">Standard image attributes to adjust and render with</param>
+        /// <returns>Parsed drawable <see cref="Image"/></returns>
         private Image ParseArea(XMLParser xmlp, ImageParams parameters)
         {
             ParseRectFromAttribute(xmlp, parameters);
@@ -539,6 +673,11 @@ namespace XNATWL.Theme
             return image;
         }
 
+        /// <summary>
+        /// Parse an alias pointing to an already defined image
+        /// </summary>
+        /// <param name="xmlp">XML parser</param>
+        /// <returns>Parsed drawable <see cref="Image"/></returns>
         private Image ParseAlias(XMLParser xmlp)
         {
             Image image = GetReferencedImage(xmlp);
@@ -546,6 +685,13 @@ namespace XNATWL.Theme
             return image;
         }
 
+        /// <summary>
+        /// Parsed a comma delimited string which contains directions and pixel lengths for <c>area</c> tags, specifying where/how to split the image
+        /// </summary>
+        /// <param name="xmlp">XML parser</param>
+        /// <param name="attribName">XML attribute name</param>
+        /// <param name="size">Maximum output parameter</param>
+        /// <returns>Area split arguments</returns>
         private static int[] ParseSplit2(XMLParser xmlp, String attribName, int size)
         {
             String splitStr = xmlp.GetAttributeValue(null, attribName);
@@ -630,6 +776,11 @@ namespace XNATWL.Theme
             }
         }
 
+        /// <summary>
+        /// Parse a number of sub-<see cref="Image"/>s into the <paramref name="textures"/> array
+        /// </summary>
+        /// <param name="xmlp">XML parser</param>
+        /// <param name="textures">Array to store sub=images</param>
         private void ParseSubImages(XMLParser xmlp, Image[] textures)
         {
             int idx = 0;
@@ -650,6 +801,12 @@ namespace XNATWL.Theme
             }
         }
 
+        /// <summary>
+        /// Parse a <see cref="GridImage"/>
+        /// </summary>
+        /// <param name="xmlp">XML parser</param>
+        /// <param name="parameters">Standard image attributes to adjust and render with</param>
+        /// <returns>Parsed drawable <see cref="Image"/></returns>
         private Image ParseGrid(XMLParser xmlp, ImageParams parameters)
         {
             try
@@ -671,6 +828,12 @@ namespace XNATWL.Theme
         private static int[] SPLIT_WEIGHTS_3 = { 0, 1, 0 };
         private static int[] SPLIT_WEIGHTS_1 = { 1 };
 
+        /// <summary>
+        /// Parse <see cref="AnimatedImage"/> attributes
+        /// </summary>
+        /// <param name="xmlp">XML parser</param>
+        /// <param name="tagName">Tag of animation attribute</param>
+        /// <param name="frames">Accumulated list of frames for the <see cref="AnimatedImage"/></param>
         private void ParseAnimElements(XMLParser xmlp, String tagName, List<AnimatedImage.Element> frames)
         {
             if ("repeat".Equals(tagName))
@@ -691,6 +854,12 @@ namespace XNATWL.Theme
             }
         }
 
+        /// <summary>
+        /// Parse single animation frame for <see cref="AnimatedImage"/>
+        /// </summary>
+        /// <param name="xmlp">XML parser</param>
+        /// <returns>object local to <see cref="AnimatedImage"/></returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         private AnimatedImage.Img ParseAnimFrame(XMLParser xmlp)
         {
             int duration = xmlp.ParseIntFromAttribute("duration");
@@ -706,6 +875,11 @@ namespace XNATWL.Theme
             return img;
         }
 
+        /// <summary>
+        /// Parse animation parameters
+        /// </summary>
+        /// <param name="xmlp">XML parser</param>
+        /// <returns><see cref="AnimParams"/></returns>
         private AnimParams ParseAnimParams(XMLParser xmlp)
         {
             AnimParams parameters = new AnimParams();
@@ -718,6 +892,12 @@ namespace XNATWL.Theme
             return parameters;
         }
 
+        /// <summary>
+        /// Parse a number of frames for an <see cref="AnimatedImage"/> specific to the internals of the image.
+        /// </summary>
+        /// <param name="xmlp">XML parser</param>
+        /// <param name="frames">Resultant <see cref="AnimatedImage.Element"/> element list</param>
+        /// <exception cref="ArgumentOutOfRangeException">Parsed illegal parameters</exception>
         private void ParseAnimFrames(XMLParser xmlp, List<AnimatedImage.Element> frames)
         {
             ImageParams parameters = new ImageParams();
@@ -753,6 +933,12 @@ namespace XNATWL.Theme
             xmlp.NextTag();
         }
 
+        /// <summary>
+        /// Parse an <see cref="AnimatedImage.Element"/> specific to repeated frames
+        /// </summary>
+        /// <param name="xmlp">XML parser</param>
+        /// <returns><see cref="AnimatedImage.Repeat"/></returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         private AnimatedImage.Repeat ParseAnimRepeat(XMLParser xmlp)
         {
             String strRepeatCount = xmlp.GetAttributeValue(null, "count");
@@ -788,6 +974,11 @@ namespace XNATWL.Theme
             return new AnimatedImage.Repeat(children.ToArray(), repeatCount);
         }
 
+        /// <summary>
+        /// Get an animated element's border
+        /// </summary>
+        /// <param name="e"><see cref="AnimatedImage"/> element</param>
+        /// <returns><see cref="Border"/></returns>
         private Border GetBorder(AnimatedImage.Element e)
         {
             if (e is AnimatedImage.Repeat)
@@ -813,6 +1004,12 @@ namespace XNATWL.Theme
             return null;
         }
 
+        /// <summary>
+        /// Parse animation from <see cref="XMLParser"/>
+        /// </summary>
+        /// <param name="xmlp">XML parser</param>
+        /// <param name="parameters">Standard image attributes to adjust and render with</param>
+        /// <returns>Parsed drawable <see cref="Image"/></returns>
         private Image ParseAnimation(XMLParser xmlp, ImageParams parameters)
         {
             try
@@ -835,6 +1032,12 @@ namespace XNATWL.Theme
             }
         }
 
+        /// <summary>
+        /// Parse gradient image from <see cref="XMLParser"/>
+        /// </summary>
+        /// <param name="xmlp">XML parser</param>
+        /// <param name="parameters">Standard image attributes to adjust and render with</param>
+        /// <returns>Parsed drawable <see cref="Image"/></returns>
         private Image ParseGradient(XMLParser xmlp, ImageParams parameters)
         {
             try
@@ -865,6 +1068,18 @@ namespace XNATWL.Theme
             }
         }
 
+        /// <summary>
+        /// Create an <see cref="Image"/> from a given texture, using the parameters specified
+        /// </summary>
+        /// <param name="xmlp">XML parser</param>
+        /// <param name="x">X coordinate in texture</param>
+        /// <param name="y">Y coordinate in texture</param>
+        /// <param name="w">Width of sprite in texture</param>
+        /// <param name="h">Height of sprite in texture</param>
+        /// <param name="tintColor">Adjust image with a tint</param>
+        /// <param name="tiled">Is the image tiled repeatedly</param>
+        /// <param name="rotation">Rotate the resultant image</param>
+        /// <returns><see cref="Image"/> from given parameters</returns>
         private Image CreateImage(XMLParser xmlp, int x, int y, int w, int h, Color tintColor, bool tiled, TextureRotation rotation)
         {
             if (w == 0 || h == 0)
@@ -892,6 +1107,11 @@ namespace XNATWL.Theme
             return texture.GetImage(x, y, w, h, tintColor, tiled, rotation);
         }
 
+        /// <summary>
+        /// Parse 'xywh' from given <see cref="XMLParser"/> storing it in the <see cref="ImageParams"/>
+        /// </summary>
+        /// <param name="xmlp">XML parser</param>
+        /// <param name="parameters">Standard image attributes to adjust and render with</param>
         private void ParseRectFromAttribute(XMLParser xmlp, ImageParams parameters)
         {
             if (_currentTexture == null)
@@ -924,6 +1144,11 @@ namespace XNATWL.Theme
                 }
         }
 
+        /// <summary>
+        /// Parse an image rotation from 'rot' in the <see cref="XMLParser"/> storing it in the <see cref="ImageParams"/>
+        /// </summary>
+        /// <param name="xmlp">XML parser</param>
+        /// <param name="parameters">Standard image attributes to adjust and render with</param>
         private void ParseRotationFromAttribute(XMLParser xmlp, ImageParams parameters)
         {
             if (_currentTexture == null)
@@ -942,6 +1167,11 @@ namespace XNATWL.Theme
             }
         }
 
+        /// <summary>
+        /// Parse standard image attributes into <see cref="ImageParams"/>
+        /// </summary>
+        /// <param name="xmlp">XML parser</param>
+        /// <param name="parameters">Standard image attributes to adjust and render with</param>
         private void ParseStdAttributes(XMLParser xmlp, ImageParams parameters)
         {
             parameters.TintColor = ParserUtil.ParseColorFromAttribute(xmlp, "tint", _constants, null);
@@ -954,6 +1184,9 @@ namespace XNATWL.Theme
             parameters.Center = xmlp.ParseBoolFromAttribute("center", false);
         }
 
+        /// <summary>
+        /// Manage adjustments or locations of a parsed image
+        /// </summary>
         public class ImageParams
         {
             public int X, Y, W, H;
@@ -969,6 +1202,9 @@ namespace XNATWL.Theme
             public TextureRotation Rot;
         }
 
+        /// <summary>
+        /// Manage variables of a specified animation
+        /// </summary>
         public class AnimParams
         {
             public Color TintColor;
@@ -978,24 +1214,31 @@ namespace XNATWL.Theme
             public float ZoomCenterY;
         }
 
+        /// <summary>
+        /// An implementation of <see cref="AbstractMathInterpreter"/> which can access images, constants or parameter fields and place them on the stack
+        /// </summary>
         public class MathInterpreter : AbstractMathInterpreter
         {
-            public ImageManager ImageManager;
+            private ImageManager _imageManager;
 
+            /// <summary>
+            /// Initialise the math interpreter that can look up using a <see cref="ImageManager"/>
+            /// </summary>
+            /// <param name="imageManager"><see cref="ImageManager"/> where to access variables</param>
             public MathInterpreter(ImageManager imageManager)
             {
-                this.ImageManager = imageManager;
+                this._imageManager = imageManager;
             }
 
             public override void AccessVariable(String name)
             {
-                Image img = this.ImageManager.GetImage(name);
+                Image img = this._imageManager[name];
                 if (img != null)
                 {
                     Push(img);
                     return;
                 }
-                Object obj = this.ImageManager._constants.GetParam(name);
+                Object obj = this._imageManager._constants[name];
                 if (obj != null)
                 {
                     Push(obj);
@@ -1004,12 +1247,11 @@ namespace XNATWL.Theme
                 throw new ArgumentOutOfRangeException("variable not found: " + name);
             }
 
-            //@Override
             protected override Object AccessField(Object obj, String field)
             {
                 if (obj is ParameterMapImpl)
                 {
-                    Object result = ((ParameterMapImpl)obj).GetParam(field);
+                    Object result = ((ParameterMapImpl)obj)[field];
                     if (result == null)
                     {
                         throw new ArgumentNullException("field not found: " + field);

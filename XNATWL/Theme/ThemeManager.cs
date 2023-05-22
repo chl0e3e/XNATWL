@@ -269,12 +269,12 @@ namespace XNATWL.Theme
 
         public Image GetImageNoWarning(string name)
         {
-            return _imageManager.GetImage(name);
+            return _imageManager[name];
         }
 
         public Image GetImage(string name)
         {
-            Image img = _imageManager.GetImage(name);
+            Image img = _imageManager[name];
             if (img == null)
             {
                 DebugHook.getDebugHook().MissingImage(name);
@@ -442,7 +442,7 @@ namespace XNATWL.Theme
                 {
                     throw xmlp.Error("Can't merge on top level");
                 }
-                Object o = parent.GetParam(name);
+                Object o = parent[name];
                 if (o is InputMap)
                 {
                     baseMap = (InputMap)o;
@@ -795,7 +795,7 @@ namespace XNATWL.Theme
                 {
                     throw xmlp.Error("Can't merge on top level");
                 }
-                Object obj = parent.GetParam(name);
+                Object obj = parent[name];
                 if (obj is ParameterMapImpl)
                 {
                     ParameterMapImpl baseMap = (ParameterMapImpl)obj;
@@ -809,10 +809,10 @@ namespace XNATWL.Theme
             string reference = xmlp.GetAttributeValue(null, "ref");
             if (reference != null)
             {
-                Object obj = parent.GetParam(reference);
+                Object obj = parent[reference];
                 if (obj == null)
                 {
-                    obj = _constants.GetParam(reference);
+                    obj = _constants[reference];
                     if (obj == null)
                     {
                         throw new IOException("Referenced map not found: " + reference);
@@ -918,7 +918,7 @@ namespace XNATWL.Theme
                 }
                 if ("constant".Equals(tagName))
                 {
-                    Object result = _constants.GetParam(value);
+                    Object result = _constants[value];
                     if (result == null)
                     {
                         throw xmlp.Error("Unknown constant: " + value);
@@ -1037,7 +1037,7 @@ namespace XNATWL.Theme
             {
                 for (ThemeInfoImpl e = _env; e != null; e = e._parent)
                 {
-                    Object objx = e.GetParam(name);
+                    Object objx = e[name];
                     if (objx != null)
                     {
                         Push(objx);
@@ -1051,7 +1051,7 @@ namespace XNATWL.Theme
                     }
                 }
 
-                Object obj = this._themeManager._constants.GetParam(name);
+                Object obj = this._themeManager._constants[name];
                 if (obj != null)
                 {
                     Push(obj);
@@ -1079,7 +1079,7 @@ namespace XNATWL.Theme
                 }
                 if (obj is ParameterMapImpl)
                 {
-                    Object result = ((ParameterMapImpl)obj).GetParam(field);
+                    Object result = ((ParameterMapImpl)obj)[field];
                     if (result == null)
                     {
                         throw new ArgumentNullException("field not found: " + field);

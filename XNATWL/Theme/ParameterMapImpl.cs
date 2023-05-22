@@ -39,15 +39,27 @@ using XNATWL.Utils;
 
 namespace XNATWL.Theme
 {
+    /// <summary>
+    /// An implementation to manage a map of theme parameters
+    /// </summary>
     public class ParameterMapImpl : ThemeChildImpl, ParameterMap
     {
-        internal CascadedHashMap<String, Object> _parameters;
+        internal CascadedHashMap<string, object> _parameters;
 
+        /// <summary>
+        /// Initialise a <see cref="ParameterMap"/> implementation
+        /// </summary>
+        /// <param name="manager">Parent theme manager</param>
+        /// <param name="parent">Parent theme info parameter map</param>
         public ParameterMapImpl(ThemeManager manager, ThemeInfoImpl parent) : base(manager, parent)
         {
             this._parameters = new CascadedHashMap<String, Object>();
         }
 
+        /// <summary>
+        /// Duplicate parameters into this object's <see cref="CascadedHashMap{K, Object}"/>
+        /// </summary>
+        /// <param name="src"></param>
         public virtual void Copy(ParameterMapImpl src)
         {
             this._parameters.CollapseAndSetFallback(src._parameters);
@@ -224,7 +236,7 @@ namespace XNATWL.Theme
 
         public T GetParameterValue<T>(String name, bool warnIfNotPresent, Type type, T defaultValue)
         {
-            T value = (T) this._parameters.CascadingEntry(name);
+            T value = (T)this._parameters.CascadingEntry(name);
 
             if (value == null && warnIfNotPresent)
             {
@@ -243,27 +255,55 @@ namespace XNATWL.Theme
             return value;
         }
 
-
+        /// <summary>
+        /// Debugging function for a lookup using an invalid parameter <see cref="Type"/>
+        /// </summary>
+        /// <param name="paramName">Parameter name</param>
+        /// <param name="expectedType">Expected type</param>
+        /// <param name="foundType">Found type</param>
         protected void WrongParameterType(String paramName, Type expectedType, Type foundType)
         {
             DebugHook.getDebugHook().WrongParameterType(this, paramName, expectedType, foundType, GetParentDescription());
         }
 
+        /// <summary>
+        /// Debugging function for a lookup with a non-existent name
+        /// </summary>
+        /// <param name="paramName">Parameter name</param>
+        /// <param name="dataType">Type used in lookup</param>
         protected void MissingParameter(String paramName, Type dataType)
         {
             DebugHook.getDebugHook().MissingParameter(this, paramName, GetParentDescription(), dataType);
         }
 
+        /// <summary>
+        /// Replacing given parameter type with a working alternative
+        /// </summary>
+        /// <param name="paramName">Parameter name</param>
+        /// <param name="oldType">Type attempted</param>
+        /// <param name="newType">New type</param>
         protected void ReplacingWithDifferentType(String paramName, Type oldType, Type newType)
         {
             DebugHook.getDebugHook().ReplacingWithDifferentType(this, paramName, oldType, newType, GetParentDescription());
         }
 
-        public object GetParam(String name)
+        /// <summary>
+        /// Look up using name, returning using the most generic data type <see cref="object"/>
+        /// </summary>
+        /// <param name="name">Parameter name</param>
+        /// <returns>an <see cref="object"/></returns>
+        public object this[string name]
         {
-            return this._parameters.CascadingEntry(name);
+            get
+            {
+                return this._parameters.CascadingEntry(name);
+            }
         }
 
+        /// <summary>
+        /// Copy from another parameter dictionary into this one
+        /// </summary>
+        /// <param name="parameters">Copied dictionary</param>
         public void Put(Dictionary<string, object> parameters)
         {
             foreach (string key in parameters.Keys)
@@ -272,6 +312,11 @@ namespace XNATWL.Theme
             }
         }
 
+        /// <summary>
+        /// Put a new parameter by <paramref name="paramName"/> into the cascading dictionary
+        /// </summary>
+        /// <param name="paramName">Parameter name</param>
+        /// <param name="value">New value</param>
         public void Put(string paramName, object value)
         {
             object old = this._parameters.PutCascadingEntry(paramName, value);
@@ -288,6 +333,12 @@ namespace XNATWL.Theme
             }
         }
 
+        /// <summary>
+        /// Test if types are assignable to each other
+        /// </summary>
+        /// <param name="typeA">First type</param>
+        /// <param name="typeB">Other type</param>
+        /// <returns><b>true</b> if compatible</returns>
         private static bool AreTypesCompatible(Type typeA, Type typeB)
         {
             foreach (Type type in BASE_CLASSES)
