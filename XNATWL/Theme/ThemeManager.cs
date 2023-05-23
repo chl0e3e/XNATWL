@@ -30,6 +30,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using XNATWL.IO;
 using XNATWL.Renderer;
@@ -37,6 +38,9 @@ using XNATWL.Utils;
 
 namespace XNATWL.Theme
 {
+    /// <summary>
+    /// Used for representing a Theme and managing it's usage
+    /// </summary>
     public class ThemeManager
     {
         private static Dictionary<string, Type> enums = new Dictionary<string, Type>();
@@ -76,21 +80,18 @@ namespace XNATWL.Theme
             this._mathInterpreter = new MathInterpreter(this);
         }
 
-        /**
-         * Returns the associated cache context which was used to load this theme.
-         * @return the cache context
-         * @see #createThemeManager(java.net.URL, de.matthiasmann.twl.renderer.Renderer.Renderer, de.matthiasmann.twl.renderer.CacheContext) 
-         */
+        /// <summary>
+        /// <para>Returns the associated cache context which was used to load this theme.</para>
+        /// </summary>
+        /// <returns>the cache context</returns>
         public CacheContext GetCacheContext()
         {
             return _cacheContext;
         }
 
-        /**
-         * Destroys the CacheContext and releases all OpenGL resources
-         * @see CacheContext#destroy()
-         * @see #getCacheContext()
-         */
+        /// <summary>
+        /// <para>Destroys the CacheContext and releases all OpenGL resources</para>
+        /// </summary>
         public void Destroy()
         {
             foreach (Font font in _fonts.Values)
@@ -100,29 +101,29 @@ namespace XNATWL.Theme
             _cacheContext.Dispose();
         }
 
+        /// <summary>
+        /// Return the default font for the theme (sometimes used as a fallback)
+        /// </summary>
+        /// <returns>default <see cref="Font"/></returns>
         public Font GetDefaultFont()
         {
             return _defaultFont;
         }
 
-        /**
-         * Loads the specified theme using the provided renderer and a new cache context.
-         *
-         * This is equivalent to calling {@code createThemeManager(url, renderer, renderer.createNewCacheContext())}
-         *
-         * @param url The URL of the theme
-         * @param renderer The renderer which is used to load and render the resources
-         * @return a new ThemeManager
-         * @throws IOException if an error occured while loading
-         * @throws NullPointerException if one of the passed parameters is {@code null}
-         * @see #createThemeManager(java.net.URL, de.matthiasmann.twl.renderer.Renderer.Renderer, de.matthiasmann.twl.renderer.CacheContext)
-         * @see #destroy() 
-         */
+        /// <summary>
+        /// <para>Loads the specified theme using the provided renderer and a new cache context. </para>
+        /// <para>This is equivalent to calling <c>CreateThemeManager(fso, renderer, renderer.CreateNewCacheContext())</c></para>
+        /// </summary>
+        /// <param name="fso">The FSO of the theme</param>
+        /// <param name="renderer">The renderer which is used to load and render the resources</param>
+        /// <returns>a new ThemeManager</returns>
+        /// <exception cref="IOException">if an error occured while loading</exception>
+        /// <exception cref="ArgumentNullException">if one of the passed parameters is {@code null}</exception>
         public static ThemeManager CreateThemeManager(FileSystemObject fso, Renderer.Renderer renderer)
         {
             if (fso == null)
             {
-                throw new ArgumentNullException("url is null");
+                throw new ArgumentNullException("fso is null");
             }
             if (renderer == null)
             {
@@ -131,45 +132,33 @@ namespace XNATWL.Theme
             return CreateThemeManager(fso, renderer, renderer.CreateNewCacheContext());
         }
 
-        /**
-         * Loads the specified theme using the provided renderer and cache context.
-         *
-         * This is equivalent to calling {@code createThemeManager(url, renderer, renderer.createNewCacheContext(), null)}
-         * 
-         * @param url The URL of the theme
-         * @param renderer The renderer which is used to load and render the resources
-         * @param cacheContext The cache context into which the resources are loaded
-         * @return a new ThemeManager
-         * @throws IOException if an error occured while loading
-         * @throws ArgumentNullException if one of the passed parameters is {@code null}
-         * @see #createThemeManager(java.net.URL, de.matthiasmann.twl.renderer.Renderer.Renderer, de.matthiasmann.twl.renderer.CacheContext, java.util.Map) 
-         * @see #destroy() 
-         */
+        /// <summary>
+        /// <para>Loads the specified theme using the provided renderer and cache context. </para>
+        /// <para>This is equivalent to calling {@code createThemeManager(url, renderer, renderer.createNewCacheContext(), null)} </para>
+        /// </summary>
+        /// <param name="fso">The FSO of the theme</param>
+        /// <param name="renderer">The renderer which is used to load and render the resources</param>
+        /// <param name="cacheContext">The cache context into which the resources are loaded</param>
+        /// <returns>a new ThemeManager</returns>
+        /// <exception cref="IOException">if an error occured while loading</exception>
+        /// <exception cref="ArgumentNullException">if one of the passed parameters is {@code null}</exception>
         public static ThemeManager CreateThemeManager(FileSystemObject fso, Renderer.Renderer renderer, CacheContext cacheContext)
         {
             return CreateThemeManager(fso, renderer, cacheContext, null);
         }
 
-        /**
-         * Loads the specified theme using the provided renderer and cache context.
-         *
-         * The provided {@code cacheContext} is set active in the provided {@code renderer}.
-         *
-         * The cache context is stored inside the created ThemeManager. Calling
-         * {@code destroy()} on the returned ThemeManager instance will also destroy
-         * the cache context.
-         *
-         * @param url The URL of the theme
-         * @param renderer The renderer which is used to load and render the resources
-         * @param cacheContext The cache context into which the resources are loaded
-         * @param constants A map containing constants which as exposed to the theme
-         *                  as if defined by &lt;constantDef/&gt;, can be null.
-         * @return a new ThemeManager
-         * @throws IOException if an error occured while loading
-         * @throws ArgumentNullException if one of the passed parameters is {@code null}
-         * @see Renderer.Renderer#setActiveCacheContext(de.matthiasmann.twl.renderer.CacheContext)
-         * @see #destroy() 
-         */
+        /// <summary>
+        /// <para>Loads the specified theme using the provided renderer and cache context. </para>
+        /// <para>The provided <paramref name="cacheContext"/> is set active in the provided {@code renderer}. </para>
+        /// <para>The cache context is stored inside the created ThemeManager. Calling <c>Destroy()</c> on the returned ThemeManager instance will also destroy the cache context. </para>
+        /// </summary>
+        /// <param name="fso">The FSO of the theme</param>
+        /// <param name="renderer">The renderer which is used to load and render the resources</param>
+        /// <param name="cacheContext">The cache context into which the resources are loaded</param>
+        /// <param name="constants">A map containing constants which as exposed to the theme</param>
+        /// <returns>a new ThemeManager</returns>
+        /// <exception cref="IOException">if an error occured while loading</exception>
+        /// <exception cref="ArgumentNullException">if one of the passed parameters is <em>null</em></exception>
         public static ThemeManager CreateThemeManager(FileSystemObject fso, Renderer.Renderer renderer, CacheContext cacheContext, Dictionary<string, Object> constants)
         {
             if (fso == null)
@@ -202,10 +191,18 @@ namespace XNATWL.Theme
             }
             catch (XmlPullParserException ex)
             {
-                throw (IOException)(new IOException("createThemeManager", ex));
+                throw (new IOException("createThemeManager", ex));
             }
         }
 
+        /// <summary>
+        /// Register an enum class with the type name
+        /// </summary>
+        /// <typeparam name="E">Enum type</typeparam>
+        /// <param name="name">Type name</param>
+        /// <param name="enumClazz">Enum type object</param>
+        /// <exception cref="ArgumentNullException">if one of the passed parameters is not an enum</exception>
+        /// <exception cref="DuplicateNameException">enums already exists under that name</exception>
         public static void RegisterEnumType<E>(string name, Type enumClazz) where E : struct, IConvertible
         {
             if (!enumClazz.IsEnum)
@@ -214,16 +211,28 @@ namespace XNATWL.Theme
             }
             if (enums.ContainsKey(name) && enums[name] != enumClazz)
             {
-                throw new ArgumentNullException("Enum type name \"" + name + "\" is already in use by " + enums[name].Name);
+                throw new DuplicateNameException("Enum type name \"" + name + "\" is already in use by " + enums[name].Name);
             }
             enums.Add(name, enumClazz);
         }
 
+        /// <summary>
+        /// Find a ThemeInfo given a theme path, automatically warning and using fallbacks
+        /// </summary>
+        /// <param name="themePath">Theme path</param>
+        /// <returns><see cref="ThemeInfo"/></returns>
         public ThemeInfo FindThemeInfo(string themePath)
         {
             return FindThemeInfo(themePath, true, true);
         }
 
+        /// <summary>
+        /// Find a ThemeInfo given a theme path, manually allowing warnings or fallbacks
+        /// </summary>
+        /// <param name="themePath">Theme path</param>
+        /// <param name="warn">Send warning to debugger for missing theme</param>
+        /// <param name="useFallback">Use theme fallbacks</param>
+        /// <returns><see cref="ThemeInfo"/></returns>
         private ThemeInfo FindThemeInfo(string themePath, bool warn, bool useFallback)
         {
             int start = TextUtil.IndexOf(themePath, '.', 0);
@@ -267,11 +276,21 @@ namespace XNATWL.Theme
             return info;
         }
 
+        /// <summary>
+        /// Get an image by name from the <see cref="ImageManager"/> without warning when the image was not found
+        /// </summary>
+        /// <param name="name">Image name</param>
+        /// <returns>Matching <see cref="Image"/></returns>
         public Image GetImageNoWarning(string name)
         {
             return _imageManager[name];
         }
 
+        /// <summary>
+        /// Get an image by name from the <see cref="ImageManager"/> and warn the debugger when the image was not found
+        /// </summary>
+        /// <param name="name">Image name</param>
+        /// <returns>Matching <see cref="Image"/></returns>
         public Image GetImage(string name)
         {
             Image img = _imageManager[name];
@@ -282,32 +301,58 @@ namespace XNATWL.Theme
             return img;
         }
 
-        public Object GetCursor(string name)
+        /// <summary>
+        /// Get cursor by name from the <see cref="ImageManager"/>
+        /// </summary>
+        /// <param name="name">Name of cursor</param>
+        /// <returns><see cref="MouseCursor"/></returns>
+        public object GetCursor(string name)
         {
             return _imageManager.GetCursor(name);
         }
 
+        /// <summary>
+        /// Get font by name
+        /// </summary>
+        /// <param name="name">Name of font</param>
+        /// <returns><see cref="Font"/></returns>
         public Font GetFont(string name)
         {
             return _fonts[name];
         }
 
+        /// <summary>
+        /// Get the <see cref="ParameterMap"/> for theme constants
+        /// </summary>
+        /// <returns><see cref="ParameterMap"/> holding constants</returns>
         public ParameterMap GetConstants()
         {
             return _constants;
         }
 
+        /// <summary>
+        /// Automatically insert these constants to the <see cref="_constants"/> map
+        /// </summary>
         private void InsertDefaultConstants()
         {
             _constants.Put("SINGLE_COLUMN", -1);
             _constants.Put("MAX", short.MaxValue);
         }
 
+        /// <summary>
+        /// Merge constants map from given dictionary
+        /// </summary>
+        /// <param name="src">Merged constants</param>
         private void InsertConstants(Dictionary<string, Object> src)
         {
             _constants.Put(src);
         }
 
+        /// <summary>
+        /// Parse a theme XML file from the given <see cref="FileSystemObject"/> in the <paramref name="fso"/> parameter
+        /// </summary>
+        /// <param name="fso">File system object to read XML from</param>
+        /// <exception cref="ThemeException">XML-specific exception</exception>
         private void ParseThemeFile(FileSystemObject fso)
         {
             try
@@ -340,6 +385,11 @@ namespace XNATWL.Theme
             }
         }
 
+        /// <summary>
+        /// Parse from the <see cref="XMLParser"/> beginning with a <c>themes</c> tag
+        /// </summary>
+        /// <param name="xmlp">XML parser</param>
+        /// <param name="baseFso">theme file object used for relative file reads</param>
         private void ParseThemeFile(XMLParser xmlp, FileSystemObject baseFso)
         {
             xmlp.Require(XmlPullParser.START_TAG, null, "themes");
@@ -423,6 +473,12 @@ namespace XNATWL.Theme
             xmlp.Require(XmlPullParser.END_TAG, null, "themes");
         }
 
+        /// <summary>
+        /// Fetch an input map allowing an error to be thrown by the theme <see cref="XMLParser"/>
+        /// </summary>
+        /// <param name="xmlp">XML parser</param>
+        /// <param name="name">name of input map</param>
+        /// <returns><see cref="InputMap"/></returns>
         private InputMap GetInputMap(XMLParser xmlp, string name)
         {
             if (!_inputMaps.ContainsKey(name))
@@ -433,6 +489,13 @@ namespace XNATWL.Theme
             return _inputMaps[name];
         }
 
+        /// <summary>
+        /// Parse an input map from the <see cref="XMLParser"/> following any references or parent THemeInfo objects
+        /// </summary>
+        /// <param name="xmlp">XML parser</param>
+        /// <param name="name">Name of the input map</param>
+        /// <param name="parent">Parent theme info map</param>
+        /// <returns><see cref="InputMap"/></returns>
         private InputMap ParseInputMap(XMLParser xmlp, string name, ThemeInfoImpl parent)
         {
             InputMap baseMap = InputMap.Empty();
@@ -465,6 +528,12 @@ namespace XNATWL.Theme
             return im;
         }
 
+        /// <summary>
+        /// Parse a font from the <see cref="XMLParser"/>
+        /// </summary>
+        /// <param name="xmlp">XML parser</param>
+        /// <param name="baseFso">Relative file system object</param>
+        /// <returns>Parsed <see cref="Font"/></returns>
         private Font ParseFont(XMLParser xmlp, FileSystemObject baseFso)
         {
             FileSystemObject fso;
@@ -544,6 +613,11 @@ namespace XNATWL.Theme
             return _renderer.LoadFont(fso, stateSelect, stateParams);
         }
 
+        /// <summary>
+        /// Parse <see cref="FontParameter"/> from the current state of the <see cref="XMLParser"/>
+        /// </summary>
+        /// <param name="xmlp">XML parser</param>
+        /// <param name="fp"><see cref="FontParameter"/> to populate</param>
         private void ParseFontParameter(XMLParser xmlp, FontParameter fp)
         {
             for (int i = 0, n = xmlp.GetAttributeCount(); i < n; i++)
@@ -590,6 +664,12 @@ namespace XNATWL.Theme
             }
         }
 
+        /// <summary>
+        /// Parse list of strings from an XML attribute
+        /// </summary>
+        /// <param name="xmlp">XML parser</param>
+        /// <param name="name">XML attribute name</param>
+        /// <returns>Parsed <see cref="List{T}"/> where T is <see cref="string"/></returns>
         private static List<string> ParseList(XMLParser xmlp, string name)
         {
             string value = xmlp.GetAttributeValue(null, name);
@@ -600,6 +680,12 @@ namespace XNATWL.Theme
             return null;
         }
 
+        /// <summary>
+        /// Parse a list from the given index in a string
+        /// </summary>
+        /// <param name="value">String to lookup</param>
+        /// <param name="idx">Index in string</param>
+        /// <returns>Parsed <see cref="List{T}"/> where T is <see cref="string"/></returns>
         private static List<string> ParseList(string value, int idx)
         {
             idx = TextUtil.SkipSpaces(value, idx);
@@ -614,6 +700,11 @@ namespace XNATWL.Theme
             return new List<string> { part, ParseList(value, end + 1)[0] };
         }
 
+        /// <summary>
+        /// Parse a reference in a theme with or without a wildcard
+        /// </summary>
+        /// <param name="xmlp">XML parser</param>
+        /// <param name="parent">ThemeInfo parent context</param>
         private void ParseThemeWildcardRef(XMLParser xmlp, ThemeInfoImpl parent)
         {
             string reference = xmlp.GetAttributeValue(null, "ref");
@@ -638,6 +729,14 @@ namespace XNATWL.Theme
             xmlp.NextTag();
         }
 
+        /// <summary>
+        /// Begin parsing a new <see cref="ThemeInfo"/> from the <see cref="XMLParser"/>
+        /// </summary>
+        /// <param name="xmlp">XML parser</param>
+        /// <param name="themeName">Theme name</param>
+        /// <param name="parent">Parent <see cref="ThemeInfoImpl"/> context</param>
+        /// <param name="baseFso">Relative file system object</param>
+        /// <returns>parsed <see cref="ThemeInfoImpl"/></returns>
         private ThemeInfoImpl ParseTheme(XMLParser xmlp, string themeName, ThemeInfoImpl parent, FileSystemObject baseFso)
         {
             // allow top level theme "*" as fallback theme
@@ -721,6 +820,14 @@ namespace XNATWL.Theme
             return ti;
         }
 
+        /// <summary>
+        /// Parse a theme parameter from a given <paramref name="tagName"/> parameter
+        /// </summary>
+        /// <param name="xmlp">XML parser</param>
+        /// <param name="baseFso">base file system object</param>
+        /// <param name="tagName">Theme parameter tag</param>
+        /// <param name="parent">Parent theme context</param>
+        /// <param name="target">Target parameter map</param>
         private void ParseParam(XMLParser xmlp, FileSystemObject baseFso, string tagName, ThemeInfoImpl parent, ParameterMapImpl target)
         {
             try
@@ -771,6 +878,13 @@ namespace XNATWL.Theme
             }
         }
 
+        /// <summary>
+        /// Parse a list using <see cref="ParseValue(XMLParser, string, string, FileSystemObject, ThemeInfoImpl)"/> from the currnet state of the <see cref="XMLParser"/>
+        /// </summary>
+        /// <param name="xmlp">XML parser</param>
+        /// <param name="baseFso">base file system object</param>
+        /// <param name="parent">Parent theme context</param>
+        /// <returns>resultant <see cref="ParameterListImpl"/></returns>
         private ParameterListImpl ParseList(XMLParser xmlp, FileSystemObject baseFso, ThemeInfoImpl parent)
         {
             ParameterListImpl result = new ParameterListImpl(this, parent);
@@ -786,6 +900,15 @@ namespace XNATWL.Theme
             return result;
         }
 
+        /// <summary>
+        /// Parse a map from the current position of the <see cref="XMLParser"/>, supports <c>ref</c> and <c>merge</c>
+        /// </summary>
+        /// <param name="xmlp">XML parser</param>
+        /// <param name="baseFso">base file system object</param>
+        /// <param name="name">map name</param>
+        /// <param name="parent">Parent theme context</param>
+        /// <returns>resultant <see cref="ParameterMapImpl"/></returns>
+        /// <exception cref="IOException">Thrown when referencing another map that does not exist</exception>
         private ParameterMapImpl ParseMap(XMLParser xmlp, FileSystemObject baseFso, string name, ThemeInfoImpl parent)
         {
             ParameterMapImpl result = new ParameterMapImpl(this, parent);
@@ -839,7 +962,17 @@ namespace XNATWL.Theme
             return result;
         }
 
-        private Object ParseValue(XMLParser xmlp, string tagName, string wildcardName, FileSystemObject baseFso, ThemeInfoImpl parent)
+        /// <summary>
+        /// Parse a value from the current position of the XML parser
+        /// </summary>
+        /// <param name="xmlp">XML parser</param>
+        /// <param name="tagName">Value type (a.k.a. current XML tag name)</param>
+        /// <param name="wildcardName">Use potential wildcard</param>
+        /// <param name="baseFso">base file system object</param>
+        /// <param name="parent">Parent theme context</param>
+        /// <returns>Parsed value (arbitrary object)</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        private object ParseValue(XMLParser xmlp, string tagName, string wildcardName, FileSystemObject baseFso, ThemeInfoImpl parent)
         {
             try
             {
@@ -965,6 +1098,12 @@ namespace XNATWL.Theme
             }
         }
 
+        /// <summary>
+        /// Parse a given <paramref name="str"/> using the currently instantiated <see cref="MathInterpreter"/>
+        /// </summary>
+        /// <param name="xmlp">XML parser</param>
+        /// <param name="str">mathematical expression</param>
+        /// <returns><see cref="Number"/> value</returns>
         private Number ParseMath(XMLParser xmlp, string str)
         {
             try
@@ -977,6 +1116,14 @@ namespace XNATWL.Theme
             }
         }
 
+        /// <summary>
+        /// Parse an object by marshalling it through the <see cref="MathInterpreter"/>
+        /// </summary>
+        /// <typeparam name="T">Object to find</typeparam>
+        /// <param name="xmlp">XML parser</param>
+        /// <param name="str">mathematical expression</param>
+        /// <param name="type">Type of object</param>
+        /// <returns>Marshalled object <typeparamref name="T"/></returns>
         private T ParseObject<T>(XMLParser xmlp, string str, Type type)
         {
             try
@@ -989,6 +1136,11 @@ namespace XNATWL.Theme
             }
         }
 
+        /// <summary>
+        /// Unwrap exceptions
+        /// </summary>
+        /// <param name="ex">Wrapped exception</param>
+        /// <returns>InnerException called on the wrapped exception</returns>
         private Exception Unwrap(ParseException ex)
         {
             if (ex.InnerException != null)
@@ -1001,6 +1153,14 @@ namespace XNATWL.Theme
             }
         }
 
+        /// <summary>
+        /// Resolve a wildcard used by a ThemeInfo lookup
+        /// </summary>
+        /// <param name="baseStr">Base path</param>
+        /// <param name="name">Widget name</param>
+        /// <param name="useFallback">Use fallback theme?</param>
+        /// <returns>Resolved <see cref="ThemeInfo"/></returns>
+        /// <exception cref="Exception">Invalid attempt at constructing a wildcard lookuo</exception>
         internal ThemeInfo ResolveWildcard(string baseStr, string name, bool useFallback)
         {
             if(!(baseStr.Length == 0 || baseStr.EndsWith(".")))
@@ -1016,11 +1176,18 @@ namespace XNATWL.Theme
             return null;
         }
 
+        /// <summary>
+        /// An implementation of <see cref="AbstractMathInterpreter"/> which can access theme fields and place them on the stack
+        /// </summary>
         class MathInterpreter : AbstractMathInterpreter
         {
             private ThemeInfoImpl _env;
             private ThemeManager _themeManager;
 
+            /// <summary>
+            /// Initialise the math interpreter that can look up using a <see cref="ThemeManager"/>
+            /// </summary>
+            /// <param name="themeManager"><see cref="ThemeManager"/> where to access variables</param>
             public MathInterpreter(ThemeManager themeManager)
             {
                 this._themeManager = themeManager;
