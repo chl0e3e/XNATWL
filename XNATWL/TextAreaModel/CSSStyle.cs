@@ -372,7 +372,10 @@ namespace XNATWL.TextAreaModel
         /// <returns>Array of values using a unit-respecting object</returns>
         private Value[] ParseValueUnits(string value)
         {
-            string[] parts = value.Split(new string[] { "\\s+" }, StringSplitOptions.None);
+            // Java uses String.split("\\s+") which treats the argument as a regex. The previous
+            // code split on the literal 3-char sequence "\s+" (which never occurs in CSS), so
+            // multi-value shorthand like "5px 10px 15px 20px" was never split. Use a real regex.
+            string[] parts = System.Text.RegularExpressions.Regex.Split(value, "\\s+");
             Value[] result = new Value[parts.Length];
             for (int i = 0; i < parts.Length; i++)
             {
@@ -635,15 +638,16 @@ namespace XNATWL.TextAreaModel
                 part = TextUtil.Trim(value, idx, end);
             }
 
+            // Prepend this entry to the full recursively-parsed tail. The previous code took only
+            // result[0] of the tail, dropping every font-family entry past the second (e.g. the
+            // generic "sans-serif" fallback in "Arial, Helvetica, sans-serif").
             List<string> result = ParseList(value, end + 1);
             if (result == null)
             {
-                return new List<string> { part };
+                result = new List<string>();
             }
-            else
-            {
-                return new List<string> { part, result[0] };
-            }
+            result.Insert(0, part);
+            return result;
         }
 
         static Dictionary<string, Boolean> PRE = new Dictionary<string, Boolean>();

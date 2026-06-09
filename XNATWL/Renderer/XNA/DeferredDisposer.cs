@@ -49,15 +49,17 @@ namespace XNATWL.Renderer.XNA
 
             for (int i = 0; i < disposedNow; i++)
             {
-                IDisposable disposed = this._queue[0];
-                this._queue.RemoveAt(0);
-                disposed.Dispose();
+                this._queue[i].Dispose();
             }
-
+            // Single bulk removal instead of repeated RemoveAt(0) (which is O(n) per call).
             if (disposedNow > 0)
             {
-                System.GC.Collect();
+                this._queue.RemoveRange(0, disposedNow);
             }
+            // NOTE: removed an unconditional System.GC.Collect() that ran on every frame
+            // with a non-empty dispose queue. Dispose() already releases the unmanaged GPU
+            // handles; the managed wrappers are reclaimed by the normal GC. The forced full
+            // collection caused per-frame hitches and has no equivalent in Java/LWJGL.
         }
     }
 }

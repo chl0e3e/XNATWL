@@ -313,7 +313,13 @@ namespace XNATWL
         private void SortFilesAndUpdateModel(Entry[] entries, int numFolders)
         {
             StateSnapshot snapshot = MakeSnapshot();
-            Array.Sort(entries, numFolders, entries.Length, SortColumn_Comparer(_sortColumn));
+            // Apply the sort order (Java used sortOrder.map(comparator), which the port dropped, so
+            // descending sort never affected the data). Also fix the length argument: Java's
+            // Arrays.sort takes (fromIndex, toIndex) but C#'s Array.Sort takes (index, length) — the
+            // non-folder run length is entries.Length - numFolders, not entries.Length (which threw
+            // when any folders were present).
+            Array.Sort(entries, numFolders, entries.Length - numFolders,
+                    SortOrderStatics.Map(_sortOrder, SortColumn_Comparer(_sortColumn)));
             _fileTableModel.SetData(entries, numFolders);
             RestoreSnapshot(snapshot);
         }

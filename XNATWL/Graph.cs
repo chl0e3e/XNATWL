@@ -29,6 +29,7 @@
  */
 
 using System;
+using System.Runtime.InteropServices;
 using XNATWL.Model;
 using XNATWL.Renderer;
 using XNATWL.Utils;
@@ -202,15 +203,25 @@ namespace XNATWL
             lineRenderer.DrawLine(xy, numPoints, style._lineWidth, style._color, false);
         }
 
+        // Zero-allocation reinterpret between float and its raw bits. Used instead of
+        // BitConverter.GetBytes (which allocated a byte[] per conversion) on the paint path.
+        // A StructLayout union works on both the net48 and net8 build targets, unlike
+        // BitConverter.SingleToInt32Bits/Int32BitsToSingle which are net8-only.
+        [StructLayout(LayoutKind.Explicit)]
+        private struct FloatIntUnion
+        {
+            [FieldOffset(0)] public float F;
+            [FieldOffset(0)] public int I;
+        }
+
         private static float CopySign(float magnitude, float sign)
         {
             // this copies the sign bit from sign to magnitude
             // it assumes the magnitude is positive
-            ;
-            int rawMagnitude = BitConverter.ToInt32(BitConverter.GetBytes(magnitude), 0);
-            int rawSign = BitConverter.ToInt32(BitConverter.GetBytes(sign), 0);
+            int rawMagnitude = new FloatIntUnion { F = magnitude }.I;
+            int rawSign = new FloatIntUnion { F = sign }.I;
             int rawResult = rawMagnitude | (rawSign & (1 << 31));
-            return BitConverter.ToSingle(BitConverter.GetBytes(rawResult), 0);
+            return new FloatIntUnion { I = rawResult }.F;
         }
 
         public override bool SetSize(int width, int height)

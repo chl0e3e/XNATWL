@@ -215,7 +215,7 @@ namespace XNATWL
             {
                 throw new NullReferenceException("name");
             }
-            Widget w = _widgets[name];
+            _widgets.TryGetValue(name, out Widget w);
             if (w != null)
             {
                 int idx = GetChildIndex(w);
@@ -840,10 +840,10 @@ namespace XNATWL
 
         private void LayoutWidgetElement(Box box, WidgetElement we)
         {
-            Widget widget = _widgets[we.WidgetName];
+            _widgets.TryGetValue(we.WidgetName, out Widget widget);
             if (widget == null)
             {
-                WidgetResolver resolver = _widgetResolvers[we.WidgetName];
+                _widgetResolvers.TryGetValue(we.WidgetName, out WidgetResolver resolver);
                 if (resolver != null)
                 {
                     widget = resolver.ResolveWidget(we.WidgetName, we.WidgetParam);

@@ -185,7 +185,7 @@ namespace XNATWL
                 }
                 if (fireCallbacks)
                 {
-                    this.PositionChanged.Invoke(this, new ScrollbarChangedPositionEventArgs());
+                    this.PositionChanged?.Invoke(this, new ScrollbarChangedPositionEventArgs());
                 }
             }
         }

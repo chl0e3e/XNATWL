@@ -193,7 +193,7 @@ namespace XNATWL.Model
             int hi = offsets.Length - 1;
             while (lo <= hi)
             {
-                int mid = (int)((uint)(lo + hi) >> 2);
+                int mid = (int)((uint)(lo + hi) >> 1);
                 int delta = offsets[mid] - index;
                 if (delta <= 0)
                 {

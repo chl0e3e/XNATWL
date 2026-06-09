@@ -28,6 +28,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System.Collections.Generic;
+
 namespace XNATWL.Model
 {
     /// <summary>
@@ -49,6 +51,35 @@ namespace XNATWL.Model
             }
 
             return SortOrder.Ascending;
+        }
+
+        /// <summary>
+        /// Mirrors Java's SortOrder.map(Comparator): returns the comparator unchanged for
+        /// Ascending, or a reversed view for Descending. Reverses by swapping the operands
+        /// (like Collections.reverseOrder) rather than negating, to stay overflow-safe.
+        /// </summary>
+        public static IComparer<T> Map<T>(SortOrder order, IComparer<T> comparator)
+        {
+            if (order == SortOrder.Descending)
+            {
+                return new ReverseComparer<T>(comparator);
+            }
+            return comparator;
+        }
+
+        private class ReverseComparer<T> : IComparer<T>
+        {
+            private readonly IComparer<T> _comparator;
+
+            public ReverseComparer(IComparer<T> comparator)
+            {
+                this._comparator = comparator;
+            }
+
+            public int Compare(T a, T b)
+            {
+                return this._comparator.Compare(b, a);
+            }
         }
     }
 }

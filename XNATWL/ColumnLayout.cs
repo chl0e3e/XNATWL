@@ -205,7 +205,21 @@ namespace XNATWL
                     return false;
                 }
                 Columns other = (Columns)obj;
-                return this._hashCode == other._hashCode && this._names == other._names;
+                // Element-wise compare (was reference equality on the cloned _names array,
+                // which made two Columns built from identical name lists never equal, defeating
+                // the Dictionary<Columns,Columns> dedup cache). Matches Java's Arrays.equals.
+                if (this._hashCode != other._hashCode || this._names.Length != other._names.Length)
+                {
+                    return false;
+                }
+                for (int i = 0; i < this._names.Length; i++)
+                {
+                    if (!string.Equals(this._names[i], other._names[i]))
+                    {
+                        return false;
+                    }
+                }
+                return true;
             }
 
             /**

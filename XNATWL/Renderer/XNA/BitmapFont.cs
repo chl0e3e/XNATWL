@@ -49,14 +49,15 @@ namespace XNATWL.Renderer.XNA
             private short _yOffset;
             private short _xAdvance;
             private byte[][] _kerning;
-            private Microsoft.Xna.Framework.Color[] _colorData;
 
-            public Glyph(Microsoft.Xna.Framework.Color[] colorData, XNATexture texture, int x, int y, int width, int height, short xOffset, short yOffset, short xAdvance) : base(texture, x, y, (height <= 0) ? 0 : width, height)
+            // Each glyph is a sub-rectangle of the shared font atlas texture (base._texture).
+            // x/y are the glyph's position within the atlas; both rendering (DrawQuad source rect)
+            // and CPU compositing index that single shared atlas rather than a per-glyph texture.
+            public Glyph(XNATexture texture, int x, int y, int width, int height, short xOffset, short yOffset, short xAdvance) : base(texture, x, y, (height <= 0) ? 0 : width, height)
             {
                 this._xOffset = xOffset;
                 this._xAdvance = xAdvance;
                 this._yOffset = yOffset;
-                this._colorData = colorData;
             }
 
             /// <summary>
@@ -94,11 +95,21 @@ namespace XNATWL.Renderer.XNA
                 }
             }
 
-            public Microsoft.Xna.Framework.Color[] ColorData
+            /// <summary>X position of this glyph within the shared atlas texture</summary>
+            public int AtlasX
             {
                 get
                 {
-                    return this._colorData;
+                    return _tx0;
+                }
+            }
+
+            /// <summary>Y position of this glyph within the shared atlas texture</summary>
+            public int AtlasY
+            {
+                get
+                {
+                    return _ty0;
                 }
             }
 
@@ -137,6 +148,11 @@ namespace XNATWL.Renderer.XNA
         private static int PAGES = 0x10000 / PAGE_SIZE;
 
         protected internal XNATexture _texture;
+        // The whole font atlas read back to the CPU once and recolored (black -> transparent).
+        // Kept for the CPU text-compositing paths (CacheBDrawText / CacheBDrawMultiLineText), which
+        // blit glyph pixels; indexed with atlas coordinates and _atlasWidth.
+        private Microsoft.Xna.Framework.Color[] _atlasColorData;
+        private int _atlasWidth;
         private Glyph[][] _glyphs;
         private int _lineHeight;
         private int _baseLine;
@@ -185,6 +201,22 @@ namespace XNATWL.Renderer.XNA
             }
             String textureName = xmlp.GetAttributeValue(null, "file");
             this._texture = (XNATexture) renderer.LoadTexture(new FileSystemObject(baseFso, textureName), "", "");
+
+            // Read the atlas back once, recolor its black background to transparent, and re-upload.
+            // Previously this was done per-glyph onto a freshly-allocated per-glyph Texture2D, which
+            // defeated SpriteBatch batching (a texture swap per character). Now there is one shared
+            // atlas texture and one CPU copy reused by the text-compositing cache paths.
+            this._atlasWidth = this._texture.Texture2D.Width;
+            this._atlasColorData = new Microsoft.Xna.Framework.Color[this._texture.Texture2D.Width * this._texture.Texture2D.Height];
+            this._texture.Texture2D.GetData<Microsoft.Xna.Framework.Color>(this._atlasColorData);
+            for (int i = 0; i < this._atlasColorData.Length; i++)
+            {
+                if (this._atlasColorData[i] == Microsoft.Xna.Framework.Color.Black)
+                {
+                    this._atlasColorData[i] = Microsoft.Xna.Framework.Color.Transparent;
+                }
+            }
+            this._texture.Texture2D.SetData<Microsoft.Xna.Framework.Color>(this._atlasColorData);
             xmlp.NextTag();
             xmlp.Require(XmlPullParser.END_TAG, null, "page");
             xmlp.NextTag();
@@ -198,9 +230,6 @@ namespace XNATWL.Renderer.XNA
             bool prop = true;
 
             _glyphs = new Glyph[PAGES][];
-            //Microsoft.Xna.Framework.Color[] textureColorData = new Microsoft.Xna.Framework.Color[this.texture.Width * this.texture.Height];
-            //this.texture.Texture2D.GetData<Microsoft.Xna.Framework.Color>(textureColorData, 0, textureColorData.Length);
-            SpriteBatch spriteBatch = this._texture.SpriteBatch;
             while (!xmlp.IsEndTag())
             {
                 xmlp.Require(XmlPullParser.START_TAG, null, "char");
@@ -217,24 +246,13 @@ namespace XNATWL.Renderer.XNA
                 short xadvance = short.Parse(xmlp.GetAttributeNotNull("xadvance"));
                 if (w > 0 && h > 0)
                 {
-                    Microsoft.Xna.Framework.Color[] textureData = new Microsoft.Xna.Framework.Color[w * h];
-                    this._texture.Texture2D.GetData<Microsoft.Xna.Framework.Color>(0, new Microsoft.Xna.Framework.Rectangle(x, y, w, h), textureData, 0, w * h);
-
-                    for (int i = 0; i < textureData.Length; i++)
-                    {
-                        if (textureData[i] == Microsoft.Xna.Framework.Color.Black)
-                        {
-                            textureData[i] = Microsoft.Xna.Framework.Color.Transparent; 
-                        }
-                    }
-                    Texture2D xnaGlyph = new Texture2D(this._texture.Renderer.GraphicsDevice, w, h);
-                    xnaGlyph.SetData(textureData);
-
                     short xOffset = short.Parse(xmlp.GetAttributeNotNull("xoffset"));
                     short yOffset = short.Parse(xmlp.GetAttributeNotNull("yoffset"));
                     short xAdvance = xadvance;
 
-                    Glyph glyphTex = new Glyph(textureData, new XNATexture(this._texture.Renderer, spriteBatch, w, h, xnaGlyph), 0, 0, w, h, xOffset, yOffset, xAdvance);
+                    // Glyph is a sub-rect (x,y,w,h) of the shared atlas texture — no per-glyph
+                    // GetData / recolor / Texture2D allocation, so all glyphs batch in one draw call.
+                    Glyph glyphTex = new Glyph(this._texture, x, y, w, h, xOffset, yOffset, xAdvance);
                     AddGlyph_XNATexture(idx, glyphTex);
                 }
                 //else 
@@ -623,9 +641,9 @@ namespace XNATWL.Renderer.XNA
                 {
                     for (int i = 0; i < g.Width; i++)
                     {
-                        var srcOfs = i + j * g.Width;
+                        var srcOfs = (g.AtlasX + i) + (g.AtlasY + j) * this._atlasWidth;
                         var destOfs = (positions[c].X + i) + (positions[c].Y + j) * width;
-                        lineColors[destOfs] = g.ColorData[srcOfs];
+                        lineColors[destOfs] = this._atlasColorData[srcOfs];
                     }
                 }
             }
@@ -698,49 +716,53 @@ namespace XNATWL.Renderer.XNA
         /// <returns>cache struct of type <see cref="MultiLineTexelCache"/></returns>
         public MultiLineTexelCache CacheBDrawMultiLineText(Color color, int x, int y, string str, int start, int end, int lineWidth)
         {
+            // Index-based wrapping with a StringBuilder and a running width. The previous
+            // implementation did strWithinBounds.Substring(1) per character and rebuilt+remeasured
+            // (line + ch) every character, making it O(n^2) in both allocation and measurement.
+            // ComputeTextWidth is a pure per-glyph XAdvance sum (no kerning), so the running width
+            // below equals the full remeasure and the resulting line breaks are byte-identical.
             List<string> linesToRender = new List<string>();
-            string strWithinBounds = str.Substring(start, end - start);
-            string line = "";
+            System.Text.StringBuilder line = new System.Text.StringBuilder();
+            int lineWidthAcc = 0;
             int glyphPointsCount = 0;
-            while (strWithinBounds.Length > 0)
+            for (int i = start; i < end; i++)
             {
-                if (strWithinBounds[0] == '\r') // we do not support carriage returns
+                char ch = str[i];
+                if (ch == '\r') // we do not support carriage returns
                 {
-                    strWithinBounds = strWithinBounds.Substring(1);
                     continue;
                 }
-                bool isNewLine = strWithinBounds[0] == '\n';
-                if(isNewLine)
+                if (ch == '\n')
                 {
-                    linesToRender.Add(line);
-                    strWithinBounds = strWithinBounds.Substring(1);
-                    line = "";
+                    linesToRender.Add(line.ToString());
+                    line.Clear();
+                    lineWidthAcc = 0;
                     continue;
                 }
-                int newLineWidth = this.ComputeTextWidth(line + strWithinBounds[0], 0, line.Length + 1);
-                if (newLineWidth > lineWidth)
+
+                Glyph g = this.GetGlyph(ch);
+                int adv = (g != null) ? g.XAdvance : (ch == ' ' ? this._spaceWidth : 0);
+
+                // Doesn't fit: flush the current line and retry this char on a fresh line.
+                // Only when the line is non-empty, so a single over-wide glyph is still placed
+                // (the old code would have spun forever on that degenerate input).
+                if (lineWidthAcc + adv > lineWidth && line.Length > 0)
                 {
-                    linesToRender.Add(line);
-                    if (isNewLine)
-                    {
-                        strWithinBounds = strWithinBounds.Substring(1);
-                    }
-                    line = "";
+                    linesToRender.Add(line.ToString());
+                    line.Clear();
+                    lineWidthAcc = 0;
+                    i--;
                     continue;
                 }
-                else
-                {
-                    line += strWithinBounds[0];
-                    glyphPointsCount++;
-                    strWithinBounds = strWithinBounds.Substring(1);
-                    continue;
-                }
+
+                line.Append(ch);
+                lineWidthAcc += adv;
+                glyphPointsCount++;
             }
 
             if (line.Length != 0)
             {
-                linesToRender.Add(line);
-                line = "";
+                linesToRender.Add(line.ToString());
             }
 
             GlyphPoint[] glyphPoints = new GlyphPoint[glyphPointsCount];
@@ -785,9 +807,9 @@ namespace XNATWL.Renderer.XNA
                 {
                     for (int i = 0; i < g.Glyph.Width; i++)
                     {
-                        var srcOfs = i + j * g.Glyph.Width;
+                        var srcOfs = (g.Glyph.AtlasX + i) + (g.Glyph.AtlasY + j) * this._atlasWidth;
                         var destOfs = (g.Point.X + i) + (g.Point.Y + j) * longestLine;
-                        lineColors[destOfs] = g.Glyph.ColorData[srcOfs];
+                        lineColors[destOfs] = this._atlasColorData[srcOfs];
                     }
                 }
             }

@@ -79,9 +79,8 @@ namespace XNATWL.Utils
 
         public object PutCascadingEntry(K key, object value)
         {
-            if (this.ContainsKey(key))
+            if (this.TryGetValue(key, out object oldValue))
             {
-                object oldValue = this[key];
                 this[key] = value;
                 return oldValue;
             }
@@ -97,9 +96,13 @@ namespace XNATWL.Utils
         {
             do
             {
-                if (map.ContainsKey(key) && map[key] != null)
+                // Single probe per fallback level (was ContainsKey + indexer + indexer = up to 3).
+                // Keep the "!= null" guard to preserve current C# cascade behavior (a stored null
+                // value continues the cascade here; this matches the existing port, not Java's
+                // key-exists-stops-cascade semantics — a separate pre-existing divergence).
+                if (map.TryGetValue(key, out object v) && v != null)
                 {
-                    return map[key];
+                    return v;
                 }
                 map = map.Fallback;
             } while (map != null);

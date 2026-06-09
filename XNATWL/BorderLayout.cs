@@ -90,7 +90,15 @@ namespace XNATWL
          */
         public Widget GetChild(Location location)
         {
-            return _widgets[location];
+            return Get(location);
+        }
+
+        // Mirrors Java's EnumMap.get(loc): returns null for an absent location
+        // instead of throwing KeyNotFoundException like the Dictionary indexer.
+        private Widget Get(Location location)
+        {
+            _widgets.TryGetValue(location, out Widget w);
+            return w;
         }
 
         /**
@@ -102,7 +110,7 @@ namespace XNATWL
          */
         public Widget RemoveChild(Location location)
         {
-            Widget w = _widgets[location];
+            Widget w = Get(location);
             _widgets.Remove(location);
             if (w != null)
             {
@@ -165,31 +173,31 @@ namespace XNATWL
             int right = GetInnerRight();
             Widget w;
 
-            if ((w = _widgets[Location.NORTH]) != null)
+            if ((w = Get(Location.NORTH)) != null)
             {
                 w.SetPosition(left, top);
                 w.SetSize(Math.Max(right - left, 0), Math.Max(w.GetPreferredHeight(), 0));
                 top += w.GetPreferredHeight() + _vGap;
             }
-            if ((w = _widgets[Location.SOUTH]) != null)
+            if ((w = Get(Location.SOUTH)) != null)
             {
                 w.SetPosition(left, bottom - w.GetPreferredHeight());
                 w.SetSize(Math.Max(right - left, 0), Math.Max(w.GetPreferredHeight(), 0));
                 bottom -= w.GetPreferredHeight() + _vGap;
             }
-            if ((w = _widgets[Location.EAST]) != null)
+            if ((w = Get(Location.EAST)) != null)
             {
                 w.SetPosition(right - w.GetPreferredWidth(), top);
                 w.SetSize(Math.Max(w.GetPreferredWidth(), 0), Math.Max(bottom - top, 0));
                 right -= w.GetPreferredWidth() + _hGap;
             }
-            if ((w = _widgets[Location.WEST]) != null)
+            if ((w = Get(Location.WEST)) != null)
             {
                 w.SetPosition(left, top);
                 w.SetSize(Math.Max(w.GetPreferredWidth(), 0), Math.Max(bottom - top, 0));
                 left += w.GetPreferredWidth() + _hGap;
             }
-            if ((w = _widgets[Location.CENTER]) != null)
+            if ((w = Get(Location.CENTER)) != null)
             {
                 w.SetPosition(left, top);
                 w.SetSize(Math.Max(right - left, 0), Math.Max(bottom - top, 0));
@@ -220,12 +228,12 @@ namespace XNATWL
         {
             int size = 0;
 
-            size += GetChildMinWidth(_widgets[Location.EAST], _hGap);
-            size += GetChildMinWidth(_widgets[Location.WEST], _hGap);
-            size += GetChildMinWidth(_widgets[Location.CENTER], 0);
+            size += GetChildMinWidth(Get(Location.EAST), _hGap);
+            size += GetChildMinWidth(Get(Location.WEST), _hGap);
+            size += GetChildMinWidth(Get(Location.CENTER), 0);
 
-            size = Math.Max(size, GetChildMinWidth(_widgets[Location.NORTH], 0));
-            size = Math.Max(size, GetChildMinWidth(_widgets[Location.SOUTH], 0));
+            size = Math.Max(size, GetChildMinWidth(Get(Location.NORTH), 0));
+            size = Math.Max(size, GetChildMinWidth(Get(Location.SOUTH), 0));
 
             return size;
         }
@@ -234,12 +242,12 @@ namespace XNATWL
         {
             int size = 0;
 
-            size = Math.Max(size, GetChildMinHeight(_widgets[Location.EAST], 0));
-            size = Math.Max(size, GetChildMinHeight(_widgets[Location.WEST], 0));
-            size = Math.Max(size, GetChildMinHeight(_widgets[Location.CENTER], 0));
+            size = Math.Max(size, GetChildMinHeight(Get(Location.EAST), 0));
+            size = Math.Max(size, GetChildMinHeight(Get(Location.WEST), 0));
+            size = Math.Max(size, GetChildMinHeight(Get(Location.CENTER), 0));
 
-            size += GetChildMinHeight(_widgets[Location.NORTH], _vGap);
-            size += GetChildMinHeight(_widgets[Location.SOUTH], _vGap);
+            size += GetChildMinHeight(Get(Location.NORTH), _vGap);
+            size += GetChildMinHeight(Get(Location.SOUTH), _vGap);
 
             return size;
         }
@@ -248,12 +256,12 @@ namespace XNATWL
         {
             int size = 0;
 
-            size += GetChildPrefWidth(_widgets[Location.EAST], _hGap);
-            size += GetChildPrefWidth(_widgets[Location.WEST], _hGap);
-            size += GetChildPrefWidth(_widgets[Location.CENTER], 0);
+            size += GetChildPrefWidth(Get(Location.EAST), _hGap);
+            size += GetChildPrefWidth(Get(Location.WEST), _hGap);
+            size += GetChildPrefWidth(Get(Location.CENTER), 0);
 
-            size = Math.Max(size, GetChildPrefWidth(_widgets[Location.NORTH], 0));
-            size = Math.Max(size, GetChildPrefWidth(_widgets[Location.SOUTH], 0));
+            size = Math.Max(size, GetChildPrefWidth(Get(Location.NORTH), 0));
+            size = Math.Max(size, GetChildPrefWidth(Get(Location.SOUTH), 0));
 
             return size;
         }
@@ -262,12 +270,12 @@ namespace XNATWL
         {
             int size = 0;
 
-            size = Math.Max(size, GetChildPrefHeight(_widgets[Location.EAST], 0));
-            size = Math.Max(size, GetChildPrefHeight(_widgets[Location.WEST], 0));
-            size = Math.Max(size, GetChildPrefHeight(_widgets[Location.CENTER], 0));
+            size = Math.Max(size, GetChildPrefHeight(Get(Location.EAST), 0));
+            size = Math.Max(size, GetChildPrefHeight(Get(Location.WEST), 0));
+            size = Math.Max(size, GetChildPrefHeight(Get(Location.CENTER), 0));
 
-            size += GetChildPrefHeight(_widgets[Location.NORTH], _vGap);
-            size += GetChildPrefHeight(_widgets[Location.SOUTH], _vGap);
+            size += GetChildPrefHeight(Get(Location.NORTH), _vGap);
+            size += GetChildPrefHeight(Get(Location.SOUTH), _vGap);
 
             return size;
         }

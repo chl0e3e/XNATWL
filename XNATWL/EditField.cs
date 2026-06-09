@@ -1632,12 +1632,9 @@ namespace XNATWL
             {
                 get
                 {
-                    string outputValue = "";
-                    for (int i = 0; i < this.Length; i++)
-                    {
-                        outputValue += this.CharAt(i);
-                    }
-                    return outputValue;
+                    // CharAt always returns _maskingChar, so the masked string is just
+                    // the masking char repeated Length times. Avoids O(n^2) string concat.
+                    return new string(this._maskingChar, this.Length);
                 }
             }
 

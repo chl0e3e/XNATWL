@@ -286,14 +286,10 @@ namespace XNATWL
 
         protected NodeState GetOrCreateNodeState(TreeTableNode node)
         {
-            NodeState ns;
-            if (!this._states.ContainsKey(node))
+            // Single probe (was ContainsKey + indexer). _states never stores null values.
+            if (!this._states.TryGetValue(node, out NodeState ns))
             {
                 ns = CreateNodeState(node);
-            }
-            else
-            {
-                ns = this._states[node];
             }
             return ns;
         }

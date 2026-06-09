@@ -61,8 +61,7 @@ namespace XNATWL
 
         bool IsSubMenuOpen(Menu menu)
         {
-            Widget popup = _popups[menu];
-            if (popup != null)
+            if (_popups.TryGetValue(menu, out Widget popup) && popup != null)
             {
                 return popup.GetParent() == this;
             }
@@ -172,7 +171,7 @@ namespace XNATWL
          */
         public Widget GetPopupForMenu(Menu menu)
         {
-            return _popups[menu];
+            return _popups.TryGetValue(menu, out Widget popup) ? popup : null;
         }
 
         protected override void AfterAddToGUI(GUI gui)

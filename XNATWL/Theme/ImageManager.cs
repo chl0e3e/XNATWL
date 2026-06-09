@@ -80,11 +80,8 @@ namespace XNATWL.Theme
         {
             get
             {
-                if (!_images.ContainsKey(name))
-                {
-                    return null;
-                }
-                return _images[name];
+                _images.TryGetValue(name, out Image image);
+                return image;
             }
         }
 
@@ -111,7 +108,7 @@ namespace XNATWL.Theme
             {
                 throw xmlp.Error("wildcard mapping not allowed");
             }
-            Image img = _images[reference];
+            _images.TryGetValue(reference, out Image img);
             if (img == null)
             {
                 throw xmlp.Error("referenced image \"" + reference + "\" not found");
@@ -127,7 +124,7 @@ namespace XNATWL.Theme
         /// <returns><see cref="MouseCursor"/ matching reference></returns>
         public MouseCursor GetReferencedCursor(XMLParser xmlp, string reference)
         {
-            MouseCursor cursor = _cursors[reference];
+            _cursors.TryGetValue(reference, out MouseCursor cursor);
             if (cursor == null)
             {
                 throw xmlp.Error("referenced cursor \"" + reference + "\" not found");
@@ -153,7 +150,8 @@ namespace XNATWL.Theme
         /// <returns><see cref="MouseCursor"/></returns>
         public MouseCursor GetCursor(string name)
         {
-            return UnwrapCursor(_cursors[name]);
+            _cursors.TryGetValue(name, out MouseCursor cursor);
+            return UnwrapCursor(cursor);
         }
 
         /// <summary>
@@ -290,7 +288,7 @@ namespace XNATWL.Theme
             MouseCursor cursor;
             if (reference != null)
             {
-                cursor = _cursors[reference];
+                _cursors.TryGetValue(reference, out cursor);
                 if (cursor == null)
                 {
                     throw xmlp.Error("referenced cursor \"" + reference + "\" not found");

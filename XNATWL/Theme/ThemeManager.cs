@@ -697,7 +697,16 @@ namespace XNATWL.Theme
             int end = TextUtil.IndexOf(value, ',', idx);
             string part = TextUtil.Trim(value, idx, end);
 
-            return new List<string> { part, ParseList(value, end + 1)[0] };
+            // Mirrors Java's StringList cons: keep the head, then append the whole
+            // recursively-parsed tail (null at end-of-list). The previous code took
+            // only [0] of the tail (dropping entries) and threw NRE on the null base case.
+            List<string> result = new List<string> { part };
+            List<string> tail = ParseList(value, end + 1);
+            if (tail != null)
+            {
+                result.AddRange(tail);
+            }
+            return result;
         }
 
         /// <summary>

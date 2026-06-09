@@ -195,13 +195,17 @@ namespace XNATWL.Theme
         /// <returns><see cref="object"/> value</returns>
         public T GetParameterValue<T>(int idx, Type type)
         {
-            T value = (T) GetParameterValue(idx);
+            // Fetch into object and type-check BEFORE casting (mirrors Java's clazz.isInstance /
+            // clazz.cast, where cast(null) == null). The previous code cast to T first, which threw
+            // InvalidCastException for a null/wrong-typed slot when T is a value type instead of
+            // routing through WrongParameterType.
+            object value = GetParameterValue(idx);
             if (value != null && !type.IsInstanceOfType(value))
             {
                 WrongParameterType(idx, type, value.GetType());
                 return default(T);
             }
-            return value;
+            return value == null ? default(T) : (T) value;
         }
 
         /// <summary>
