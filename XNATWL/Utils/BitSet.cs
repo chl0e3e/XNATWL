@@ -229,7 +229,7 @@ namespace XNATWL.Util
         {
             try
             {
-                var bs = ObjectCopier.Clone(this);
+                var bs = (BitSet)this.MemberwiseClone();
                 bs.bits = (long[])bits.Clone();
                 return bs;
             }

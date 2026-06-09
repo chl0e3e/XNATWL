@@ -29,7 +29,6 @@
  */
 
 using Microsoft.Xna.Framework.Graphics.PackedVector;
-using System.Runtime.Remoting.Channels;
 using System.Security.Cryptography;
 
 namespace XNATWL.Model

@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>XNATWL</AssemblyName>
+    <RootNamespace>XNATWL</RootNamespace>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <!-- The original .NET Framework project file (XNATWL.csproj) is left intact;
+         this SDK-style project builds the same sources against the net8 FNA.Core. -->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\FNA\FNA.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- ObjectCopier did a BinaryFormatter deep-clone (removed in .NET 8) and was only
+         used by BitSet.Clone(), which now uses MemberwiseClone instead. Excluded from build. -->
+    <Compile Remove="Utils\ObjectCopier.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="KeyboardLayouts\**" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

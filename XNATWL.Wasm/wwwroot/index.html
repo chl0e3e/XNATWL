@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>XNATWL.Wasm</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    html, body { margin: 0; padding: 0; background: #202020; }
+    #canvas { display: block; margin: 0 auto; }
+  </style>
+  <script type='module' src="./main.js"></script>
+</head>
+
+<body>
+  <!-- SDL2 (Emscripten) renders into a canvas with id="canvas". -->
+  <canvas id="canvas" width="800" height="600" oncontextmenu="event.preventDefault()" tabindex="-1"></canvas>
+</body>
+
+</html>

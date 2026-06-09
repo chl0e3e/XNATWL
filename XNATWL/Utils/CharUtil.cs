@@ -28,18 +28,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System.CodeDom.Compiler;
 using System.Linq;
 
 namespace XNATWL.Utils
 {
     public class CharUtil
     {
-        public static CodeDomProvider PROVIDER = CodeDomProvider.CreateProvider("C#");
-
         public static bool IsCSharpIdentifier(char c)
         {
-            return CharUtil.PROVIDER.IsValidIdentifier(c.ToString());
+            // Faithful replacement for the old CodeDomProvider.IsValidIdentifier(c.ToString()):
+            // a single character is a valid C# identifier only if it is a letter or underscore.
+            return char.IsLetter(c) || c == '_';
         }
 
         public static bool IsDigit(char c)

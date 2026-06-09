@@ -29,7 +29,6 @@
  */
 
 using System;
-using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using XNATWL.Renderer;
 using XNATWL.Util;
@@ -84,8 +83,7 @@ namespace XNATWL.Utils
                 }
 
                 StateExpression child = null;
-                CodeDomProvider provider = CodeDomProvider.CreateProvider("C#");
-                if (provider.IsValidIdentifier(ch.ToString()))
+                if (CharUtil.IsCSharpIdentifier(ch))
                 {
                     child = new Check(StateKey.Get(si.GetIdent()));
                 }

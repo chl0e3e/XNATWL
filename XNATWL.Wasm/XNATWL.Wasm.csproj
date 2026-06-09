@@ -1,0 +1,75 @@
+<Project Sdk="Microsoft.NET.Sdk.WebAssembly">
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <!-- net9 wasm head (matches the installed wasm workload); references the net8 FNA/XNATWL libs. -->
+    <!-- Trimming runs only on `dotnet publish` (not `dotnet run`); shrinks the deployable build.
+         XNATWL applies themes via reflection and FNA has indirect call paths, so root them whole
+         (below) to avoid trimming breakage; the framework assemblies still get trimmed. -->
+    <PublishTrimmed>true</PublishTrimmed>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <!-- The SDL2# binding declares platform-specific entry points (SDL_Android*/iOS/GDK/WinRT/
+         Windows/D3D) that are absent from the Emscripten SDL2 port. With trimming off they are
+         all referenced by the static P/Invoke table; this lets the linker turn the unused ones
+         into abort-stubs (they are never called on the web). -->
+    <WasmAllowUndefinedSymbols>true</WasmAllowUndefinedSymbols>
+    <!-- Request a WebGL2 context for FNA3D's OpenGL driver (mirrors TheSpydog's fna-wasm gist).
+         Do NOT add -sUSE_SDL=2: the .NET native relink uses the FROZEN dotnet emscripten cache,
+         which has no SDL2 port. We link our own SDL2.a (built with the same emcc 3.1.56) below;
+         its emscripten deps (html5/GL/openal) are already linked by the .NET runtime.
+         NO_EXIT_RUNTIME=1: FNA drives the loop via emscripten_set_main_loop (requestAnimationFrame),
+         so main() returns immediately; without this the runtime tears down and the next frame's
+         malloc aborts. (Must use EmccExtraLDFlags — this SDK ignores EmccExtraArgs.) -->
+    <!-- FULL_ES3=1 + GL_ENABLE_GET_PROC_ADDRESS=1: FNA3D loads all GL entry points via
+         SDL_GL_GetProcAddress; without full ES3 the GLES3 functions (glDrawBuffers,
+         glUnmapBuffer, glDrawRangeElements, ...) aren't in Emscripten's getProcAddress table,
+         so FNA3D's supports_BaseGL check fails ("OpenGL ES 3.0 support is required!"). -->
+    <EmccExtraLDFlags>-s MIN_WEBGL_VERSION=2 -s MAX_WEBGL_VERSION=2 -s NO_EXIT_RUNTIME=1 -s FULL_ES3=1 -s GL_ENABLE_GET_PROC_ADDRESS=1</EmccExtraLDFlags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\FNA\FNA.Core.csproj" />
+    <ProjectReference Include="..\XNATWL\XNATWL.Core.csproj" />
+  </ItemGroup>
+
+  <!-- Demo dialogs shared with the desktop test harness (XNATWL.Test). Linked in (not the whole
+       harness) so the browser build can exercise the full widget set. The few SimpleTest symbols
+       these reference (WITH_TITLE/WITHOUT_TITLE/StyleItem) are provided by DemoSupport.cs. -->
+  <ItemGroup>
+    <Compile Include="..\XNATWL.Test\FadeFrame.cs" Link="Demos\FadeFrame.cs" />
+    <Compile Include="..\XNATWL.Test\WidgetsDemoDialog1.cs" Link="Demos\WidgetsDemoDialog1.cs" />
+    <Compile Include="..\XNATWL.Test\GraphDemoDialog1.cs" Link="Demos\GraphDemoDialog1.cs" />
+    <Compile Include="..\XNATWL.Test\TextAreaDemoDialog1.cs" Link="Demos\TextAreaDemoDialog1.cs" />
+    <Compile Include="..\XNATWL.Test\TextAreaDemoDialog2.cs" Link="Demos\TextAreaDemoDialog2.cs" />
+    <Compile Include="..\XNATWL.Test\ScrollPaneDemoDialog1.cs" Link="Demos\ScrollPaneDemoDialog1.cs" />
+    <Compile Include="..\XNATWL.Test\PropertySheetDemoDialog.cs" Link="Demos\PropertySheetDemoDialog.cs" />
+    <Compile Include="..\XNATWL.Test\ColorSelectorDemoDialog1.cs" Link="Demos\ColorSelectorDemoDialog1.cs" />
+    <Compile Include="..\XNATWL.Test\TableDemoDialog1.cs" Link="Demos\TableDemoDialog1.cs" />
+    <Compile Include="..\XNATWL.Test\TreeTableDemoDialog1.cs" Link="Demos\TreeTableDemoDialog1.cs" />
+  </ItemGroup>
+
+  <!-- Preserve XNATWL + FNA from the trimmer (reflection/indirect call paths). -->
+  <ItemGroup>
+    <TrimmerRootAssembly Include="XNATWL" />
+    <TrimmerRootAssembly Include="FNA" />
+  </ItemGroup>
+
+  <!-- TWL theme assets live in wwwroot/Theme; the SDK serves wwwroot/** as static web assets
+       automatically. main.js fetches them and writes them into the Emscripten VFS at /Theme before
+       the game runs, so XNATWL's FileSystemObject.OpenRead (System.IO.File) reads them unchanged.
+       (WasmFilesToIncludeInFileSystem is only honored on publish, not `dotnet run`.) -->
+
+  <!-- Native FNA stack compiled to wasm (FNA/wasm/libs). The file names (sans extension)
+       MUST match the managed [DllImport] module names ("SDL2","FNA3D","FAudio") so the wasm
+       SDK registers them as static P/Invoke modules (WasmApp.Common.targets _WasmPInvokeModules
+       uses %(FileName)). mojoshader has no managed DllImport; it's linked for FNA3D's C code. -->
+  <ItemGroup>
+    <NativeFileReference Include="..\..\FNA\wasm\libs\FNA3D.a" />
+    <NativeFileReference Include="..\..\FNA\wasm\libs\mojoshader.a" ScanForPInvokes="false" />
+    <NativeFileReference Include="..\..\FNA\wasm\libs\FAudio.a" />
+    <NativeFileReference Include="..\..\FNA\wasm\libs\SDL2.a" />
+    <!-- Empty .c whose file name registers "__Native" as a static P/Invoke module, so FNA's
+         [DllImport("__Native")] emscripten_set_main_loop/cancel resolve to linked emscripten symbols. -->
+    <NativeFileReference Include="..\..\FNA\wasm\__Native.c" />
+  </ItemGroup>
+</Project>
