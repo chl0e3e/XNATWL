@@ -21,18 +21,14 @@
             return value & -value;
         }
 
-        // https://stackoverflow.com/a/41907678
-        // CC BY-SA 3.0 - Johan Shen
+        /// <summary>
+        /// Logical (unsigned) right shift — the equivalent of Java's <c>&gt;&gt;&gt;</c> operator.
+        /// Shifting an unsigned value zero-fills from the left; C# masks the shift count to the low
+        /// 5 bits for 32-bit operands, matching Java's semantics.
+        /// </summary>
         public static int RightMove(int value, int pos)
         {
-            if (pos != 0)
-            {
-                int mask = 0x7fffffff;
-                value >>= 1;
-                value &= mask;
-                value >>= pos - 1;
-            }
-            return value;
+            return (int)((uint)value >> pos);
         }
 
         public static int NumberOfTrailingZeros(int value)

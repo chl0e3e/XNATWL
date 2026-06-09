@@ -16,12 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- ObjectCopier did a BinaryFormatter deep-clone (removed in .NET 8) and was only
-         used by BitSet.Clone(), which now uses MemberwiseClone instead. Excluded from build. -->
-    <Compile Remove="Utils\ObjectCopier.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Include="KeyboardLayouts\**" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>
